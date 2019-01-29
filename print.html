@@ -1,0 +1,1114 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Tock Tutorial</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li><a href="prerequisites.html"><strong aria-hidden="true">1.</strong> Prerequisites</a></li><li><ol class="section"><li><a href="prerequisites/hardware.html"><strong aria-hidden="true">1.1.</strong> Hardware</a></li><li><a href="prerequisites/software.html"><strong aria-hidden="true">1.2.</strong> Software</a></li></ol></li><li><a href="environment.html"><strong aria-hidden="true">2.</strong> Environment</a></li><li><a href="application.html"><strong aria-hidden="true">3.</strong> Application</a></li><li><a href="capsule.html"><strong aria-hidden="true">4.</strong> Capsule</a></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Tock Tutorial</h1> 
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="#tock-os-tutorial" id="tock-os-tutorial"><h1>Tock OS Tutorial</h1></a>
+<p>This course introduces you to Tock, a secure embedded operating system for
+sensor networks and the Internet of Things. Tock is the first operating system
+to allow multiple untrusted applications to run concurrently on a
+microcontroller-based computer. The Tock kernel is written in Rust, a
+memory-safe systems language that does not rely on a garbage collector.
+Userspace applications are run in single-threaded processes that can be written
+in any language.</p>
+<p>In this hands-on guide, we will look at some of the high-level services
+provided by Tock.  We will start with an understanding of the OS and its
+programming environment.  Then we'll look at how a process management
+application can help afford remote debugging, diagnosing and fixing a
+resource-intensive app over the network.  The last part of the tutorial is a
+bit more free-form, inviting attendees to further explore the networking and
+application features of Tock or to dig into the kernel a bit and explore how to
+enhance and extend the kernel.</p>
+<p>This course assumes some experience programming embedded devices and fluency in C.
+It assumes no knowledge of Rust, although knowing Rust will allow you to be
+more creative during the kernel exploration at the end.</p>
+<a class="header" href="#agenda" id="agenda"><h2>Agenda</h2></a>
+<p>The training is divided into three sections, each starting with a short
+presentation to introduce some concepts, followed by a practical exercise.</p>
+<ol>
+<li>
+<p><a href="environment.html">Environment Setup</a>: Get familiar with the Tock tools
+and getting a board setup.</p>
+</li>
+<li>
+<p><a href="application.html">Userland programming</a>: write a basic sensing application in C.</p>
+</li>
+<li>
+<p><a href="client.html">Deliver for the Client</a>: Help an important client get a
+new board setup.</p>
+</li>
+<li>
+<p><a href="freeform.html">Free-form Experimentation</a>: Open-ended exploration with
+support from the Tock team.</p>
+</li>
+</ol>
+<a class="header" href="#prerequisites" id="prerequisites"><h1>Prerequisites</h1></a>
+<p>We will go over setting up a development environment during the course and help
+out with possible problems you run into. You must ensure you have the proper
+hardware before you begin---an development board and a workstation---and
+software development environment.</p>
+<a class="header" href="#hardware" id="hardware"><h1>Hardware</h1></a>
+<p>To complete the hands-on excercises in this guide, you'll need an <em>imix</em>
+hardware platform (pictured below), a workstation running either Linux or OS X
+(you can also work in a <a href="prerequisites/software.html#virtual-machine">Virtual
+Machine</a>), and a micro-USB cable
+to connect your imix to your workstation.</p>
+<p>To complete the 6LoWPAN networking portion of this guide, you'll need an
+additional <em>imix</em> to act as a hub, but multiple participants can use the same
+hub <em>imix</em>.</p>
+<p><img src="../imgs/imix-v2.1.png" alt="" /></p>
+<a class="header" href="#software" id="software"><h1>Software</h1></a>
+<p>You can either download a <a href="#virtual-machine">virtual machine</a> with all
+development environment pre-installed, or, if you have a Linux or OS X
+workstation, you may install the development environment
+<a href="#native-installation">natively</a>. Using a virtual machine is quicker and easier
+to set up, while installing natively will yield the most comfortable
+development environment and is better for long term use.</p>
+<a class="header" href="#virtual-machine" id="virtual-machine"><h2>Virtual Machine</h2></a>
+<p>If you're comfortable working inside a Debian virtual machine, you can download
+an image with all of the dependencies already installed
+<a href="http://www.scs.stanford.edu/%7Ealevy/Tock.ova">here</a></p>
+<ul>
+<li>VirtualBox users: <a href="https://docs.oracle.com/cd/E26217_01/E26796/html/qs-import-vm.html">File → Import Appliance...</a>,</li>
+<li>VMWare users: <a href="https://pubs.vmware.com/workstation-9/index.jsp?topic=%2Fcom.vmware.ws.using.doc%2FGUID-DDCBE9C0-0EC9-4D09-8042-18436DA62F7A.html">File → Open...</a></li>
+</ul>
+<p>The VM account is &quot;user&quot; with password &quot;user&quot;. Feel free to customize it with
+whichever editors, window managers, etc. you like before the training starts.</p>
+<blockquote>
+<p>If the Host OS is Linux, you may need to add your user to the <code>vboxusers</code>
+group on your machine in order to connect the hardware boards to the virtual
+machine.</p>
+</blockquote>
+<a class="header" href="#native-installation" id="native-installation"><h2>Native Installation</h2></a>
+<p>If you choose to install the development environment natively, you will need
+the following software:</p>
+<ol>
+<li>
+<p>Command line utilities: curl, make, git</p>
+</li>
+<li>
+<p>Python 3 and pip3</p>
+</li>
+<li>
+<p>A local clone of the Tock repository</p>
+<pre><code> $ git clone https://github.com/tock/tock.git
+</code></pre>
+</li>
+<li>
+<p>A local clone of the Tock applications repository (for apps written in C)</p>
+<pre><code> $ git clone https://github.com/tock/libtock-c.git
+</code></pre>
+</li>
+<li>
+<p><a href="http://rustup.rs/">rustup</a>. This tool helps manage installations of the
+Rust compiler and related tools.</p>
+<pre><code> $ curl https://sh.rustup.rs -sSf | sh
+</code></pre>
+</li>
+<li>
+<p><a href="https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads">arm-none-eabi toolchain</a> (version &gt;= 5.2)</p>
+<p>OS-specific installation instructions can be found
+<a href="https://github.com/tock/tock/blob/master/doc/Getting_Started.md#arm-none-eabi-toolchain">here</a></p>
+</li>
+<li>
+<p><a href="https://github.com/tock/tockloader">tockloader</a></p>
+<pre><code> $ pip3 install -U --user tockloader
+</code></pre>
+<blockquote>
+<p>Note: On MacOS, you may need to add <code>tockloader</code> to your path. If you
+cannot run it after installation, run the following:</p>
+</blockquote>
+<pre><code> $ export PATH=$HOME/Library/Python/3.6/bin/:$PATH
+</code></pre>
+<blockquote>
+<p>Similarly, on Linux distributions, this will typically install to
+<code>$HOME/.local/bin</code>, and you may need to add that to your <code>$PATH</code> if not
+already present:</p>
+</blockquote>
+<pre><code> $ PATH=$HOME/.local/bin:$PATH
+</code></pre>
+</li>
+</ol>
+<a class="header" href="#testing" id="testing"><h3>Testing</h3></a>
+<p>To verify you have everything installed correctly,
+<a href="prerequisites/README.html#testing">hop back over to the testing directions in the main README</a>.</p>
+<a class="header" href="#testing-1" id="testing-1"><h2>Testing</h2></a>
+<p>To test if your environment is working, go to the <code>tock/boards/imix</code> directory
+and type <code>make program</code>. This should compile the kernel for the default board,
+Imix, and try to program it over a USB serial connection. It may need to compile
+several supporting libraries first (so may take 30 seconds or so the first
+time). You should see output like this:</p>
+<pre><code>$ make flash
+   Compiling tock-registers v0.2.0 (file:///Users/bradjc/git/tock/libraries/tock-register-interface)
+   Compiling tock-cells v0.1.0 (file:///Users/bradjc/git/tock/libraries/tock-cells)
+   Compiling enum_primitive v0.1.0 (file:///Users/bradjc/git/tock/libraries/enum_primitive)
+   Compiling imix v0.1.0 (file:///Users/bradjc/git/tock/boards/imix)
+   Compiling kernel v0.1.0 (file:///Users/bradjc/git/tock/kernel)
+   Compiling cortexm v0.1.0 (file:///Users/bradjc/git/tock/arch/cortex-m)
+   Compiling capsules v0.1.0 (file:///Users/bradjc/git/tock/capsules)
+   Compiling cortexm4 v0.1.0 (file:///Users/bradjc/git/tock/arch/cortex-m4)
+   Compiling sam4l v0.1.0 (file:///Users/bradjc/git/tock/chips/sam4l)
+    Finished release [optimized + debuginfo] target(s) in 23.89s
+   text    data     bss     dec     hex filename
+ 148192    5988   34968  189148   2e2dc target/thumbv7em-none-eabi/release/imix
+tockloader  flash --address 0x10000 target/thumbv7em-none-eabi/release/imix.bin
+No device name specified. Using default &quot;tock&quot;
+No serial ports found. Is the board connected?
+
+make: *** [program] Error 1
+</code></pre>
+<p>That is, since you don't yet have a board plugged in it can't program it. But
+the above output indicates that it can compile correctly and invoke <code>tockloader</code>
+to program a board.</p>
+<a class="header" href="#environment" id="environment"><h1>Environment</h1></a>
+<p>The goal of this part of the course is to make sure you have a working
+development environment for Tock.</p>
+<p>During this portion of the course you will:</p>
+<ul>
+<li>Get a high-level overview of how Tock works.</li>
+<li>Learn how to compile and flash the kernel onto an Imix board.</li>
+</ul>
+<a class="header" href="#tocks-goals-architecture-and-components" id="tocks-goals-architecture-and-components"><h2>Tock's goals, architecture and components</h2></a>
+<p><img src="imgs/architecture.png" alt="" /></p>
+<p>A key contribution of Tock is that it uses Rust's borrow checker as a
+language sandbox for isolation and a cooperative scheduling model for
+concurrency in the kernel.  As a result, for the kernel isolation is
+(more or less) free in terms of resource consumption at the expense of
+preemptive scheduling (so a malicious component could block the system by,
+e.g., spinning in an infinite loop).</p>
+<p>Tock includes three architectural components:</p>
+<ul>
+<li>A small trusted <em>core kernel</em>, written in Rust, that implements a hardware
+abstraction layer (HAL), scheduler, and platform-specific configuration.</li>
+<li><em>Capsules</em>, which are compiled with the kernel and use Rust's type and
+module systems for safety.</li>
+<li><em>Processes</em>, which use the memory protection unit (MPU) for protection at runtime.</li>
+</ul>
+<p>Read the Tock documentation for more details on its
+<a href="https://github.com/tock/tock/blob/master/doc/Design.md">design</a>.</p>
+<p><a href="presentation/presentation.pdf"><em>Presentation slides are available here.</em></a></p>
+<a class="header" href="#check-your-understanding" id="check-your-understanding"><h3>Check your understanding</h3></a>
+<ol>
+<li>
+<p>What kinds of binaries exist on a Tock board? Hint: There are three, and
+only two can be programmed using <code>tockloader</code>.</p>
+</li>
+<li>
+<p>What are the differences between capsules and processes? What performance
+and memory overhead does each entail? Why would you choose to write
+something as a process instead of a capsule and vice versa?</p>
+</li>
+<li>
+<p>Clearly, the core kernel should never enter an infinite loop. But is it
+acceptable for a process to spin? What about a capsule?</p>
+</li>
+</ol>
+<a class="header" href="#compile-and-program-the-kernel" id="compile-and-program-the-kernel"><h2>Compile and program the kernel</h2></a>
+<a class="header" href="#make-sure-your-tock-repository-is-up-to-date" id="make-sure-your-tock-repository-is-up-to-date"><h3>Make sure your Tock repository is up to date</h3></a>
+<pre><code>$ git pull
+</code></pre>
+<a class="header" href="#build-the-kernel" id="build-the-kernel"><h3>Build the kernel</h3></a>
+<p>To build the kernel, just type make in <code>boards/imix/</code>.</p>
+<pre><code>$ cd boards/imix/
+$ make
+</code></pre>
+<p>If this is the first time you are trying to make the kernel, the build system
+will use cargo and rustup to install various Tock dependencies.</p>
+<p>Kernels must be compiled from within the desired board's folder. For example, to
+compile for Hail instead you must first run <code>cd boards/hail/</code>.</p>
+<a class="header" href="#connect-to-an-imix-board" id="connect-to-an-imix-board"><h3>Connect to an imix board</h3></a>
+<blockquote>
+<a class="header" href="#one-time-fixups" id="one-time-fixups"><h4>One-Time Fixups</h4></a>
+<ul>
+<li>
+<p>On Linux, you might need to give your user access to the imix's serial port.
+If you are using the VM, this is already done for you.
+You can do this by adding a udev rule:</p>
+<pre><code>$ sudo bash -c &quot;echo 'ATTRS{idVendor}==\&quot;0403\&quot;, ATTRS{idProduct}==\&quot;6015\&quot;, MODE=\&quot;0666\&quot;' &gt; /etc/udev/rules.d/99-imix&quot;
+</code></pre>
+<p>Afterwards, detach and re-attach the imix to reload the rule.</p>
+</li>
+<li>
+<p>With the virtual machine, you might need to attach the USB device to the
+VM. To do so, after plugging in imix, select in the VirtualBox/VMWare menu bar:</p>
+<pre><code>Devices -&gt; USB Devices -&gt; imix IoT Module - TockOS
+</code></pre>
+<p>If this generates an error, often unplugging/replugging fixes it. You can also
+create a rule in the VM USB settings which will auto-attach the imix to the VM.</p>
+</li>
+</ul>
+</blockquote>
+<p>To connect your development machine to the imix, connect them with a micro-USB
+cable. Any cable will do, but notice that there are two USB ports on the imix.
+Make sure you connect to the micro-USB port labeled 'debug' on the imix. The
+imix should come with <code>blink</code> and <code>c_hello</code> installed, which will blink the
+status LED and print <code>Hello World</code> on boot respectively.</p>
+<p>The imix board should appear as a regular serial device (e.g.
+<code>/dev/tty.usbserial-c098e5130006</code> on my Mac and <code>/dev/ttyUSB0</code> on my Linux box).
+While you can connect with any standard serial program (set to 115200 baud),
+tockloader makes this easier. Tockloader can read attributes from connected
+serial devices, and will automatically find your connected imix. Simply run:</p>
+<pre><code>$ tockloader listen
+No device name specified. Using default &quot;tock&quot;
+Using &quot;/dev/ttyUSB0 - Imix - TockOS&quot;
+
+Listening for serial output.
+Initialization complete. Entering main loop
+Hello World!
+</code></pre>
+<a class="header" href="#flash-the-kernel" id="flash-the-kernel"><h3>Flash the kernel</h3></a>
+<p>Now that the imix board is connected and you have verified that the kernel
+compiles, we can flash the imix board with the latest Tock kernel:</p>
+<pre><code>$ cd boards/imix/
+$ make program
+</code></pre>
+<p>This command will compile the kernel if needed, and then use <code>tockloader</code> to
+flash it onto the imix. When the flash command succeeds, the <code>blink</code> and
+<code>c_hello</code> apps should still be running and the LED will be blinking.
+You now have the bleeding-edge Tock kernel running on your imix board!</p>
+<a class="header" href="#clear-out-the-applications-and-re-flash-the-test-app" id="clear-out-the-applications-and-re-flash-the-test-app"><h3>Clear out the applications and re-flash the test app.</h3></a>
+<p>Lets check what's on the board right now:</p>
+<pre><code>$ tockloader list
+...
+[App 0]
+  Name:                  blink
+  Enabled:               True
+  Sticky:                False
+  Total Size in Flash:   2048 bytes
+
+[App 1]
+  Name:                  c_hello
+  Enabled:               True
+  Sticky:                False
+  Total Size in Flash:   1024 bytes
+</code></pre>
+<p>As you can see, the old apps are still installed on the board.
+This also nicely demonstrates that user applications are isolated from the
+kernel: it is possible to update one independently of the other.
+We can remove apps with the following command:</p>
+<pre><code>$ tockloader uninstall
+</code></pre>
+<p>Following the prompt, if you remove the <code>blink</code> app, the LED will stop
+blinking, however the console will still print <code>Hello World</code>.</p>
+<p>Now let's try adding a more interesting app:</p>
+<pre><code>$ cd libtock-c/examples/sensors/
+$ make program
+</code></pre>
+<p>The <code>sensors</code> app will automatically discover all available sensors,
+sample them once a second, and print the results.</p>
+<pre><code>Listening for serial output.
+Starting process console
+Initialization complete. Entering main loop
+[Sensors] Starting Sensors App.
+Hello World!
+[Sensors] All available sensors on the platform will be sampled.
+ISL29035:   Light Intensity: 453
+Temperature:                 24 deg C
+Humidity:                    63%
+
+ISL29035:   Light Intensity: 453
+Temperature:                 24 deg C
+Humidity:                    63%
+</code></pre>
+<a class="header" href="#familiarize-yourself-with-tockloader-commands" id="familiarize-yourself-with-tockloader-commands"><h2>Familiarize yourself with <code>tockloader</code> commands</h2></a>
+<p>The <code>tockloader</code> tool is a useful and versatile tool for managing and installing
+applications on Tock. It supports a number of commands, and a more complete
+list can be found in the tockloader repository, located at
+<a href="https://github.com/tock/tockloader#usage">github.com/tock/tockloader</a>.
+Below is a list of the more useful and important commands for programming and
+querying a board.</p>
+<a class="header" href="#tockloader-install" id="tockloader-install"><h3><code>tockloader install</code></h3></a>
+<p>This is the main tockloader command, used to load Tock applications onto a
+board.
+By default, <code>tockloader install</code> adds the new application, but does not erase
+any others, replacing any already existing application with the same name.
+Use the <code>--no-replace</code> flag to install multiple copies of the same app.
+In order to install an app, navigate to the correct directory, make the program,
+then issue the install command:</p>
+<pre><code>$ cd libtock-c/examples/blink
+$ make
+$ tockloader install
+</code></pre>
+<blockquote>
+<p><em>Tip:</em> You can add the <code>--make</code> flag to have tockloader automatically
+run make before installing, i.e. <code>tockloader install --make</code></p>
+</blockquote>
+<blockquote>
+<p><em>Tip:</em> You can add the <code>--erase</code> flag to have tockloader automatically
+remove other applications when installing a new one.</p>
+</blockquote>
+<a class="header" href="#tockloader-uninstall-application-names" id="tockloader-uninstall-application-names"><h3><code>tockloader uninstall [application name(s)]</code></h3></a>
+<p>Removes one or more applications from the board by name.</p>
+<a class="header" href="#tockloader-erase-apps" id="tockloader-erase-apps"><h3><code>tockloader erase-apps</code></h3></a>
+<p>Removes all applications from the board.</p>
+<a class="header" href="#tockloader-list" id="tockloader-list"><h3><code>tockloader list</code></h3></a>
+<p>Prints basic information about the apps currently loaded onto the board.</p>
+<a class="header" href="#tockloader-info" id="tockloader-info"><h3><code>tockloader info</code></h3></a>
+<p>Shows all properties of the board, including information about currently
+loaded applications, their sizes and versions, and any set attributes.</p>
+<a class="header" href="#tockloader-listen" id="tockloader-listen"><h3><code>tockloader listen</code></h3></a>
+<p>This command prints output from Tock apps to the terminal. It listens via UART,
+and will print out anything written to stdout/stderr from a board.</p>
+<blockquote>
+<p><em>Tip:</em> As a long-running command, <code>listen</code> interacts with other tockloader
+sessions. You can leave a terminal window open and listening. If another
+tockloader process needs access to the board (e.g. to install an app update),
+tockloader will automatically pause and resume listening.</p>
+</blockquote>
+<a class="header" href="#tockloader-flash" id="tockloader-flash"><h3><code>tockloader flash</code></h3></a>
+<p>Loads binaries onto hardware platforms that are running a compatible bootloader.
+This is used by the Tock Make system when kernel binaries are programmed to the
+board with <code>make program</code>.</p>
+<a class="header" href="#explore-other-example-applications" id="explore-other-example-applications"><h2>Explore other example applications</h2></a>
+<p>Other applications can be found in the <code>libtock-c/examples/</code> directory. Try
+loading them on your imix and then try modifying them. By default, <code>tockloader install</code> adds the new application, but does not erase any others. Be aware, not
+all applications will work well together if they need the same resources (Tock
+is in active development to add virtualization to all resources to remove this
+issue!).</p>
+<p><strong>Note:</strong> By default, the imix platform is limited to only running four
+concurrent processes at once. Tockloader is (currently) unaware of this
+limitation, and will allow to you to load additional apps. However the kernel
+will only load the first four apps. One option for the free-form section at the
+end of the tutorial will be to explore this limitation and allow more apps.</p>
+<a class="header" href="#write-an-environment-sensing-application" id="write-an-environment-sensing-application"><h1>Write an environment sensing application</h1></a>
+<a class="header" href="#process-overview-relocation-model-and-system-call-api" id="process-overview-relocation-model-and-system-call-api"><h2>Process overview, relocation model and system call API</h2></a>
+<p>In this section, we're going to learn about processes (a.k.a applications) in
+Tock, and build our own applications in C.</p>
+<a class="header" href="#check-your-understanding-1" id="check-your-understanding-1"><h3>Check your understanding</h3></a>
+<ol>
+<li>
+<p>How does a process perform a blocking operation? Can you draw the flow of
+operations when a process calls <code>delay_ms(1000)</code>?</p>
+</li>
+<li>
+<p>How would you write an IPC service to print to the console? Which functions
+would the client need to call?</p>
+</li>
+</ol>
+<a class="header" href="#get-a-c-application-running-on-your-board" id="get-a-c-application-running-on-your-board"><h2>Get a C application running on your board</h2></a>
+<p>You'll find the outline of a C application in the directory
+<code>docs/courses/sensys/exercises/app</code>.</p>
+<p>Take a look at the code in <code>main.c</code>. So far, this application merely prints
+&quot;Hello, World!&quot;.</p>
+<p>The code uses the standard C library routine <code>printf</code> to compose a message
+using a format string and print it to the console. Let's break down what the
+code layers are here:</p>
+<ol>
+<li>
+<p><code>printf</code> is provided by the C standard library (implemented by
+<a href="https://sourceware.org/newlib/">newlib</a>). It takes the format string and
+arguments, and generates an output string from them. To actually write the
+string to standard out, <code>printf</code> calls <code>_write</code>.</p>
+</li>
+<li>
+<p><code>_write</code> (in <code>userland/libtock/sys.c</code>) is a wrapper for actually writing to
+output streams (in this case, standard out a.k.a. the console). It calls
+the Tock-specific console writing function <code>putnstr</code>.</p>
+</li>
+<li>
+<p><code>putnstr</code>(in <code>userland/libtock/console.c</code>) buffers data to be written, calls
+<code>putnstr_async</code>, and acts as a synchronous wrapper, yielding until the
+operation is complete.</p>
+</li>
+<li>
+<p><code>putnstr_async</code> (in <code>userland/libtock/console.c</code>) finally performs the
+actual system calls, calling to <code>allow</code>, <code>subscribe</code>, and <code>command</code> to
+enable the kernel to access the buffer, request a callback when the write is
+complete, and begin the write operation respectively.</p>
+</li>
+</ol>
+<p>The application could accomplish all of this by invoking Tock system calls
+directly, but using libraries makes for a much cleaner interface and allows
+users to not need to know the inner workings of the OS.</p>
+<a class="header" href="#loading-an-application" id="loading-an-application"><h3>Loading an application</h3></a>
+<p>Okay, let's build and load this simple program.</p>
+<ol>
+<li>
+<p>Erase all other applications from the development board:</p>
+<pre><code> $ tockloader erase-apps
+</code></pre>
+</li>
+<li>
+<p>Build this application:</p>
+<pre><code> $ make
+</code></pre>
+</li>
+<li>
+<p>Load the application (Note: <code>tockloader install</code> automatically searches the
+current working directory and its subdirectories for Tock binaries.)</p>
+<pre><code> $ tockloader install
+</code></pre>
+</li>
+<li>
+<p>Check that it worked:</p>
+<pre><code> $ tockloader listen
+</code></pre>
+</li>
+</ol>
+<p>The output should look something like:</p>
+<pre><code>$ tockloader listen
+No device name specified. Using default &quot;tock&quot;
+Using &quot;/dev/cu.usbserial-c098e5130012 - Hail IoT Module - TockOS&quot;
+
+Listening for serial output.
+Hello, World!
+</code></pre>
+<a class="header" href="#creating-your-own-application" id="creating-your-own-application"><h2>Creating your own application</h2></a>
+<p>Now that you've got a basic app working, modify it so that it continuously
+prints out <code>Hello World</code> twice per second.  You'll want to use the user
+library's timer facilities to manage this:</p>
+<a class="header" href="#timer" id="timer"><h3>Timer</h3></a>
+<p>You'll find the interface for timers in <code>userland/libtock/timer.h</code>. The
+function you'll find useful today is:</p>
+<pre><code class="language-c">#include &lt;timer.h&gt;
+void delay_ms(uint32_t ms);
+</code></pre>
+<p>This function sleeps until the specified number of milliseconds have passed, and
+then returns.  So we call this function &quot;synchronous&quot;: no further code will run
+until the delay is complete.</p>
+<a class="header" href="#write-an-app-that-periodically-samples-the-on-board-sensors" id="write-an-app-that-periodically-samples-the-on-board-sensors"><h2>Write an app that periodically samples the on-board sensors</h2></a>
+<p>Now that we have the ability to write applications, let's do something a little
+more complex. The development board you are using has several sensors on it.
+These sensors include a light sensor, a humidity sensor, and a temperature
+sensor. Each sensing medium can be accessed separately via the Tock user
+library. We'll just be using the light, temperature, and humidity measurements
+for today's tutorial.</p>
+<a class="header" href="#light" id="light"><h4>Light</h4></a>
+<p>The interface in <code>userland/libtock/ambient_light.h</code> is used to measure ambient
+light conditions in <a href="https://en.wikipedia.org/wiki/Lux">lux</a>. imix uses the
+<a href="https://www.intersil.com/en/products/optoelectronics/ambient-light-sensors/light-to-digital-sensors/ISL29035.html">ISL29035</a>
+sensor, but the userland library is abstracted from the details of particular
+sensors.  It contains the function:</p>
+<pre><code class="language-c">#include &lt;ambient_light.h&gt;
+int ambient_light_read_intensity_sync(int* lux);
+</code></pre>
+<p>Note that the light reading is written to the location passed as an
+argument, and the function returns non-zero in the case of an error.</p>
+<a class="header" href="#temperature" id="temperature"><h4>Temperature</h4></a>
+<p>The interface in <code>userland/libtock/temperature.h</code> is used to measure ambient
+temperature in degrees Celsius, times 100. imix uses the
+<a href="https://www.silabs.com/products/sensors/humidity-sensors/Pages/si7013-20-21.aspx">SI7021</a>
+sensor. It contains the function:</p>
+<pre><code class="language-c">#include &lt;temperature.h&gt;
+int temperature_read_sync(int* temperature);
+</code></pre>
+<p>Again, this function returns non-zero in the case of an error.</p>
+<a class="header" href="#humidity" id="humidity"><h4>Humidity</h4></a>
+<p>The interface in <code>userland/libtock/humidity.h</code> is used to measure the ambient
+<a href="https://en.wikipedia.org/wiki/Relative_humidity">relative humidity</a> in
+percent, times 100. It contains the function:</p>
+<pre><code class="language-c">#include &lt;humidity.h&gt;
+int humidity_read_sync (unsigned* humi);
+</code></pre>
+<p>Again, this function returns non-zero in the case of an error.</p>
+<a class="header" href="#read-sensors-in-a-tock-application" id="read-sensors-in-a-tock-application"><h3>Read sensors in a Tock application</h3></a>
+<p>Using the example program you're working on, write an application that reads
+all of the sensors on your development board and reports their readings over
+the serial port.</p>
+<p>As a bonus, experiment with toggling an LED when readings are above or below a
+certain threshold:</p>
+<a class="header" href="#led" id="led"><h4>LED</h4></a>
+<p>The interface in <code>userland/libtock/led.h</code> is used to control lights on Tock boards. On the Hail
+board, there are three LEDs which can be controlled: Red, Blue, and Green. The
+functions in the LED module are:</p>
+<pre><code class="language-c">#include &lt;led.h&gt;
+int led_count(void);
+</code></pre>
+<p>Which returns the number of LEDs available on the board.</p>
+<pre><code class="language-c">int led_on(int led_num);
+</code></pre>
+<p>Which turns an LED on, accessed by its number.</p>
+<pre><code class="language-c">int led_off(int led_num);
+</code></pre>
+<p>Which turns an LED off, accessed by its number.</p>
+<pre><code class="language-c">int led_toggle(int led_num);
+</code></pre>
+<p>Which toggles the state of an LED, accessed by its number.</p>
+<a class="header" href="#capsule" id="capsule"><h1>Capsule</h1></a>
+<p>The goal of this part of the course is to make you comfortable with the
+Tock kernel and writing code for it. By the end of this part, you'll have
+written a new capsule that reads a 9DOF (nine degrees of freedom, consisting
+of a 3-axis accelerometer, magnetometer, and gyroscope) sensor and outputs
+its readings over the serial port.</p>
+<p>During this you will:</p>
+<ol>
+<li>Learn how Tock uses Rust's memory safety to provide isolation for free</li>
+<li>Read the Tock boot sequence, seeing how Tock uses static allocation</li>
+<li>Learn about Tock's event-driven programming</li>
+<li>Write a new capsule that reads a 9DOF sensor and prints it over serial</li>
+</ol>
+<a class="header" href="#listen-to-presentation-on-tocks-kernel-and-capsules" id="listen-to-presentation-on-tocks-kernel-and-capsules"><h2>Listen to presentation on Tock's kernel and capsules</h2></a>
+<p>This part of the course will start with a member of the Tock development
+team presenting its core software architecture. This will explain how a
+Tock platform has a small amount of trusted (can use <code>unsafe</code>) code, but
+the bulk of the kernel code is in <em>capsules</em>, which cannot violate Rust's
+safety guarantees. It'll also explain how RAM constraints lead the Tock
+kernel to rely on static allocation and use a purely event-driven execution
+model.</p>
+<p>This presentation will give you the intellectual framework to understand
+why capsules work as they do, and understand what you'll be doing in the rest
+of this part of the course.</p>
+<a class="header" href="#check-your-understanding-2" id="check-your-understanding-2"><h3>Check your understanding</h3></a>
+<ol>
+<li>What is a <code>VolatileCell</code>? Can you find some uses of <code>VolatileCell</code>, and do you understand why they are needed? Hint: look inside <code>chips/sam4l/src</code>.</li>
+<li>What is a <code>TakeCell</code>? When is a <code>TakeCell</code> preferable to a standard <code>Cell</code>?</li>
+</ol>
+<a class="header" href="#read-the-tock-boot-sequence-20m" id="read-the-tock-boot-sequence-20m"><h2>Read the Tock boot sequence (20m)</h2></a>
+<p>Open <code>boards/imix/src/main.rs</code> in your favorite editor. This file defines the
+imix platform: how it boots, what capsules it uses, and what system calls it
+supports for userland applications.</p>
+<a class="header" href="#how-is-everything-organized" id="how-is-everything-organized"><h3>How is everything organized?</h3></a>
+<p>Find the declaration of <code>struct Imix</code> (it's pretty early in the file).
+This declares the structure representing the platform. It has many fields,
+all of which are capsules. These are the capsules that make up the imix
+platform. For the most part, these map directly to hardware peripherals,
+but there are exceptions such as <code>IPC</code> (inter-process communication).</p>
+<p>Recall the discussion about how everything in the kernel is statically
+allocated? We can see that here. Every field in <code>struct Imix</code> is a reference to
+an object with a static lifetime.</p>
+<p>The capsules themselves take a lifetime as a parameter, which is currently
+always <code>`static</code>.  The implementations of these capsules, however, do not
+rely on this assumption.</p>
+<p>The boot process is primarily the construction of this <code>Imix</code> structure. Once
+everything is set up, the board will pass the constructed <code>imix</code> to
+<code>kernel::main</code> and we're off to the races.</p>
+<a class="header" href="#how-do-things-get-started" id="how-do-things-get-started"><h3>How do things get started?</h3></a>
+<p>The method <code>reset_handler</code> is invoked when the chip resets (i.e., boots).
+It's pretty long because imix has a lot of drivers that need to be created
+and initialized, and many of them depend on other, lower layer abstractions
+that need to be created and initialized as well.</p>
+<p>Take a look at the first few lines of the <code>reset_handler</code>. The boot sequence
+initializes memory (copies initialized variables into RAM, clears the BSS),
+sets up the system clocks, and configures the GPIO pins.</p>
+<a class="header" href="#how-do-capsules-get-created" id="how-do-capsules-get-created"><h3>How do capsules get created?</h3></a>
+<p>The next lines of <code>reset_handler</code> create and initialize the system console,
+which is what turns calls to <code>print!</code> into bytes sent to the USB serial port:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+let console = static_init!(
+    Console&lt;usart::USART&gt;,
+    Console::new(&amp;usart::USART0,
+                 115200,
+                 &amp;mut console::WRITE_BUF,
+                 kernel::Container::create()));
+hil::uart::UART::set_client(&amp;usart::USART0, console);
+#}</code></pre></pre>
+<p>Eventually, once all of the capsules have been created, we will populate
+a imix structure with them:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+let imix = Imix {
+    console: console,
+    gpio: gpio,
+    ...
+#}</code></pre></pre>
+<p>The <code>static_init!</code> macro is simply an easy way to allocate a static
+variable with a call to <code>new</code>. The first parameter is the type, the second
+is the expression to produce an instance of the type. This call creates
+a <code>Console</code> that uses serial port 0 (<code>USART0</code>) at 115200 bits per second.</p>
+<blockquote>
+<a class="header" href="#a-brief-aside-on-buffers" id="a-brief-aside-on-buffers"><h4>A brief aside on buffers:</h4></a>
+<p>Notice that you have to pass a write buffer to the console for it to use:
+this buffer has to have a <code>`static</code> lifetime. This is because low-level
+hardware drivers, especially those that use DMA, require <code>`static</code> buffers.
+Since Tock doesn't promise when a DMA operation will complete, and you
+need to be able to promise that the buffer outlives the operation, the
+one lifetime that is assured to be alive at the end of an operation is
+<code>`static</code>. So that other code which has buffers
+without a <code>`static</code> lifetime, such as userspace processes, can use the
+<code>Console</code>, it copies them into its own internal <code>`static</code> buffer before
+passing it to the serial port. So the buffer passing architecture looks like
+this:</p>
+<p><img src="console.png" alt="Console/UART buffer lifetimes" /></p>
+<p>It's a little weird that Console's <code>new</code> method takes in a reference to
+itself. This is an ergonomics tradeoff. The Console needs a mutable static
+buffer to use internally, which the Console capsule declares. However writing
+global statics is unsafe. To avoid the unsafe operation in the Console
+capsule itself, we make it the responsibility of the instantiator to give the
+Console a buffer to use, without burdening the instantiator with sizing the
+buffer.</p>
+</blockquote>
+<p>The final parameter, the <code>Container</code>, is for handling system calls:
+you don't need to worry about it for now.</p>
+<a class="header" href="#lets-make-an-imix" id="lets-make-an-imix"><h3>Let's make an imix!</h3></a>
+<p>The code continues on, creating all of the other capsules that are needed
+by the imix platform. By the time we get down to around line 360, we've
+created all of the capsules we need, and it's time to create the actual
+imix platform structure (<code>let imix = Imix {</code> ...).</p>
+<a class="header" href="#capsule-initialization" id="capsule-initialization"><h3>Capsule <em>initialization</em></h3></a>
+<p>Up to this point we have been creating numerous structures and setting some
+static configuration options and mappings, but nothing dynamic has occurred
+(said another way, all methods invoked by <code>static_init!</code> must be <code>const fn</code>,
+however Tock's <code>static_init!</code> macro predates stabilization of <code>const fn</code>'s.
+A future iteration could possibly leverage these and obviate the need for the
+macro).</p>
+<p>Some capsules require <em>initialization</em>, some code that must be executed
+before they can be used. For example, a few lines after creating the imix
+struct, we initialize the console:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+imix.console.initialize();
+#}</code></pre></pre>
+<p>This method is responsible for actually writing the hardware registers that
+configure the associated UART peripheral for use as a text console
+(8 data bits, 1 stop bit, no parity bit, no hardware flow control).</p>
+<a class="header" href="#inter-capsule-dependencies" id="inter-capsule-dependencies"><h3>Inter-capsule dependencies</h3></a>
+<p>Just after initializing the console capsule, we find this line:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+kernel::debug::assign_console_driver(Some(imix.console), kc);
+#}</code></pre></pre>
+<p>This configures the kernel's <code>debug!</code> macro to print messages to this console
+we've just created. The <code>debug!</code> mechanism can be very helpful during
+development and testing. Today we're going to use it to print output from the
+capsule you create.</p>
+<p>Let's try it out really quick:</p>
+<pre><code class="language-diff">--- a/boards/imix/src/main.rs
++++ b/boards/imix/src/main.rs
+@@ -10,7 +10,7 @@
+ extern crate capsules;
+ extern crate cortexm4;
+ extern crate compiler_builtins;
+-#[macro_use(static_init)]
++#[macro_use(debug, static_init)]
+ extern crate kernel;
+ extern crate sam4l;
+
+@@ -388,6 +388,8 @@ pub unsafe fn reset_handler() {
+         capsules::console::App::default());
+     kernel::debug::assign_console_driver(Some(imix.console), kc);
+
++    debug!(&quot;Testing 1, 2, 3...&quot;);
++
+     imix.nrf51822.initialize();
+</code></pre>
+<p>Compile and flash the kernel (<code>make program</code>) then look at the output
+(<code>tockloader listen</code>).</p>
+<ul>
+<li>What happens if you put the <code>debug!</code> before <code>assign_console_driver</code>?</li>
+<li>What happens if you put <code>imix.console.initialize()</code> after
+<code>assign_console_driver</code>?</li>
+</ul>
+<p>As you can see, sometimes there are dependencies between capsules, and board
+authors must take care during initialization to ensure correctness.</p>
+<blockquote>
+<p><strong>Note:</strong> The <code>debug!</code> implementation is <em>asynchronous</em>. It copies messages
+into a buffer and the console prints them via DMA as the UART peripheral is
+available, interleaved with other console users (i.e. processes). You
+shouldn't need to worry about the mechanics of this for now.</p>
+</blockquote>
+<a class="header" href="#loading-processes" id="loading-processes"><h3>Loading processes</h3></a>
+<p>Once the platform is all set up, the board is responsible for loading processes
+into memory:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+kernel::process::load_processes(&amp;_sapps as *const u8,
+                                &amp;mut APP_MEMORY,
+                                &amp;mut PROCESSES,
+                                FAULT_RESPONSE);
+#}</code></pre></pre>
+<p>A Tock process is represented by a <code>kernel::Process</code> struct. In principle, a
+platform could load processes by any means. In practice, all existing platforms
+write an array of Tock Binary Format (TBF) entries to flash. The kernel provides
+the <code>load_processes</code> helper function that takes in a flash address and begins
+iteratively parsing TBF entries and making <code>Process</code>es.</p>
+<a class="header" href="#starting-the-kernel" id="starting-the-kernel"><h3>Starting the kernel</h3></a>
+<p>Finally, the board passes a reference to the current platform, the chip the
+platform is built on (used for interrupt and power handling), the processes to
+run, and an IPC server instance to the main loop of the kernel:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+kernel::main(&amp;imix, &amp;mut chip, &amp;mut PROCESSES, &amp;imix.ipc);
+#}</code></pre></pre>
+<p>From here, Tock is initialized, the kernel event loop takes over, and the
+system enters steady state operation.</p>
+<a class="header" href="#create-a-hello-world-capsule" id="create-a-hello-world-capsule"><h3>Create a &quot;Hello World&quot; capsule</h3></a>
+<p>Now that you've seen how Tock initializes and uses capsules, you're going to
+write a new one. At the end of this section, your capsule will sample the
+accelerometer from the 9dof sensor once a second and print the results as
+serial output. But you'll start with something simpler: printing &quot;Hello World&quot;
+to the debug console once on boot.</p>
+<p>To begin, because you're going to be modifying the boot sequence of Imix,
+make a branch of the Tock repository. This will keep your master
+branch clean.</p>
+<pre><code class="language-bash"># Possibly undo any changes from exploring debug! above:
+$ git reset --hard
+$ git checkout -b rustconf
+</code></pre>
+<p>Next, create a new module in <code>boards/imix/src</code> and import it from
+<code>boards/imix/src/main.rs</code>. In your new module, make a new <code>struct</code> for your
+capsule (e.g. called <code>Accelerate</code>), a <code>new</code> function to construct it and a <code>start</code> method.</p>
+<p>Eventually, the <code>start</code> method will kick off the state machine for periodic
+accelerometer readings, but for now, you'll just print &quot;Hello World&quot; to the
+debug console and return:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+debug!(&quot;Hello World&quot;);
+#}</code></pre></pre>
+<p>Finally, initialize this new capsule in the <code>main.rs</code> boot sequence. You'll
+want to use the <code>static_init!</code> macro to make sure it's initialized in static
+memory. <code>static_init!</code> is already imported, and has the following signature:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+static_init!($T:ty, :expr -&gt; $T) -&gt; &amp;'static T
+#}</code></pre></pre>
+<p>That is, the first parameter is the type of the thing you want to allocate and
+the second parameter is an expression constructing it. The result is a
+reference to the constructed value with <code>'static</code> lifetime.</p>
+<p>Compile and program your new kernel:</p>
+<pre><code class="language-bash">$ make program
+$ tockloader listen
+No device name specified. Using default &quot;tock&quot;                                                                         Using &quot;/dev/ttyUSB0 - Imix IoT Module - TockOS&quot;
+Listening for serial output.
+TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.rs:18: Hello World
+</code></pre>
+<p><a href="https://gist.github.com/alevy/56b0566e2d1a6ba582b7d4c09968ddc9">Sample Solution</a></p>
+<a class="header" href="#extend-your-capsule-to-print-hello-world-every-second" id="extend-your-capsule-to-print-hello-world-every-second"><h2>Extend your capsule to print &quot;Hello World&quot; every second</h2></a>
+<p>In order for your capsule to keep track of time, it will need to depend on
+another capsule that implements the Alarm interface. We'll have to do something
+similar for reading the accelerometer, so this is good practice.</p>
+<p>The Alarm HIL includes several traits, <code>Alarm</code>, <code>Client</code>, and <code>Frequency</code>,
+all in the <code>kernel::hil::time</code> module. You'll use the <code>set_alarm</code> and <code>now</code>
+methods from the <code>Alarm</code> trait to set an alarm for a particular value of the
+clock. The <code>Alarm</code> trait also has an associated type that implements the
+<code>Frequency</code> trait which lets us call its <code>frequency</code> method to get the clock
+frequency.</p>
+<p>Modify your capsule to have a field of the type <code>&amp;'a Alarm</code> and to accept an
+<code>&amp;'a Alarm</code> in the <code>new</code> function.</p>
+<p>Your capsule will also need to implement the <code>Client</code> trait so it can
+receive alarm events. The <code>Client</code> trait has a single method:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+fn fired(&amp;self)
+#}</code></pre></pre>
+<p>Your capsule should now set an alarm in the <code>start</code> method, print the debug
+message and set an alarm again when the alarm fires.</p>
+<p>Finally, you'll need to modify the capsule initialization to pass in an alarm
+implementation. Since lots of other capsules use the alarm, you should use a
+virtual alarm. You can make a new one like this:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+let my_virtual_alarm = static_init!(
+    VirtualMuxAlarm&lt;'static, sam4l::ast::Ast&gt;,
+    VirtualMuxAlarm::new(mux_alarm));
+#}</code></pre></pre>
+<p>and you have to make sure to set your capsule as the client of the virtual alarm after initializing it:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+my_virtual_alarm.set_client(my_capsule);
+#}</code></pre></pre>
+<p>Compile and program your new kernel:</p>
+<pre><code class="language-bash">$ make program
+$ tockloader listen
+No device name specified. Using default &quot;tock&quot;                                                                         Using &quot;/dev/ttyUSB0 - Imix IoT Module - TockOS&quot;
+Listening for serial output.
+TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.rs:31: Hello World
+TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.rs:31: Hello World
+TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.rs:31: Hello World
+TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.rs:31: Hello World
+</code></pre>
+<p><a href="https://gist.github.com/alevy/73fca7b0dddcb5449088cebcbfc035f1">Sample Solution</a></p>
+<a class="header" href="#extend-your-capsule-to-sample-the-accelerometer-once-a-second" id="extend-your-capsule-to-sample-the-accelerometer-once-a-second"><h2>Extend your capsule to sample the accelerometer once a second</h2></a>
+<p>The steps for reading an accelerometer from your capsule are similar to using
+the alarm. You'll use a capsule that implements the NineDof (nine degrees of
+freedom) HIL, which includes the <code>NineDof</code> and <code>NineDofClient</code> traits, both in
+<code>kernel::hil::sensors</code>.</p>
+<p>The <code>NineDof</code> trait includes the method <code>read_accelerometer</code> which initiates an
+accelerometer reading. The <code>NineDofClient</code> trait has a single method for receiving readings:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+fn callback(&amp;self, x: usize, y: usize, z: usize);
+#}</code></pre></pre>
+<p>However, unlike the alarm, there is no virtualization layer for the <code>NineDof</code>
+HIL (yet!) and there is already a driver used in Imix that exposes the 9dof
+sensor to userland. Fortunately, we can just remove it for our purposes.</p>
+<p>Remove the <code>ninedof</code> field from the <code>Imix</code> struct definition:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+ninedof: &amp;'static capsules::ninedof::NineDof&lt;'static&gt;,
+#}</code></pre></pre>
+<p>and initialization:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+ninedof: ninedof,
+#}</code></pre></pre>
+<p>Remove <code>ninedof</code> from the system call lookup table in <code>with_driver</code>:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+11 =&gt; f(Some(self.ninedof)), // Comment this out
+#}</code></pre></pre>
+<p>And, finally, remove the initialization of <code>ninedof</code> from the boot sequence:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+let ninedof = static_init!(
+    capsules::ninedof::NineDof&lt;'static&gt;,
+    capsules::ninedof::NineDof::new(fxos8700, kernel::Container::create()));
+hil::ninedof::NineDof::set_client(fxos8700, ninedof);
+#}</code></pre></pre>
+<p>Follow the same steps you did for adding an alarm to your capsule for the 9dof
+sensor capsule:</p>
+<ol>
+<li>
+<p>Add a <code>&amp;'a NineDof</code> field.</p>
+</li>
+<li>
+<p>Accept one in the <code>new</code> function.</p>
+</li>
+<li>
+<p>Implement the <code>NineDofClient</code> trait.</p>
+</li>
+</ol>
+<p>Now, modify the Imix boot sequence passing in the <code>fxos8700</code> capsule, which
+implements the <code>NineDof</code> trait, to your capsule (it should already be
+initialized). Make sure to set your capsule as its client:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+{
+  use hil::ninedof::NineDof;
+  fxos8700.set_client(my_capsule);
+}
+#}</code></pre></pre>
+<p>Finally, implement logic to initiate a accelerometer reading every second and
+report the results.</p>
+<p><img src="rustconf.png" alt="Structure of rustconf capsule" /></p>
+<p>Compile and program your kernel:</p>
+<pre><code class="language-bash">$ make program
+$ tockloader listen
+No device name specified. Using default &quot;tock&quot;                                                                         Using &quot;/dev/ttyUSB0 - Imix IoT Module - TockOS&quot;
+Listening for serial output.
+TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.rs:31: 982 33 166
+TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.rs:31: 988 31 158
+</code></pre>
+<p><a href="https://gist.github.com/alevy/798d11dbfa5409e0aa56d870b4b7afcf">Sample solution</a></p>
+<a class="header" href="#some-further-questions-and-directions-to-explore" id="some-further-questions-and-directions-to-explore"><h2>Some further questions and directions to explore</h2></a>
+<p>Your capsule used the fxos8700 and virtual alarm. Take a look at the
+code behind each of these services:</p>
+<ol>
+<li>
+<p>Is the 9DOF sensor on-chip or a separate chip connected over a bus?</p>
+</li>
+<li>
+<p>What happens if you request two 9DOF sensors (e.g., accelerometer and magnetometer)</p>
+<p>back-to-back?</p>
+</li>
+<li>
+<p>Is there a limit on how many virtual alarms can be created?</p>
+</li>
+<li>
+<p>How many virtual alarms does the imix boot sequence create?</p>
+</li>
+</ol>
+<a class="header" href="#extra-credit-write-a-virtualization-capsule-for-9dof-" id="extra-credit-write-a-virtualization-capsule-for-9dof-"><h3><strong>Extra credit</strong>: Write a virtualization capsule for 9dof (∞)</h3></a>
+<p>Remember how you had to remove the userspace facing <code>ninedof</code> driver from imix
+in order to use the accelerometer in your capsule? That was a bummer...</p>
+<p>If you have extra time, try writing a virtualization capsule for the <code>NineDof</code>
+HIL that will allow multiple clients to use it. This is a fairly open ended
+task, but you might find inspiration in the <code>virtua_alarm</code> and <code>virtual_i2c</code>
+capsules.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+        
+        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+        
+        
+
+    </body>
+</html>

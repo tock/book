@@ -1,0 +1,593 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Capsule - Tock Tutorial</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li><a href="prerequisites.html"><strong aria-hidden="true">1.</strong> Prerequisites</a></li><li><ol class="section"><li><a href="prerequisites/hardware.html"><strong aria-hidden="true">1.1.</strong> Hardware</a></li><li><a href="prerequisites/software.html"><strong aria-hidden="true">1.2.</strong> Software</a></li></ol></li><li><a href="environment.html"><strong aria-hidden="true">2.</strong> Environment</a></li><li><a href="application.html"><strong aria-hidden="true">3.</strong> Application</a></li><li><a href="capsule.html" class="active"><strong aria-hidden="true">4.</strong> Capsule</a></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Tock Tutorial</h1> 
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="#capsule" id="capsule"><h1>Capsule</h1></a>
+<p>The goal of this part of the course is to make you comfortable with the
+Tock kernel and writing code for it. By the end of this part, you'll have
+written a new capsule that reads a 9DOF (nine degrees of freedom, consisting
+of a 3-axis accelerometer, magnetometer, and gyroscope) sensor and outputs
+its readings over the serial port.</p>
+<p>During this you will:</p>
+<ol>
+<li>Learn how Tock uses Rust's memory safety to provide isolation for free</li>
+<li>Read the Tock boot sequence, seeing how Tock uses static allocation</li>
+<li>Learn about Tock's event-driven programming</li>
+<li>Write a new capsule that reads a 9DOF sensor and prints it over serial</li>
+</ol>
+<a class="header" href="#listen-to-presentation-on-tocks-kernel-and-capsules" id="listen-to-presentation-on-tocks-kernel-and-capsules"><h2>Listen to presentation on Tock's kernel and capsules</h2></a>
+<p>This part of the course will start with a member of the Tock development
+team presenting its core software architecture. This will explain how a
+Tock platform has a small amount of trusted (can use <code>unsafe</code>) code, but
+the bulk of the kernel code is in <em>capsules</em>, which cannot violate Rust's
+safety guarantees. It'll also explain how RAM constraints lead the Tock
+kernel to rely on static allocation and use a purely event-driven execution
+model.</p>
+<p>This presentation will give you the intellectual framework to understand
+why capsules work as they do, and understand what you'll be doing in the rest
+of this part of the course.</p>
+<a class="header" href="#check-your-understanding" id="check-your-understanding"><h3>Check your understanding</h3></a>
+<ol>
+<li>What is a <code>VolatileCell</code>? Can you find some uses of <code>VolatileCell</code>, and do you understand why they are needed? Hint: look inside <code>chips/sam4l/src</code>.</li>
+<li>What is a <code>TakeCell</code>? When is a <code>TakeCell</code> preferable to a standard <code>Cell</code>?</li>
+</ol>
+<a class="header" href="#read-the-tock-boot-sequence-20m" id="read-the-tock-boot-sequence-20m"><h2>Read the Tock boot sequence (20m)</h2></a>
+<p>Open <code>boards/imix/src/main.rs</code> in your favorite editor. This file defines the
+imix platform: how it boots, what capsules it uses, and what system calls it
+supports for userland applications.</p>
+<a class="header" href="#how-is-everything-organized" id="how-is-everything-organized"><h3>How is everything organized?</h3></a>
+<p>Find the declaration of <code>struct Imix</code> (it's pretty early in the file).
+This declares the structure representing the platform. It has many fields,
+all of which are capsules. These are the capsules that make up the imix
+platform. For the most part, these map directly to hardware peripherals,
+but there are exceptions such as <code>IPC</code> (inter-process communication).</p>
+<p>Recall the discussion about how everything in the kernel is statically
+allocated? We can see that here. Every field in <code>struct Imix</code> is a reference to
+an object with a static lifetime.</p>
+<p>The capsules themselves take a lifetime as a parameter, which is currently
+always <code>`static</code>.  The implementations of these capsules, however, do not
+rely on this assumption.</p>
+<p>The boot process is primarily the construction of this <code>Imix</code> structure. Once
+everything is set up, the board will pass the constructed <code>imix</code> to
+<code>kernel::main</code> and we're off to the races.</p>
+<a class="header" href="#how-do-things-get-started" id="how-do-things-get-started"><h3>How do things get started?</h3></a>
+<p>The method <code>reset_handler</code> is invoked when the chip resets (i.e., boots).
+It's pretty long because imix has a lot of drivers that need to be created
+and initialized, and many of them depend on other, lower layer abstractions
+that need to be created and initialized as well.</p>
+<p>Take a look at the first few lines of the <code>reset_handler</code>. The boot sequence
+initializes memory (copies initialized variables into RAM, clears the BSS),
+sets up the system clocks, and configures the GPIO pins.</p>
+<a class="header" href="#how-do-capsules-get-created" id="how-do-capsules-get-created"><h3>How do capsules get created?</h3></a>
+<p>The next lines of <code>reset_handler</code> create and initialize the system console,
+which is what turns calls to <code>print!</code> into bytes sent to the USB serial port:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+let console = static_init!(
+    Console&lt;usart::USART&gt;,
+    Console::new(&amp;usart::USART0,
+                 115200,
+                 &amp;mut console::WRITE_BUF,
+                 kernel::Container::create()));
+hil::uart::UART::set_client(&amp;usart::USART0, console);
+#}</code></pre></pre>
+<p>Eventually, once all of the capsules have been created, we will populate
+a imix structure with them:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+let imix = Imix {
+    console: console,
+    gpio: gpio,
+    ...
+#}</code></pre></pre>
+<p>The <code>static_init!</code> macro is simply an easy way to allocate a static
+variable with a call to <code>new</code>. The first parameter is the type, the second
+is the expression to produce an instance of the type. This call creates
+a <code>Console</code> that uses serial port 0 (<code>USART0</code>) at 115200 bits per second.</p>
+<blockquote>
+<a class="header" href="#a-brief-aside-on-buffers" id="a-brief-aside-on-buffers"><h4>A brief aside on buffers:</h4></a>
+<p>Notice that you have to pass a write buffer to the console for it to use:
+this buffer has to have a <code>`static</code> lifetime. This is because low-level
+hardware drivers, especially those that use DMA, require <code>`static</code> buffers.
+Since Tock doesn't promise when a DMA operation will complete, and you
+need to be able to promise that the buffer outlives the operation, the
+one lifetime that is assured to be alive at the end of an operation is
+<code>`static</code>. So that other code which has buffers
+without a <code>`static</code> lifetime, such as userspace processes, can use the
+<code>Console</code>, it copies them into its own internal <code>`static</code> buffer before
+passing it to the serial port. So the buffer passing architecture looks like
+this:</p>
+<p><img src="console.png" alt="Console/UART buffer lifetimes" /></p>
+<p>It's a little weird that Console's <code>new</code> method takes in a reference to
+itself. This is an ergonomics tradeoff. The Console needs a mutable static
+buffer to use internally, which the Console capsule declares. However writing
+global statics is unsafe. To avoid the unsafe operation in the Console
+capsule itself, we make it the responsibility of the instantiator to give the
+Console a buffer to use, without burdening the instantiator with sizing the
+buffer.</p>
+</blockquote>
+<p>The final parameter, the <code>Container</code>, is for handling system calls:
+you don't need to worry about it for now.</p>
+<a class="header" href="#lets-make-an-imix" id="lets-make-an-imix"><h3>Let's make an imix!</h3></a>
+<p>The code continues on, creating all of the other capsules that are needed
+by the imix platform. By the time we get down to around line 360, we've
+created all of the capsules we need, and it's time to create the actual
+imix platform structure (<code>let imix = Imix {</code> ...).</p>
+<a class="header" href="#capsule-initialization" id="capsule-initialization"><h3>Capsule <em>initialization</em></h3></a>
+<p>Up to this point we have been creating numerous structures and setting some
+static configuration options and mappings, but nothing dynamic has occurred
+(said another way, all methods invoked by <code>static_init!</code> must be <code>const fn</code>,
+however Tock's <code>static_init!</code> macro predates stabilization of <code>const fn</code>'s.
+A future iteration could possibly leverage these and obviate the need for the
+macro).</p>
+<p>Some capsules require <em>initialization</em>, some code that must be executed
+before they can be used. For example, a few lines after creating the imix
+struct, we initialize the console:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+imix.console.initialize();
+#}</code></pre></pre>
+<p>This method is responsible for actually writing the hardware registers that
+configure the associated UART peripheral for use as a text console
+(8 data bits, 1 stop bit, no parity bit, no hardware flow control).</p>
+<a class="header" href="#inter-capsule-dependencies" id="inter-capsule-dependencies"><h3>Inter-capsule dependencies</h3></a>
+<p>Just after initializing the console capsule, we find this line:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+kernel::debug::assign_console_driver(Some(imix.console), kc);
+#}</code></pre></pre>
+<p>This configures the kernel's <code>debug!</code> macro to print messages to this console
+we've just created. The <code>debug!</code> mechanism can be very helpful during
+development and testing. Today we're going to use it to print output from the
+capsule you create.</p>
+<p>Let's try it out really quick:</p>
+<pre><code class="language-diff">--- a/boards/imix/src/main.rs
++++ b/boards/imix/src/main.rs
+@@ -10,7 +10,7 @@
+ extern crate capsules;
+ extern crate cortexm4;
+ extern crate compiler_builtins;
+-#[macro_use(static_init)]
++#[macro_use(debug, static_init)]
+ extern crate kernel;
+ extern crate sam4l;
+
+@@ -388,6 +388,8 @@ pub unsafe fn reset_handler() {
+         capsules::console::App::default());
+     kernel::debug::assign_console_driver(Some(imix.console), kc);
+
++    debug!(&quot;Testing 1, 2, 3...&quot;);
++
+     imix.nrf51822.initialize();
+</code></pre>
+<p>Compile and flash the kernel (<code>make program</code>) then look at the output
+(<code>tockloader listen</code>).</p>
+<ul>
+<li>What happens if you put the <code>debug!</code> before <code>assign_console_driver</code>?</li>
+<li>What happens if you put <code>imix.console.initialize()</code> after
+<code>assign_console_driver</code>?</li>
+</ul>
+<p>As you can see, sometimes there are dependencies between capsules, and board
+authors must take care during initialization to ensure correctness.</p>
+<blockquote>
+<p><strong>Note:</strong> The <code>debug!</code> implementation is <em>asynchronous</em>. It copies messages
+into a buffer and the console prints them via DMA as the UART peripheral is
+available, interleaved with other console users (i.e. processes). You
+shouldn't need to worry about the mechanics of this for now.</p>
+</blockquote>
+<a class="header" href="#loading-processes" id="loading-processes"><h3>Loading processes</h3></a>
+<p>Once the platform is all set up, the board is responsible for loading processes
+into memory:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+kernel::process::load_processes(&amp;_sapps as *const u8,
+                                &amp;mut APP_MEMORY,
+                                &amp;mut PROCESSES,
+                                FAULT_RESPONSE);
+#}</code></pre></pre>
+<p>A Tock process is represented by a <code>kernel::Process</code> struct. In principle, a
+platform could load processes by any means. In practice, all existing platforms
+write an array of Tock Binary Format (TBF) entries to flash. The kernel provides
+the <code>load_processes</code> helper function that takes in a flash address and begins
+iteratively parsing TBF entries and making <code>Process</code>es.</p>
+<a class="header" href="#starting-the-kernel" id="starting-the-kernel"><h3>Starting the kernel</h3></a>
+<p>Finally, the board passes a reference to the current platform, the chip the
+platform is built on (used for interrupt and power handling), the processes to
+run, and an IPC server instance to the main loop of the kernel:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+kernel::main(&amp;imix, &amp;mut chip, &amp;mut PROCESSES, &amp;imix.ipc);
+#}</code></pre></pre>
+<p>From here, Tock is initialized, the kernel event loop takes over, and the
+system enters steady state operation.</p>
+<a class="header" href="#create-a-hello-world-capsule" id="create-a-hello-world-capsule"><h3>Create a &quot;Hello World&quot; capsule</h3></a>
+<p>Now that you've seen how Tock initializes and uses capsules, you're going to
+write a new one. At the end of this section, your capsule will sample the
+accelerometer from the 9dof sensor once a second and print the results as
+serial output. But you'll start with something simpler: printing &quot;Hello World&quot;
+to the debug console once on boot.</p>
+<p>To begin, because you're going to be modifying the boot sequence of Imix,
+make a branch of the Tock repository. This will keep your master
+branch clean.</p>
+<pre><code class="language-bash"># Possibly undo any changes from exploring debug! above:
+$ git reset --hard
+$ git checkout -b rustconf
+</code></pre>
+<p>Next, create a new module in <code>boards/imix/src</code> and import it from
+<code>boards/imix/src/main.rs</code>. In your new module, make a new <code>struct</code> for your
+capsule (e.g. called <code>Accelerate</code>), a <code>new</code> function to construct it and a <code>start</code> method.</p>
+<p>Eventually, the <code>start</code> method will kick off the state machine for periodic
+accelerometer readings, but for now, you'll just print &quot;Hello World&quot; to the
+debug console and return:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+debug!(&quot;Hello World&quot;);
+#}</code></pre></pre>
+<p>Finally, initialize this new capsule in the <code>main.rs</code> boot sequence. You'll
+want to use the <code>static_init!</code> macro to make sure it's initialized in static
+memory. <code>static_init!</code> is already imported, and has the following signature:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+static_init!($T:ty, :expr -&gt; $T) -&gt; &amp;'static T
+#}</code></pre></pre>
+<p>That is, the first parameter is the type of the thing you want to allocate and
+the second parameter is an expression constructing it. The result is a
+reference to the constructed value with <code>'static</code> lifetime.</p>
+<p>Compile and program your new kernel:</p>
+<pre><code class="language-bash">$ make program
+$ tockloader listen
+No device name specified. Using default &quot;tock&quot;                                                                         Using &quot;/dev/ttyUSB0 - Imix IoT Module - TockOS&quot;
+Listening for serial output.
+TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.rs:18: Hello World
+</code></pre>
+<p><a href="https://gist.github.com/alevy/56b0566e2d1a6ba582b7d4c09968ddc9">Sample Solution</a></p>
+<a class="header" href="#extend-your-capsule-to-print-hello-world-every-second" id="extend-your-capsule-to-print-hello-world-every-second"><h2>Extend your capsule to print &quot;Hello World&quot; every second</h2></a>
+<p>In order for your capsule to keep track of time, it will need to depend on
+another capsule that implements the Alarm interface. We'll have to do something
+similar for reading the accelerometer, so this is good practice.</p>
+<p>The Alarm HIL includes several traits, <code>Alarm</code>, <code>Client</code>, and <code>Frequency</code>,
+all in the <code>kernel::hil::time</code> module. You'll use the <code>set_alarm</code> and <code>now</code>
+methods from the <code>Alarm</code> trait to set an alarm for a particular value of the
+clock. The <code>Alarm</code> trait also has an associated type that implements the
+<code>Frequency</code> trait which lets us call its <code>frequency</code> method to get the clock
+frequency.</p>
+<p>Modify your capsule to have a field of the type <code>&amp;'a Alarm</code> and to accept an
+<code>&amp;'a Alarm</code> in the <code>new</code> function.</p>
+<p>Your capsule will also need to implement the <code>Client</code> trait so it can
+receive alarm events. The <code>Client</code> trait has a single method:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+fn fired(&amp;self)
+#}</code></pre></pre>
+<p>Your capsule should now set an alarm in the <code>start</code> method, print the debug
+message and set an alarm again when the alarm fires.</p>
+<p>Finally, you'll need to modify the capsule initialization to pass in an alarm
+implementation. Since lots of other capsules use the alarm, you should use a
+virtual alarm. You can make a new one like this:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+let my_virtual_alarm = static_init!(
+    VirtualMuxAlarm&lt;'static, sam4l::ast::Ast&gt;,
+    VirtualMuxAlarm::new(mux_alarm));
+#}</code></pre></pre>
+<p>and you have to make sure to set your capsule as the client of the virtual alarm after initializing it:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+my_virtual_alarm.set_client(my_capsule);
+#}</code></pre></pre>
+<p>Compile and program your new kernel:</p>
+<pre><code class="language-bash">$ make program
+$ tockloader listen
+No device name specified. Using default &quot;tock&quot;                                                                         Using &quot;/dev/ttyUSB0 - Imix IoT Module - TockOS&quot;
+Listening for serial output.
+TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.rs:31: Hello World
+TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.rs:31: Hello World
+TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.rs:31: Hello World
+TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.rs:31: Hello World
+</code></pre>
+<p><a href="https://gist.github.com/alevy/73fca7b0dddcb5449088cebcbfc035f1">Sample Solution</a></p>
+<a class="header" href="#extend-your-capsule-to-sample-the-accelerometer-once-a-second" id="extend-your-capsule-to-sample-the-accelerometer-once-a-second"><h2>Extend your capsule to sample the accelerometer once a second</h2></a>
+<p>The steps for reading an accelerometer from your capsule are similar to using
+the alarm. You'll use a capsule that implements the NineDof (nine degrees of
+freedom) HIL, which includes the <code>NineDof</code> and <code>NineDofClient</code> traits, both in
+<code>kernel::hil::sensors</code>.</p>
+<p>The <code>NineDof</code> trait includes the method <code>read_accelerometer</code> which initiates an
+accelerometer reading. The <code>NineDofClient</code> trait has a single method for receiving readings:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+fn callback(&amp;self, x: usize, y: usize, z: usize);
+#}</code></pre></pre>
+<p>However, unlike the alarm, there is no virtualization layer for the <code>NineDof</code>
+HIL (yet!) and there is already a driver used in Imix that exposes the 9dof
+sensor to userland. Fortunately, we can just remove it for our purposes.</p>
+<p>Remove the <code>ninedof</code> field from the <code>Imix</code> struct definition:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+ninedof: &amp;'static capsules::ninedof::NineDof&lt;'static&gt;,
+#}</code></pre></pre>
+<p>and initialization:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+ninedof: ninedof,
+#}</code></pre></pre>
+<p>Remove <code>ninedof</code> from the system call lookup table in <code>with_driver</code>:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+11 =&gt; f(Some(self.ninedof)), // Comment this out
+#}</code></pre></pre>
+<p>And, finally, remove the initialization of <code>ninedof</code> from the boot sequence:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+let ninedof = static_init!(
+    capsules::ninedof::NineDof&lt;'static&gt;,
+    capsules::ninedof::NineDof::new(fxos8700, kernel::Container::create()));
+hil::ninedof::NineDof::set_client(fxos8700, ninedof);
+#}</code></pre></pre>
+<p>Follow the same steps you did for adding an alarm to your capsule for the 9dof
+sensor capsule:</p>
+<ol>
+<li>
+<p>Add a <code>&amp;'a NineDof</code> field.</p>
+</li>
+<li>
+<p>Accept one in the <code>new</code> function.</p>
+</li>
+<li>
+<p>Implement the <code>NineDofClient</code> trait.</p>
+</li>
+</ol>
+<p>Now, modify the Imix boot sequence passing in the <code>fxos8700</code> capsule, which
+implements the <code>NineDof</code> trait, to your capsule (it should already be
+initialized). Make sure to set your capsule as its client:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+{
+  use hil::ninedof::NineDof;
+  fxos8700.set_client(my_capsule);
+}
+#}</code></pre></pre>
+<p>Finally, implement logic to initiate a accelerometer reading every second and
+report the results.</p>
+<p><img src="rustconf.png" alt="Structure of rustconf capsule" /></p>
+<p>Compile and program your kernel:</p>
+<pre><code class="language-bash">$ make program
+$ tockloader listen
+No device name specified. Using default &quot;tock&quot;                                                                         Using &quot;/dev/ttyUSB0 - Imix IoT Module - TockOS&quot;
+Listening for serial output.
+TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.rs:31: 982 33 166
+TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.rs:31: 988 31 158
+</code></pre>
+<p><a href="https://gist.github.com/alevy/798d11dbfa5409e0aa56d870b4b7afcf">Sample solution</a></p>
+<a class="header" href="#some-further-questions-and-directions-to-explore" id="some-further-questions-and-directions-to-explore"><h2>Some further questions and directions to explore</h2></a>
+<p>Your capsule used the fxos8700 and virtual alarm. Take a look at the
+code behind each of these services:</p>
+<ol>
+<li>
+<p>Is the 9DOF sensor on-chip or a separate chip connected over a bus?</p>
+</li>
+<li>
+<p>What happens if you request two 9DOF sensors (e.g., accelerometer and magnetometer)</p>
+<p>back-to-back?</p>
+</li>
+<li>
+<p>Is there a limit on how many virtual alarms can be created?</p>
+</li>
+<li>
+<p>How many virtual alarms does the imix boot sequence create?</p>
+</li>
+</ol>
+<a class="header" href="#extra-credit-write-a-virtualization-capsule-for-9dof-" id="extra-credit-write-a-virtualization-capsule-for-9dof-"><h3><strong>Extra credit</strong>: Write a virtualization capsule for 9dof (∞)</h3></a>
+<p>Remember how you had to remove the userspace facing <code>ninedof</code> driver from imix
+in order to use the accelerometer in your capsule? That was a bummer...</p>
+<p>If you have extra time, try writing a virtualization capsule for the <code>NineDof</code>
+HIL that will allow multiple clients to use it. This is a fairly open ended
+task, but you might find inspiration in the <code>virtua_alarm</code> and <code>virtual_i2c</code>
+capsules.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="application.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="application.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
