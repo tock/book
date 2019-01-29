@@ -1,0 +1,409 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Environment - Tock Tutorial</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <base href="">
+
+        <link rel="stylesheet" href="book.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <link rel="shortcut icon" href="favicon.png">
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+
+    </head>
+    <body class="light">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li><a href="prerequisites.html"><strong aria-hidden="true">1.</strong> Prerequisites</a></li><li><ol class="section"><li><a href="prerequisites/hardware.html"><strong aria-hidden="true">1.1.</strong> Hardware</a></li><li><a href="prerequisites/software.html"><strong aria-hidden="true">1.2.</strong> Software</a></li></ol></li><li><a href="environment.html" class="active"><strong aria-hidden="true">2.</strong> Environment</a></li><li><a href="application.html"><strong aria-hidden="true">3.</strong> Application</a></li><li><a href="capsule.html"><strong aria-hidden="true">4.</strong> Capsule</a></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Tock Tutorial</h1> 
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="environment.html#environment" id="environment"><h1>Environment</h1></a>
+<p>The goal of this part of the course is to make sure you have a working
+development environment for Tock.</p>
+<p>During this portion of the course you will:</p>
+<ul>
+<li>Get a high-level overview of how Tock works.</li>
+<li>Learn how to compile and flash the kernel onto an Imix board.</li>
+</ul>
+<a class="header" href="environment.html#tocks-goals-architecture-and-components" id="tocks-goals-architecture-and-components"><h2>Tock's goals, architecture and components</h2></a>
+<p><img src="imgs/architecture.png" alt="" /></p>
+<p>A key contribution of Tock is that it uses Rust's borrow checker as a
+language sandbox for isolation and a cooperative scheduling model for
+concurrency in the kernel.  As a result, for the kernel isolation is
+(more or less) free in terms of resource consumption at the expense of
+preemptive scheduling (so a malicious component could block the system by,
+e.g., spinning in an infinite loop).</p>
+<p>Tock includes three architectural components:</p>
+<ul>
+<li>A small trusted <em>core kernel</em>, written in Rust, that implements a hardware
+abstraction layer (HAL), scheduler, and platform-specific configuration.</li>
+<li><em>Capsules</em>, which are compiled with the kernel and use Rust's type and
+module systems for safety.</li>
+<li><em>Processes</em>, which use the memory protection unit (MPU) for protection at runtime.</li>
+</ul>
+<p>Read the Tock documentation for more details on its
+<a href="https://github.com/tock/tock/blob/master/doc/Design.md">design</a>.</p>
+<p><a href="presentation/presentation.pdf"><em>Presentation slides are available here.</em></a></p>
+<a class="header" href="environment.html#check-your-understanding" id="check-your-understanding"><h3>Check your understanding</h3></a>
+<ol>
+<li>
+<p>What kinds of binaries exist on a Tock board? Hint: There are three, and
+only two can be programmed using <code>tockloader</code>.</p>
+</li>
+<li>
+<p>What are the differences between capsules and processes? What performance
+and memory overhead does each entail? Why would you choose to write
+something as a process instead of a capsule and vice versa?</p>
+</li>
+<li>
+<p>Clearly, the core kernel should never enter an infinite loop. But is it
+acceptable for a process to spin? What about a capsule?</p>
+</li>
+</ol>
+<a class="header" href="environment.html#compile-and-program-the-kernel" id="compile-and-program-the-kernel"><h2>Compile and program the kernel</h2></a>
+<a class="header" href="environment.html#make-sure-your-tock-repository-is-up-to-date" id="make-sure-your-tock-repository-is-up-to-date"><h3>Make sure your Tock repository is up to date</h3></a>
+<pre><code>$ git pull
+</code></pre>
+<a class="header" href="environment.html#build-the-kernel" id="build-the-kernel"><h3>Build the kernel</h3></a>
+<p>To build the kernel, just type make in <code>boards/imix/</code>.</p>
+<pre><code>$ cd boards/imix/
+$ make
+</code></pre>
+<p>If this is the first time you are trying to make the kernel, the build system
+will use cargo and rustup to install various Tock dependencies.</p>
+<p>Kernels must be compiled from within the desired board's folder. For example, to
+compile for Hail instead you must first run <code>cd boards/hail/</code>.</p>
+<a class="header" href="environment.html#connect-to-an-imix-board" id="connect-to-an-imix-board"><h3>Connect to an imix board</h3></a>
+<blockquote>
+<a class="header" href="environment.html#one-time-fixups" id="one-time-fixups"><h4>One-Time Fixups</h4></a>
+<ul>
+<li>
+<p>On Linux, you might need to give your user access to the imix's serial port.
+If you are using the VM, this is already done for you.
+You can do this by adding a udev rule:</p>
+<pre><code>$ sudo bash -c &quot;echo 'ATTRS{idVendor}==\&quot;0403\&quot;, ATTRS{idProduct}==\&quot;6015\&quot;, MODE=\&quot;0666\&quot;' &gt; /etc/udev/rules.d/99-imix&quot;
+</code></pre>
+<p>Afterwards, detach and re-attach the imix to reload the rule.</p>
+</li>
+<li>
+<p>With the virtual machine, you might need to attach the USB device to the
+VM. To do so, after plugging in imix, select in the VirtualBox/VMWare menu bar:</p>
+<pre><code>Devices -&gt; USB Devices -&gt; imix IoT Module - TockOS
+</code></pre>
+<p>If this generates an error, often unplugging/replugging fixes it. You can also
+create a rule in the VM USB settings which will auto-attach the imix to the VM.</p>
+</li>
+</ul>
+</blockquote>
+<p>To connect your development machine to the imix, connect them with a micro-USB
+cable. Any cable will do, but notice that there are two USB ports on the imix.
+Make sure you connect to the micro-USB port labeled 'debug' on the imix. The
+imix should come with <code>blink</code> and <code>c_hello</code> installed, which will blink the
+status LED and print <code>Hello World</code> on boot respectively.</p>
+<p>The imix board should appear as a regular serial device (e.g.
+<code>/dev/tty.usbserial-c098e5130006</code> on my Mac and <code>/dev/ttyUSB0</code> on my Linux box).
+While you can connect with any standard serial program (set to 115200 baud),
+tockloader makes this easier. Tockloader can read attributes from connected
+serial devices, and will automatically find your connected imix. Simply run:</p>
+<pre><code>$ tockloader listen
+No device name specified. Using default &quot;tock&quot;
+Using &quot;/dev/ttyUSB0 - Imix - TockOS&quot;
+
+Listening for serial output.
+Initialization complete. Entering main loop
+Hello World!
+</code></pre>
+<a class="header" href="environment.html#flash-the-kernel" id="flash-the-kernel"><h3>Flash the kernel</h3></a>
+<p>Now that the imix board is connected and you have verified that the kernel
+compiles, we can flash the imix board with the latest Tock kernel:</p>
+<pre><code>$ cd boards/imix/
+$ make program
+</code></pre>
+<p>This command will compile the kernel if needed, and then use <code>tockloader</code> to
+flash it onto the imix. When the flash command succeeds, the <code>blink</code> and
+<code>c_hello</code> apps should still be running and the LED will be blinking.
+You now have the bleeding-edge Tock kernel running on your imix board!</p>
+<a class="header" href="environment.html#clear-out-the-applications-and-re-flash-the-test-app" id="clear-out-the-applications-and-re-flash-the-test-app"><h3>Clear out the applications and re-flash the test app.</h3></a>
+<p>Lets check what's on the board right now:</p>
+<pre><code>$ tockloader list
+...
+[App 0]
+  Name:                  blink
+  Enabled:               True
+  Sticky:                False
+  Total Size in Flash:   2048 bytes
+
+[App 1]
+  Name:                  c_hello
+  Enabled:               True
+  Sticky:                False
+  Total Size in Flash:   1024 bytes
+</code></pre>
+<p>As you can see, the old apps are still installed on the board.
+This also nicely demonstrates that user applications are isolated from the
+kernel: it is possible to update one independently of the other.
+We can remove apps with the following command:</p>
+<pre><code>$ tockloader uninstall
+</code></pre>
+<p>Following the prompt, if you remove the <code>blink</code> app, the LED will stop
+blinking, however the console will still print <code>Hello World</code>.</p>
+<p>Now let's try adding a more interesting app:</p>
+<pre><code>$ cd libtock-c/examples/sensors/
+$ make program
+</code></pre>
+<p>The <code>sensors</code> app will automatically discover all available sensors,
+sample them once a second, and print the results.</p>
+<pre><code>Listening for serial output.
+Starting process console
+Initialization complete. Entering main loop
+[Sensors] Starting Sensors App.
+Hello World!
+[Sensors] All available sensors on the platform will be sampled.
+ISL29035:   Light Intensity: 453
+Temperature:                 24 deg C
+Humidity:                    63%
+
+ISL29035:   Light Intensity: 453
+Temperature:                 24 deg C
+Humidity:                    63%
+</code></pre>
+<a class="header" href="environment.html#familiarize-yourself-with-tockloader-commands" id="familiarize-yourself-with-tockloader-commands"><h2>Familiarize yourself with <code>tockloader</code> commands</h2></a>
+<p>The <code>tockloader</code> tool is a useful and versatile tool for managing and installing
+applications on Tock. It supports a number of commands, and a more complete
+list can be found in the tockloader repository, located at
+<a href="https://github.com/tock/tockloader#usage">github.com/tock/tockloader</a>.
+Below is a list of the more useful and important commands for programming and
+querying a board.</p>
+<a class="header" href="environment.html#tockloader-install" id="tockloader-install"><h3><code>tockloader install</code></h3></a>
+<p>This is the main tockloader command, used to load Tock applications onto a
+board.
+By default, <code>tockloader install</code> adds the new application, but does not erase
+any others, replacing any already existing application with the same name.
+Use the <code>--no-replace</code> flag to install multiple copies of the same app.
+In order to install an app, navigate to the correct directory, make the program,
+then issue the install command:</p>
+<pre><code>$ cd libtock-c/examples/blink
+$ make
+$ tockloader install
+</code></pre>
+<blockquote>
+<p><em>Tip:</em> You can add the <code>--make</code> flag to have tockloader automatically
+run make before installing, i.e. <code>tockloader install --make</code></p>
+</blockquote>
+<blockquote>
+<p><em>Tip:</em> You can add the <code>--erase</code> flag to have tockloader automatically
+remove other applications when installing a new one.</p>
+</blockquote>
+<a class="header" href="environment.html#tockloader-uninstall-application-names" id="tockloader-uninstall-application-names"><h3><code>tockloader uninstall [application name(s)]</code></h3></a>
+<p>Removes one or more applications from the board by name.</p>
+<a class="header" href="environment.html#tockloader-erase-apps" id="tockloader-erase-apps"><h3><code>tockloader erase-apps</code></h3></a>
+<p>Removes all applications from the board.</p>
+<a class="header" href="environment.html#tockloader-list" id="tockloader-list"><h3><code>tockloader list</code></h3></a>
+<p>Prints basic information about the apps currently loaded onto the board.</p>
+<a class="header" href="environment.html#tockloader-info" id="tockloader-info"><h3><code>tockloader info</code></h3></a>
+<p>Shows all properties of the board, including information about currently
+loaded applications, their sizes and versions, and any set attributes.</p>
+<a class="header" href="environment.html#tockloader-listen" id="tockloader-listen"><h3><code>tockloader listen</code></h3></a>
+<p>This command prints output from Tock apps to the terminal. It listens via UART,
+and will print out anything written to stdout/stderr from a board.</p>
+<blockquote>
+<p><em>Tip:</em> As a long-running command, <code>listen</code> interacts with other tockloader
+sessions. You can leave a terminal window open and listening. If another
+tockloader process needs access to the board (e.g. to install an app update),
+tockloader will automatically pause and resume listening.</p>
+</blockquote>
+<a class="header" href="environment.html#tockloader-flash" id="tockloader-flash"><h3><code>tockloader flash</code></h3></a>
+<p>Loads binaries onto hardware platforms that are running a compatible bootloader.
+This is used by the Tock Make system when kernel binaries are programmed to the
+board with <code>make program</code>.</p>
+<a class="header" href="environment.html#explore-other-example-applications" id="explore-other-example-applications"><h2>Explore other example applications</h2></a>
+<p>Other applications can be found in the <code>libtock-c/examples/</code> directory. Try
+loading them on your imix and then try modifying them. By default, <code>tockloader install</code> adds the new application, but does not erase any others. Be aware, not
+all applications will work well together if they need the same resources (Tock
+is in active development to add virtualization to all resources to remove this
+issue!).</p>
+<p><strong>Note:</strong> By default, the imix platform is limited to only running four
+concurrent processes at once. Tockloader is (currently) unaware of this
+limitation, and will allow to you to load additional apps. However the kernel
+will only load the first four apps. One option for the free-form section at the
+end of the tutorial will be to explore this limitation and allow more apps.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="prerequisites/software.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="application.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="prerequisites/software.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="application.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="searchindex.js" type="text/javascript" charset="utf-8"></script>
+        
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

@@ -1,0 +1,353 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Application - Tock Tutorial</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <base href="">
+
+        <link rel="stylesheet" href="book.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <link rel="shortcut icon" href="favicon.png">
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+
+    </head>
+    <body class="light">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li><a href="prerequisites.html"><strong aria-hidden="true">1.</strong> Prerequisites</a></li><li><ol class="section"><li><a href="prerequisites/hardware.html"><strong aria-hidden="true">1.1.</strong> Hardware</a></li><li><a href="prerequisites/software.html"><strong aria-hidden="true">1.2.</strong> Software</a></li></ol></li><li><a href="environment.html"><strong aria-hidden="true">2.</strong> Environment</a></li><li><a href="application.html" class="active"><strong aria-hidden="true">3.</strong> Application</a></li><li><a href="capsule.html"><strong aria-hidden="true">4.</strong> Capsule</a></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Tock Tutorial</h1> 
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="application.html#write-an-environment-sensing-application" id="write-an-environment-sensing-application"><h1>Write an environment sensing application</h1></a>
+<a class="header" href="application.html#process-overview-relocation-model-and-system-call-api" id="process-overview-relocation-model-and-system-call-api"><h2>Process overview, relocation model and system call API</h2></a>
+<p>In this section, we're going to learn about processes (a.k.a applications) in
+Tock, and build our own applications in C.</p>
+<a class="header" href="application.html#check-your-understanding" id="check-your-understanding"><h3>Check your understanding</h3></a>
+<ol>
+<li>
+<p>How does a process perform a blocking operation? Can you draw the flow of
+operations when a process calls <code>delay_ms(1000)</code>?</p>
+</li>
+<li>
+<p>How would you write an IPC service to print to the console? Which functions
+would the client need to call?</p>
+</li>
+</ol>
+<a class="header" href="application.html#get-a-c-application-running-on-your-board" id="get-a-c-application-running-on-your-board"><h2>Get a C application running on your board</h2></a>
+<p>You'll find the outline of a C application in the directory
+<code>docs/courses/sensys/exercises/app</code>.</p>
+<p>Take a look at the code in <code>main.c</code>. So far, this application merely prints
+&quot;Hello, World!&quot;.</p>
+<p>The code uses the standard C library routine <code>printf</code> to compose a message
+using a format string and print it to the console. Let's break down what the
+code layers are here:</p>
+<ol>
+<li>
+<p><code>printf</code> is provided by the C standard library (implemented by
+<a href="https://sourceware.org/newlib/">newlib</a>). It takes the format string and
+arguments, and generates an output string from them. To actually write the
+string to standard out, <code>printf</code> calls <code>_write</code>.</p>
+</li>
+<li>
+<p><code>_write</code> (in <code>userland/libtock/sys.c</code>) is a wrapper for actually writing to
+output streams (in this case, standard out a.k.a. the console). It calls
+the Tock-specific console writing function <code>putnstr</code>.</p>
+</li>
+<li>
+<p><code>putnstr</code>(in <code>userland/libtock/console.c</code>) buffers data to be written, calls
+<code>putnstr_async</code>, and acts as a synchronous wrapper, yielding until the
+operation is complete.</p>
+</li>
+<li>
+<p><code>putnstr_async</code> (in <code>userland/libtock/console.c</code>) finally performs the
+actual system calls, calling to <code>allow</code>, <code>subscribe</code>, and <code>command</code> to
+enable the kernel to access the buffer, request a callback when the write is
+complete, and begin the write operation respectively.</p>
+</li>
+</ol>
+<p>The application could accomplish all of this by invoking Tock system calls
+directly, but using libraries makes for a much cleaner interface and allows
+users to not need to know the inner workings of the OS.</p>
+<a class="header" href="application.html#loading-an-application" id="loading-an-application"><h3>Loading an application</h3></a>
+<p>Okay, let's build and load this simple program.</p>
+<ol>
+<li>
+<p>Erase all other applications from the development board:</p>
+<pre><code> $ tockloader erase-apps
+</code></pre>
+</li>
+<li>
+<p>Build this application:</p>
+<pre><code> $ make
+</code></pre>
+</li>
+<li>
+<p>Load the application (Note: <code>tockloader install</code> automatically searches the
+current working directory and its subdirectories for Tock binaries.)</p>
+<pre><code> $ tockloader install
+</code></pre>
+</li>
+<li>
+<p>Check that it worked:</p>
+<pre><code> $ tockloader listen
+</code></pre>
+</li>
+</ol>
+<p>The output should look something like:</p>
+<pre><code>$ tockloader listen
+No device name specified. Using default &quot;tock&quot;
+Using &quot;/dev/cu.usbserial-c098e5130012 - Hail IoT Module - TockOS&quot;
+
+Listening for serial output.
+Hello, World!
+</code></pre>
+<a class="header" href="application.html#creating-your-own-application" id="creating-your-own-application"><h2>Creating your own application</h2></a>
+<p>Now that you've got a basic app working, modify it so that it continuously
+prints out <code>Hello World</code> twice per second.  You'll want to use the user
+library's timer facilities to manage this:</p>
+<a class="header" href="application.html#timer" id="timer"><h3>Timer</h3></a>
+<p>You'll find the interface for timers in <code>userland/libtock/timer.h</code>. The
+function you'll find useful today is:</p>
+<pre><code class="language-c">#include &lt;timer.h&gt;
+void delay_ms(uint32_t ms);
+</code></pre>
+<p>This function sleeps until the specified number of milliseconds have passed, and
+then returns.  So we call this function &quot;synchronous&quot;: no further code will run
+until the delay is complete.</p>
+<a class="header" href="application.html#write-an-app-that-periodically-samples-the-on-board-sensors" id="write-an-app-that-periodically-samples-the-on-board-sensors"><h2>Write an app that periodically samples the on-board sensors</h2></a>
+<p>Now that we have the ability to write applications, let's do something a little
+more complex. The development board you are using has several sensors on it.
+These sensors include a light sensor, a humidity sensor, and a temperature
+sensor. Each sensing medium can be accessed separately via the Tock user
+library. We'll just be using the light, temperature, and humidity measurements
+for today's tutorial.</p>
+<a class="header" href="application.html#light" id="light"><h4>Light</h4></a>
+<p>The interface in <code>userland/libtock/ambient_light.h</code> is used to measure ambient
+light conditions in <a href="https://en.wikipedia.org/wiki/Lux">lux</a>. imix uses the
+<a href="https://www.intersil.com/en/products/optoelectronics/ambient-light-sensors/light-to-digital-sensors/ISL29035.html">ISL29035</a>
+sensor, but the userland library is abstracted from the details of particular
+sensors.  It contains the function:</p>
+<pre><code class="language-c">#include &lt;ambient_light.h&gt;
+int ambient_light_read_intensity_sync(int* lux);
+</code></pre>
+<p>Note that the light reading is written to the location passed as an
+argument, and the function returns non-zero in the case of an error.</p>
+<a class="header" href="application.html#temperature" id="temperature"><h4>Temperature</h4></a>
+<p>The interface in <code>userland/libtock/temperature.h</code> is used to measure ambient
+temperature in degrees Celsius, times 100. imix uses the
+<a href="https://www.silabs.com/products/sensors/humidity-sensors/Pages/si7013-20-21.aspx">SI7021</a>
+sensor. It contains the function:</p>
+<pre><code class="language-c">#include &lt;temperature.h&gt;
+int temperature_read_sync(int* temperature);
+</code></pre>
+<p>Again, this function returns non-zero in the case of an error.</p>
+<a class="header" href="application.html#humidity" id="humidity"><h4>Humidity</h4></a>
+<p>The interface in <code>userland/libtock/humidity.h</code> is used to measure the ambient
+<a href="https://en.wikipedia.org/wiki/Relative_humidity">relative humidity</a> in
+percent, times 100. It contains the function:</p>
+<pre><code class="language-c">#include &lt;humidity.h&gt;
+int humidity_read_sync (unsigned* humi);
+</code></pre>
+<p>Again, this function returns non-zero in the case of an error.</p>
+<a class="header" href="application.html#read-sensors-in-a-tock-application" id="read-sensors-in-a-tock-application"><h3>Read sensors in a Tock application</h3></a>
+<p>Using the example program you're working on, write an application that reads
+all of the sensors on your development board and reports their readings over
+the serial port.</p>
+<p>As a bonus, experiment with toggling an LED when readings are above or below a
+certain threshold:</p>
+<a class="header" href="application.html#led" id="led"><h4>LED</h4></a>
+<p>The interface in <code>userland/libtock/led.h</code> is used to control lights on Tock boards. On the Hail
+board, there are three LEDs which can be controlled: Red, Blue, and Green. The
+functions in the LED module are:</p>
+<pre><code class="language-c">#include &lt;led.h&gt;
+int led_count(void);
+</code></pre>
+<p>Which returns the number of LEDs available on the board.</p>
+<pre><code class="language-c">int led_on(int led_num);
+</code></pre>
+<p>Which turns an LED on, accessed by its number.</p>
+<pre><code class="language-c">int led_off(int led_num);
+</code></pre>
+<p>Which turns an LED off, accessed by its number.</p>
+<pre><code class="language-c">int led_toggle(int led_num);
+</code></pre>
+<p>Which toggles the state of an LED, accessed by its number.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="environment.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="capsule.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="environment.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="capsule.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="searchindex.js" type="text/javascript" charset="utf-8"></script>
+        
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
