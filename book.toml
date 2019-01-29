@@ -3,5 +3,3 @@ authors = ["Amit Levy"]
 multilingual = false
 src = "src"
 title = "Tock Tutorial"
-[output.html]
-theme = "src/theme"
