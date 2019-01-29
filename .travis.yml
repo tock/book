@@ -22,4 +22,4 @@ deploy:
   local-dir: .
   keep-history: false
   on:
-    branch: deploy
+    branch: master
