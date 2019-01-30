@@ -1,0 +1,10 @@
+[target.thumbv7em-none-eabi]
+linker = "rust-lld"
+
+[build]
+target = "thumbv7em-none-eabi"
+rustflags = [
+  "-C", "link-arg=-Tlayout.ld",
+  "-C", "relocation-model=dynamic-no-pic",
+  "-C", "link-arg=-zmax-page-size=512"
+]
