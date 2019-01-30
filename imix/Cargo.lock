@@ -37,6 +37,7 @@ dependencies = [
  "cortexm4 0.1.0 (git+git://github.com/tock/tock)",
  "kernel 0.1.0 (git+git://github.com/tock/tock)",
  "sam4l 0.1.0 (git+git://github.com/tock/tock)",
+ "tutorial 0.1.0",
 ]
 
 [[package]]
@@ -72,6 +73,13 @@ source = "git+git://github.com/tock/tock#60fb458537b060ff96e5d07bb7d52ed2259f6b8
 name = "tock_rt0"
 version = "0.1.0"
 source = "git+git://github.com/tock/tock#60fb458537b060ff96e5d07bb7d52ed2259f6b8d"
+
+[[package]]
+name = "tutorial"
+version = "0.1.0"
+dependencies = [
+ "kernel 0.1.0 (git+git://github.com/tock/tock)",
+]
 
 [metadata]
 "checksum capsules 0.1.0 (git+git://github.com/tock/tock)" = "<none>"

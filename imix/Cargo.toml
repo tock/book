@@ -22,3 +22,4 @@ cortexm4 = { git = "git://github.com/tock/tock" }
 capsules = { git = "git://github.com/tock/tock" }
 kernel = { git = "git://github.com/tock/tock" }
 sam4l = { git = "git://github.com/tock/tock" }
+tutorial = { path = "../excercises/capsule" }

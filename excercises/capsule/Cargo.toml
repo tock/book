@@ -1,0 +1,10 @@
+[package]
+name = "tutorial"
+version = "0.1.0"
+authors = ["Tock Project Developers <tock-dev@googlegroups.com>"]
+
+[dependencies]
+kernel = { git = "git://github.com/tock/tock" }
+
+[lib]
+path = "src/tutorial.rs"

@@ -33,7 +33,6 @@ use components::analog_comparator::AcComponent;
 use components::button::ButtonComponent;
 use components::console::ConsoleComponent;
 use components::crc::CrcComponent;
-use components::fxos8700::NineDofComponent;
 use components::gpio::GpioComponent;
 use components::isl29035::AmbientLightComponent;
 use components::led::LedComponent;
@@ -43,7 +42,7 @@ use components::process_console::ProcessConsoleComponent;
 use components::radio::RadioComponent;
 use components::rf233::RF233Component;
 use components::rng::RngComponent;
-use components::si7021::{HumidityComponent, SI7021Component, TemperatureComponent};
+use components::si7021::{SI7021Component, TemperatureComponent};
 use components::spi::{SpiComponent, SpiSyscallComponent};
 use components::udp_6lowpan::UDPComponent;
 use components::usb::UsbComponent;
@@ -96,7 +95,6 @@ struct Imix {
     gpio: &'static capsules::gpio::GPIO<'static, sam4l::gpio::GPIOPin>,
     alarm: &'static AlarmDriver<'static, VirtualMuxAlarm<'static, sam4l::ast::Ast<'static>>>,
     temp: &'static capsules::temperature::TemperatureSensor<'static>,
-    humidity: &'static capsules::humidity::HumiditySensor<'static>,
     ambient_light: &'static capsules::ambient_light::AmbientLight<'static>,
     adc: &'static capsules::adc::Adc<'static, sam4l::adc::Adc>,
     led: &'static capsules::led::LED<'static, sam4l::gpio::GPIOPin>,
@@ -108,7 +106,6 @@ struct Imix {
     >,
     spi: &'static capsules::spi::Spi<'static, VirtualSpiMasterDevice<'static, sam4l::spi::SpiHw>>,
     ipc: kernel::ipc::IPC,
-    ninedof: &'static capsules::ninedof::NineDof<'static>,
     radio_driver: &'static capsules::ieee802154::RadioDriver<'static>,
     udp_driver: &'static capsules::net::udp::UDPDriver<'static>,
     crc: &'static capsules::crc::Crc<'static, sam4l::crccu::Crccu<'static>>,
@@ -149,8 +146,6 @@ impl kernel::Platform for Imix {
             capsules::analog_comparator::DRIVER_NUM => f(Some(self.analog_comparator)),
             capsules::ambient_light::DRIVER_NUM => f(Some(self.ambient_light)),
             capsules::temperature::DRIVER_NUM => f(Some(self.temp)),
-            capsules::humidity::DRIVER_NUM => f(Some(self.humidity)),
-            capsules::ninedof::DRIVER_NUM => f(Some(self.ninedof)),
             capsules::crc::DRIVER_NUM => f(Some(self.crc)),
             capsules::usb_user::DRIVER_NUM => f(Some(self.usb_driver)),
             capsules::ieee802154::DRIVER_NUM => f(Some(self.radio_driver)),
@@ -310,8 +305,6 @@ pub unsafe fn reset_handler() {
     let ambient_light = AmbientLightComponent::new(board_kernel, mux_i2c, mux_alarm).finalize();
     let si7021 = SI7021Component::new(mux_i2c, mux_alarm).finalize();
     let temp = TemperatureComponent::new(board_kernel, si7021).finalize();
-    let humidity = HumidityComponent::new(board_kernel, si7021).finalize();
-    let ninedof = NineDofComponent::new(board_kernel, mux_i2c, &sam4l::gpio::PC[13]).finalize();
 
     // SPI MUX, SPI syscall driver and RF233 radio
     let mux_spi = static_init!(
@@ -391,7 +384,6 @@ pub unsafe fn reset_handler() {
         alarm,
         gpio,
         temp,
-        humidity,
         ambient_light,
         adc,
         led,
@@ -401,7 +393,6 @@ pub unsafe fn reset_handler() {
         crc,
         spi: spi_syscalls,
         ipc: kernel::ipc::IPC::new(board_kernel, &grant_cap),
-        ninedof,
         radio_driver,
         udp_driver,
         usb_driver,
@@ -423,6 +414,9 @@ pub unsafe fn reset_handler() {
     imix.pconsole.start();
 
     debug!("Initialization complete. Entering main loop");
+    let tutorial = TutorialComponent::new(mux_alarm, si7021).finalize();
+    tutorial.start();
+
 
     extern "C" {
         /// Beginning of the ROM region containing app images.
@@ -439,4 +433,42 @@ pub unsafe fn reset_handler() {
     );
 
     board_kernel.kernel_loop(&imix, chip, Some(&imix.ipc), &main_cap);
+}
+
+
+struct TutorialComponent {
+    alarm_mux: &'static MuxAlarm<'static, sam4l::ast::Ast<'static>>,
+    si7021: &'static capsules::si7021::SI7021<'static, VirtualMuxAlarm<'static, sam4l::ast::Ast<'static>>>,
+}
+
+impl TutorialComponent {
+    pub fn new(
+        alarm: &'static MuxAlarm<'static, sam4l::ast::Ast<'static>>,
+        si: &'static capsules::si7021::SI7021<'static, VirtualMuxAlarm<'static, sam4l::ast::Ast<'static>>>,
+    ) -> TutorialComponent {
+        TutorialComponent {
+            alarm_mux: alarm,
+            si7021: si,
+        }
+    }
+}
+
+impl Component for TutorialComponent {
+    type Output = &'static tutorial::Tutorial<'static, VirtualMuxAlarm<'static, sam4l::ast::Ast<'static>>>;
+
+    unsafe fn finalize(&mut self) -> Self::Output {
+        let alarm = static_init!(
+            VirtualMuxAlarm<'static, sam4l::ast::Ast>,
+            VirtualMuxAlarm::new(self.alarm_mux)
+        );
+
+        let tutorial = static_init!(
+            tutorial::Tutorial<'static, VirtualMuxAlarm<'static, sam4l::ast::Ast>>,
+            tutorial::Tutorial::new(alarm, self.si7021)
+        );
+
+        hil::sensors::HumidityDriver::set_client(self.si7021, tutorial);
+        alarm.set_client(tutorial);
+        tutorial
+    }
 }

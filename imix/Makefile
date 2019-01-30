@@ -21,6 +21,7 @@ OBJCOPY   ?= $(TOOLCHAIN)-objcopy
 %.bin: %
 	$(OBJCOPY) --output-target=binary $^ $@
 
+.PHONY: target/$(TARGET)/release/$(PLATFORM)
 target/$(TARGET)/release/$(PLATFORM):
 	TOCK_KERNEL_VERSION=tutorial cargo build --release
 
