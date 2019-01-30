@@ -61,6 +61,10 @@ the following software:
 
         $ curl https://sh.rustup.rs -sSf | sh
 
+   and the Rust core libraries for the Cortex-M4:
+
+        $ rustup target add thumbv7em-none-eabi 
+
 1. [arm-none-eabi toolchain](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads) (version >= 5.2)
 
         $ brew tap ARMmbed/homebrew-formulae && brew update && brew install arm-none-eabi-gcc
