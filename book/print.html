@@ -153,7 +153,7 @@ enhance and extend the kernel.</p>
 It assumes no knowledge of Rust, although knowing Rust will allow you to be
 more creative during the kernel exploration at the end.</p>
 <a class="header" href="print.html#outline" id="outline"><h2>Outline</h2></a>
-<p>You should first make sure you have the <a href="prerequisites.html">requisitie</a>
+<p>You should first make sure you have the <a href="prerequisites.html">requisite</a>
 hardware and software to complete the guide.</p>
 <p>The guide is divided into sections, each with an brief introduction to
 introduce concepts, followed by hands-on excercises.</p>
@@ -294,7 +294,7 @@ development environment for Tock.</p>
 <li>Learn how to compile and flash the kernel onto an Imix board.</li>
 </ul>
 <a class="header" href="print.html#tocks-goals-architecture-and-components" id="tocks-goals-architecture-and-components"><h2>Tock's goals, architecture and components</h2></a>
-<p><img src="imgs/architecture.png" alt="" /></p>
+<p><img src="imgs/architecture.svg" alt="" /></p>
 <p>A key contribution of Tock is that it uses Rust's borrow checker as a
 language sandbox for isolation and a cooperative scheduling model for
 concurrency in the kernel.  As a result, for the kernel isolation is
@@ -324,8 +324,8 @@ and memory overhead does each entail? Why would you choose to write
 something as a process instead of a capsule and vice versa?</p>
 </li>
 <li>
-<p>Clearly, the core kernel should never enter an infinite loop. But is it
-acceptable for a process to spin? What about a capsule?</p>
+<p>What happens if the core kernel enters an infinite loop? What about a
+process? What about a capsules?</p>
 </li>
 </ol>
 <a class="header" href="print.html#compile-and-program-the-kernel" id="compile-and-program-the-kernel"><h2>Compile and program the kernel</h2></a>

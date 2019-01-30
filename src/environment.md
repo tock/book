@@ -10,7 +10,7 @@ During this portion of the course you will:
 
 ## Tock's goals, architecture and components
 
-![](imgs/architecture.png)
+![](imgs/architecture.svg)
 
 A key contribution of Tock is that it uses Rust's borrow checker as a
 language sandbox for isolation and a cooperative scheduling model for
@@ -41,8 +41,8 @@ Read the Tock documentation for more details on its
    and memory overhead does each entail? Why would you choose to write
    something as a process instead of a capsule and vice versa?
 
-3. Clearly, the core kernel should never enter an infinite loop. But is it
-   acceptable for a process to spin? What about a capsule?
+3. What happens if the core kernel enters an infinite loop? What about a
+   process? What about a capsules?
 
 ## Compile and program the kernel
 

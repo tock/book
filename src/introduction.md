@@ -23,7 +23,7 @@ more creative during the kernel exploration at the end.
 
 ## Outline
 
-You should first make sure you have the [requisitie](prerequisites.html)
+You should first make sure you have the [requisite](prerequisites.html)
 hardware and software to complete the guide.
 
 The guide is divided into sections, each with an brief introduction to
