@@ -69,7 +69,7 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li><a href="prerequisites.html"><strong aria-hidden="true">1.</strong> Prerequisites</a></li><li><ol class="section"><li><a href="prerequisites/hardware.html"><strong aria-hidden="true">1.1.</strong> Hardware</a></li><li><a href="prerequisites/software.html"><strong aria-hidden="true">1.2.</strong> Software</a></li></ol></li><li><a href="environment.html" class="active"><strong aria-hidden="true">2.</strong> Environment</a></li><li><a href="application.html"><strong aria-hidden="true">3.</strong> Application</a></li><li><a href="capsule.html"><strong aria-hidden="true">4.</strong> Capsule</a></li></ol>
+            <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li class="affix"><a href="prerequisites.html">Prerequisites</a></li><li><a href="environment.html" class="active"><strong aria-hidden="true">1.</strong> Environment</a></li><li><a href="application.html"><strong aria-hidden="true">2.</strong> Application</a></li><li><a href="capsule.html"><strong aria-hidden="true">3.</strong> Capsule</a></li></ol>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
@@ -349,7 +349,7 @@ end of the tutorial will be to explore this limitation and allow more apps.</p>
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="prerequisites/software.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="prerequisites.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
@@ -367,7 +367,7 @@ end of the tutorial will be to explore this limitation and allow more apps.</p>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a href="prerequisites/software.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a href="prerequisites.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
@@ -381,6 +381,21 @@ end of the tutorial will be to explore this limitation and allow more apps.</p>
 
         </div>
 
+        
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3001");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload(true); // force reload from server (not from cache)
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
         
 
         

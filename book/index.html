@@ -68,7 +68,7 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <ol class="chapter"><li class="affix"><a href="introduction.html" class="active">Introduction</a></li><li><a href="prerequisites.html"><strong aria-hidden="true">1.</strong> Prerequisites</a></li><li><ol class="section"><li><a href="prerequisites/hardware.html"><strong aria-hidden="true">1.1.</strong> Hardware</a></li><li><a href="prerequisites/software.html"><strong aria-hidden="true">1.2.</strong> Software</a></li></ol></li><li><a href="environment.html"><strong aria-hidden="true">2.</strong> Environment</a></li><li><a href="application.html"><strong aria-hidden="true">3.</strong> Application</a></li><li><a href="capsule.html"><strong aria-hidden="true">4.</strong> Capsule</a></li></ol>
+            <ol class="chapter"><li class="affix"><a href="introduction.html" class="active">Introduction</a></li><li class="affix"><a href="prerequisites.html">Prerequisites</a></li><li><a href="environment.html"><strong aria-hidden="true">1.</strong> Environment</a></li><li><a href="application.html"><strong aria-hidden="true">2.</strong> Application</a></li><li><a href="capsule.html"><strong aria-hidden="true">3.</strong> Capsule</a></li></ol>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
@@ -151,24 +151,22 @@ enhance and extend the kernel.</p>
 <p>This course assumes some experience programming embedded devices and fluency in C.
 It assumes no knowledge of Rust, although knowing Rust will allow you to be
 more creative during the kernel exploration at the end.</p>
-<a class="header" href="introduction.html#agenda" id="agenda"><h2>Agenda</h2></a>
-<p>The training is divided into three sections, each starting with a short
-presentation to introduce some concepts, followed by a practical exercise.</p>
+<a class="header" href="introduction.html#outline" id="outline"><h2>Outline</h2></a>
+<p>You should first make sure you have the <a href="prerequisites.html">requisitie</a>
+hardware and software to complete the guide.</p>
+<p>The guide is divided into sections, each with an brief introduction to
+introduce concepts, followed by hands-on excercises.</p>
 <ol>
 <li>
-<p><a href="environment.md">Environment Setup</a>: Get familiar with the Tock tools
+<p><a href="environment.html">Environment Setup</a>: Get familiar with the Tock tools
 and getting a board setup.</p>
 </li>
 <li>
-<p><a href="application.md">Userland programming</a>: write a basic sensing application in C.</p>
+<p><a href="application.html">Userland programming</a>: write a basic sensing application in C.</p>
 </li>
 <li>
-<p><a href="client.md">Deliver for the Client</a>: Help an important client get a
-new board setup.</p>
-</li>
-<li>
-<p><a href="freeform.md">Free-form Experimentation</a>: Open-ended exploration with
-support from the Tock team.</p>
+<p><a href="capsule.html">Kernel programming</a>: understand the kernel's boot sequence and
+write a simple driver in Rust.</p>
 </li>
 </ol>
 
@@ -201,6 +199,21 @@ support from the Tock team.</p>
 
         </div>
 
+        
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3001");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload(true); // force reload from server (not from cache)
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
         
 
         

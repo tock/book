@@ -21,19 +21,19 @@ This course assumes some experience programming embedded devices and fluency in 
 It assumes no knowledge of Rust, although knowing Rust will allow you to be
 more creative during the kernel exploration at the end.
 
-## Agenda
+## Outline
 
-The training is divided into three sections, each starting with a short
-presentation to introduce some concepts, followed by a practical exercise.
+You should first make sure you have the [requisitie](prerequisites.html)
+hardware and software to complete the guide.
 
-1. [Environment Setup](environment.md): Get familiar with the Tock tools
+The guide is divided into sections, each with an brief introduction to
+introduce concepts, followed by hands-on excercises.
+
+1. [Environment Setup](environment.html): Get familiar with the Tock tools
    and getting a board setup.
 
-2. [Userland programming](application.md): write a basic sensing application in C.
+2. [Userland programming](application.html): write a basic sensing application in C.
 
-3. [Deliver for the Client](client.md): Help an important client get a
-   new board setup.
-
-4. [Free-form Experimentation](freeform.md): Open-ended exploration with
-   support from the Tock team.
+3. [Kernel programming](capsule.html): understand the kernel's boot sequence and
+   write a simple driver in Rust.
 

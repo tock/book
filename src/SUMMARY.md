@@ -2,11 +2,7 @@
 
 [Introduction](./introduction.md)
 
-- [Prerequisites](./prerequisites.md)
-
-  - [Hardware](./prerequisites/hardware.md)
-
-  - [Software](./prerequisites/software.md)
+[Prerequisites](./prerequisites.md)
 
 - [Environment](./environment.md)
 

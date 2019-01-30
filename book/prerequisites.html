@@ -69,7 +69,7 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li><a href="prerequisites.html" class="active"><strong aria-hidden="true">1.</strong> Prerequisites</a></li><li><ol class="section"><li><a href="prerequisites/hardware.html"><strong aria-hidden="true">1.1.</strong> Hardware</a></li><li><a href="prerequisites/software.html"><strong aria-hidden="true">1.2.</strong> Software</a></li></ol></li><li><a href="environment.html"><strong aria-hidden="true">2.</strong> Environment</a></li><li><a href="application.html"><strong aria-hidden="true">3.</strong> Application</a></li><li><a href="capsule.html"><strong aria-hidden="true">4.</strong> Capsule</a></li></ol>
+            <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li class="affix"><a href="prerequisites.html" class="active">Prerequisites</a></li><li><a href="environment.html"><strong aria-hidden="true">1.</strong> Environment</a></li><li><a href="application.html"><strong aria-hidden="true">2.</strong> Application</a></li><li><a href="capsule.html"><strong aria-hidden="true">3.</strong> Capsule</a></li></ol>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
@@ -138,6 +138,116 @@
 out with possible problems you run into. You must ensure you have the proper
 hardware before you begin---an development board and a workstation---and
 software development environment.</p>
+<a class="header" href="prerequisites.html#hardware" id="hardware"><h2>Hardware</h2></a>
+<p>To complete the hands-on excercises in this guide, you'll need an <em>imix</em>
+hardware platform (pictured below), a workstation running either Linux or OS X
+(you can also work in a <a href="prerequisites.html#virtual-machine">Virtual
+Machine</a>), and a micro-USB cable
+to connect your imix to your workstation.</p>
+<p>To complete the 6LoWPAN networking portion of this guide, you'll need an
+additional <em>imix</em> to act as a hub, but multiple participants can use the same
+hub <em>imix</em>.</p>
+<p><img src="../imgs/imix-v2.1.png" alt="" /></p>
+<a class="header" href="prerequisites.html#software" id="software"><h2>Software</h2></a>
+<p>You can either download a <a href="prerequisites.html#virtual-machine">virtual machine</a> with all
+development environment pre-installed, or, if you have a Linux or OS X
+workstation, you may install the development environment
+<a href="prerequisites.html#native-installation">natively</a>. Using a virtual machine is quicker and easier
+to set up, while installing natively will yield the most comfortable
+development environment and is better for long term use.</p>
+<a class="header" href="prerequisites.html#virtual-machine" id="virtual-machine"><h3>Virtual Machine</h3></a>
+<p>If you're comfortable working inside a Debian virtual machine, you can download
+an image with all of the dependencies already installed
+<a href="http://www.scs.stanford.edu/%7Ealevy/Tock.ova">here</a></p>
+<ul>
+<li>VirtualBox users: <a href="https://docs.oracle.com/cd/E26217_01/E26796/html/qs-import-vm.html">File → Import Appliance...</a>,</li>
+<li>VMWare users: <a href="https://pubs.vmware.com/workstation-9/index.jsp?topic=%2Fcom.vmware.ws.using.doc%2FGUID-DDCBE9C0-0EC9-4D09-8042-18436DA62F7A.html">File → Open...</a></li>
+</ul>
+<p>The VM account is &quot;user&quot; with password &quot;user&quot;. Feel free to customize it with
+whichever editors, window managers, etc. you like before the training starts.</p>
+<blockquote>
+<p>If the Host OS is Linux, you may need to add your user to the <code>vboxusers</code>
+group on your machine in order to connect the hardware boards to the virtual
+machine.</p>
+</blockquote>
+<a class="header" href="prerequisites.html#native-installation" id="native-installation"><h3>Native Installation</h3></a>
+<p>If you choose to install the development environment natively, you will need
+the following software:</p>
+<ol>
+<li>
+<p>Command line utilities: curl, make, git</p>
+</li>
+<li>
+<p>Python 3 and pip3</p>
+</li>
+<li>
+<p>A local clone of the Tock repository</p>
+<pre><code> $ git clone https://github.com/tock/tock.git
+</code></pre>
+</li>
+<li>
+<p>A local clone of the Tock applications repository (for apps written in C)</p>
+<pre><code> $ git clone https://github.com/tock/libtock-c.git
+</code></pre>
+</li>
+<li>
+<p><a href="http://rustup.rs/">rustup</a>. This tool helps manage installations of the
+Rust compiler and related tools.</p>
+<pre><code> $ curl https://sh.rustup.rs -sSf | sh
+</code></pre>
+</li>
+<li>
+<p><a href="https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads">arm-none-eabi toolchain</a> (version &gt;= 5.2)</p>
+<p>OS-specific installation instructions can be found
+<a href="https://github.com/tock/tock/blob/master/doc/Getting_Started.md#arm-none-eabi-toolchain">here</a></p>
+</li>
+<li>
+<p><a href="https://github.com/tock/tockloader">tockloader</a></p>
+<pre><code> $ pip3 install -U --user tockloader
+</code></pre>
+<blockquote>
+<p>Note: On MacOS, you may need to add <code>tockloader</code> to your path. If you
+cannot run it after installation, run the following:</p>
+</blockquote>
+<pre><code> $ export PATH=$HOME/Library/Python/3.6/bin/:$PATH
+</code></pre>
+<blockquote>
+<p>Similarly, on Linux distributions, this will typically install to
+<code>$HOME/.local/bin</code>, and you may need to add that to your <code>$PATH</code> if not
+already present:</p>
+</blockquote>
+<pre><code> $ PATH=$HOME/.local/bin:$PATH
+</code></pre>
+</li>
+</ol>
+<a class="header" href="prerequisites.html#testing" id="testing"><h3>Testing</h3></a>
+<p>To test if your environment is working, go to the <code>tock/boards/imix</code> directory
+and type <code>make program</code>. This should compile the kernel for the default board,
+Imix, and try to program it over a USB serial connection. It may need to compile
+several supporting libraries first (so may take 30 seconds or so the first
+time). You should see output like this:</p>
+<pre><code>$ make flash
+   Compiling tock-registers v0.2.0 (file:///Users/bradjc/git/tock/libraries/tock-register-interface)
+   Compiling tock-cells v0.1.0 (file:///Users/bradjc/git/tock/libraries/tock-cells)
+   Compiling enum_primitive v0.1.0 (file:///Users/bradjc/git/tock/libraries/enum_primitive)
+   Compiling imix v0.1.0 (file:///Users/bradjc/git/tock/boards/imix)
+   Compiling kernel v0.1.0 (file:///Users/bradjc/git/tock/kernel)
+   Compiling cortexm v0.1.0 (file:///Users/bradjc/git/tock/arch/cortex-m)
+   Compiling capsules v0.1.0 (file:///Users/bradjc/git/tock/capsules)
+   Compiling cortexm4 v0.1.0 (file:///Users/bradjc/git/tock/arch/cortex-m4)
+   Compiling sam4l v0.1.0 (file:///Users/bradjc/git/tock/chips/sam4l)
+    Finished release [optimized + debuginfo] target(s) in 23.89s
+   text    data     bss     dec     hex filename
+ 148192    5988   34968  189148   2e2dc target/thumbv7em-none-eabi/release/imix
+tockloader  flash --address 0x10000 target/thumbv7em-none-eabi/release/imix.bin
+No device name specified. Using default &quot;tock&quot;
+No serial ports found. Is the board connected?
+
+make: *** [program] Error 1
+</code></pre>
+<p>That is, since you don't yet have a board plugged in it can't program it. But
+the above output indicates that it can compile correctly and invoke <code>tockloader</code>
+to program a board.</p>
 
                     </main>
 
@@ -150,7 +260,7 @@ software development environment.</p>
                         
 
                         
-                            <a rel="next" href="prerequisites/hardware.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="environment.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -168,7 +278,7 @@ software development environment.</p>
                 
 
                 
-                    <a href="prerequisites/hardware.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a href="environment.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 
@@ -176,6 +286,21 @@ software development environment.</p>
 
         </div>
 
+        
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3001");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload(true); // force reload from server (not from cache)
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
         
 
         
