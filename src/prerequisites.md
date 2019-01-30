@@ -9,15 +9,14 @@ software development environment.
 
 To complete the hands-on excercises in this guide, you'll need an _imix_
 hardware platform (pictured below), a workstation running either Linux or OS X
-(you can also work in a [Virtual
-Machine](#virtual-machine)), and a micro-USB cable
-to connect your imix to your workstation.
+(you can also work in a [Virtual Machine](#virtual-machine)), and a micro-USB
+cable to connect your imix to your workstation.
 
 To complete the 6LoWPAN networking portion of this guide, you'll need an
 additional _imix_ to act as a hub, but multiple participants can use the same
 hub _imix_.
 
-![](../imgs/imix-v2.1.png)
+![](../imgs/imix.svg)
 
 ## Software
 
@@ -32,12 +31,12 @@ development environment and is better for long term use.
 
 If you're comfortable working inside a Debian virtual machine, you can download
 an image with all of the dependencies already installed
-[here](http://www.scs.stanford.edu/~alevy/Tock.ova)
+[here](https://cesar.cs.princeton.edu/Tock.ova)
 
  * VirtualBox users: [File → Import Appliance...](https://docs.oracle.com/cd/E26217_01/E26796/html/qs-import-vm.html),
  * VMWare users: [File → Open...](https://pubs.vmware.com/workstation-9/index.jsp?topic=%2Fcom.vmware.ws.using.doc%2FGUID-DDCBE9C0-0EC9-4D09-8042-18436DA62F7A.html)
 
-The VM account is "user" with password "user". Feel free to customize it with
+The VM account is "tock" with password "tock". Feel free to customize it with
 whichever editors, window managers, etc. you like before the training starts.
 
 > If the Host OS is Linux, you may need to add your user to the `vboxusers`
@@ -53,13 +52,9 @@ the following software:
 
 1. Python 3 and pip3
 
-1. A local clone of the Tock repository
+1. A local clone of this book source, containing the excercises
 
-        $ git clone https://github.com/tock/tock.git
-
-1. A local clone of the Tock applications repository (for apps written in C)
-
-        $ git clone https://github.com/tock/libtock-c.git
+        $ git clone https://github.com/tock/book.git
 
 1. [rustup](http://rustup.rs/). This tool helps manage installations of the
    Rust compiler and related tools.
@@ -70,6 +65,10 @@ the following software:
 
    OS-specific installation instructions can be found
    [here](https://github.com/tock/tock/blob/master/doc/Getting_Started.md#arm-none-eabi-toolchain)
+
+1. [elf2tab](https://crates.io/crates/elf2tab/)
+
+        $ cargo install elf2tab
 
 1. [tockloader](https://github.com/tock/tockloader)
 
@@ -96,7 +95,7 @@ several supporting libraries first (so may take 30 seconds or so the first
 time). You should see output like this:
 
 ```
-$ make flash
+$ make program
    Compiling tock-registers v0.2.0 (file:///Users/bradjc/git/tock/libraries/tock-register-interface)
    Compiling tock-cells v0.1.0 (file:///Users/bradjc/git/tock/libraries/tock-cells)
    Compiling enum_primitive v0.1.0 (file:///Users/bradjc/git/tock/libraries/enum_primitive)

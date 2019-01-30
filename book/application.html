@@ -137,20 +137,9 @@
 <a class="header" href="application.html#process-overview-relocation-model-and-system-call-api" id="process-overview-relocation-model-and-system-call-api"><h2>Process overview, relocation model and system call API</h2></a>
 <p>In this section, we're going to learn about processes (a.k.a applications) in
 Tock, and build our own applications in C.</p>
-<a class="header" href="application.html#check-your-understanding" id="check-your-understanding"><h3>Check your understanding</h3></a>
-<ol>
-<li>
-<p>How does a process perform a blocking operation? Can you draw the flow of
-operations when a process calls <code>delay_ms(1000)</code>?</p>
-</li>
-<li>
-<p>How would you write an IPC service to print to the console? Which functions
-would the client need to call?</p>
-</li>
-</ol>
 <a class="header" href="application.html#get-a-c-application-running-on-your-board" id="get-a-c-application-running-on-your-board"><h2>Get a C application running on your board</h2></a>
 <p>You'll find the outline of a C application in the directory
-<code>docs/courses/sensys/exercises/app</code>.</p>
+<code>exercises/app</code>.</p>
 <p>Take a look at the code in <code>main.c</code>. So far, this application merely prints
 &quot;Hello, World!&quot;.</p>
 <p>The code uses the standard C library routine <code>printf</code> to compose a message
@@ -164,17 +153,17 @@ arguments, and generates an output string from them. To actually write the
 string to standard out, <code>printf</code> calls <code>_write</code>.</p>
 </li>
 <li>
-<p><code>_write</code> (in <code>userland/libtock/sys.c</code>) is a wrapper for actually writing to
+<p><code>_write</code> (in <code>libtock-c/libtock/sys.c</code>) is a wrapper for actually writing to
 output streams (in this case, standard out a.k.a. the console). It calls
 the Tock-specific console writing function <code>putnstr</code>.</p>
 </li>
 <li>
-<p><code>putnstr</code>(in <code>userland/libtock/console.c</code>) buffers data to be written, calls
+<p><code>putnstr</code>(in <code>libtock-c/libtock/console.c</code>) buffers data to be written, calls
 <code>putnstr_async</code>, and acts as a synchronous wrapper, yielding until the
 operation is complete.</p>
 </li>
 <li>
-<p><code>putnstr_async</code> (in <code>userland/libtock/console.c</code>) finally performs the
+<p><code>putnstr_async</code> (in <code>libtock-c/libtock/console.c</code>) finally performs the
 actual system calls, calling to <code>allow</code>, <code>subscribe</code>, and <code>command</code> to
 enable the kernel to access the buffer, request a callback when the write is
 complete, and begin the write operation respectively.</p>
@@ -192,14 +181,9 @@ users to not need to know the inner workings of the OS.</p>
 </code></pre>
 </li>
 <li>
-<p>Build this application:</p>
-<pre><code> $ make
-</code></pre>
-</li>
-<li>
-<p>Load the application (Note: <code>tockloader install</code> automatically searches the
+<p>Build the application and load it (Note: <code>tockloader install</code> automatically searches the
 current working directory and its subdirectories for Tock binaries.)</p>
-<pre><code> $ tockloader install
+<pre><code> $ tockloader install --make
 </code></pre>
 </li>
 <li>
@@ -221,7 +205,7 @@ Hello, World!
 prints out <code>Hello World</code> twice per second.  You'll want to use the user
 library's timer facilities to manage this:</p>
 <a class="header" href="application.html#timer" id="timer"><h3>Timer</h3></a>
-<p>You'll find the interface for timers in <code>userland/libtock/timer.h</code>. The
+<p>You'll find the interface for timers in <code>libtock/timer.h</code>. The
 function you'll find useful today is:</p>
 <pre><code class="language-c">#include &lt;timer.h&gt;
 void delay_ms(uint32_t ms);
@@ -234,10 +218,9 @@ until the delay is complete.</p>
 more complex. The development board you are using has several sensors on it.
 These sensors include a light sensor, a humidity sensor, and a temperature
 sensor. Each sensing medium can be accessed separately via the Tock user
-library. We'll just be using the light, temperature, and humidity measurements
-for today's tutorial.</p>
+library. We'll just be using the light and temperature for this excercise.</p>
 <a class="header" href="application.html#light" id="light"><h4>Light</h4></a>
-<p>The interface in <code>userland/libtock/ambient_light.h</code> is used to measure ambient
+<p>The interface in <code>libtock/ambient_light.h</code> is used to measure ambient
 light conditions in <a href="https://en.wikipedia.org/wiki/Lux">lux</a>. imix uses the
 <a href="https://www.intersil.com/en/products/optoelectronics/ambient-light-sensors/light-to-digital-sensors/ISL29035.html">ISL29035</a>
 sensor, but the userland library is abstracted from the details of particular
@@ -248,20 +231,12 @@ int ambient_light_read_intensity_sync(int* lux);
 <p>Note that the light reading is written to the location passed as an
 argument, and the function returns non-zero in the case of an error.</p>
 <a class="header" href="application.html#temperature" id="temperature"><h4>Temperature</h4></a>
-<p>The interface in <code>userland/libtock/temperature.h</code> is used to measure ambient
+<p>The interface in <code>libtock/temperature.h</code> is used to measure ambient
 temperature in degrees Celsius, times 100. imix uses the
 <a href="https://www.silabs.com/products/sensors/humidity-sensors/Pages/si7013-20-21.aspx">SI7021</a>
 sensor. It contains the function:</p>
 <pre><code class="language-c">#include &lt;temperature.h&gt;
 int temperature_read_sync(int* temperature);
-</code></pre>
-<p>Again, this function returns non-zero in the case of an error.</p>
-<a class="header" href="application.html#humidity" id="humidity"><h4>Humidity</h4></a>
-<p>The interface in <code>userland/libtock/humidity.h</code> is used to measure the ambient
-<a href="https://en.wikipedia.org/wiki/Relative_humidity">relative humidity</a> in
-percent, times 100. It contains the function:</p>
-<pre><code class="language-c">#include &lt;humidity.h&gt;
-int humidity_read_sync (unsigned* humi);
 </code></pre>
 <p>Again, this function returns non-zero in the case of an error.</p>
 <a class="header" href="application.html#read-sensors-in-a-tock-application" id="read-sensors-in-a-tock-application"><h3>Read sensors in a Tock application</h3></a>
@@ -271,7 +246,7 @@ the serial port.</p>
 <p>As a bonus, experiment with toggling an LED when readings are above or below a
 certain threshold:</p>
 <a class="header" href="application.html#led" id="led"><h4>LED</h4></a>
-<p>The interface in <code>userland/libtock/led.h</code> is used to control lights on Tock boards. On the Hail
+<p>The interface in <code>libtock/led.h</code> is used to control lights on Tock boards. On the Hail
 board, there are three LEDs which can be controlled: Red, Blue, and Green. The
 functions in the LED module are:</p>
 <pre><code class="language-c">#include &lt;led.h&gt;

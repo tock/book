@@ -8,43 +8,13 @@ During this portion of the course you will:
 - Get a high-level overview of how Tock works.
 - Learn how to compile and flash the kernel onto an Imix board.
 
-## Tock's goals, architecture and components
-
-![](imgs/architecture.svg)
-
-A key contribution of Tock is that it uses Rust's borrow checker as a
-language sandbox for isolation and a cooperative scheduling model for
-concurrency in the kernel.  As a result, for the kernel isolation is
-(more or less) free in terms of resource consumption at the expense of
-preemptive scheduling (so a malicious component could block the system by,
-e.g., spinning in an infinite loop).
-
-Tock includes three architectural components:
-
-  - A small trusted _core kernel_, written in Rust, that implements a hardware
-    abstraction layer (HAL), scheduler, and platform-specific configuration.
-  - _Capsules_, which are compiled with the kernel and use Rust's type and
-    module systems for safety.
-  - _Processes_, which use the memory protection unit (MPU) for protection at runtime.
-
-Read the Tock documentation for more details on its
-[design](https://github.com/tock/tock/blob/master/doc/Design.md).
-
-[_Presentation slides are available here._](presentation/presentation.pdf)
-
-### Check your understanding
-
-1. What kinds of binaries exist on a Tock board? Hint: There are three, and
-   only two can be programmed using `tockloader`.
-
-2. What are the differences between capsules and processes? What performance
-   and memory overhead does each entail? Why would you choose to write
-   something as a process instead of a capsule and vice versa?
-
-3. What happens if the core kernel enters an infinite loop? What about a
-   process? What about a capsules?
-
 ## Compile and program the kernel
+
+All of the hands-on excercises will be done within the source code for this
+book. So pop open a terminal, and navigate to the repository. If you're using
+the VM, that'll be:
+
+    $ cd ~/book
 
 ### Make sure your Tock repository is up to date
 
@@ -52,16 +22,23 @@ Read the Tock documentation for more details on its
 
 ### Build the kernel
 
-To build the kernel, just type make in `boards/imix/`.
+To build the kernel, just type make in the `imix/` subdirectory.
 
-    $ cd boards/imix/
+    $ cd imix/
     $ make
 
 If this is the first time you are trying to make the kernel, the build system
 will use cargo and rustup to install various Tock dependencies.
 
-Kernels must be compiled from within the desired board's folder. For example, to
-compile for Hail instead you must first run `cd boards/hail/`.
+If this is your first time building a Tock kernel for this particular
+architecture, you may get an error complaining that you don't have the proper
+the `cargo` target installed. We can use `rustup` to fix that:
+
+    $ rustup target add thumbv7em-none-eabi 
+
+> `imix` is based around an ARM Cortex-M4 microcontroller, which uses the
+> thumbv7em instruction set. The rustup command above just downloads Rust core
+> libraries for this architecture.
 
 ### Connect to an imix board
 
@@ -85,9 +62,7 @@ compile for Hail instead you must first run `cd boards/hail/`.
 
 To connect your development machine to the imix, connect them with a micro-USB
 cable. Any cable will do, but notice that there are two USB ports on the imix.
-Make sure you connect to the micro-USB port labeled 'debug' on the imix. The
-imix should come with `blink` and `c_hello` installed, which will blink the
-status LED and print `Hello World` on boot respectively.
+Make sure you connect to the micro-USB port labeled 'debug' on the imix.
 
 The imix board should appear as a regular serial device (e.g.
 `/dev/tty.usbserial-c098e5130006` on my Mac and `/dev/ttyUSB0` on my Linux box).
@@ -108,13 +83,33 @@ serial devices, and will automatically find your connected imix. Simply run:
 Now that the imix board is connected and you have verified that the kernel
 compiles, we can flash the imix board with the latest Tock kernel:
 
-    $ cd boards/imix/
+    $ cd imix/
     $ make program
 
 This command will compile the kernel if needed, and then use `tockloader` to
-flash it onto the imix. When the flash command succeeds, the `blink` and
-`c_hello` apps should still be running and the LED will be blinking.
-You now have the bleeding-edge Tock kernel running on your imix board!
+flash it onto the imix.
+
+### Install some applications
+
+We have the kernel flashed, but the kernel doesn't actually _do_ anything.
+Applications do! We're going to install some pre-built applications, but first,
+let's make sure we're in a clean state, in case your imix already had some
+applications installed.
+
+    $ tockloader erase-apps
+
+This command removes any processes that may have already been installed.
+
+Now, let's install two pre-compiled example apps.
+
+    $ tockloader install https://www.tockos.org/assets/tabs/blink.tab
+
+The board should restart and the user LED should start blinking. Let's also
+install a simple "Hello World" application:
+
+    $ tockloader install https://www.tockos.org/assets/tabs/c_hello.tab
+
+> The `install` subcommand takes a path or URL to an TAB (Tock Application Binary) file to install.
 
 ### Clear out the applications and re-flash the test app.
 
@@ -147,8 +142,7 @@ blinking, however the console will still print `Hello World`.
 
 Now let's try adding a more interesting app:
 
-    $ cd libtock-c/examples/sensors/
-    $ make program
+    $ tockloader install https://www.tockos.org/assets/tabs/sensors.tab
 
 The `sensors` app will automatically discover all available sensors,
 sample them once a second, and print the results.
@@ -177,16 +171,15 @@ Below is a list of the more useful and important commands for programming and
 querying a board.
 
 ### `tockloader install`
-This is the main tockloader command, used to load Tock applications onto a
-board.
-By default, `tockloader install` adds the new application, but does not erase
-any others, replacing any already existing application with the same name.
-Use the `--no-replace` flag to install multiple copies of the same app.
-In order to install an app, navigate to the correct directory, make the program,
-then issue the install command:
 
-    $ cd libtock-c/examples/blink
-    $ make
+This is the main tockloader command, used to load Tock applications onto a
+board.  By default, `tockloader install` adds the new application, but does not
+erase any others, replacing any already existing application with the same
+name.  Use the `--no-replace` flag to install multiple copies of the same app.
+In order to install an app, either specify the `tab` file as an argument, or
+navigate to the app's source directory, build it (probably using `make`), then
+issue the install command:
+
     $ tockloader install
 
 > *Tip:* You can add the `--make` flag to have tockloader automatically
@@ -224,12 +217,15 @@ board with `make program`.
 
 ## Explore other example applications
 
-Other applications can be found in the `libtock-c/examples/` directory. Try
-loading them on your imix and then try modifying them. By default, `tockloader
-install` adds the new application, but does not erase any others. Be aware, not
-all applications will work well together if they need the same resources (Tock
-is in active development to add virtualization to all resources to remove this
-issue!).
+Other applications can be found in the `examples` subdirectory of the libtock-c repository:
+
+    $ git clone https://github.com/tock/libtock-c
+
+Try loading them on your imix and then try modifying them. By default,
+`tockloader install` adds the new application, but does not erase any others.
+Be aware, not all applications will work well together if they need the same
+resources (Tock is in active development to add virtualization to all resources
+to remove this issue!).
 
 **Note:** By default, the imix platform is limited to only running four
 concurrent processes at once. Tockloader is (currently) unaware of this

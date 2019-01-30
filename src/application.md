@@ -5,18 +5,10 @@
 In this section, we're going to learn about processes (a.k.a applications) in
 Tock, and build our own applications in C.
 
-### Check your understanding
-
-1. How does a process perform a blocking operation? Can you draw the flow of
-   operations when a process calls `delay_ms(1000)`?
-
-2. How would you write an IPC service to print to the console? Which functions
-   would the client need to call?
-
 ## Get a C application running on your board
 
 You'll find the outline of a C application in the directory
-`docs/courses/sensys/exercises/app`.
+`exercises/app`.
 
 Take a look at the code in `main.c`. So far, this application merely prints
 "Hello, World!".
@@ -30,15 +22,15 @@ code layers are here:
    arguments, and generates an output string from them. To actually write the
    string to standard out, `printf` calls `_write`.
 
-2. `_write` (in `userland/libtock/sys.c`) is a wrapper for actually writing to
+2. `_write` (in `libtock-c/libtock/sys.c`) is a wrapper for actually writing to
    output streams (in this case, standard out a.k.a. the console). It calls
    the Tock-specific console writing function `putnstr`.
 
-3. `putnstr`(in `userland/libtock/console.c`) buffers data to be written, calls
+3. `putnstr`(in `libtock-c/libtock/console.c`) buffers data to be written, calls
    `putnstr_async`, and acts as a synchronous wrapper, yielding until the
    operation is complete.
 
-4. `putnstr_async` (in `userland/libtock/console.c`) finally performs the
+4. `putnstr_async` (in `libtock-c/libtock/console.c`) finally performs the
    actual system calls, calling to `allow`, `subscribe`, and `command` to
    enable the kernel to access the buffer, request a callback when the write is
    complete, and begin the write operation respectively.
@@ -57,14 +49,10 @@ Okay, let's build and load this simple program.
 
         $ tockloader erase-apps
 
-2. Build this application:
-
-        $ make
-
-3. Load the application (Note: `tockloader install` automatically searches the
+3. Build the application and load it (Note: `tockloader install` automatically searches the
    current working directory and its subdirectories for Tock binaries.)
 
-        $ tockloader install
+        $ tockloader install --make
 
 4. Check that it worked:
 
@@ -89,7 +77,7 @@ library's timer facilities to manage this:
 
 ### Timer
 
-You'll find the interface for timers in `userland/libtock/timer.h`. The
+You'll find the interface for timers in `libtock/timer.h`. The
 function you'll find useful today is:
 
 ```c
@@ -107,12 +95,11 @@ Now that we have the ability to write applications, let's do something a little
 more complex. The development board you are using has several sensors on it.
 These sensors include a light sensor, a humidity sensor, and a temperature
 sensor. Each sensing medium can be accessed separately via the Tock user
-library. We'll just be using the light, temperature, and humidity measurements
-for today's tutorial.
+library. We'll just be using the light and temperature for this excercise.
 
 #### Light
 
-The interface in `userland/libtock/ambient_light.h` is used to measure ambient
+The interface in `libtock/ambient_light.h` is used to measure ambient
 light conditions in [lux](https://en.wikipedia.org/wiki/Lux). imix uses the
 [ISL29035](https://www.intersil.com/en/products/optoelectronics/ambient-light-sensors/light-to-digital-sensors/ISL29035.html)
 sensor, but the userland library is abstracted from the details of particular
@@ -128,7 +115,7 @@ argument, and the function returns non-zero in the case of an error.
 
 #### Temperature
 
-The interface in `userland/libtock/temperature.h` is used to measure ambient
+The interface in `libtock/temperature.h` is used to measure ambient
 temperature in degrees Celsius, times 100. imix uses the
 [SI7021](https://www.silabs.com/products/sensors/humidity-sensors/Pages/si7013-20-21.aspx)
 sensor. It contains the function:
@@ -136,19 +123,6 @@ sensor. It contains the function:
 ```c
 #include <temperature.h>
 int temperature_read_sync(int* temperature);
-```
-
-Again, this function returns non-zero in the case of an error.
-
-#### Humidity
-
-The interface in `userland/libtock/humidity.h` is used to measure the ambient
-[relative humidity](https://en.wikipedia.org/wiki/Relative_humidity) in
-percent, times 100. It contains the function:
-
-```c
-#include <humidity.h>
-int humidity_read_sync (unsigned* humi);
 ```
 
 Again, this function returns non-zero in the case of an error.
@@ -164,7 +138,7 @@ certain threshold:
 
 #### LED
 
-The interface in `userland/libtock/led.h` is used to control lights on Tock boards. On the Hail
+The interface in `libtock/led.h` is used to control lights on Tock boards. On the Hail
 board, there are three LEDs which can be controlled: Red, Blue, and Green. The
 functions in the LED module are:
 

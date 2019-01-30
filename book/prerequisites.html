@@ -141,13 +141,12 @@ software development environment.</p>
 <a class="header" href="prerequisites.html#hardware" id="hardware"><h2>Hardware</h2></a>
 <p>To complete the hands-on excercises in this guide, you'll need an <em>imix</em>
 hardware platform (pictured below), a workstation running either Linux or OS X
-(you can also work in a <a href="prerequisites.html#virtual-machine">Virtual
-Machine</a>), and a micro-USB cable
-to connect your imix to your workstation.</p>
+(you can also work in a <a href="prerequisites.html#virtual-machine">Virtual Machine</a>), and a micro-USB
+cable to connect your imix to your workstation.</p>
 <p>To complete the 6LoWPAN networking portion of this guide, you'll need an
 additional <em>imix</em> to act as a hub, but multiple participants can use the same
 hub <em>imix</em>.</p>
-<p><img src="../imgs/imix-v2.1.png" alt="" /></p>
+<p><img src="../imgs/imix.svg" alt="" /></p>
 <a class="header" href="prerequisites.html#software" id="software"><h2>Software</h2></a>
 <p>You can either download a <a href="prerequisites.html#virtual-machine">virtual machine</a> with all
 development environment pre-installed, or, if you have a Linux or OS X
@@ -158,12 +157,12 @@ development environment and is better for long term use.</p>
 <a class="header" href="prerequisites.html#virtual-machine" id="virtual-machine"><h3>Virtual Machine</h3></a>
 <p>If you're comfortable working inside a Debian virtual machine, you can download
 an image with all of the dependencies already installed
-<a href="http://www.scs.stanford.edu/%7Ealevy/Tock.ova">here</a></p>
+<a href="https://cesar.cs.princeton.edu/Tock.ova">here</a></p>
 <ul>
 <li>VirtualBox users: <a href="https://docs.oracle.com/cd/E26217_01/E26796/html/qs-import-vm.html">File → Import Appliance...</a>,</li>
 <li>VMWare users: <a href="https://pubs.vmware.com/workstation-9/index.jsp?topic=%2Fcom.vmware.ws.using.doc%2FGUID-DDCBE9C0-0EC9-4D09-8042-18436DA62F7A.html">File → Open...</a></li>
 </ul>
-<p>The VM account is &quot;user&quot; with password &quot;user&quot;. Feel free to customize it with
+<p>The VM account is &quot;tock&quot; with password &quot;tock&quot;. Feel free to customize it with
 whichever editors, window managers, etc. you like before the training starts.</p>
 <blockquote>
 <p>If the Host OS is Linux, you may need to add your user to the <code>vboxusers</code>
@@ -181,13 +180,8 @@ the following software:</p>
 <p>Python 3 and pip3</p>
 </li>
 <li>
-<p>A local clone of the Tock repository</p>
-<pre><code> $ git clone https://github.com/tock/tock.git
-</code></pre>
-</li>
-<li>
-<p>A local clone of the Tock applications repository (for apps written in C)</p>
-<pre><code> $ git clone https://github.com/tock/libtock-c.git
+<p>A local clone of this book source, containing the excercises</p>
+<pre><code> $ git clone https://github.com/tock/book.git
 </code></pre>
 </li>
 <li>
@@ -200,6 +194,11 @@ Rust compiler and related tools.</p>
 <p><a href="https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads">arm-none-eabi toolchain</a> (version &gt;= 5.2)</p>
 <p>OS-specific installation instructions can be found
 <a href="https://github.com/tock/tock/blob/master/doc/Getting_Started.md#arm-none-eabi-toolchain">here</a></p>
+</li>
+<li>
+<p><a href="https://crates.io/crates/elf2tab/">elf2tab</a></p>
+<pre><code> $ cargo install elf2tab
+</code></pre>
 </li>
 <li>
 <p><a href="https://github.com/tock/tockloader">tockloader</a></p>
@@ -226,7 +225,7 @@ and type <code>make program</code>. This should compile the kernel for the defau
 Imix, and try to program it over a USB serial connection. It may need to compile
 several supporting libraries first (so may take 30 seconds or so the first
 time). You should see output like this:</p>
-<pre><code>$ make flash
+<pre><code>$ make program
    Compiling tock-registers v0.2.0 (file:///Users/bradjc/git/tock/libraries/tock-register-interface)
    Compiling tock-cells v0.1.0 (file:///Users/bradjc/git/tock/libraries/tock-cells)
    Compiling enum_primitive v0.1.0 (file:///Users/bradjc/git/tock/libraries/enum_primitive)

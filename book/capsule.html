@@ -136,15 +136,14 @@
                         <a class="header" href="capsule.html#capsule" id="capsule"><h1>Capsule</h1></a>
 <p>The goal of this part of the course is to make you comfortable with the
 Tock kernel and writing code for it. By the end of this part, you'll have
-written a new capsule that reads a 9DOF (nine degrees of freedom, consisting
-of a 3-axis accelerometer, magnetometer, and gyroscope) sensor and outputs
-its readings over the serial port.</p>
+written a new capsule that reads a humidity sensor and outputs its readings
+over the serial port.</p>
 <p>During this you will:</p>
 <ol>
 <li>Learn how Tock uses Rust's memory safety to provide isolation for free</li>
 <li>Read the Tock boot sequence, seeing how Tock uses static allocation</li>
 <li>Learn about Tock's event-driven programming</li>
-<li>Write a new capsule that reads a 9DOF sensor and prints it over serial</li>
+<li>Write a new capsule that reads a humidity sensor and prints it over serial</li>
 </ol>
 <a class="header" href="capsule.html#listen-to-presentation-on-tocks-kernel-and-capsules" id="listen-to-presentation-on-tocks-kernel-and-capsules"><h2>Listen to presentation on Tock's kernel and capsules</h2></a>
 <p>This part of the course will start with a member of the Tock development
@@ -340,60 +339,47 @@ system enters steady state operation.</p>
 <a class="header" href="capsule.html#create-a-hello-world-capsule" id="create-a-hello-world-capsule"><h3>Create a &quot;Hello World&quot; capsule</h3></a>
 <p>Now that you've seen how Tock initializes and uses capsules, you're going to
 write a new one. At the end of this section, your capsule will sample the
-accelerometer from the 9dof sensor once a second and print the results as
-serial output. But you'll start with something simpler: printing &quot;Hello World&quot;
-to the debug console once on boot.</p>
-<p>To begin, because you're going to be modifying the boot sequence of Imix,
-make a branch of the Tock repository. This will keep your master
-branch clean.</p>
-<pre><code class="language-bash"># Possibly undo any changes from exploring debug! above:
-$ git reset --hard
-$ git checkout -b rustconf
-</code></pre>
-<p>Next, create a new module in <code>boards/imix/src</code> and import it from
-<code>boards/imix/src/main.rs</code>. In your new module, make a new <code>struct</code> for your
-capsule (e.g. called <code>Accelerate</code>), a <code>new</code> function to construct it and a <code>start</code> method.</p>
-<p>Eventually, the <code>start</code> method will kick off the state machine for periodic
-accelerometer readings, but for now, you'll just print &quot;Hello World&quot; to the
-debug console and return:</p>
+humidity sensor once a second and print the results as serial output. But
+you'll start with something simpler: printing &quot;Hello World&quot; to the debug
+console once on boot.</p>
+<p>The <code>imix</code> board configuration you've looked through has a capsule for the this
+tutorial already set up. The capsule is a separate Rust crate located in
+<code>excercises/capsule</code>. You'll complete this excercise by filling it in.</p>
+<p>In addition to a constructor, Our capsule has <code>start</code> function defined that is
+currently empty. The board configuration calls this function once it has
+initialized the capsule.</p>
+<p>Eventually, the <code>start</code> method will kick off a state machine for periodic
+humidity readings, but for now, let's just print something to the debug console
+and return:</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
 #fn main() {
-debug!(&quot;Hello World&quot;);
+debug!(&quot;Hello from the kernel!&quot;);
 #}</code></pre></pre>
-<p>Finally, initialize this new capsule in the <code>main.rs</code> boot sequence. You'll
-want to use the <code>static_init!</code> macro to make sure it's initialized in static
-memory. <code>static_init!</code> is already imported, and has the following signature:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-static_init!($T:ty, :expr -&gt; $T) -&gt; &amp;'static T
-#}</code></pre></pre>
-<p>That is, the first parameter is the type of the thing you want to allocate and
-the second parameter is an expression constructing it. The result is a
-reference to the constructed value with <code>'static</code> lifetime.</p>
-<p>Compile and program your new kernel:</p>
-<pre><code class="language-bash">$ make program
+<pre><code class="language-bash">$ cd [PATH_TO_BOOK]/imix
+$ make program
 $ tockloader listen
 No device name specified. Using default &quot;tock&quot;                                                                         Using &quot;/dev/ttyUSB0 - Imix IoT Module - TockOS&quot;
 Listening for serial output.
-TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.rs:18: Hello World
+Hello from the kernel!
 </code></pre>
-<p><a href="https://gist.github.com/alevy/56b0566e2d1a6ba582b7d4c09968ddc9">Sample Solution</a></p>
 <a class="header" href="capsule.html#extend-your-capsule-to-print-hello-world-every-second" id="extend-your-capsule-to-print-hello-world-every-second"><h2>Extend your capsule to print &quot;Hello World&quot; every second</h2></a>
 <p>In order for your capsule to keep track of time, it will need to depend on
 another capsule that implements the Alarm interface. We'll have to do something
 similar for reading the accelerometer, so this is good practice.</p>
-<p>The Alarm HIL includes several traits, <code>Alarm</code>, <code>Client</code>, and <code>Frequency</code>,
-all in the <code>kernel::hil::time</code> module. You'll use the <code>set_alarm</code> and <code>now</code>
-methods from the <code>Alarm</code> trait to set an alarm for a particular value of the
-clock. The <code>Alarm</code> trait also has an associated type that implements the
-<code>Frequency</code> trait which lets us call its <code>frequency</code> method to get the clock
-frequency.</p>
-<p>Modify your capsule to have a field of the type <code>&amp;'a Alarm</code> and to accept an
-<code>&amp;'a Alarm</code> in the <code>new</code> function.</p>
-<p>Your capsule will also need to implement the <code>Client</code> trait so it can
-receive alarm events. The <code>Client</code> trait has a single method:</p>
+<p>The Alarm HIL includes several traits, <code>Alarm</code>, <code>Client</code>, and <code>Frequency</code>, all
+in the <code>kernel::hil::time</code> module. You'll use the <code>set_alarm</code> and <code>now</code> methods
+from the <code>Alarm</code> trait to set an alarm for a particular value of the clock.
+Note that both methods accept arguments in the alarm's native clock frequency,
+which is available using the Alarm trait's associated <code>Frequency</code> type:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+// native clock frequency in Herz
+let frequency = &lt;A::Frequency&gt;::frequency();
+#}</code></pre></pre>
+<p>Your capsule already implements the <code>alarm::Client</code> trait so it can receive
+alarm events. The <code>alarm::Client</code> trait has a single method:</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
 #fn main() {
@@ -401,22 +387,6 @@ fn fired(&amp;self)
 #}</code></pre></pre>
 <p>Your capsule should now set an alarm in the <code>start</code> method, print the debug
 message and set an alarm again when the alarm fires.</p>
-<p>Finally, you'll need to modify the capsule initialization to pass in an alarm
-implementation. Since lots of other capsules use the alarm, you should use a
-virtual alarm. You can make a new one like this:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-let my_virtual_alarm = static_init!(
-    VirtualMuxAlarm&lt;'static, sam4l::ast::Ast&gt;,
-    VirtualMuxAlarm::new(mux_alarm));
-#}</code></pre></pre>
-<p>and you have to make sure to set your capsule as the client of the virtual alarm after initializing it:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-my_virtual_alarm.set_client(my_capsule);
-#}</code></pre></pre>
 <p>Compile and program your new kernel:</p>
 <pre><code class="language-bash">$ make program
 $ tockloader listen
@@ -428,94 +398,40 @@ TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.
 TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.rs:31: Hello World
 </code></pre>
 <p><a href="https://gist.github.com/alevy/73fca7b0dddcb5449088cebcbfc035f1">Sample Solution</a></p>
-<a class="header" href="capsule.html#extend-your-capsule-to-sample-the-accelerometer-once-a-second" id="extend-your-capsule-to-sample-the-accelerometer-once-a-second"><h2>Extend your capsule to sample the accelerometer once a second</h2></a>
+<a class="header" href="capsule.html#extend-your-capsule-to-sample-the-humidity-once-a-second" id="extend-your-capsule-to-sample-the-humidity-once-a-second"><h2>Extend your capsule to sample the humidity once a second</h2></a>
 <p>The steps for reading an accelerometer from your capsule are similar to using
-the alarm. You'll use a capsule that implements the NineDof (nine degrees of
-freedom) HIL, which includes the <code>NineDof</code> and <code>NineDofClient</code> traits, both in
+the alarm. You'll use a capsule that implements the humidity HIL, which
+includes the <code>HumidityDriver</code> and <code>HumidityClient</code> traits, both in
 <code>kernel::hil::sensors</code>.</p>
-<p>The <code>NineDof</code> trait includes the method <code>read_accelerometer</code> which initiates an
-accelerometer reading. The <code>NineDofClient</code> trait has a single method for receiving readings:</p>
+<p>The <code>HumidityDriver</code> trait includes the method <code>read_accelerometer</code> which
+initiates an accelerometer reading. The <code>HumidityClient</code> trait has a single
+method for receiving readings:</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
 #fn main() {
-fn callback(&amp;self, x: usize, y: usize, z: usize);
+fn callback(&amp;self, humidity: usize);
 #}</code></pre></pre>
-<p>However, unlike the alarm, there is no virtualization layer for the <code>NineDof</code>
-HIL (yet!) and there is already a driver used in Imix that exposes the 9dof
-sensor to userland. Fortunately, we can just remove it for our purposes.</p>
-<p>Remove the <code>ninedof</code> field from the <code>Imix</code> struct definition:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-ninedof: &amp;'static capsules::ninedof::NineDof&lt;'static&gt;,
-#}</code></pre></pre>
-<p>and initialization:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-ninedof: ninedof,
-#}</code></pre></pre>
-<p>Remove <code>ninedof</code> from the system call lookup table in <code>with_driver</code>:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-11 =&gt; f(Some(self.ninedof)), // Comment this out
-#}</code></pre></pre>
-<p>And, finally, remove the initialization of <code>ninedof</code> from the boot sequence:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-let ninedof = static_init!(
-    capsules::ninedof::NineDof&lt;'static&gt;,
-    capsules::ninedof::NineDof::new(fxos8700, kernel::Container::create()));
-hil::ninedof::NineDof::set_client(fxos8700, ninedof);
-#}</code></pre></pre>
-<p>Follow the same steps you did for adding an alarm to your capsule for the 9dof
-sensor capsule:</p>
-<ol>
-<li>
-<p>Add a <code>&amp;'a NineDof</code> field.</p>
-</li>
-<li>
-<p>Accept one in the <code>new</code> function.</p>
-</li>
-<li>
-<p>Implement the <code>NineDofClient</code> trait.</p>
-</li>
-</ol>
-<p>Now, modify the Imix boot sequence passing in the <code>fxos8700</code> capsule, which
-implements the <code>NineDof</code> trait, to your capsule (it should already be
-initialized). Make sure to set your capsule as its client:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-{
-  use hil::ninedof::NineDof;
-  fxos8700.set_client(my_capsule);
-}
-#}</code></pre></pre>
-<p>Finally, implement logic to initiate a accelerometer reading every second and
-report the results.</p>
+<p>Implement logic to initiate a accelerometer reading every second and report the
+results.</p>
 <p><img src="rustconf.png" alt="Structure of rustconf capsule" /></p>
 <p>Compile and program your kernel:</p>
 <pre><code class="language-bash">$ make program
 $ tockloader listen
 No device name specified. Using default &quot;tock&quot;                                                                         Using &quot;/dev/ttyUSB0 - Imix IoT Module - TockOS&quot;
 Listening for serial output.
-TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.rs:31: 982 33 166
-TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.rs:31: 988 31 158
+Humidity 2731
+Humidity 2732
 </code></pre>
 <p><a href="https://gist.github.com/alevy/798d11dbfa5409e0aa56d870b4b7afcf">Sample solution</a></p>
 <a class="header" href="capsule.html#some-further-questions-and-directions-to-explore" id="some-further-questions-and-directions-to-explore"><h2>Some further questions and directions to explore</h2></a>
-<p>Your capsule used the fxos8700 and virtual alarm. Take a look at the
+<p>Your capsule used the si7021 and virtual alarm. Take a look at the
 code behind each of these services:</p>
 <ol>
 <li>
-<p>Is the 9DOF sensor on-chip or a separate chip connected over a bus?</p>
+<p>Is the humidity sensor on-chip or a separate chip connected over a bus?</p>
 </li>
 <li>
-<p>What happens if you request two 9DOF sensors (e.g., accelerometer and magnetometer)</p>
-<p>back-to-back?</p>
+<p>What happens if you request two humidity sensors back-to-back?</p>
 </li>
 <li>
 <p>Is there a limit on how many virtual alarms can be created?</p>
@@ -524,10 +440,8 @@ code behind each of these services:</p>
 <p>How many virtual alarms does the imix boot sequence create?</p>
 </li>
 </ol>
-<a class="header" href="capsule.html#extra-credit-write-a-virtualization-capsule-for-9dof-" id="extra-credit-write-a-virtualization-capsule-for-9dof-"><h3><strong>Extra credit</strong>: Write a virtualization capsule for 9dof (∞)</h3></a>
-<p>Remember how you had to remove the userspace facing <code>ninedof</code> driver from imix
-in order to use the accelerometer in your capsule? That was a bummer...</p>
-<p>If you have extra time, try writing a virtualization capsule for the <code>NineDof</code>
+<a class="header" href="capsule.html#extra-credit-write-a-virtualization-capsule-for-humidity-sensor-" id="extra-credit-write-a-virtualization-capsule-for-humidity-sensor-"><h3><strong>Extra credit</strong>: Write a virtualization capsule for humidity sensor (∞)</h3></a>
+<p>If you have extra time, try writing a virtualization capsule for the <code>Humidity</code>
 HIL that will allow multiple clients to use it. This is a fairly open ended
 task, but you might find inspiration in the <code>virtua_alarm</code> and <code>virtual_i2c</code>
 capsules.</p>
