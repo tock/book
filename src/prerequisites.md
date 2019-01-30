@@ -63,6 +63,10 @@ the following software:
 
 1. [arm-none-eabi toolchain](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads) (version >= 5.2)
 
+        $ brew tap ARMmbed/homebrew-formulae && brew update && brew install arm-none-eabi-gcc
+
+        $ sudo add-apt-repository ppa:team-gcc-arm-embedded/ppa && sudo apt update && sudo apt install gcc-arm-embedded
+
    OS-specific installation instructions can be found
    [here](https://github.com/tock/tock/blob/master/doc/Getting_Started.md#arm-none-eabi-toolchain)
 
