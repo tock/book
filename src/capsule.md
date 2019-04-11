@@ -12,28 +12,9 @@ During this you will:
 3. Learn about Tock's event-driven programming
 4. Write a new capsule that reads a humidity sensor and prints it over serial
 
-## Listen to presentation on Tock's kernel and capsules
-
-This part of the course will start with a member of the Tock development
-team presenting its core software architecture. This will explain how a
-Tock platform has a small amount of trusted (can use `unsafe`) code, but
-the bulk of the kernel code is in *capsules*, which cannot violate Rust's
-safety guarantees. It'll also explain how RAM constraints lead the Tock
-kernel to rely on static allocation and use a purely event-driven execution
-model.
-
-This presentation will give you the intellectual framework to understand
-why capsules work as they do, and understand what you'll be doing in the rest
-of this part of the course.
-
-### Check your understanding
-
-1. What is a `VolatileCell`? Can you find some uses of `VolatileCell`, and do you understand why they are needed? Hint: look inside `chips/sam4l/src`.
-2. What is a `TakeCell`? When is a `TakeCell` preferable to a standard `Cell`?
-
 ## Read the Tock boot sequence (20m)
 
-Open `boards/imix/src/main.rs` in your favorite editor. This file defines the
+Open `imix/src/main.rs` in your favorite editor. This file defines the
 imix platform: how it boots, what capsules it uses, and what system calls it
 supports for userland applications.
 
@@ -55,7 +36,7 @@ rely on this assumption.
 
 The boot process is primarily the construction of this `Imix` structure. Once
 everything is set up, the board will pass the constructed `imix` to
-`kernel::main` and we're off to the races.
+`kernel::kernel_loop` and we're off to the races.
 
 ### How do things get started?
 
@@ -71,16 +52,23 @@ sets up the system clocks, and configures the GPIO pins.
 ### How do capsules get created?
 
 The next lines of `reset_handler` create and initialize the system console,
-which is what turns calls to `print!` into bytes sent to the USB serial port:
+which is what turns calls to `println` into bytes sent to the USB serial port:
 
 ```rust
-let console = static_init!(
-    Console<usart::USART>,
-    Console::new(&usart::USART0,
-                 115200,
-                 &mut console::WRITE_BUF,
-                 kernel::Container::create()));
-hil::uart::UART::set_client(&usart::USART0, console);
+let uart_mux = static_init!(
+    MuxUart<'static>,
+    MuxUart::new(
+        &sam4l::usart::USART3,
+        &mut capsules::virtual_uart::RX_BUF,
+        115200
+    )
+);
+uart_mux.initialize();
+
+hil::uart::Transmit::set_transmit_client(&sam4l::usart::USART3, uart_mux);
+hil::uart::Receive::set_receive_client(&sam4l::usart::USART3, uart_mux);
+
+let console = ConsoleComponent::new(board_kernel, uart_mux).finalize();
 ```
 
 Eventually, once all of the capsules have been created, we will populate
@@ -96,7 +84,7 @@ let imix = Imix {
 The `static_init!` macro is simply an easy way to allocate a static
 variable with a call to `new`. The first parameter is the type, the second
 is the expression to produce an instance of the type. This call creates
-a `Console` that uses serial port 0 (`USART0`) at 115200 bits per second.
+a `Console` that uses serial port 3 (`USART3`) at 115200 bits per second.
 
 > #### A brief aside on buffers:
 > 
@@ -122,9 +110,6 @@ a `Console` that uses serial port 0 (`USART0`) at 115200 bits per second.
 > Console a buffer to use, without burdening the instantiator with sizing the
 > buffer.
 
-The final parameter, the `Container`, is for handling system calls:
-you don't need to worry about it for now.
-
 ### Let's make an imix!
 
 The code continues on, creating all of the other capsules that are needed
@@ -146,7 +131,7 @@ before they can be used. For example, a few lines after creating the imix
 struct, we initialize the console:
 
 ```rust
-imix.console.initialize();
+imix.nrf51822.initialize();
 ```
 
 This method is responsible for actually writing the hardware registers that
