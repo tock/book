@@ -154,20 +154,20 @@ string to standard out, <code>printf</code> calls <code>_write</code>.</p>
 </li>
 <li>
 <p><code>_write</code> (in <code>libtock-c</code>'s
-<a href="https://github.com/tock/libtock-c/master/libtock/sys.c"><code>sys.c</code></a>) is a
+<a href="https://github.com/tock/libtock-c/tree/master/libtock/sys.c"><code>sys.c</code></a>) is a
 wrapper for actually writing to output streams (in this case, standard out
 a.k.a. the console). It calls the Tock-specific console writing function
 <code>putnstr</code>.</p>
 </li>
 <li>
 <p><code>putnstr</code>(in <code>libtock-c</code>'s
-<a href="https://github.com/tock/libtock-c/master/libtock/console.c"><code>console.c</code></a>)
+<a href="https://github.com/tock/libtock-c/tree/master/libtock/console.c"><code>console.c</code></a>)
 is a buffers data to be written, calls <code>putnstr_async</code>, and acts as a
 synchronous wrapper, yielding until the operation is complete.</p>
 </li>
 <li>
 <p>Finally, <code>putnstr_async</code> (in <code>libtock-c</code>'s
-<a href="https://github.com/tock/libtock-c/master/libtock/console.c"><code>console.c</code></a>)
+<a href="https://github.com/tock/libtock-c/tree/master/libtock/console.c"><code>console.c</code></a>)
 performs the actual system calls, calling to <code>allow</code>, <code>subscribe</code>, and
 <code>command</code> to enable the kernel to access the buffer, request a callback when
 the write is complete, and begin the write operation respectively.</p>
@@ -304,21 +304,6 @@ int led_count(void);
 
         </div>
 
-        
-        <!-- Livereload script (if served using the cli tool) -->
-        <script type="text/javascript">
-            var socket = new WebSocket("ws://localhost:3001");
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload(true); // force reload from server (not from cache)
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
         
 
         
