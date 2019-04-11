@@ -22,18 +22,22 @@ code layers are here:
    arguments, and generates an output string from them. To actually write the
    string to standard out, `printf` calls `_write`.
 
-2. `_write` (in `libtock-c/libtock/sys.c`) is a wrapper for actually writing to
-   output streams (in this case, standard out a.k.a. the console). It calls
-   the Tock-specific console writing function `putnstr`.
+2. `_write` (in `libtock-c`'s
+   [`sys.c`](https://github.com/tock/libtock-c/master/libtock/sys.c)) is a
+   wrapper for actually writing to output streams (in this case, standard out
+   a.k.a. the console). It calls the Tock-specific console writing function
+   `putnstr`.
 
-3. `putnstr`(in `libtock-c/libtock/console.c`) buffers data to be written, calls
-   `putnstr_async`, and acts as a synchronous wrapper, yielding until the
-   operation is complete.
+3. `putnstr`(in `libtock-c`'s
+   [`console.c`](https://github.com/tock/libtock-c/master/libtock/console.c))
+   is a buffers data to be written, calls `putnstr_async`, and acts as a
+   synchronous wrapper, yielding until the operation is complete.
 
-4. `putnstr_async` (in `libtock-c/libtock/console.c`) finally performs the
-   actual system calls, calling to `allow`, `subscribe`, and `command` to
-   enable the kernel to access the buffer, request a callback when the write is
-   complete, and begin the write operation respectively.
+4. Finally, `putnstr_async` (in `libtock-c`'s
+   [`console.c`](https://github.com/tock/libtock-c/master/libtock/console.c))
+  performs the actual system calls, calling to `allow`, `subscribe`, and
+  `command` to enable the kernel to access the buffer, request a callback when
+  the write is complete, and begin the write operation respectively.
 
 
 The application could accomplish all of this by invoking Tock system calls

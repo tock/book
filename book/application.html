@@ -153,20 +153,24 @@ arguments, and generates an output string from them. To actually write the
 string to standard out, <code>printf</code> calls <code>_write</code>.</p>
 </li>
 <li>
-<p><code>_write</code> (in <code>libtock-c/libtock/sys.c</code>) is a wrapper for actually writing to
-output streams (in this case, standard out a.k.a. the console). It calls
-the Tock-specific console writing function <code>putnstr</code>.</p>
+<p><code>_write</code> (in <code>libtock-c</code>'s
+<a href="https://github.com/tock/libtock-c/master/libtock/sys.c"><code>sys.c</code></a>) is a
+wrapper for actually writing to output streams (in this case, standard out
+a.k.a. the console). It calls the Tock-specific console writing function
+<code>putnstr</code>.</p>
 </li>
 <li>
-<p><code>putnstr</code>(in <code>libtock-c/libtock/console.c</code>) buffers data to be written, calls
-<code>putnstr_async</code>, and acts as a synchronous wrapper, yielding until the
-operation is complete.</p>
+<p><code>putnstr</code>(in <code>libtock-c</code>'s
+<a href="https://github.com/tock/libtock-c/master/libtock/console.c"><code>console.c</code></a>)
+is a buffers data to be written, calls <code>putnstr_async</code>, and acts as a
+synchronous wrapper, yielding until the operation is complete.</p>
 </li>
 <li>
-<p><code>putnstr_async</code> (in <code>libtock-c/libtock/console.c</code>) finally performs the
-actual system calls, calling to <code>allow</code>, <code>subscribe</code>, and <code>command</code> to
-enable the kernel to access the buffer, request a callback when the write is
-complete, and begin the write operation respectively.</p>
+<p>Finally, <code>putnstr_async</code> (in <code>libtock-c</code>'s
+<a href="https://github.com/tock/libtock-c/master/libtock/console.c"><code>console.c</code></a>)
+performs the actual system calls, calling to <code>allow</code>, <code>subscribe</code>, and
+<code>command</code> to enable the kernel to access the buffer, request a callback when
+the write is complete, and begin the write operation respectively.</p>
 </li>
 </ol>
 <p>The application could accomplish all of this by invoking Tock system calls
