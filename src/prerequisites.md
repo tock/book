@@ -7,7 +7,7 @@ software development environment.
 
 ## Hardware
 
-To complete the hands-on excercises in this guide, you'll need an _imix_
+To complete the hands-on exercises in this guide, you'll need an _imix_
 hardware platform (pictured below), a workstation running either Linux or OS X
 (you can also work in a [Virtual Machine](#virtual-machine)), and a micro-USB
 cable to connect your imix to your workstation.
@@ -31,7 +31,13 @@ development environment and is better for long term use.
 
 If you're comfortable working inside a Debian virtual machine, you can download
 an image with all of the dependencies already installed
-[here](https://cesar.cs.princeton.edu/Tock.ova)
+[here](https://cesar.cs.princeton.edu/Tock.ova) or [here](https://www.cs.virginia.edu/~bjc8c/archive/Tock.ova).
+Using `curl` is recommended:
+
+    $ curl -O <url>
+
+With the virtual machine image downloaded, you can run it with VirtualBox or
+VMWare:
 
  * VirtualBox users: [File → Import Appliance...](https://docs.oracle.com/cd/E26217_01/E26796/html/qs-import-vm.html),
  * VMWare users: [File → Open...](https://pubs.vmware.com/workstation-9/index.jsp?topic=%2Fcom.vmware.ws.using.doc%2FGUID-DDCBE9C0-0EC9-4D09-8042-18436DA62F7A.html)
@@ -45,16 +51,16 @@ whichever editors, window managers, etc. you like before the training starts.
 
 ### Native Installation
 
-If you choose to install the development environment natively, you will need
-the following software:
+If you choose to install the development environment natively on an existing
+operating system install, you will need the following software:
 
-1. Command line utilities: curl, make, git
+1. Command line utilities: `curl`, `make`, and `git`.
 
-1. Python 3 and pip3
+1. Python 3 and `pip3`
 
-1. A local clone of this book source, containing the excercises
+1. A local clone of this book source, containing the exercises
 
-        $ git clone https://github.com/tock/book.git
+        $ git clone https://github.com/tock/book.git tock-book
 
 1. [rustup](http://rustup.rs/). This tool helps manage installations of the
    Rust compiler and related tools.
@@ -63,12 +69,14 @@ the following software:
 
    and the Rust core libraries for the Cortex-M4:
 
-        $ rustup target add thumbv7em-none-eabi 
+        $ rustup target add thumbv7em-none-eabi
 
 1. [arm-none-eabi toolchain](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads) (version >= 5.2)
 
+        # mac
         $ brew tap ARMmbed/homebrew-formulae && brew update && brew install arm-none-eabi-gcc
 
+        # linux
         $ sudo add-apt-repository ppa:team-gcc-arm-embedded/ppa && sudo apt update && sudo apt install gcc-arm-embedded
 
    OS-specific installation instructions can be found
