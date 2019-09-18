@@ -4,21 +4,25 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Introduction - Tock Tutorial</title>
+        
+
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
 
-        <link rel="stylesheet" href="book.css">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
         <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
 
-        <link rel="shortcut icon" href="favicon.png">
-
-        <!-- Font Awesome -->
-        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-
+        <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
         <link rel="stylesheet" href="tomorrow-night.css">
         <link rel="stylesheet" href="ayu-highlight.css">
@@ -27,9 +31,14 @@
         
 
         
-
     </head>
     <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
+
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script type="text/javascript">
             try {
@@ -49,8 +58,8 @@
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script type="text/javascript">
             var theme;
-            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
-            if (theme === null || theme === undefined) { theme = 'light'; }
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
             document.body.className = theme;
             document.querySelector('html').className = theme + ' js';
         </script>
@@ -68,7 +77,10 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <ol class="chapter"><li class="affix"><a href="introduction.html" class="active">Introduction</a></li><li class="affix"><a href="prerequisites.html">Prerequisites</a></li><li><a href="environment.html"><strong aria-hidden="true">1.</strong> Environment</a></li><li><a href="application.html"><strong aria-hidden="true">2.</strong> Application</a></li><li><a href="capsule.html"><strong aria-hidden="true">3.</strong> Capsule</a></li></ol>
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li class="affix"><a href="prerequisites.html">Prerequisites</a></li><li><a href="environment.html"><strong aria-hidden="true">1.</strong> Environment</a></li><li><a href="application.html"><strong aria-hidden="true">2.</strong> Application</a></li><li><a href="capsule.html"><strong aria-hidden="true">3.</strong> Capsule</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
@@ -85,7 +97,7 @@
                                 <i class="fa fa-paint-brush"></i>
                             </button>
                             <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
@@ -98,12 +110,13 @@
                             
                         </div>
 
-                        <h1 class="menu-title">Tock Tutorial</h1> 
+                        <h1 class="menu-title">Tock Tutorial</h1>
 
                         <div class="right-buttons">
                             <a href="print.html" title="Print this book" aria-label="Print this book">
                                 <i id="print-button" class="fa fa-print"></i>
                             </a>
+                            
                         </div>
                     </div>
                 </div>
@@ -132,7 +145,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <a class="header" href="introduction.html#tock-os-tutorial" id="tock-os-tutorial"><h1>Tock OS Tutorial</h1></a>
+                        <h1><a class="header" href="#tock-os-tutorial" id="tock-os-tutorial">Tock OS Tutorial</a></h1>
 <p>This course introduces you to Tock, a secure embedded operating system for
 sensor networks and the Internet of Things. Tock is the first operating system
 to allow multiple untrusted applications to run concurrently on a
@@ -151,7 +164,7 @@ enhance and extend the kernel.</p>
 <p>This course assumes some experience programming embedded devices and fluency in C.
 It assumes no knowledge of Rust, although knowing Rust will allow you to be
 more creative during the kernel exploration at the end.</p>
-<a class="header" href="introduction.html#outline" id="outline"><h2>Outline</h2></a>
+<h2><a class="header" href="#outline" id="outline">Outline</a></h2>
 <p>You should first make sure you have the <a href="prerequisites.html">requisite</a>
 hardware and software to complete the guide.</p>
 <p>The guide is divided into sections, each with an brief introduction to
@@ -177,10 +190,6 @@ write a simple driver in Rust.</p>
                         
 
                         
-                            <a rel="next" href="prerequisites.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-                        
 
                         <div style="clear: both"></div>
                     </nav>
@@ -190,10 +199,6 @@ write a simple driver in Rust.</p>
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
 
-                
-                    <a href="prerequisites.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
                 
             </nav>
 
@@ -205,9 +210,6 @@ write a simple driver in Rust.</p>
 
         
 
-        
-        <script src="searchindex.js" type="text/javascript" charset="utf-8"></script>
-        
         
         <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>

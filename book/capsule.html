@@ -4,22 +4,25 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Capsule - Tock Tutorial</title>
+        
+
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
-        <base href="">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
 
-        <link rel="stylesheet" href="book.css">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
         <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
 
-        <link rel="shortcut icon" href="favicon.png">
-
-        <!-- Font Awesome -->
-        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-
+        <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
         <link rel="stylesheet" href="tomorrow-night.css">
         <link rel="stylesheet" href="ayu-highlight.css">
@@ -28,9 +31,14 @@
         
 
         
-
     </head>
     <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
+
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script type="text/javascript">
             try {
@@ -50,8 +58,8 @@
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script type="text/javascript">
             var theme;
-            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
-            if (theme === null || theme === undefined) { theme = 'light'; }
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
             document.body.className = theme;
             document.querySelector('html').className = theme + ' js';
         </script>
@@ -69,7 +77,10 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li class="affix"><a href="prerequisites.html">Prerequisites</a></li><li><a href="environment.html"><strong aria-hidden="true">1.</strong> Environment</a></li><li><a href="application.html"><strong aria-hidden="true">2.</strong> Application</a></li><li><a href="capsule.html" class="active"><strong aria-hidden="true">3.</strong> Capsule</a></li></ol>
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li class="affix"><a href="prerequisites.html">Prerequisites</a></li><li><a href="environment.html"><strong aria-hidden="true">1.</strong> Environment</a></li><li><a href="application.html"><strong aria-hidden="true">2.</strong> Application</a></li><li><a href="capsule.html" class="active"><strong aria-hidden="true">3.</strong> Capsule</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
@@ -86,7 +97,7 @@
                                 <i class="fa fa-paint-brush"></i>
                             </button>
                             <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
@@ -99,12 +110,13 @@
                             
                         </div>
 
-                        <h1 class="menu-title">Tock Tutorial</h1> 
+                        <h1 class="menu-title">Tock Tutorial</h1>
 
                         <div class="right-buttons">
                             <a href="print.html" title="Print this book" aria-label="Print this book">
                                 <i id="print-button" class="fa fa-print"></i>
                             </a>
+                            
                         </div>
                     </div>
                 </div>
@@ -133,7 +145,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <a class="header" href="capsule.html#capsule" id="capsule"><h1>Capsule</h1></a>
+                        <h1><a class="header" href="#capsule" id="capsule">Capsule</a></h1>
 <p>The goal of this part of the course is to make you comfortable with the
 Tock kernel and writing code for it. By the end of this part, you'll have
 written a new capsule that reads a humidity sensor and outputs its readings
@@ -145,11 +157,11 @@ over the serial port.</p>
 <li>Learn about Tock's event-driven programming</li>
 <li>Write a new capsule that reads a humidity sensor and prints it over serial</li>
 </ol>
-<a class="header" href="capsule.html#read-the-tock-boot-sequence-20m" id="read-the-tock-boot-sequence-20m"><h2>Read the Tock boot sequence (20m)</h2></a>
+<h2><a class="header" href="#read-the-tock-boot-sequence-20m" id="read-the-tock-boot-sequence-20m">Read the Tock boot sequence (20m)</a></h2>
 <p>Open <code>imix/src/main.rs</code> in your favorite editor. This file defines the
 imix platform: how it boots, what capsules it uses, and what system calls it
 supports for userland applications.</p>
-<a class="header" href="capsule.html#how-is-everything-organized" id="how-is-everything-organized"><h3>How is everything organized?</h3></a>
+<h3><a class="header" href="#how-is-everything-organized" id="how-is-everything-organized">How is everything organized?</a></h3>
 <p>Find the declaration of <code>struct Imix</code> (it's pretty early in the file).
 This declares the structure representing the platform. It has many fields,
 all of which are capsules. These are the capsules that make up the imix
@@ -159,12 +171,12 @@ but there are exceptions such as <code>IPC</code> (inter-process communication).
 allocated? We can see that here. Every field in <code>struct Imix</code> is a reference to
 an object with a static lifetime.</p>
 <p>The capsules themselves take a lifetime as a parameter, which is currently
-always <code>`static</code>.  The implementations of these capsules, however, do not
+always <code> `static</code>.  The implementations of these capsules, however, do not
 rely on this assumption.</p>
 <p>The boot process is primarily the construction of this <code>Imix</code> structure. Once
 everything is set up, the board will pass the constructed <code>imix</code> to
 <code>kernel::kernel_loop</code> and we're off to the races.</p>
-<a class="header" href="capsule.html#how-do-things-get-started" id="how-do-things-get-started"><h3>How do things get started?</h3></a>
+<h3><a class="header" href="#how-do-things-get-started" id="how-do-things-get-started">How do things get started?</a></h3>
 <p>The method <code>reset_handler</code> is invoked when the chip resets (i.e., boots).
 It's pretty long because imix has a lot of drivers that need to be created
 and initialized, and many of them depend on other, lower layer abstractions
@@ -172,7 +184,7 @@ that need to be created and initialized as well.</p>
 <p>Take a look at the first few lines of the <code>reset_handler</code>. The boot sequence
 initializes memory (copies initialized variables into RAM, clears the BSS),
 sets up the system clocks, and configures the GPIO pins.</p>
-<a class="header" href="capsule.html#how-do-capsules-get-created" id="how-do-capsules-get-created"><h3>How do capsules get created?</h3></a>
+<h3><a class="header" href="#how-do-capsules-get-created" id="how-do-capsules-get-created">How do capsules get created?</a></h3>
 <p>The next lines of <code>reset_handler</code> create and initialize the system console,
 which is what turns calls to <code>println</code> into bytes sent to the USB serial port:</p>
 <pre><pre class="playpen"><code class="language-rust">
@@ -208,16 +220,16 @@ variable with a call to <code>new</code>. The first parameter is the type, the s
 is the expression to produce an instance of the type. This call creates
 a <code>Console</code> that uses serial port 3 (<code>USART3</code>) at 115200 bits per second.</p>
 <blockquote>
-<a class="header" href="capsule.html#a-brief-aside-on-buffers" id="a-brief-aside-on-buffers"><h4>A brief aside on buffers:</h4></a>
+<h4><a class="header" href="#a-brief-aside-on-buffers" id="a-brief-aside-on-buffers">A brief aside on buffers:</a></h4>
 <p>Notice that you have to pass a write buffer to the console for it to use:
-this buffer has to have a <code>`static</code> lifetime. This is because low-level
-hardware drivers, especially those that use DMA, require <code>`static</code> buffers.
+this buffer has to have a <code> `static</code> lifetime. This is because low-level
+hardware drivers, especially those that use DMA, require <code> `static</code> buffers.
 Since Tock doesn't promise when a DMA operation will complete, and you
 need to be able to promise that the buffer outlives the operation, the
 one lifetime that is assured to be alive at the end of an operation is
-<code>`static</code>. So that other code which has buffers
-without a <code>`static</code> lifetime, such as userspace processes, can use the
-<code>Console</code>, it copies them into its own internal <code>`static</code> buffer before
+<code> `static</code>. So that other code which has buffers
+without a <code> `static</code> lifetime, such as userspace processes, can use the
+<code>Console</code>, it copies them into its own internal <code> `static</code> buffer before
 passing it to the serial port. So the buffer passing architecture looks like
 this:</p>
 <p><img src="console.png" alt="Console/UART buffer lifetimes" /></p>
@@ -229,12 +241,12 @@ capsule itself, we make it the responsibility of the instantiator to give the
 Console a buffer to use, without burdening the instantiator with sizing the
 buffer.</p>
 </blockquote>
-<a class="header" href="capsule.html#lets-make-an-imix" id="lets-make-an-imix"><h3>Let's make an imix!</h3></a>
+<h3><a class="header" href="#lets-make-an-imix" id="lets-make-an-imix">Let's make an imix!</a></h3>
 <p>The code continues on, creating all of the other capsules that are needed
 by the imix platform. By the time we get down to around line 360, we've
 created all of the capsules we need, and it's time to create the actual
 imix platform structure (<code>let imix = Imix {</code> ...).</p>
-<a class="header" href="capsule.html#capsule-initialization" id="capsule-initialization"><h3>Capsule <em>initialization</em></h3></a>
+<h3><a class="header" href="#capsule-initialization" id="capsule-initialization">Capsule <em>initialization</em></a></h3>
 <p>Up to this point we have been creating numerous structures and setting some
 static configuration options and mappings, but nothing dynamic has occurred
 (said another way, all methods invoked by <code>static_init!</code> must be <code>const fn</code>,
@@ -252,7 +264,7 @@ imix.nrf51822.initialize();
 <p>This method is responsible for actually writing the hardware registers that
 configure the associated UART peripheral for use as a text console
 (8 data bits, 1 stop bit, no parity bit, no hardware flow control).</p>
-<a class="header" href="capsule.html#inter-capsule-dependencies" id="inter-capsule-dependencies"><h3>Inter-capsule dependencies</h3></a>
+<h3><a class="header" href="#inter-capsule-dependencies" id="inter-capsule-dependencies">Inter-capsule dependencies</a></h3>
 <p>Just after initializing the console capsule, we find this line:</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
@@ -298,7 +310,7 @@ into a buffer and the console prints them via DMA as the UART peripheral is
 available, interleaved with other console users (i.e. processes). You
 shouldn't need to worry about the mechanics of this for now.</p>
 </blockquote>
-<a class="header" href="capsule.html#loading-processes" id="loading-processes"><h3>Loading processes</h3></a>
+<h3><a class="header" href="#loading-processes" id="loading-processes">Loading processes</a></h3>
 <p>Once the platform is all set up, the board is responsible for loading processes
 into memory:</p>
 <pre><pre class="playpen"><code class="language-rust">
@@ -314,7 +326,7 @@ platform could load processes by any means. In practice, all existing platforms
 write an array of Tock Binary Format (TBF) entries to flash. The kernel provides
 the <code>load_processes</code> helper function that takes in a flash address and begins
 iteratively parsing TBF entries and making <code>Process</code>es.</p>
-<a class="header" href="capsule.html#starting-the-kernel" id="starting-the-kernel"><h3>Starting the kernel</h3></a>
+<h3><a class="header" href="#starting-the-kernel" id="starting-the-kernel">Starting the kernel</a></h3>
 <p>Finally, the board passes a reference to the current platform, the chip the
 platform is built on (used for interrupt and power handling), the processes to
 run, and an IPC server instance to the main loop of the kernel:</p>
@@ -325,7 +337,7 @@ kernel::main(&amp;imix, &amp;mut chip, &amp;mut PROCESSES, &amp;imix.ipc);
 #}</code></pre></pre>
 <p>From here, Tock is initialized, the kernel event loop takes over, and the
 system enters steady state operation.</p>
-<a class="header" href="capsule.html#create-a-hello-world-capsule" id="create-a-hello-world-capsule"><h3>Create a &quot;Hello World&quot; capsule</h3></a>
+<h3><a class="header" href="#create-a-hello-world-capsule" id="create-a-hello-world-capsule">Create a &quot;Hello World&quot; capsule</a></h3>
 <p>Now that you've seen how Tock initializes and uses capsules, you're going to
 write a new one. At the end of this section, your capsule will sample the
 humidity sensor once a second and print the results as serial output. But
@@ -352,7 +364,7 @@ No device name specified. Using default &quot;tock&quot;                        
 Listening for serial output.
 Hello from the kernel!
 </code></pre>
-<a class="header" href="capsule.html#extend-your-capsule-to-print-hello-world-every-second" id="extend-your-capsule-to-print-hello-world-every-second"><h2>Extend your capsule to print &quot;Hello World&quot; every second</h2></a>
+<h2><a class="header" href="#extend-your-capsule-to-print-hello-world-every-second" id="extend-your-capsule-to-print-hello-world-every-second">Extend your capsule to print &quot;Hello World&quot; every second</a></h2>
 <p>In order for your capsule to keep track of time, it will need to depend on
 another capsule that implements the Alarm interface. We'll have to do something
 similar for reading the accelerometer, so this is good practice.</p>
@@ -387,7 +399,7 @@ TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.
 TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.rs:31: Hello World
 </code></pre>
 <p><a href="https://gist.github.com/alevy/73fca7b0dddcb5449088cebcbfc035f1">Sample Solution</a></p>
-<a class="header" href="capsule.html#extend-your-capsule-to-sample-the-humidity-once-a-second" id="extend-your-capsule-to-sample-the-humidity-once-a-second"><h2>Extend your capsule to sample the humidity once a second</h2></a>
+<h2><a class="header" href="#extend-your-capsule-to-sample-the-humidity-once-a-second" id="extend-your-capsule-to-sample-the-humidity-once-a-second">Extend your capsule to sample the humidity once a second</a></h2>
 <p>The steps for reading an accelerometer from your capsule are similar to using
 the alarm. You'll use a capsule that implements the humidity HIL, which
 includes the <code>HumidityDriver</code> and <code>HumidityClient</code> traits, both in
@@ -412,7 +424,7 @@ Humidity 2731
 Humidity 2732
 </code></pre>
 <p><a href="https://gist.github.com/alevy/798d11dbfa5409e0aa56d870b4b7afcf">Sample solution</a></p>
-<a class="header" href="capsule.html#some-further-questions-and-directions-to-explore" id="some-further-questions-and-directions-to-explore"><h2>Some further questions and directions to explore</h2></a>
+<h2><a class="header" href="#some-further-questions-and-directions-to-explore" id="some-further-questions-and-directions-to-explore">Some further questions and directions to explore</a></h2>
 <p>Your capsule used the si7021 and virtual alarm. Take a look at the
 code behind each of these services:</p>
 <ol>
@@ -429,7 +441,7 @@ code behind each of these services:</p>
 <p>How many virtual alarms does the imix boot sequence create?</p>
 </li>
 </ol>
-<a class="header" href="capsule.html#extra-credit-write-a-virtualization-capsule-for-humidity-sensor-" id="extra-credit-write-a-virtualization-capsule-for-humidity-sensor-"><h3><strong>Extra credit</strong>: Write a virtualization capsule for humidity sensor (∞)</h3></a>
+<h3><a class="header" href="#extra-credit-write-a-virtualization-capsule-for-humidity-sensor-" id="extra-credit-write-a-virtualization-capsule-for-humidity-sensor-"><strong>Extra credit</strong>: Write a virtualization capsule for humidity sensor (∞)</a></h3>
 <p>If you have extra time, try writing a virtualization capsule for the <code>Humidity</code>
 HIL that will allow multiple clients to use it. This is a fairly open ended
 task, but you might find inspiration in the <code>virtua_alarm</code> and <code>virtual_i2c</code>
@@ -470,9 +482,6 @@ capsules.</p>
 
         
 
-        
-        <script src="searchindex.js" type="text/javascript" charset="utf-8"></script>
-        
         
         <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>

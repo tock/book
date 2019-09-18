@@ -4,22 +4,25 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Application - Tock Tutorial</title>
+        
+
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
-        <base href="">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
 
-        <link rel="stylesheet" href="book.css">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
         <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
 
-        <link rel="shortcut icon" href="favicon.png">
-
-        <!-- Font Awesome -->
-        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-
+        <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
         <link rel="stylesheet" href="tomorrow-night.css">
         <link rel="stylesheet" href="ayu-highlight.css">
@@ -28,9 +31,14 @@
         
 
         
-
     </head>
     <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
+
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script type="text/javascript">
             try {
@@ -50,8 +58,8 @@
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script type="text/javascript">
             var theme;
-            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
-            if (theme === null || theme === undefined) { theme = 'light'; }
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
             document.body.className = theme;
             document.querySelector('html').className = theme + ' js';
         </script>
@@ -69,7 +77,10 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li class="affix"><a href="prerequisites.html">Prerequisites</a></li><li><a href="environment.html"><strong aria-hidden="true">1.</strong> Environment</a></li><li><a href="application.html" class="active"><strong aria-hidden="true">2.</strong> Application</a></li><li><a href="capsule.html"><strong aria-hidden="true">3.</strong> Capsule</a></li></ol>
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li class="affix"><a href="prerequisites.html">Prerequisites</a></li><li><a href="environment.html"><strong aria-hidden="true">1.</strong> Environment</a></li><li><a href="application.html" class="active"><strong aria-hidden="true">2.</strong> Application</a></li><li><a href="capsule.html"><strong aria-hidden="true">3.</strong> Capsule</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
@@ -86,7 +97,7 @@
                                 <i class="fa fa-paint-brush"></i>
                             </button>
                             <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
@@ -99,12 +110,13 @@
                             
                         </div>
 
-                        <h1 class="menu-title">Tock Tutorial</h1> 
+                        <h1 class="menu-title">Tock Tutorial</h1>
 
                         <div class="right-buttons">
                             <a href="print.html" title="Print this book" aria-label="Print this book">
                                 <i id="print-button" class="fa fa-print"></i>
                             </a>
+                            
                         </div>
                     </div>
                 </div>
@@ -133,11 +145,11 @@
 
                 <div id="content" class="content">
                     <main>
-                        <a class="header" href="application.html#write-an-environment-sensing-application" id="write-an-environment-sensing-application"><h1>Write an environment sensing application</h1></a>
-<a class="header" href="application.html#process-overview-relocation-model-and-system-call-api" id="process-overview-relocation-model-and-system-call-api"><h2>Process overview, relocation model and system call API</h2></a>
+                        <h1><a class="header" href="#write-an-environment-sensing-application" id="write-an-environment-sensing-application">Write an environment sensing application</a></h1>
+<h2><a class="header" href="#process-overview-relocation-model-and-system-call-api" id="process-overview-relocation-model-and-system-call-api">Process overview, relocation model and system call API</a></h2>
 <p>In this section, we're going to learn about processes (a.k.a applications) in
 Tock, and build our own applications in C.</p>
-<a class="header" href="application.html#get-a-c-application-running-on-your-board" id="get-a-c-application-running-on-your-board"><h2>Get a C application running on your board</h2></a>
+<h2><a class="header" href="#get-a-c-application-running-on-your-board" id="get-a-c-application-running-on-your-board">Get a C application running on your board</a></h2>
 <p>You'll find the outline of a C application in the directory
 <code>exercises/app</code>.</p>
 <p>Take a look at the code in <code>main.c</code>. So far, this application merely prints
@@ -176,7 +188,7 @@ the write is complete, and begin the write operation respectively.</p>
 <p>The application could accomplish all of this by invoking Tock system calls
 directly, but using libraries makes for a much cleaner interface and allows
 users to not need to know the inner workings of the OS.</p>
-<a class="header" href="application.html#loading-an-application" id="loading-an-application"><h3>Loading an application</h3></a>
+<h3><a class="header" href="#loading-an-application" id="loading-an-application">Loading an application</a></h3>
 <p>Okay, let's build and load this simple program.</p>
 <ol>
 <li>
@@ -204,11 +216,11 @@ Using &quot;/dev/cu.usbserial-c098e5130012 - Hail IoT Module - TockOS&quot;
 Listening for serial output.
 Hello, World!
 </code></pre>
-<a class="header" href="application.html#creating-your-own-application" id="creating-your-own-application"><h2>Creating your own application</h2></a>
+<h2><a class="header" href="#creating-your-own-application" id="creating-your-own-application">Creating your own application</a></h2>
 <p>Now that you've got a basic app working, modify it so that it continuously
 prints out <code>Hello World</code> twice per second.  You'll want to use the user
 library's timer facilities to manage this:</p>
-<a class="header" href="application.html#timer" id="timer"><h3>Timer</h3></a>
+<h3><a class="header" href="#timer" id="timer">Timer</a></h3>
 <p>You'll find the interface for timers in <code>libtock/timer.h</code>. The
 function you'll find useful today is:</p>
 <pre><code class="language-c">#include &lt;timer.h&gt;
@@ -217,13 +229,13 @@ void delay_ms(uint32_t ms);
 <p>This function sleeps until the specified number of milliseconds have passed, and
 then returns.  So we call this function &quot;synchronous&quot;: no further code will run
 until the delay is complete.</p>
-<a class="header" href="application.html#write-an-app-that-periodically-samples-the-on-board-sensors" id="write-an-app-that-periodically-samples-the-on-board-sensors"><h2>Write an app that periodically samples the on-board sensors</h2></a>
+<h2><a class="header" href="#write-an-app-that-periodically-samples-the-on-board-sensors" id="write-an-app-that-periodically-samples-the-on-board-sensors">Write an app that periodically samples the on-board sensors</a></h2>
 <p>Now that we have the ability to write applications, let's do something a little
 more complex. The development board you are using has several sensors on it.
 These sensors include a light sensor, a humidity sensor, and a temperature
 sensor. Each sensing medium can be accessed separately via the Tock user
 library. We'll just be using the light and temperature for this excercise.</p>
-<a class="header" href="application.html#light" id="light"><h4>Light</h4></a>
+<h4><a class="header" href="#light" id="light">Light</a></h4>
 <p>The interface in <code>libtock/ambient_light.h</code> is used to measure ambient
 light conditions in <a href="https://en.wikipedia.org/wiki/Lux">lux</a>. imix uses the
 <a href="https://www.intersil.com/en/products/optoelectronics/ambient-light-sensors/light-to-digital-sensors/ISL29035.html">ISL29035</a>
@@ -234,7 +246,7 @@ int ambient_light_read_intensity_sync(int* lux);
 </code></pre>
 <p>Note that the light reading is written to the location passed as an
 argument, and the function returns non-zero in the case of an error.</p>
-<a class="header" href="application.html#temperature" id="temperature"><h4>Temperature</h4></a>
+<h4><a class="header" href="#temperature" id="temperature">Temperature</a></h4>
 <p>The interface in <code>libtock/temperature.h</code> is used to measure ambient
 temperature in degrees Celsius, times 100. imix uses the
 <a href="https://www.silabs.com/products/sensors/humidity-sensors/Pages/si7013-20-21.aspx">SI7021</a>
@@ -243,13 +255,13 @@ sensor. It contains the function:</p>
 int temperature_read_sync(int* temperature);
 </code></pre>
 <p>Again, this function returns non-zero in the case of an error.</p>
-<a class="header" href="application.html#read-sensors-in-a-tock-application" id="read-sensors-in-a-tock-application"><h3>Read sensors in a Tock application</h3></a>
+<h3><a class="header" href="#read-sensors-in-a-tock-application" id="read-sensors-in-a-tock-application">Read sensors in a Tock application</a></h3>
 <p>Using the example program you're working on, write an application that reads
 all of the sensors on your development board and reports their readings over
 the serial port.</p>
 <p>As a bonus, experiment with toggling an LED when readings are above or below a
 certain threshold:</p>
-<a class="header" href="application.html#led" id="led"><h4>LED</h4></a>
+<h4><a class="header" href="#led" id="led">LED</a></h4>
 <p>The interface in <code>libtock/led.h</code> is used to control lights on Tock boards. On the Hail
 board, there are three LEDs which can be controlled: Red, Blue, and Green. The
 functions in the LED module are:</p>
@@ -310,9 +322,6 @@ int led_count(void);
 
         
 
-        
-        <script src="searchindex.js" type="text/javascript" charset="utf-8"></script>
-        
         
         <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>

@@ -4,22 +4,25 @@
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Prerequisites - Tock Tutorial</title>
+        
+
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
-        <base href="">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
 
-        <link rel="stylesheet" href="book.css">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
         <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
 
-        <link rel="shortcut icon" href="favicon.png">
-
-        <!-- Font Awesome -->
-        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-
+        <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
         <link rel="stylesheet" href="tomorrow-night.css">
         <link rel="stylesheet" href="ayu-highlight.css">
@@ -28,9 +31,14 @@
         
 
         
-
     </head>
     <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
+
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script type="text/javascript">
             try {
@@ -50,8 +58,8 @@
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script type="text/javascript">
             var theme;
-            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
-            if (theme === null || theme === undefined) { theme = 'light'; }
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
             document.body.className = theme;
             document.querySelector('html').className = theme + ' js';
         </script>
@@ -69,7 +77,10 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li class="affix"><a href="prerequisites.html" class="active">Prerequisites</a></li><li><a href="environment.html"><strong aria-hidden="true">1.</strong> Environment</a></li><li><a href="application.html"><strong aria-hidden="true">2.</strong> Application</a></li><li><a href="capsule.html"><strong aria-hidden="true">3.</strong> Capsule</a></li></ol>
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li class="affix"><a href="prerequisites.html" class="active">Prerequisites</a></li><li><a href="environment.html"><strong aria-hidden="true">1.</strong> Environment</a></li><li><a href="application.html"><strong aria-hidden="true">2.</strong> Application</a></li><li><a href="capsule.html"><strong aria-hidden="true">3.</strong> Capsule</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
@@ -86,7 +97,7 @@
                                 <i class="fa fa-paint-brush"></i>
                             </button>
                             <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                                 <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
@@ -99,12 +110,13 @@
                             
                         </div>
 
-                        <h1 class="menu-title">Tock Tutorial</h1> 
+                        <h1 class="menu-title">Tock Tutorial</h1>
 
                         <div class="right-buttons">
                             <a href="print.html" title="Print this book" aria-label="Print this book">
                                 <i id="print-button" class="fa fa-print"></i>
                             </a>
+                            
                         </div>
                     </div>
                 </div>
@@ -133,31 +145,36 @@
 
                 <div id="content" class="content">
                     <main>
-                        <a class="header" href="prerequisites.html#prerequisites" id="prerequisites"><h1>Prerequisites</h1></a>
+                        <h1><a class="header" href="#prerequisites" id="prerequisites">Prerequisites</a></h1>
 <p>We will go over setting up a development environment during the course and help
 out with possible problems you run into. You must ensure you have the proper
 hardware before you begin---an development board and a workstation---and
 software development environment.</p>
-<a class="header" href="prerequisites.html#hardware" id="hardware"><h2>Hardware</h2></a>
-<p>To complete the hands-on excercises in this guide, you'll need an <em>imix</em>
+<h2><a class="header" href="#hardware" id="hardware">Hardware</a></h2>
+<p>To complete the hands-on exercises in this guide, you'll need an <em>imix</em>
 hardware platform (pictured below), a workstation running either Linux or OS X
-(you can also work in a <a href="prerequisites.html#virtual-machine">Virtual Machine</a>), and a micro-USB
+(you can also work in a <a href="#virtual-machine">Virtual Machine</a>), and a micro-USB
 cable to connect your imix to your workstation.</p>
 <p>To complete the 6LoWPAN networking portion of this guide, you'll need an
 additional <em>imix</em> to act as a hub, but multiple participants can use the same
 hub <em>imix</em>.</p>
 <p><img src="../imgs/imix.svg" alt="" /></p>
-<a class="header" href="prerequisites.html#software" id="software"><h2>Software</h2></a>
-<p>You can either download a <a href="prerequisites.html#virtual-machine">virtual machine</a> with all
+<h2><a class="header" href="#software" id="software">Software</a></h2>
+<p>You can either download a <a href="#virtual-machine">virtual machine</a> with all
 development environment pre-installed, or, if you have a Linux or OS X
 workstation, you may install the development environment
-<a href="prerequisites.html#native-installation">natively</a>. Using a virtual machine is quicker and easier
+<a href="#native-installation">natively</a>. Using a virtual machine is quicker and easier
 to set up, while installing natively will yield the most comfortable
 development environment and is better for long term use.</p>
-<a class="header" href="prerequisites.html#virtual-machine" id="virtual-machine"><h3>Virtual Machine</h3></a>
+<h3><a class="header" href="#virtual-machine" id="virtual-machine">Virtual Machine</a></h3>
 <p>If you're comfortable working inside a Debian virtual machine, you can download
 an image with all of the dependencies already installed
-<a href="https://cesar.cs.princeton.edu/Tock.ova">here</a></p>
+<a href="https://cesar.cs.princeton.edu/Tock.ova">here</a> or <a href="https://www.cs.virginia.edu/%7Ebjc8c/archive/Tock.ova">here</a>.
+Using <code>curl</code> is recommended:</p>
+<pre><code>$ curl -O &lt;url&gt;
+</code></pre>
+<p>With the virtual machine image downloaded, you can run it with VirtualBox or
+VMWare:</p>
 <ul>
 <li>VirtualBox users: <a href="https://docs.oracle.com/cd/E26217_01/E26796/html/qs-import-vm.html">File → Import Appliance...</a>,</li>
 <li>VMWare users: <a href="https://pubs.vmware.com/workstation-9/index.jsp?topic=%2Fcom.vmware.ws.using.doc%2FGUID-DDCBE9C0-0EC9-4D09-8042-18436DA62F7A.html">File → Open...</a></li>
@@ -169,19 +186,19 @@ whichever editors, window managers, etc. you like before the training starts.</p
 group on your machine in order to connect the hardware boards to the virtual
 machine.</p>
 </blockquote>
-<a class="header" href="prerequisites.html#native-installation" id="native-installation"><h3>Native Installation</h3></a>
-<p>If you choose to install the development environment natively, you will need
-the following software:</p>
+<h3><a class="header" href="#native-installation" id="native-installation">Native Installation</a></h3>
+<p>If you choose to install the development environment natively on an existing
+operating system install, you will need the following software:</p>
 <ol>
 <li>
-<p>Command line utilities: curl, make, git</p>
+<p>Command line utilities: <code>curl</code>, <code>make</code>, and <code>git</code>.</p>
 </li>
 <li>
-<p>Python 3 and pip3</p>
+<p>Python 3 and <code>pip3</code></p>
 </li>
 <li>
-<p>A local clone of this book source, containing the excercises</p>
-<pre><code> $ git clone https://github.com/tock/book.git
+<p>A local clone of this book source, containing the exercises</p>
+<pre><code> $ git clone https://github.com/tock/book.git tock-book
 </code></pre>
 </li>
 <li>
@@ -190,13 +207,15 @@ Rust compiler and related tools.</p>
 <pre><code> $ curl https://sh.rustup.rs -sSf | sh
 </code></pre>
 <p>and the Rust core libraries for the Cortex-M4:</p>
-<pre><code> $ rustup target add thumbv7em-none-eabi 
+<pre><code> $ rustup target add thumbv7em-none-eabi
 </code></pre>
 </li>
 <li>
 <p><a href="https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads">arm-none-eabi toolchain</a> (version &gt;= 5.2)</p>
-<pre><code> $ brew tap ARMmbed/homebrew-formulae &amp;&amp; brew update &amp;&amp; brew install arm-none-eabi-gcc
+<pre><code> # mac
+ $ brew tap ARMmbed/homebrew-formulae &amp;&amp; brew update &amp;&amp; brew install arm-none-eabi-gcc
 
+ # linux
  $ sudo add-apt-repository ppa:team-gcc-arm-embedded/ppa &amp;&amp; sudo apt update &amp;&amp; sudo apt install gcc-arm-embedded
 </code></pre>
 <p>OS-specific installation instructions can be found
@@ -226,7 +245,7 @@ already present:</p>
 </code></pre>
 </li>
 </ol>
-<a class="header" href="prerequisites.html#testing" id="testing"><h3>Testing</h3></a>
+<h3><a class="header" href="#testing" id="testing">Testing</a></h3>
 <p>To test if your environment is working, go to the <code>tock/boards/imix</code> directory
 and type <code>make program</code>. This should compile the kernel for the default board,
 Imix, and try to program it over a USB serial connection. It may need to compile
@@ -298,9 +317,6 @@ to program a board.</p>
 
         
 
-        
-        <script src="searchindex.js" type="text/javascript" charset="utf-8"></script>
-        
         
         <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>

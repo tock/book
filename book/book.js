@@ -18,13 +18,30 @@ function playpen_text(playpen) {
 (function codeSnippets() {
     // Hide Rust code lines prepended with a specific character
     var hiding_character = "#";
-    var request = fetch("https://play.rust-lang.org/meta/crates", {
-        headers: {
-            'Content-Type': "application/json",
-        },
-        method: 'POST',
-        mode: 'cors',
-    });
+
+    function fetch_with_timeout(url, options, timeout = 6000) {
+        return Promise.race([
+            fetch(url, options),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), timeout))
+        ]);
+    }
+
+    var playpens = Array.from(document.querySelectorAll(".playpen"));
+    if (playpens.length > 0) {
+        fetch_with_timeout("https://play.rust-lang.org/meta/crates", {
+            headers: {
+                'Content-Type': "application/json",
+            },
+            method: 'POST',
+            mode: 'cors',
+        })
+        .then(response => response.json())
+        .then(response => {
+            // get list of crates available in the rust playground
+            let playground_crates = response.crates.map(item => item["id"]);
+            playpens.forEach(block => handle_crate_list_update(block, playground_crates));
+        });
+    }
 
     function handle_crate_list_update(playpen_block, playground_crates) {
         // update the play buttons after receiving the response
@@ -84,34 +101,34 @@ function playpen_text(playpen) {
         }
 
         let text = playpen_text(code_block);
+        let classes = code_block.querySelector('code').classList;
+        let has_2018 = classes.contains("edition2018");
+        let edition = has_2018 ? "2018" : "2015";
 
         var params = {
-            channel: "stable",
-            mode: "debug",
-            crateType: "bin",
-            tests: false,
+            version: "stable",
+            optimize: "0",
             code: text,
-        }
+            edition: edition
+        };
 
         if (text.indexOf("#![feature") !== -1) {
-            params.channel = "nightly";
+            params.version = "nightly";
         }
 
         result_block.innerText = "Running...";
 
-        var request = fetch("https://play.rust-lang.org/execute", {
+        fetch_with_timeout("https://play.rust-lang.org/evaluate.json", {
             headers: {
                 'Content-Type': "application/json",
             },
             method: 'POST',
             mode: 'cors',
             body: JSON.stringify(params)
-        });
-
-        request
-            .then(function (response) { return response.json(); })
-            .then(function (response) { result_block.innerText = response.success ? response.stdout : response.stderr; })
-            .catch(function (error) { result_block.innerText = "Playground communication" + error.message; });
+        })
+        .then(response => response.json())
+        .then(response => result_block.innerText = response.result)
+        .catch(error => result_block.innerText = "Playground Communication: " + error.message);
     }
 
     // Syntax highlighting Configuration
@@ -150,9 +167,11 @@ function playpen_text(playpen) {
         var lines = code_block.innerHTML.split("\n");
         var first_non_hidden_line = false;
         var lines_hidden = false;
+        var trimmed_line = "";
 
         for (var n = 0; n < lines.length; n++) {
-            if (lines[n].trim()[0] == hiding_character) {
+            trimmed_line = lines[n].trim();
+            if (trimmed_line[0] == hiding_character && trimmed_line[1] != hiding_character) {
                 if (first_non_hidden_line) {
                     lines[n] = "<span class=\"hidden\">" + "\n" + lines[n].replace(/(\s*)# ?/, "$1") + "</span>";
                 }
@@ -166,6 +185,9 @@ function playpen_text(playpen) {
             }
             else {
                 first_non_hidden_line = true;
+            }
+            if (trimmed_line[0] == hiding_character && trimmed_line[1] == hiding_character) {
+                lines[n] = lines[n].replace("##", "#")
             }
         }
         code_block.innerHTML = lines.join("");
@@ -274,17 +296,6 @@ function playpen_text(playpen) {
             });
         }
     });
-
-    request
-        .then(function (response) { return response.json(); })
-        .then(function (response) {
-            // get list of crates available in the rust playground
-            let playground_crates = response.crates.map(function (item) { return item["id"]; });
-            Array.from(document.querySelectorAll(".playpen")).forEach(function (block) {
-                handle_crate_list_update(block, playground_crates);
-            });
-        });
-
 })();
 
 (function themes() {
@@ -293,9 +304,9 @@ function playpen_text(playpen) {
     var themePopup = document.getElementById('theme-list');
     var themeColorMetaTag = document.querySelector('meta[name="theme-color"]');
     var stylesheets = {
-        ayuHighlight: document.querySelector("[href='ayu-highlight.css']"),
-        tomorrowNight: document.querySelector("[href='tomorrow-night.css']"),
-        highlight: document.querySelector("[href='highlight.css']"),
+        ayuHighlight: document.querySelector("[href$='ayu-highlight.css']"),
+        tomorrowNight: document.querySelector("[href$='tomorrow-night.css']"),
+        highlight: document.querySelector("[href$='highlight.css']"),
     };
 
     function showThemes() {
@@ -323,13 +334,11 @@ function playpen_text(playpen) {
             stylesheets.ayuHighlight.disabled = false;
             stylesheets.tomorrowNight.disabled = true;
             stylesheets.highlight.disabled = true;
-
             ace_theme = "ace/theme/tomorrow_night";
         } else {
             stylesheets.ayuHighlight.disabled = true;
             stylesheets.tomorrowNight.disabled = true;
             stylesheets.highlight.disabled = false;
-
             ace_theme = "ace/theme/dawn";
         }
 
@@ -345,7 +354,7 @@ function playpen_text(playpen) {
 
         var previousTheme;
         try { previousTheme = localStorage.getItem('mdbook-theme'); } catch (e) { }
-        if (previousTheme === null || previousTheme === undefined) { previousTheme = 'light'; }
+        if (previousTheme === null || previousTheme === undefined) { previousTheme = default_theme; }
 
         try { localStorage.setItem('mdbook-theme', theme); } catch (e) { }
 
@@ -357,7 +366,7 @@ function playpen_text(playpen) {
     // Set theme
     var theme;
     try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
-    if (theme === null || theme === undefined) { theme = 'light'; }
+    if (theme === null || theme === undefined) { theme = default_theme; }
 
     set_theme(theme);
 
@@ -376,7 +385,7 @@ function playpen_text(playpen) {
 
     themePopup.addEventListener('focusout', function(e) {
         // e.relatedTarget is null in Safari and Firefox on macOS (see workaround below)
-        if (!!e.relatedTarget && !themePopup.contains(e.relatedTarget)) {
+        if (!!e.relatedTarget && !themeToggleButton.contains(e.relatedTarget) && !themePopup.contains(e.relatedTarget)) {
             hideThemes();
         }
     });
@@ -428,6 +437,7 @@ function playpen_text(playpen) {
     var sidebar = document.getElementById("sidebar");
     var sidebarLinks = document.querySelectorAll('#sidebar a');
     var sidebarToggleButton = document.getElementById("sidebar-toggle");
+    var sidebarResizeHandle = document.getElementById("sidebar-resize-handle");
     var firstContact = null;
 
     function showSidebar() {
@@ -466,6 +476,23 @@ function playpen_text(playpen) {
             }
         }
     });
+
+    sidebarResizeHandle.addEventListener('mousedown', initResize, false);
+
+    function initResize(e) {
+        window.addEventListener('mousemove', resize, false);
+        window.addEventListener('mouseup', stopResize, false);
+        html.classList.add('sidebar-resizing');
+    }
+    function resize(e) {
+        document.documentElement.style.setProperty('--sidebar-width', (e.clientX - sidebar.offsetLeft) + 'px');
+    }
+    //on mouseup remove windows functions mousemove & mouseup
+    function stopResize(e) {
+        html.classList.remove('sidebar-resizing');
+        window.removeEventListener('mousemove', resize, false);
+        window.removeEventListener('mouseup', stopResize, false);
+    }
 
     document.addEventListener('touchstart', function (e) {
         firstContact = {
@@ -536,7 +563,7 @@ function playpen_text(playpen) {
         elem.className = 'fa fa-copy tooltipped';
     }
 
-    var clipboardSnippets = new Clipboard('.clip-button', {
+    var clipboardSnippets = new ClipboardJS('.clip-button', {
         text: function (trigger) {
             hideTooltip(trigger);
             let playpen = trigger.closest("pre");
