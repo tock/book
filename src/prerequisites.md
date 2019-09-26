@@ -21,7 +21,7 @@ hub _imix_.
 ## Software
 
 You can either download a [virtual machine](#virtual-machine) with all
-development environment pre-installed, or, if you have a Linux or OS X
+development environment pre-installed (**RECOMMENDED**), or, if you have a Linux or OS X
 workstation, you may install the development environment
 [natively](#native-installation). Using a virtual machine is quicker and easier
 to set up, while installing natively will yield the most comfortable
@@ -31,8 +31,10 @@ development environment and is better for long term use.
 
 If you're comfortable working inside a Debian virtual machine, you can download
 an image with all of the dependencies already installed
-[here](https://cesar.cs.princeton.edu/Tock.ova) or [here](https://www.cs.virginia.edu/~bjc8c/archive/Tock.ova).
-Using `curl` is recommended:
+[here](https://cesar.cs.princeton.edu/Tock.ova) or
+[here](https://www.cs.virginia.edu/~bjc8c/archive/Tock.ova). Using `curl` to
+download the image is recommended, but your browser should be able to download
+it as well:
 
     $ curl -O <url>
 
