@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Introduction - Tock Tutorial</title>
+        <title>Mini Tutorials - Tock Tutorial</title>
         
 
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
@@ -11,21 +11,21 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
-        <link rel="shortcut icon" href="favicon.png">
-        <link rel="stylesheet" href="css/variables.css">
-        <link rel="stylesheet" href="css/general.css">
-        <link rel="stylesheet" href="css/chrome.css">
-        <link rel="stylesheet" href="css/print.css" media="print">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
         <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="highlight.css">
-        <link rel="stylesheet" href="tomorrow-night.css">
-        <link rel="stylesheet" href="ayu-highlight.css">
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         
@@ -35,7 +35,7 @@
     <body class="light">
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
-            var path_to_root = "";
+            var path_to_root = "../";
             var default_theme = "light";
         </script>
 
@@ -78,7 +78,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="affix"><a href="introduction.html" class="active">Introduction</a></li><li class="affix"><a href="prerequisites.html">Prerequisites</a></li><li><a href="capsule.html"><strong aria-hidden="true">1.</strong> Tock Course</a></li><li><ol class="section"><li><a href="environment.html"><strong aria-hidden="true">1.1.</strong> Environment</a></li><li><a href="application.html"><strong aria-hidden="true">1.2.</strong> Application</a></li><li><a href="capsule.html"><strong aria-hidden="true">1.3.</strong> Capsule</a></li></ol></li><li><a href="tutorials/tutorials.html"><strong aria-hidden="true">2.</strong> Mini Tutorials</a></li><li><ol class="section"><li><a href="tutorials/01_running_blink.html"><strong aria-hidden="true">2.1.</strong> Blink an LED</a></li><li><a href="tutorials/02_button_print.html"><strong aria-hidden="true">2.2.</strong> Button to Printf()</a></li><li><a href="tutorials/03_ble_scan.html"><strong aria-hidden="true">2.3.</strong> BLE Advertisement Scanning</a></li><li><a href="tutorials/04_sensors_and_drivers.html"><strong aria-hidden="true">2.4.</strong> Sample Sensors and Use Drivers</a></li><li><a href="tutorials/05_ipc.html"><strong aria-hidden="true">2.5.</strong> Inter-process Communication</a></li></ol></li></ol>
+                <ol class="chapter"><li class="affix"><a href="../introduction.html">Introduction</a></li><li class="affix"><a href="../prerequisites.html">Prerequisites</a></li><li><a href="../capsule.html"><strong aria-hidden="true">1.</strong> Tock Course</a></li><li><ol class="section"><li><a href="../environment.html"><strong aria-hidden="true">1.1.</strong> Environment</a></li><li><a href="../application.html"><strong aria-hidden="true">1.2.</strong> Application</a></li><li><a href="../capsule.html"><strong aria-hidden="true">1.3.</strong> Capsule</a></li></ol></li><li><a href="../tutorials/tutorials.html" class="active"><strong aria-hidden="true">2.</strong> Mini Tutorials</a></li><li><ol class="section"><li><a href="../tutorials/01_running_blink.html"><strong aria-hidden="true">2.1.</strong> Blink an LED</a></li><li><a href="../tutorials/02_button_print.html"><strong aria-hidden="true">2.2.</strong> Button to Printf()</a></li><li><a href="../tutorials/03_ble_scan.html"><strong aria-hidden="true">2.3.</strong> BLE Advertisement Scanning</a></li><li><a href="../tutorials/04_sensors_and_drivers.html"><strong aria-hidden="true">2.4.</strong> Sample Sensors and Use Drivers</a></li><li><a href="../tutorials/05_ipc.html"><strong aria-hidden="true">2.5.</strong> Inter-process Communication</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -113,7 +113,7 @@
                         <h1 class="menu-title">Tock Tutorial</h1>
 
                         <div class="right-buttons">
-                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <a href="../print.html" title="Print this book" aria-label="Print this book">
                                 <i id="print-button" class="fa fa-print"></i>
                             </a>
                             
@@ -145,60 +145,97 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#tock-os-book" id="tock-os-book">Tock OS Book</a></h1>
-<p>This book introduces you to Tock, a secure embedded operating system for sensor
-networks and the Internet of Things. Tock is the first operating system to allow
-multiple untrusted applications to run concurrently on a microcontroller-based
-computer. The Tock kernel is written in Rust, a memory-safe systems language
-that does not rely on a garbage collector. Userspace applications are run in
-single-threaded processes that can be written in any language.</p>
-<p>The book is divided into two sections: the course and a series of mini
-tutorials. The course is a good place to start, and provides a structured
-introduction to Tock that should take a few hours to complete (it was designed
-for a half day workshop). The tutorials are smaller examples that highlight
-specific features.</p>
-<h2><a class="header" href="#tock-course" id="tock-course">Tock Course</a></h2>
-<p>In this hands-on guide, we will look at some of the high-level services provided
-by Tock.  We will start with an understanding of the OS and its programming
-environment.  Then we'll look at how a process management application can help
-afford remote debugging, diagnosing and fixing a resource-intensive app over the
-network.  The last part of the tutorial is a bit more free-form, inviting
-attendees to further explore the networking and application features of Tock or
-to dig into the kernel a bit and explore how to enhance and extend the kernel.</p>
-<p>This course assumes some experience programming embedded devices and fluency in
-C. It assumes no knowledge of Rust, although knowing Rust will allow you to be
-more creative during the kernel exploration at the end.</p>
-<h3><a class="header" href="#course-outline" id="course-outline">Course Outline</a></h3>
-<p>You should first make sure you have the <a href="prerequisites.html">requisite</a>
-hardware and software to complete the guide.</p>
-<p>The guide is divided into sections, each with an brief introduction to
-introduce concepts, followed by hands-on excercises.</p>
+                        <h1><a class="header" href="#tock-mini-tutorials" id="tock-mini-tutorials">Tock Mini Tutorials</a></h1>
+<p>These tutorials walk through how to use some various features of Tock. They are
+narrower in scope than the course, but try to explain in detail how various Tock
+apps work.</p>
+<p>You will need the <code>libtock-c</code> repository to run these tutorials. You should
+check out a copy of <code>libtock-c</code> by running:</p>
+<pre><code>$ git clone https://github.com/tock/libtock-c
+</code></pre>
+<p><code>libtock-c</code> contains many example Tock applications as well as the library
+support code for running C and C++ apps on Tock. If you are looking to develop
+Tock applications you will likely want to start with an existing app in
+<code>libtock-c</code> and modify it.</p>
+<h2><a class="header" href="#setup" id="setup">Setup</a></h2>
+<p>You need to be able to compile and load the Tock kernel and Tock applications.
+See the <a href="../prerequisites.html">prerequisites guide</a> on how to get setup.</p>
+<p>You also need <a href="https://tockos.org/hardware">hardware</a> that supports Tock.</p>
+<p>The tutorials assume you have a Tock kernel loaded on your hardware board. To
+get a kernel installed, follow these steps.</p>
 <ol>
 <li>
-<p><a href="environment.html">Environment Setup</a>: Get familiar with the Tock tools
-and getting a board setup.</p>
+<p><strong>Obtain the Tock Source</strong>. You can clone a copy of the Tock repository to
+get the kernel source:</p>
+<pre><code class="language-bash">$ git clone https://github.com/tock/tock
+$ cd tock
+</code></pre>
 </li>
 <li>
-<p><a href="application.html">Userland programming</a>: write a basic sensing application in C.</p>
+<p><strong>Compile Tock</strong>. In the root of the Tock directory, compile the kernel for
+your hardware platform. You can find a list of boards by running <code>make list</code>.
+For example if your board is <code>imix</code> then:</p>
+<pre><code class="language-bash">$ make list
+$ cd boards/imix
+$ make
+</code></pre>
+<p>If you have another board just replace &quot;imix&quot; with <code>&lt;your-board&gt;</code></p>
+<p>This will create binaries of the Tock kernel. Tock is compiled with Cargo, a
+package manager for Rust applications. The first time Tock is built all of
+the crates must be compiled. On subsequent builds, crates that haven't
+changed will not have to be rebuilt and the compilation will be faster.</p>
 </li>
 <li>
-<p><a href="capsule.html">Kernel programming</a>: understand the kernel's boot sequence and
-write a simple driver in Rust.</p>
+<p><strong>Load the Tock Kernel</strong>. The next step is to program the Tock kernel onto
+your hardware. Generally, two options are supported for loading the kernel:
+<code>make program</code> and <code>make flash</code>. You should likely try <code>make program</code> first.
+Alternatively, the README file for the board should show which options are
+available. To load the kernel, run:</p>
+<pre><code class="language-bash">$ make program  # Load code via bootloader
+  -- or --      # Check the README in your board folder
+$ make flash    # Load code via jtag
+</code></pre>
+<p>in the board directory. Now you have the kernel loaded onto the hardware.
+The kernel configures the hardware and provides drivers for many hardware
+resources, but does not actually include any application logic. For that, we
+need to load an application.</p>
+<p>Note, you only need to program the kernel once. Loading applications does
+not alter the kernel, and applications can be re-programed without
+re-programming the kernel.</p>
 </li>
 </ol>
-<h2><a class="header" href="#tock-mini-tutorials" id="tock-mini-tutorials">Tock Mini Tutorials</a></h2>
-<p>These <a href="./tutorials/tutorials.html">tutorials</a> feature specific examples of Tock
-applications. They can be completed after the course to learn about different
-capabilities of Tock apps.</p>
+<p>With the kernel setup, you are ready to try the mini tutorials.</p>
+<h2><a class="header" href="#tutorials" id="tutorials">Tutorials</a></h2>
+<ol>
+<li><strong><a href="01_running_blink.html">Blink an LED</a></strong>: Get your first Tock app running.</li>
+<li><strong><a href="02_button_print.html">Button to Printf()</a></strong>: Print to terminal in response
+to button presses.</li>
+<li><strong><a href="03_ble_scan.html">BLE Advertisement Scanning</a></strong>: Sense nearby BLE packets.</li>
+<li><strong><a href="04_sensors_and_drivers.html">Sample Sensors and Use Drivers</a></strong>: Use syscalls
+to interact with kernel drivers.</li>
+<li><strong><a href="05_ipc.html">Inter-process Communication</a></strong>: Tock's IPC mechanism.</li>
+</ol>
+<h3><a class="header" href="#board-compatiblity-matrix" id="board-compatiblity-matrix">Board compatiblity matrix</a></h3>
+<table><thead><tr><th>Tutorial #</th><th>Supported boards</th></tr></thead><tbody>
+<tr><td>1</td><td>All</td></tr>
+<tr><td>2</td><td>All Cortex-M based boards</td></tr>
+<tr><td>3</td><td>Hail and imix</td></tr>
+<tr><td>4</td><td>Hail and imix</td></tr>
+<tr><td>5</td><td>All that support IPC</td></tr>
+</tbody></table>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
+                            <a rel="prev" href="../capsule.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
 
                         
-                            <a rel="next" href="prerequisites.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../tutorials/01_running_blink.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -210,9 +247,13 @@ capabilities of Tock apps.</p>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
+                    <a href="../capsule.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
 
                 
-                    <a href="prerequisites.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a href="../tutorials/01_running_blink.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 
@@ -242,14 +283,14 @@ capabilities of Tock apps.</p>
         
 
         
-        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
         
 
-        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
         
