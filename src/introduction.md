@@ -1,5 +1,6 @@
 # Tock OS Book
 
+<img src="../imgs/tock.svg" style="float:right;" />
 This book introduces you to Tock, a secure embedded operating system for sensor
 networks and the Internet of Things. Tock is the first operating system to allow
 multiple untrusted applications to run concurrently on a microcontroller-based
@@ -33,7 +34,7 @@ You should first make sure you have the [requisite](prerequisites.html)
 hardware and software to complete the guide.
 
 The guide is divided into sections, each with an brief introduction to
-introduce concepts, followed by hands-on excercises.
+introduce concepts, followed by hands-on exercises.
 
 1. [Environment Setup](environment.html): Get familiar with the Tock tools
    and getting a board setup.
