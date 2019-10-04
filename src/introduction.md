@@ -36,10 +36,14 @@ hardware and software to complete the guide.
 The guide is divided into sections, each with an brief introduction to
 introduce concepts, followed by hands-on exercises.
 
-1. [Environment Setup](environment.html): Get familiar with the Tock tools
-   and getting a board setup.
+1. [Environment Setup](environment.html): Get familiar with the Tock tools and
+   getting a board setup.
 
-2. [Userland programming](application.html): write a basic sensing application in C.
+2. [Userland programming](application.html): write a basic sensing application
+   in C.
+
+3. [Import Client](important_client.html): debug a problem for an important
+   client.
 
 3. [Kernel programming](capsule.html): understand the kernel's boot sequence and
    write a simple driver in Rust.

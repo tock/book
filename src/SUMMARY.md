@@ -9,6 +9,7 @@ Tock OS Course
 - [Tock Course](./capsule.md)
     - [Environment](./environment.md)
     - [Application](./application.md)
+    - [Important Client](./important_client.md)
     - [Capsule](./capsule.md)
 
 - [Mini Tutorials](./tutorials/tutorials.md)
