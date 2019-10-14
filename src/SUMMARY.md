@@ -7,10 +7,12 @@ Tock OS Course
 [Prerequisites](./prerequisites.md)
 
 - [Tock Course](./course.md)
-    - [Environment](./environment.md)
-    - [Application](./application.md)
-    - [Important Client](./important_client.md)
-    - [Capsule](./capsule.md)
+    - [Environment Setup](./environment.md)
+    - [Modules](./modules.md)
+	    - [Application](./application.md)
+	    - [Important Client](./important_client.md)
+	    - [Capsule](./capsule.md)
+	- [Graduation](./graduation.md)
 
 - [Mini Tutorials](./tutorials/tutorials.md)
     - [Blink an LED](./tutorials/01_running_blink.md)
