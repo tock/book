@@ -6,7 +6,7 @@ Tock OS Course
 
 [Prerequisites](./prerequisites.md)
 
-- [Tock Course](./capsule.md)
+- [Tock Course](./course.md)
     - [Environment](./environment.md)
     - [Application](./application.md)
     - [Important Client](./important_client.md)

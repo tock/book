@@ -29,14 +29,27 @@ addition to whatever is already installed on the board.
 
 3. **Compile and Install Blink**. We can also compile the blink app and load our
    compiled version. The basic C version of blink is located in the
-   [libtock-c](https://github.com/tock/libtock-c) repository. Clone that
-   repository, then navigate to `examples/blink`. From there, you should be able
-   to compile it and install it by:
+   [libtock-c](https://github.com/tock/libtock-c) repository.
 
-    ```bash
-    $ make
-    $ tockloader install
-    ```
+    1. Clone that repository:
+
+        ```bash
+        $ cd tock-book
+        $ git clone https://github.com/tock/libtock-c
+        ```
+
+    2. Then navigate to `examples/blink`:
+
+        ```bash
+        $ cd libtock-c/examples/blink
+        ```
+
+    3. From there, you should be able to compile it and install it by:
+
+        ```bash
+        $ make
+        $ tockloader install
+        ```
 
     When the blink app is installed you should see the LEDs on the board
     blinking. Congratulations! You have just programmed your first Tock

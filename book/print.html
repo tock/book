@@ -80,7 +80,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li class="affix"><a href="prerequisites.html">Prerequisites</a></li><li><a href="capsule.html"><strong aria-hidden="true">1.</strong> Tock Course</a></li><li><ol class="section"><li><a href="environment.html"><strong aria-hidden="true">1.1.</strong> Environment</a></li><li><a href="application.html"><strong aria-hidden="true">1.2.</strong> Application</a></li><li><a href="important_client.html"><strong aria-hidden="true">1.3.</strong> Important Client</a></li><li><a href="capsule.html"><strong aria-hidden="true">1.4.</strong> Capsule</a></li></ol></li><li><a href="tutorials/tutorials.html"><strong aria-hidden="true">2.</strong> Mini Tutorials</a></li><li><ol class="section"><li><a href="tutorials/01_running_blink.html"><strong aria-hidden="true">2.1.</strong> Blink an LED</a></li><li><a href="tutorials/02_button_print.html"><strong aria-hidden="true">2.2.</strong> Button to Printf()</a></li><li><a href="tutorials/03_ble_scan.html"><strong aria-hidden="true">2.3.</strong> BLE Advertisement Scanning</a></li><li><a href="tutorials/04_sensors_and_drivers.html"><strong aria-hidden="true">2.4.</strong> Sample Sensors and Use Drivers</a></li><li><a href="tutorials/05_ipc.html"><strong aria-hidden="true">2.5.</strong> Inter-process Communication</a></li></ol></li></ol>
+                <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li class="affix"><a href="prerequisites.html">Prerequisites</a></li><li><a href="course.html"><strong aria-hidden="true">1.</strong> Tock Course</a></li><li><ol class="section"><li><a href="environment.html"><strong aria-hidden="true">1.1.</strong> Environment</a></li><li><a href="application.html"><strong aria-hidden="true">1.2.</strong> Application</a></li><li><a href="important_client.html"><strong aria-hidden="true">1.3.</strong> Important Client</a></li><li><a href="capsule.html"><strong aria-hidden="true">1.4.</strong> Capsule</a></li></ol></li><li><a href="tutorials/tutorials.html"><strong aria-hidden="true">2.</strong> Mini Tutorials</a></li><li><ol class="section"><li><a href="tutorials/01_running_blink.html"><strong aria-hidden="true">2.1.</strong> Blink an LED</a></li><li><a href="tutorials/02_button_print.html"><strong aria-hidden="true">2.2.</strong> Button to Printf()</a></li><li><a href="tutorials/03_ble_scan.html"><strong aria-hidden="true">2.3.</strong> BLE Advertisement Scanning</a></li><li><a href="tutorials/04_sensors_and_drivers.html"><strong aria-hidden="true">2.4.</strong> Sample Sensors and Use Drivers</a></li><li><a href="tutorials/05_ipc.html"><strong aria-hidden="true">2.5.</strong> Inter-process Communication</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -328,307 +328,11 @@ make: *** [program] Error 1
 <p>That is, since you don't yet have a board plugged in it can't program it. But
 the above output indicates that it can compile correctly and invoke <code>tockloader</code>
 to program a board.</p>
-<h1><a class="header" href="#capsule" id="capsule">Capsule</a></h1>
-<p>The goal of this part of the course is to make you comfortable with the
-Tock kernel and writing code for it. By the end of this part, you'll have
-written a new capsule that reads a humidity sensor and outputs its readings
-over the serial port.</p>
-<p>During this you will:</p>
-<ol>
-<li>Learn how Tock uses Rust's memory safety to provide isolation for free</li>
-<li>Read the Tock boot sequence, seeing how Tock uses static allocation</li>
-<li>Learn about Tock's event-driven programming</li>
-<li>Write a new capsule that reads a humidity sensor and prints it over serial</li>
-</ol>
-<h2><a class="header" href="#read-the-tock-boot-sequence-20m" id="read-the-tock-boot-sequence-20m">Read the Tock boot sequence (20m)</a></h2>
-<p>Open <code>imix/src/main.rs</code> in your favorite editor. This file defines the
-imix platform: how it boots, what capsules it uses, and what system calls it
-supports for userland applications.</p>
-<h3><a class="header" href="#how-is-everything-organized" id="how-is-everything-organized">How is everything organized?</a></h3>
-<p>Find the declaration of <code>struct Imix</code> (it's pretty early in the file).
-This declares the structure representing the platform. It has many fields,
-all of which are capsules. These are the capsules that make up the imix
-platform. For the most part, these map directly to hardware peripherals,
-but there are exceptions such as <code>IPC</code> (inter-process communication).</p>
-<p>Recall the discussion about how everything in the kernel is statically
-allocated? We can see that here. Every field in <code>struct Imix</code> is a reference to
-an object with a static lifetime.</p>
-<p>The capsules themselves take a lifetime as a parameter, which is currently
-always <code> `static</code>.  The implementations of these capsules, however, do not
-rely on this assumption.</p>
-<p>The boot process is primarily the construction of this <code>Imix</code> structure. Once
-everything is set up, the board will pass the constructed <code>imix</code> to
-<code>kernel::kernel_loop</code> and we're off to the races.</p>
-<h3><a class="header" href="#how-do-things-get-started" id="how-do-things-get-started">How do things get started?</a></h3>
-<p>The method <code>reset_handler</code> is invoked when the chip resets (i.e., boots).
-It's pretty long because imix has a lot of drivers that need to be created
-and initialized, and many of them depend on other, lower layer abstractions
-that need to be created and initialized as well.</p>
-<p>Take a look at the first few lines of the <code>reset_handler</code>. The boot sequence
-initializes memory (copies initialized variables into RAM, clears the BSS),
-sets up the system clocks, and configures the GPIO pins.</p>
-<h3><a class="header" href="#how-do-capsules-get-created" id="how-do-capsules-get-created">How do capsules get created?</a></h3>
-<p>The next lines of <code>reset_handler</code> create and initialize the system console,
-which is what turns calls to <code>println</code> into bytes sent to the USB serial port:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-let uart_mux = static_init!(
-    MuxUart&lt;'static&gt;,
-    MuxUart::new(
-        &amp;sam4l::usart::USART3,
-        &amp;mut capsules::virtual_uart::RX_BUF,
-        115200
-    )
-);
-uart_mux.initialize();
-
-hil::uart::Transmit::set_transmit_client(&amp;sam4l::usart::USART3, uart_mux);
-hil::uart::Receive::set_receive_client(&amp;sam4l::usart::USART3, uart_mux);
-
-let console = ConsoleComponent::new(board_kernel, uart_mux).finalize();
-#}</code></pre></pre>
-<p>Eventually, once all of the capsules have been created, we will populate
-a imix structure with them:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-let imix = Imix {
-    console: console,
-    gpio: gpio,
-    ...
-#}</code></pre></pre>
-<p>The <code>static_init!</code> macro is simply an easy way to allocate a static
-variable with a call to <code>new</code>. The first parameter is the type, the second
-is the expression to produce an instance of the type. This call creates
-a <code>Console</code> that uses serial port 3 (<code>USART3</code>) at 115200 bits per second.</p>
-<blockquote>
-<h4><a class="header" href="#a-brief-aside-on-buffers" id="a-brief-aside-on-buffers">A brief aside on buffers:</a></h4>
-<p>Notice that you have to pass a write buffer to the console for it to use:
-this buffer has to have a <code> `static</code> lifetime. This is because low-level
-hardware drivers, especially those that use DMA, require <code> `static</code> buffers.
-Since Tock doesn't promise when a DMA operation will complete, and you
-need to be able to promise that the buffer outlives the operation, the
-one lifetime that is assured to be alive at the end of an operation is
-<code> `static</code>. So that other code which has buffers
-without a <code> `static</code> lifetime, such as userspace processes, can use the
-<code>Console</code>, it copies them into its own internal <code> `static</code> buffer before
-passing it to the serial port. So the buffer passing architecture looks like
-this:</p>
-<p><img src="console.png" alt="Console/UART buffer lifetimes" /></p>
-<p>It's a little weird that Console's <code>new</code> method takes in a reference to
-itself. This is an ergonomics tradeoff. The Console needs a mutable static
-buffer to use internally, which the Console capsule declares. However writing
-global statics is unsafe. To avoid the unsafe operation in the Console
-capsule itself, we make it the responsibility of the instantiator to give the
-Console a buffer to use, without burdening the instantiator with sizing the
-buffer.</p>
-</blockquote>
-<h3><a class="header" href="#lets-make-an-imix" id="lets-make-an-imix">Let's make an imix!</a></h3>
-<p>The code continues on, creating all of the other capsules that are needed
-by the imix platform. By the time we get down to around line 360, we've
-created all of the capsules we need, and it's time to create the actual
-imix platform structure (<code>let imix = Imix {</code> ...).</p>
-<h3><a class="header" href="#capsule-initialization" id="capsule-initialization">Capsule <em>initialization</em></a></h3>
-<p>Up to this point we have been creating numerous structures and setting some
-static configuration options and mappings, but nothing dynamic has occurred
-(said another way, all methods invoked by <code>static_init!</code> must be <code>const fn</code>,
-however Tock's <code>static_init!</code> macro predates stabilization of <code>const fn</code>'s.
-A future iteration could possibly leverage these and obviate the need for the
-macro).</p>
-<p>Some capsules require <em>initialization</em>, some code that must be executed
-before they can be used. For example, a few lines after creating the imix
-struct, we initialize the console:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-imix.nrf51822.initialize();
-#}</code></pre></pre>
-<p>This method is responsible for actually writing the hardware registers that
-configure the associated UART peripheral for use as a text console
-(8 data bits, 1 stop bit, no parity bit, no hardware flow control).</p>
-<h3><a class="header" href="#inter-capsule-dependencies" id="inter-capsule-dependencies">Inter-capsule dependencies</a></h3>
-<p>Just after initializing the console capsule, we find this line:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-kernel::debug::assign_console_driver(Some(imix.console), kc);
-#}</code></pre></pre>
-<p>This configures the kernel's <code>debug!</code> macro to print messages to this console
-we've just created. The <code>debug!</code> mechanism can be very helpful during
-development and testing. Today we're going to use it to print output from the
-capsule you create.</p>
-<p>Let's try it out really quick:</p>
-<pre><code class="language-diff">--- a/boards/imix/src/main.rs
-+++ b/boards/imix/src/main.rs
-@@ -10,7 +10,7 @@
- extern crate capsules;
- extern crate cortexm4;
- extern crate compiler_builtins;
--#[macro_use(static_init)]
-+#[macro_use(debug, static_init)]
- extern crate kernel;
- extern crate sam4l;
-
-@@ -388,6 +388,8 @@ pub unsafe fn reset_handler() {
-         capsules::console::App::default());
-     kernel::debug::assign_console_driver(Some(imix.console), kc);
-
-+    debug!(&quot;Testing 1, 2, 3...&quot;);
-+
-     imix.nrf51822.initialize();
-</code></pre>
-<p>Compile and flash the kernel (<code>make program</code>) then look at the output
-(<code>tockloader listen</code>).</p>
-<ul>
-<li>What happens if you put the <code>debug!</code> before <code>assign_console_driver</code>?</li>
-<li>What happens if you put <code>imix.console.initialize()</code> after
-<code>assign_console_driver</code>?</li>
-</ul>
-<p>As you can see, sometimes there are dependencies between capsules, and board
-authors must take care during initialization to ensure correctness.</p>
-<blockquote>
-<p><strong>Note:</strong> The <code>debug!</code> implementation is <em>asynchronous</em>. It copies messages
-into a buffer and the console prints them via DMA as the UART peripheral is
-available, interleaved with other console users (i.e. processes). You
-shouldn't need to worry about the mechanics of this for now.</p>
-</blockquote>
-<h3><a class="header" href="#loading-processes" id="loading-processes">Loading processes</a></h3>
-<p>Once the platform is all set up, the board is responsible for loading processes
-into memory:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-kernel::process::load_processes(&amp;_sapps as *const u8,
-                                &amp;mut APP_MEMORY,
-                                &amp;mut PROCESSES,
-                                FAULT_RESPONSE);
-#}</code></pre></pre>
-<p>A Tock process is represented by a <code>kernel::Process</code> struct. In principle, a
-platform could load processes by any means. In practice, all existing platforms
-write an array of Tock Binary Format (TBF) entries to flash. The kernel provides
-the <code>load_processes</code> helper function that takes in a flash address and begins
-iteratively parsing TBF entries and making <code>Process</code>es.</p>
-<h3><a class="header" href="#starting-the-kernel" id="starting-the-kernel">Starting the kernel</a></h3>
-<p>Finally, the board passes a reference to the current platform, the chip the
-platform is built on (used for interrupt and power handling), the processes to
-run, and an IPC server instance to the main loop of the kernel:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-kernel::main(&amp;imix, &amp;mut chip, &amp;mut PROCESSES, &amp;imix.ipc);
-#}</code></pre></pre>
-<p>From here, Tock is initialized, the kernel event loop takes over, and the
-system enters steady state operation.</p>
-<h3><a class="header" href="#create-a-hello-world-capsule" id="create-a-hello-world-capsule">Create a &quot;Hello World&quot; capsule</a></h3>
-<p>Now that you've seen how Tock initializes and uses capsules, you're going to
-write a new one. At the end of this section, your capsule will sample the
-humidity sensor once a second and print the results as serial output. But
-you'll start with something simpler: printing &quot;Hello World&quot; to the debug
-console once on boot.</p>
-<p>The <code>imix</code> board configuration you've looked through has a capsule for the this
-tutorial already set up. The capsule is a separate Rust crate located in
-<code>excercises/capsule</code>. You'll complete this excercise by filling it in.</p>
-<p>In addition to a constructor, Our capsule has <code>start</code> function defined that is
-currently empty. The board configuration calls this function once it has
-initialized the capsule.</p>
-<p>Eventually, the <code>start</code> method will kick off a state machine for periodic
-humidity readings, but for now, let's just print something to the debug console
-and return:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-debug!(&quot;Hello from the kernel!&quot;);
-#}</code></pre></pre>
-<pre><code class="language-bash">$ cd [PATH_TO_BOOK]/imix
-$ make program
-$ tockloader listen
-No device name specified. Using default &quot;tock&quot;                                                                         Using &quot;/dev/ttyUSB0 - Imix IoT Module - TockOS&quot;
-Listening for serial output.
-Hello from the kernel!
-</code></pre>
-<h2><a class="header" href="#extend-your-capsule-to-print-hello-world-every-second" id="extend-your-capsule-to-print-hello-world-every-second">Extend your capsule to print &quot;Hello World&quot; every second</a></h2>
-<p>In order for your capsule to keep track of time, it will need to depend on
-another capsule that implements the Alarm interface. We'll have to do something
-similar for reading the accelerometer, so this is good practice.</p>
-<p>The Alarm HIL includes several traits, <code>Alarm</code>, <code>Client</code>, and <code>Frequency</code>, all
-in the <code>kernel::hil::time</code> module. You'll use the <code>set_alarm</code> and <code>now</code> methods
-from the <code>Alarm</code> trait to set an alarm for a particular value of the clock.
-Note that both methods accept arguments in the alarm's native clock frequency,
-which is available using the Alarm trait's associated <code>Frequency</code> type:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-// native clock frequency in Herz
-let frequency = &lt;A::Frequency&gt;::frequency();
-#}</code></pre></pre>
-<p>Your capsule already implements the <code>alarm::Client</code> trait so it can receive
-alarm events. The <code>alarm::Client</code> trait has a single method:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-fn fired(&amp;self)
-#}</code></pre></pre>
-<p>Your capsule should now set an alarm in the <code>start</code> method, print the debug
-message and set an alarm again when the alarm fires.</p>
-<p>Compile and program your new kernel:</p>
-<pre><code class="language-bash">$ make program
-$ tockloader listen
-No device name specified. Using default &quot;tock&quot;                                                                         Using &quot;/dev/ttyUSB0 - Imix IoT Module - TockOS&quot;
-Listening for serial output.
-TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.rs:31: Hello World
-TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.rs:31: Hello World
-TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.rs:31: Hello World
-TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.rs:31: Hello World
-</code></pre>
-<p><a href="https://gist.github.com/alevy/73fca7b0dddcb5449088cebcbfc035f1">Sample Solution</a></p>
-<h2><a class="header" href="#extend-your-capsule-to-sample-the-humidity-once-a-second" id="extend-your-capsule-to-sample-the-humidity-once-a-second">Extend your capsule to sample the humidity once a second</a></h2>
-<p>The steps for reading an accelerometer from your capsule are similar to using
-the alarm. You'll use a capsule that implements the humidity HIL, which
-includes the <code>HumidityDriver</code> and <code>HumidityClient</code> traits, both in
-<code>kernel::hil::sensors</code>.</p>
-<p>The <code>HumidityDriver</code> trait includes the method <code>read_accelerometer</code> which
-initiates an accelerometer reading. The <code>HumidityClient</code> trait has a single
-method for receiving readings:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-fn callback(&amp;self, humidity: usize);
-#}</code></pre></pre>
-<p>Implement logic to initiate a accelerometer reading every second and report the
-results.</p>
-<p><img src="rustconf.png" alt="Structure of rustconf capsule" /></p>
-<p>Compile and program your kernel:</p>
-<pre><code class="language-bash">$ make program
-$ tockloader listen
-No device name specified. Using default &quot;tock&quot;                                                                         Using &quot;/dev/ttyUSB0 - Imix IoT Module - TockOS&quot;
-Listening for serial output.
-Humidity 2731
-Humidity 2732
-</code></pre>
-<p><a href="https://gist.github.com/alevy/798d11dbfa5409e0aa56d870b4b7afcf">Sample solution</a></p>
-<h2><a class="header" href="#some-further-questions-and-directions-to-explore" id="some-further-questions-and-directions-to-explore">Some further questions and directions to explore</a></h2>
-<p>Your capsule used the si7021 and virtual alarm. Take a look at the
-code behind each of these services:</p>
-<ol>
-<li>
-<p>Is the humidity sensor on-chip or a separate chip connected over a bus?</p>
-</li>
-<li>
-<p>What happens if you request two humidity sensors back-to-back?</p>
-</li>
-<li>
-<p>Is there a limit on how many virtual alarms can be created?</p>
-</li>
-<li>
-<p>How many virtual alarms does the imix boot sequence create?</p>
-</li>
-</ol>
-<h3><a class="header" href="#extra-credit-write-a-virtualization-capsule-for-humidity-sensor-" id="extra-credit-write-a-virtualization-capsule-for-humidity-sensor-"><strong>Extra credit</strong>: Write a virtualization capsule for humidity sensor (∞)</a></h3>
-<p>If you have extra time, try writing a virtualization capsule for the <code>Humidity</code>
-HIL that will allow multiple clients to use it. This is a fairly open ended
-task, but you might find inspiration in the <code>virtua_alarm</code> and <code>virtual_i2c</code>
-capsules.</p>
+<h1><a class="header" href="#tock-course-1" id="tock-course-1">Tock Course</a></h1>
+<p>The Tock course includes several different modules that guide you through
+various aspects of Tock and Tock applications. Each module is designed to be
+standalone such that a full course can be composed of different modules
+depending on the interests and backgrounds of those doing the course.</p>
 <h1><a class="header" href="#environment" id="environment">Environment</a></h1>
 <p>The goal of this part of the course is to make sure you have a working
 development environment for Tock.</p>
@@ -1100,7 +804,7 @@ asynchronous operations allowing user processes to <em>subscribe</em> to interru
 enable interrupts and then sign up to listen to them.</p>
 <p>Once this energy-optimal patch is in place, it'll be time to kick off a
 triumphant e-mail to the director, and then off to celebrate!</p>
-<h1><a class="header" href="#capsule-1" id="capsule-1">Capsule</a></h1>
+<h1><a class="header" href="#capsule" id="capsule">Capsule</a></h1>
 <p>The goal of this part of the course is to make you comfortable with the
 Tock kernel and writing code for it. By the end of this part, you'll have
 written a new capsule that reads a humidity sensor and outputs its readings
@@ -1112,11 +816,11 @@ over the serial port.</p>
 <li>Learn about Tock's event-driven programming</li>
 <li>Write a new capsule that reads a humidity sensor and prints it over serial</li>
 </ol>
-<h2><a class="header" href="#read-the-tock-boot-sequence-20m-1" id="read-the-tock-boot-sequence-20m-1">Read the Tock boot sequence (20m)</a></h2>
+<h2><a class="header" href="#read-the-tock-boot-sequence-20m" id="read-the-tock-boot-sequence-20m">Read the Tock boot sequence (20m)</a></h2>
 <p>Open <code>imix/src/main.rs</code> in your favorite editor. This file defines the
 imix platform: how it boots, what capsules it uses, and what system calls it
 supports for userland applications.</p>
-<h3><a class="header" href="#how-is-everything-organized-1" id="how-is-everything-organized-1">How is everything organized?</a></h3>
+<h3><a class="header" href="#how-is-everything-organized" id="how-is-everything-organized">How is everything organized?</a></h3>
 <p>Find the declaration of <code>struct Imix</code> (it's pretty early in the file).
 This declares the structure representing the platform. It has many fields,
 all of which are capsules. These are the capsules that make up the imix
@@ -1131,7 +835,7 @@ rely on this assumption.</p>
 <p>The boot process is primarily the construction of this <code>Imix</code> structure. Once
 everything is set up, the board will pass the constructed <code>imix</code> to
 <code>kernel::kernel_loop</code> and we're off to the races.</p>
-<h3><a class="header" href="#how-do-things-get-started-1" id="how-do-things-get-started-1">How do things get started?</a></h3>
+<h3><a class="header" href="#how-do-things-get-started" id="how-do-things-get-started">How do things get started?</a></h3>
 <p>The method <code>reset_handler</code> is invoked when the chip resets (i.e., boots).
 It's pretty long because imix has a lot of drivers that need to be created
 and initialized, and many of them depend on other, lower layer abstractions
@@ -1139,7 +843,7 @@ that need to be created and initialized as well.</p>
 <p>Take a look at the first few lines of the <code>reset_handler</code>. The boot sequence
 initializes memory (copies initialized variables into RAM, clears the BSS),
 sets up the system clocks, and configures the GPIO pins.</p>
-<h3><a class="header" href="#how-do-capsules-get-created-1" id="how-do-capsules-get-created-1">How do capsules get created?</a></h3>
+<h3><a class="header" href="#how-do-capsules-get-created" id="how-do-capsules-get-created">How do capsules get created?</a></h3>
 <p>The next lines of <code>reset_handler</code> create and initialize the system console,
 which is what turns calls to <code>println</code> into bytes sent to the USB serial port:</p>
 <pre><pre class="playpen"><code class="language-rust">
@@ -1175,7 +879,7 @@ variable with a call to <code>new</code>. The first parameter is the type, the s
 is the expression to produce an instance of the type. This call creates
 a <code>Console</code> that uses serial port 3 (<code>USART3</code>) at 115200 bits per second.</p>
 <blockquote>
-<h4><a class="header" href="#a-brief-aside-on-buffers-1" id="a-brief-aside-on-buffers-1">A brief aside on buffers:</a></h4>
+<h4><a class="header" href="#a-brief-aside-on-buffers" id="a-brief-aside-on-buffers">A brief aside on buffers:</a></h4>
 <p>Notice that you have to pass a write buffer to the console for it to use:
 this buffer has to have a <code> `static</code> lifetime. This is because low-level
 hardware drivers, especially those that use DMA, require <code> `static</code> buffers.
@@ -1196,12 +900,12 @@ capsule itself, we make it the responsibility of the instantiator to give the
 Console a buffer to use, without burdening the instantiator with sizing the
 buffer.</p>
 </blockquote>
-<h3><a class="header" href="#lets-make-an-imix-1" id="lets-make-an-imix-1">Let's make an imix!</a></h3>
+<h3><a class="header" href="#lets-make-an-imix" id="lets-make-an-imix">Let's make an imix!</a></h3>
 <p>The code continues on, creating all of the other capsules that are needed
 by the imix platform. By the time we get down to around line 360, we've
 created all of the capsules we need, and it's time to create the actual
 imix platform structure (<code>let imix = Imix {</code> ...).</p>
-<h3><a class="header" href="#capsule-initialization-1" id="capsule-initialization-1">Capsule <em>initialization</em></a></h3>
+<h3><a class="header" href="#capsule-initialization" id="capsule-initialization">Capsule <em>initialization</em></a></h3>
 <p>Up to this point we have been creating numerous structures and setting some
 static configuration options and mappings, but nothing dynamic has occurred
 (said another way, all methods invoked by <code>static_init!</code> must be <code>const fn</code>,
@@ -1219,7 +923,7 @@ imix.nrf51822.initialize();
 <p>This method is responsible for actually writing the hardware registers that
 configure the associated UART peripheral for use as a text console
 (8 data bits, 1 stop bit, no parity bit, no hardware flow control).</p>
-<h3><a class="header" href="#inter-capsule-dependencies-1" id="inter-capsule-dependencies-1">Inter-capsule dependencies</a></h3>
+<h3><a class="header" href="#inter-capsule-dependencies" id="inter-capsule-dependencies">Inter-capsule dependencies</a></h3>
 <p>Just after initializing the console capsule, we find this line:</p>
 <pre><pre class="playpen"><code class="language-rust">
 # #![allow(unused_variables)]
@@ -1265,7 +969,7 @@ into a buffer and the console prints them via DMA as the UART peripheral is
 available, interleaved with other console users (i.e. processes). You
 shouldn't need to worry about the mechanics of this for now.</p>
 </blockquote>
-<h3><a class="header" href="#loading-processes-1" id="loading-processes-1">Loading processes</a></h3>
+<h3><a class="header" href="#loading-processes" id="loading-processes">Loading processes</a></h3>
 <p>Once the platform is all set up, the board is responsible for loading processes
 into memory:</p>
 <pre><pre class="playpen"><code class="language-rust">
@@ -1281,7 +985,7 @@ platform could load processes by any means. In practice, all existing platforms
 write an array of Tock Binary Format (TBF) entries to flash. The kernel provides
 the <code>load_processes</code> helper function that takes in a flash address and begins
 iteratively parsing TBF entries and making <code>Process</code>es.</p>
-<h3><a class="header" href="#starting-the-kernel-1" id="starting-the-kernel-1">Starting the kernel</a></h3>
+<h3><a class="header" href="#starting-the-kernel" id="starting-the-kernel">Starting the kernel</a></h3>
 <p>Finally, the board passes a reference to the current platform, the chip the
 platform is built on (used for interrupt and power handling), the processes to
 run, and an IPC server instance to the main loop of the kernel:</p>
@@ -1292,7 +996,7 @@ kernel::main(&amp;imix, &amp;mut chip, &amp;mut PROCESSES, &amp;imix.ipc);
 #}</code></pre></pre>
 <p>From here, Tock is initialized, the kernel event loop takes over, and the
 system enters steady state operation.</p>
-<h3><a class="header" href="#create-a-hello-world-capsule-1" id="create-a-hello-world-capsule-1">Create a &quot;Hello World&quot; capsule</a></h3>
+<h3><a class="header" href="#create-a-hello-world-capsule" id="create-a-hello-world-capsule">Create a &quot;Hello World&quot; capsule</a></h3>
 <p>Now that you've seen how Tock initializes and uses capsules, you're going to
 write a new one. At the end of this section, your capsule will sample the
 humidity sensor once a second and print the results as serial output. But
@@ -1319,7 +1023,7 @@ No device name specified. Using default &quot;tock&quot;                        
 Listening for serial output.
 Hello from the kernel!
 </code></pre>
-<h2><a class="header" href="#extend-your-capsule-to-print-hello-world-every-second-1" id="extend-your-capsule-to-print-hello-world-every-second-1">Extend your capsule to print &quot;Hello World&quot; every second</a></h2>
+<h2><a class="header" href="#extend-your-capsule-to-print-hello-world-every-second" id="extend-your-capsule-to-print-hello-world-every-second">Extend your capsule to print &quot;Hello World&quot; every second</a></h2>
 <p>In order for your capsule to keep track of time, it will need to depend on
 another capsule that implements the Alarm interface. We'll have to do something
 similar for reading the accelerometer, so this is good practice.</p>
@@ -1354,7 +1058,7 @@ TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.
 TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.rs:31: Hello World
 </code></pre>
 <p><a href="https://gist.github.com/alevy/73fca7b0dddcb5449088cebcbfc035f1">Sample Solution</a></p>
-<h2><a class="header" href="#extend-your-capsule-to-sample-the-humidity-once-a-second-1" id="extend-your-capsule-to-sample-the-humidity-once-a-second-1">Extend your capsule to sample the humidity once a second</a></h2>
+<h2><a class="header" href="#extend-your-capsule-to-sample-the-humidity-once-a-second" id="extend-your-capsule-to-sample-the-humidity-once-a-second">Extend your capsule to sample the humidity once a second</a></h2>
 <p>The steps for reading an accelerometer from your capsule are similar to using
 the alarm. You'll use a capsule that implements the humidity HIL, which
 includes the <code>HumidityDriver</code> and <code>HumidityClient</code> traits, both in
@@ -1379,7 +1083,7 @@ Humidity 2731
 Humidity 2732
 </code></pre>
 <p><a href="https://gist.github.com/alevy/798d11dbfa5409e0aa56d870b4b7afcf">Sample solution</a></p>
-<h2><a class="header" href="#some-further-questions-and-directions-to-explore-1" id="some-further-questions-and-directions-to-explore-1">Some further questions and directions to explore</a></h2>
+<h2><a class="header" href="#some-further-questions-and-directions-to-explore" id="some-further-questions-and-directions-to-explore">Some further questions and directions to explore</a></h2>
 <p>Your capsule used the si7021 and virtual alarm. Take a look at the
 code behind each of these services:</p>
 <ol>
@@ -1396,7 +1100,7 @@ code behind each of these services:</p>
 <p>How many virtual alarms does the imix boot sequence create?</p>
 </li>
 </ol>
-<h3><a class="header" href="#extra-credit-write-a-virtualization-capsule-for-humidity-sensor--1" id="extra-credit-write-a-virtualization-capsule-for-humidity-sensor--1"><strong>Extra credit</strong>: Write a virtualization capsule for humidity sensor (∞)</a></h3>
+<h3><a class="header" href="#extra-credit-write-a-virtualization-capsule-for-humidity-sensor-" id="extra-credit-write-a-virtualization-capsule-for-humidity-sensor-"><strong>Extra credit</strong>: Write a virtualization capsule for humidity sensor (∞)</a></h3>
 <p>If you have extra time, try writing a virtualization capsule for the <code>Humidity</code>
 HIL that will allow multiple clients to use it. This is a fairly open ended
 task, but you might find inspiration in the <code>virtua_alarm</code> and <code>virtual_i2c</code>
@@ -1503,12 +1207,26 @@ in the <code>boards/</code> folder for more details.</p>
 <li>
 <p><strong>Compile and Install Blink</strong>. We can also compile the blink app and load our
 compiled version. The basic C version of blink is located in the
-<a href="https://github.com/tock/libtock-c">libtock-c</a> repository. Clone that
-repository, then navigate to <code>examples/blink</code>. From there, you should be able
-to compile it and install it by:</p>
+<a href="https://github.com/tock/libtock-c">libtock-c</a> repository.</p>
+<ol>
+<li>
+<p>Clone that repository:</p>
+<pre><code class="language-bash">$ cd tock-book
+$ git clone https://github.com/tock/libtock-c
+</code></pre>
+</li>
+<li>
+<p>Then navigate to <code>examples/blink</code>:</p>
+<pre><code class="language-bash">$ cd libtock-c/examples/blink
+</code></pre>
+</li>
+<li>
+<p>From there, you should be able to compile it and install it by:</p>
 <pre><code class="language-bash">$ make
 $ tockloader install
 </code></pre>
+</li>
+</ol>
 <p>When the blink app is installed you should see the LEDs on the board
 blinking. Congratulations! You have just programmed your first Tock
 application.</p>
