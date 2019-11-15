@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js">
+<html lang="en" class="sidebar-visible no-js light">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -32,11 +32,11 @@
 
         
     </head>
-    <body class="light">
+    <body>
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
             var path_to_root = "";
-            var default_theme = "light";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
@@ -60,8 +60,11 @@
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
-            document.body.className = theme;
-            document.querySelector('html').className = theme + ' js';
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
         </script>
 
         <!-- Hide / unhide sidebar before it is displayed -->
@@ -77,8 +80,8 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li class="affix"><a href="prerequisites.html">Prerequisites</a></li><li><a href="course.html"><strong aria-hidden="true">1.</strong> Tock Course</a></li><li><ol class="section"><li><a href="environment.html"><strong aria-hidden="true">1.1.</strong> Environment Setup</a></li><li><a href="modules.html" class="active"><strong aria-hidden="true">1.2.</strong> Modules</a></li><li><ol class="section"><li><a href="application.html"><strong aria-hidden="true">1.2.1.</strong> Application</a></li><li><a href="important_client.html"><strong aria-hidden="true">1.2.2.</strong> Important Client</a></li><li><a href="capsule.html"><strong aria-hidden="true">1.2.3.</strong> Capsule</a></li></ol></li><li><a href="graduation.html"><strong aria-hidden="true">1.3.</strong> Graduation</a></li></ol></li><li><a href="tutorials/tutorials.html"><strong aria-hidden="true">2.</strong> Mini Tutorials</a></li><li><ol class="section"><li><a href="tutorials/01_running_blink.html"><strong aria-hidden="true">2.1.</strong> Blink an LED</a></li><li><a href="tutorials/02_button_print.html"><strong aria-hidden="true">2.2.</strong> Button to Printf()</a></li><li><a href="tutorials/03_ble_scan.html"><strong aria-hidden="true">2.3.</strong> BLE Advertisement Scanning</a></li><li><a href="tutorials/04_sensors_and_drivers.html"><strong aria-hidden="true">2.4.</strong> Sample Sensors and Use Drivers</a></li><li><a href="tutorials/05_ipc.html"><strong aria-hidden="true">2.5.</strong> Inter-process Communication</a></li></ol></li></ol>
+            <div id="sidebar-scrollbox" class="sidebar-scrollbox">
+                <ol class="chapter"><li class="expanded affix "><a href="introduction.html">Introduction</a></li><li class="expanded affix "><a href="prerequisites.html">Prerequisites</a></li><li class="expanded "><a href="course.html"><strong aria-hidden="true">1.</strong> Tock Course</a></li><li><ol class="section"><li class="expanded "><a href="environment.html"><strong aria-hidden="true">1.1.</strong> Environment Setup</a></li><li class="expanded "><a href="modules.html" class="active"><strong aria-hidden="true">1.2.</strong> Modules</a></li><li><ol class="section"><li class="expanded "><a href="application.html"><strong aria-hidden="true">1.2.1.</strong> Application</a></li><li class="expanded "><a href="important_client.html"><strong aria-hidden="true">1.2.2.</strong> Important Client</a></li><li class="expanded "><a href="capsule.html"><strong aria-hidden="true">1.2.3.</strong> Capsule</a></li></ol></li><li class="expanded "><a href="graduation.html"><strong aria-hidden="true">1.3.</strong> Graduation</a></li></ol></li><li class="expanded "><a href="tutorials/tutorials.html"><strong aria-hidden="true">2.</strong> Mini Tutorials</a></li><li><ol class="section"><li class="expanded "><a href="tutorials/01_running_blink.html"><strong aria-hidden="true">2.1.</strong> Blink an LED</a></li><li class="expanded "><a href="tutorials/02_button_print.html"><strong aria-hidden="true">2.2.</strong> Button to Printf()</a></li><li class="expanded "><a href="tutorials/03_ble_scan.html"><strong aria-hidden="true">2.3.</strong> BLE Advertisement Scanning</a></li><li class="expanded "><a href="tutorials/04_sensors_and_drivers.html"><strong aria-hidden="true">2.4.</strong> Sample Sensors and Use Drivers</a></li><li class="expanded "><a href="tutorials/05_ipc.html"><strong aria-hidden="true">2.5.</strong> Inter-process Communication</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -188,22 +191,15 @@ you.</p>
         </div>
 
         
-        <!-- Livereload script (if served using the cli tool) -->
-        <script type="text/javascript">
-            var socket = new WebSocket("ws://localhost:3001");
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload(true); // force reload from server (not from cache)
-                }
-            };
 
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
         
 
+        
+        
+        
+        <script type="text/javascript">
+            window.playpen_copyable = true;
+        </script>
         
 
         
