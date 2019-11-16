@@ -100,7 +100,7 @@ a `Console` that uses serial port 3 (`USART3`) at 115200 bits per second.
 > passing it to the serial port. So the buffer passing architecture looks like
 > this:
 > 
-> ![Console/UART buffer lifetimes](console.png)
+> ![Console/UART buffer lifetimes](../imgs/console.svg)
 >
 > It's a little weird that Console's `new` method takes in a reference to
 > itself. This is an ergonomics tradeoff. The Console needs a mutable static
@@ -313,7 +313,7 @@ fn callback(&self, humidity: usize);
 Implement logic to initiate a accelerometer reading every second and report the
 results.
 
-![Structure of `rustconf` capsule](rustconf.png)
+![Structure of `rustconf` capsule](../imgs/rustconf.svg)
 
 Compile and program your kernel:
 
