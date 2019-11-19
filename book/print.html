@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js light">
+<html lang="en" class="sidebar-visible no-js">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -34,11 +34,11 @@
 
         
     </head>
-    <body>
+    <body class="light">
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
             var path_to_root = "";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+            var default_theme = "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
@@ -62,11 +62,8 @@
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
-            var html = document.querySelector('html');
-            html.classList.remove('no-js')
-            html.classList.remove('light')
-            html.classList.add(theme);
-            html.classList.add('js');
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
         </script>
 
         <!-- Hide / unhide sidebar before it is displayed -->
@@ -82,8 +79,8 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <div id="sidebar-scrollbox" class="sidebar-scrollbox">
-                <ol class="chapter"><li class="expanded affix "><a href="introduction.html">Introduction</a></li><li class="expanded affix "><a href="prerequisites.html">Prerequisites</a></li><li class="expanded "><a href="course.html"><strong aria-hidden="true">1.</strong> Tock Course</a></li><li><ol class="section"><li class="expanded "><a href="environment.html"><strong aria-hidden="true">1.1.</strong> Environment Setup</a></li><li class="expanded "><a href="modules.html"><strong aria-hidden="true">1.2.</strong> Modules</a></li><li><ol class="section"><li class="expanded "><a href="application.html"><strong aria-hidden="true">1.2.1.</strong> Application</a></li><li class="expanded "><a href="important_client.html"><strong aria-hidden="true">1.2.2.</strong> Important Client</a></li><li class="expanded "><a href="capsule.html"><strong aria-hidden="true">1.2.3.</strong> Capsule</a></li></ol></li><li class="expanded "><a href="graduation.html"><strong aria-hidden="true">1.3.</strong> Graduation</a></li></ol></li><li class="expanded "><a href="tutorials/tutorials.html"><strong aria-hidden="true">2.</strong> Mini Tutorials</a></li><li><ol class="section"><li class="expanded "><a href="tutorials/01_running_blink.html"><strong aria-hidden="true">2.1.</strong> Blink an LED</a></li><li class="expanded "><a href="tutorials/02_button_print.html"><strong aria-hidden="true">2.2.</strong> Button to Printf()</a></li><li class="expanded "><a href="tutorials/03_ble_scan.html"><strong aria-hidden="true">2.3.</strong> BLE Advertisement Scanning</a></li><li class="expanded "><a href="tutorials/04_sensors_and_drivers.html"><strong aria-hidden="true">2.4.</strong> Sample Sensors and Use Drivers</a></li><li class="expanded "><a href="tutorials/05_ipc.html"><strong aria-hidden="true">2.5.</strong> Inter-process Communication</a></li></ol></li></ol>
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li><a href="guides.html"><strong aria-hidden="true">1.</strong> Hands-on Guides</a></li><li><ol class="section"><li><a href="course.html"><strong aria-hidden="true">1.1.</strong> Tock Course</a></li><li><ol class="section"><li><a href="prerequisites.html"><strong aria-hidden="true">1.1.1.</strong> Prerequisites</a></li><li><a href="environment.html"><strong aria-hidden="true">1.1.2.</strong> Environment Setup</a></li><li><a href="modules.html"><strong aria-hidden="true">1.1.3.</strong> Modules</a></li><li><ol class="section"><li><a href="application.html"><strong aria-hidden="true">1.1.3.1.</strong> Application</a></li><li><a href="important_client.html"><strong aria-hidden="true">1.1.3.2.</strong> Important Client</a></li><li><a href="capsule.html"><strong aria-hidden="true">1.1.3.3.</strong> Capsule</a></li></ol></li><li><a href="graduation.html"><strong aria-hidden="true">1.1.4.</strong> Graduation</a></li></ol></li><li><a href="tutorials/tutorials.html"><strong aria-hidden="true">1.2.</strong> Mini Tutorials</a></li><li><ol class="section"><li><a href="tutorials/01_running_blink.html"><strong aria-hidden="true">1.2.1.</strong> Blink an LED</a></li><li><a href="tutorials/02_button_print.html"><strong aria-hidden="true">1.2.2.</strong> Button to Printf()</a></li><li><a href="tutorials/03_ble_scan.html"><strong aria-hidden="true">1.2.3.</strong> BLE Advertisement Scanning</a></li><li><a href="tutorials/04_sensors_and_drivers.html"><strong aria-hidden="true">1.2.4.</strong> Sample Sensors and Use Drivers</a></li><li><a href="tutorials/05_ipc.html"><strong aria-hidden="true">1.2.5.</strong> Inter-process Communication</a></li></ol></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -158,11 +155,13 @@ multiple untrusted applications to run concurrently on a microcontroller-based
 computer. The Tock kernel is written in Rust, a memory-safe systems language
 that does not rely on a garbage collector. Userspace applications are run in
 single-threaded processes that can be written in any language.
-<p>The book is divided into two sections: the course and a series of mini
-tutorials. The course is a good place to start, and provides a structured
-introduction to Tock that should take a few hours to complete (it was designed
-for a half day workshop). The tutorials are smaller examples that highlight
-specific features.</p>
+<h1><a class="header" href="#hands-on-guides" id="hands-on-guides">Hands-on Guides</a></h1>
+<p>This portion of the book includes workshops and tutorials to teach how to use
+and develop with Tock, and is divided into two sections: the course and a series
+of mini tutorials. The course is a good place to start, and provides a
+structured introduction to Tock that should take a few hours to complete (it was
+designed for a half day workshop). The tutorials are smaller examples that
+highlight specific features.</p>
 <h2><a class="header" href="#tock-course" id="tock-course">Tock Course</a></h2>
 <p>In this hands-on guide, we will look at some of the high-level services provided
 by Tock.  We will start with an understanding of the OS and its programming
@@ -201,6 +200,11 @@ write a simple driver in Rust.</p>
 <p>These <a href="./tutorials/tutorials.html">tutorials</a> feature specific examples of Tock
 applications. They can be completed after the course to learn about different
 capabilities of Tock apps.</p>
+<h1><a class="header" href="#tock-course-1" id="tock-course-1">Tock Course</a></h1>
+<p>The Tock course includes several different modules that guide you through
+various aspects of Tock and Tock applications. Each module is designed to be
+standalone such that a full course can be composed of different modules
+depending on the interests and backgrounds of those doing the course.</p>
 <h1><a class="header" href="#prerequisites" id="prerequisites">Prerequisites</a></h1>
 <p>We will go over setting up a development environment during the course and help
 out with possible problems you run into. You must ensure you have the proper
@@ -331,11 +335,6 @@ make: *** [program] Error 1
 <p>That is, since you don't yet have a board plugged in it can't program it. But
 the above output indicates that it can compile correctly and invoke <code>tockloader</code>
 to program a board.</p>
-<h1><a class="header" href="#tock-course-1" id="tock-course-1">Tock Course</a></h1>
-<p>The Tock course includes several different modules that guide you through
-various aspects of Tock and Tock applications. Each module is designed to be
-standalone such that a full course can be composed of different modules
-depending on the interests and backgrounds of those doing the course.</p>
 <h1><a class="header" href="#environment" id="environment">Environment</a></h1>
 <p>The goal of this part of the course is to make sure you have a working
 development environment for Tock.</p>
@@ -854,9 +853,9 @@ sets up the system clocks, and configures the GPIO pins.</p>
 <p>The next lines of <code>reset_handler</code> create and initialize the system console,
 which is what turns calls to <code>println</code> into bytes sent to the USB serial port:</p>
 <pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
-</span><span class="boring">fn main() {
-</span>let uart_mux = static_init!(
+# #![allow(unused_variables)]
+#fn main() {
+let uart_mux = static_init!(
     MuxUart&lt;'static&gt;,
     MuxUart::new(
         &amp;sam4l::usart::USART3,
@@ -870,19 +869,17 @@ hil::uart::Transmit::set_transmit_client(&amp;sam4l::usart::USART3, uart_mux);
 hil::uart::Receive::set_receive_client(&amp;sam4l::usart::USART3, uart_mux);
 
 let console = ConsoleComponent::new(board_kernel, uart_mux).finalize();
-<span class="boring">}
-</span></code></pre></pre>
+#}</code></pre></pre>
 <p>Eventually, once all of the capsules have been created, we will populate
 a imix structure with them:</p>
 <pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
-</span><span class="boring">fn main() {
-</span>let imix = Imix {
+# #![allow(unused_variables)]
+#fn main() {
+let imix = Imix {
     console: console,
     gpio: gpio,
     ...
-<span class="boring">}
-</span></code></pre></pre>
+#}</code></pre></pre>
 <p>The <code>static_init!</code> macro is simply an easy way to allocate a static
 variable with a call to <code>new</code>. The first parameter is the type, the second
 is the expression to produce an instance of the type. This call creates
@@ -925,22 +922,20 @@ macro).</p>
 before they can be used. For example, a few lines after creating the imix
 struct, we initialize the console:</p>
 <pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
-</span><span class="boring">fn main() {
-</span>imix.nrf51822.initialize();
-<span class="boring">}
-</span></code></pre></pre>
+# #![allow(unused_variables)]
+#fn main() {
+imix.nrf51822.initialize();
+#}</code></pre></pre>
 <p>This method is responsible for actually writing the hardware registers that
 configure the associated UART peripheral for use as a text console
 (8 data bits, 1 stop bit, no parity bit, no hardware flow control).</p>
 <h3><a class="header" href="#inter-capsule-dependencies" id="inter-capsule-dependencies">Inter-capsule dependencies</a></h3>
 <p>Just after initializing the console capsule, we find this line:</p>
 <pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
-</span><span class="boring">fn main() {
-</span>kernel::debug::assign_console_driver(Some(imix.console), kc);
-<span class="boring">}
-</span></code></pre></pre>
+# #![allow(unused_variables)]
+#fn main() {
+kernel::debug::assign_console_driver(Some(imix.console), kc);
+#}</code></pre></pre>
 <p>This configures the kernel's <code>debug!</code> macro to print messages to this console
 we've just created. The <code>debug!</code> mechanism can be very helpful during
 development and testing. Today we're going to use it to print output from the
@@ -984,14 +979,13 @@ shouldn't need to worry about the mechanics of this for now.</p>
 <p>Once the platform is all set up, the board is responsible for loading processes
 into memory:</p>
 <pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
-</span><span class="boring">fn main() {
-</span>kernel::process::load_processes(&amp;_sapps as *const u8,
+# #![allow(unused_variables)]
+#fn main() {
+kernel::process::load_processes(&amp;_sapps as *const u8,
                                 &amp;mut APP_MEMORY,
                                 &amp;mut PROCESSES,
                                 FAULT_RESPONSE);
-<span class="boring">}
-</span></code></pre></pre>
+#}</code></pre></pre>
 <p>A Tock process is represented by a <code>kernel::Process</code> struct. In principle, a
 platform could load processes by any means. In practice, all existing platforms
 write an array of Tock Binary Format (TBF) entries to flash. The kernel provides
@@ -1002,11 +996,10 @@ iteratively parsing TBF entries and making <code>Process</code>es.</p>
 platform is built on (used for interrupt and power handling), the processes to
 run, and an IPC server instance to the main loop of the kernel:</p>
 <pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
-</span><span class="boring">fn main() {
-</span>kernel::main(&amp;imix, &amp;mut chip, &amp;mut PROCESSES, &amp;imix.ipc);
-<span class="boring">}
-</span></code></pre></pre>
+# #![allow(unused_variables)]
+#fn main() {
+kernel::main(&amp;imix, &amp;mut chip, &amp;mut PROCESSES, &amp;imix.ipc);
+#}</code></pre></pre>
 <p>From here, Tock is initialized, the kernel event loop takes over, and the
 system enters steady state operation.</p>
 <h3><a class="header" href="#create-a-hello-world-capsule" id="create-a-hello-world-capsule">Create a &quot;Hello World&quot; capsule</a></h3>
@@ -1025,11 +1018,10 @@ initialized the capsule.</p>
 humidity readings, but for now, let's just print something to the debug console
 and return:</p>
 <pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
-</span><span class="boring">fn main() {
-</span>debug!(&quot;Hello from the kernel!&quot;);
-<span class="boring">}
-</span></code></pre></pre>
+# #![allow(unused_variables)]
+#fn main() {
+debug!(&quot;Hello from the kernel!&quot;);
+#}</code></pre></pre>
 <pre><code class="language-bash">$ cd [PATH_TO_BOOK]/imix
 $ make program
 $ tockloader listen
@@ -1047,20 +1039,18 @@ from the <code>Alarm</code> trait to set an alarm for a particular value of the 
 Note that both methods accept arguments in the alarm's native clock frequency,
 which is available using the Alarm trait's associated <code>Frequency</code> type:</p>
 <pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
-</span><span class="boring">fn main() {
-</span>// native clock frequency in Herz
+# #![allow(unused_variables)]
+#fn main() {
+// native clock frequency in Herz
 let frequency = &lt;A::Frequency&gt;::frequency();
-<span class="boring">}
-</span></code></pre></pre>
+#}</code></pre></pre>
 <p>Your capsule already implements the <code>alarm::Client</code> trait so it can receive
 alarm events. The <code>alarm::Client</code> trait has a single method:</p>
 <pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
-</span><span class="boring">fn main() {
-</span>fn fired(&amp;self)
-<span class="boring">}
-</span></code></pre></pre>
+# #![allow(unused_variables)]
+#fn main() {
+fn fired(&amp;self)
+#}</code></pre></pre>
 <p>Your capsule should now set an alarm in the <code>start</code> method, print the debug
 message and set an alarm again when the alarm fires.</p>
 <p>Compile and program your new kernel:</p>
@@ -1083,11 +1073,10 @@ includes the <code>HumidityDriver</code> and <code>HumidityClient</code> traits,
 initiates an accelerometer reading. The <code>HumidityClient</code> trait has a single
 method for receiving readings:</p>
 <pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
-</span><span class="boring">fn main() {
-</span>fn callback(&amp;self, humidity: usize);
-<span class="boring">}
-</span></code></pre></pre>
+# #![allow(unused_variables)]
+#fn main() {
+fn callback(&amp;self, humidity: usize);
+#}</code></pre></pre>
 <p>Implement logic to initiate a accelerometer reading every second and report the
 results.</p>
 <p><img src="../imgs/rustconf.svg" alt="Structure of rustconf capsule" /></p>
@@ -1946,15 +1935,22 @@ $ pushd logic &amp;&amp; make &amp;&amp; tockloader install &amp;&amp; popd
         </div>
 
         
-
-        
-
-        
-        
-        
+        <!-- Livereload script (if served using the cli tool) -->
         <script type="text/javascript">
-            window.playpen_copyable = true;
+            var socket = new WebSocket("ws://localhost:3001");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload(true); // force reload from server (not from cache)
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
         </script>
+        
+
         
 
         
