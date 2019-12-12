@@ -22,3 +22,6 @@ Tock OS Course
         - [Sample Sensors and Use Drivers](./tutorials/04_sensors_and_drivers.md)
         - [Inter-process Communication](./tutorials/05_ipc.md)
 
+- [Kernel Development Guides](./development/guides.md)
+
+    - [Chip Peripheral Driver](./development/peripheral.md)

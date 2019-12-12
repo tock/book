@@ -1,0 +1,564 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Chip Peripheral Driver - Tock Tutorial</title>
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="affix"><a href="../introduction.html">Introduction</a></li><li><a href="../guides.html"><strong aria-hidden="true">1.</strong> Hands-on Guides</a></li><li><ol class="section"><li><a href="../course.html"><strong aria-hidden="true">1.1.</strong> Tock Course</a></li><li><ol class="section"><li><a href="../prerequisites.html"><strong aria-hidden="true">1.1.1.</strong> Prerequisites</a></li><li><a href="../environment.html"><strong aria-hidden="true">1.1.2.</strong> Environment Setup</a></li><li><a href="../modules.html"><strong aria-hidden="true">1.1.3.</strong> Modules</a></li><li><ol class="section"><li><a href="../application.html"><strong aria-hidden="true">1.1.3.1.</strong> Application</a></li><li><a href="../important_client.html"><strong aria-hidden="true">1.1.3.2.</strong> Important Client</a></li><li><a href="../capsule.html"><strong aria-hidden="true">1.1.3.3.</strong> Capsule</a></li></ol></li><li><a href="../graduation.html"><strong aria-hidden="true">1.1.4.</strong> Graduation</a></li></ol></li><li><a href="../tutorials/tutorials.html"><strong aria-hidden="true">1.2.</strong> Mini Tutorials</a></li><li><ol class="section"><li><a href="../tutorials/01_running_blink.html"><strong aria-hidden="true">1.2.1.</strong> Blink an LED</a></li><li><a href="../tutorials/02_button_print.html"><strong aria-hidden="true">1.2.2.</strong> Button to Printf()</a></li><li><a href="../tutorials/03_ble_scan.html"><strong aria-hidden="true">1.2.3.</strong> BLE Advertisement Scanning</a></li><li><a href="../tutorials/04_sensors_and_drivers.html"><strong aria-hidden="true">1.2.4.</strong> Sample Sensors and Use Drivers</a></li><li><a href="../tutorials/05_ipc.html"><strong aria-hidden="true">1.2.5.</strong> Inter-process Communication</a></li></ol></li></ol></li><li><a href="../development/guides.html"><strong aria-hidden="true">2.</strong> Kernel Development Guides</a></li><li><ol class="section"><li><a href="../development/peripheral.html" class="active"><strong aria-hidden="true">2.1.</strong> Chip Peripheral Driver</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Tock Tutorial</h1>
+
+                        <div class="right-buttons">
+                            <a href="../print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#implementing-a-chip-peripheral-driver" id="implementing-a-chip-peripheral-driver">Implementing a Chip Peripheral Driver</a></h1>
+<p>This guide covers how to implement a peripheral driver for a particular
+microcontroller (MCU). For example, if you wanted to add an analog to digital
+converter (ADC) driver for the Nordic nRF52840 MCU, you would follow the general
+steps described in this guide.</p>
+<h2><a class="header" href="#overview" id="overview">Overview</a></h2>
+<p>The general steps you will follow are:</p>
+<ol>
+<li>Determine the HIL you will implement.</li>
+<li>Create a register mapping for the peripheral.</li>
+<li>Create a struct for the peripheral.</li>
+<li>Implement the HIL interface for the peripheral.</li>
+<li>Create the peripheral driver object and cast the registers to the correct
+memory location.</li>
+</ol>
+<p>The guide will walk through how to do each of these steps.</p>
+<h2><a class="header" href="#background" id="background">Background</a></h2>
+<p>Implementing a chip peripheral driver increases Tock's support for a particular
+microcontroller and allows capsules and userspace apps to take more advantage of
+the hardware provided by the MCU. Peripheral drivers for an MCU are generally
+implemented on an as-needed basis to support a particular use case, and as such
+the chips in Tock generally do not have all of the peripheral drivers
+implemented already.</p>
+<p>Peripheral drivers are included in Tock as &quot;trusted code&quot; in the kernel. This
+means that they can use the <code>unsafe</code> keyword (in fact, they must). However, it
+also means more care must be taken to ensure they are correct. The use of
+<code>unsafe</code> should be kept to an absolute minimum and only used where absolutely
+necessary. This guide explains the one use of <code>unsafe</code> that is required. All
+other uses of <code>unsafe</code> in a peripheral driver will likely be very scrutinized
+during the pull request review period.</p>
+<h2><a class="header" href="#step-by-step-guide" id="step-by-step-guide">Step-by-Step Guide</a></h2>
+<p>The steps from the overview are elaborated on here.</p>
+<ol>
+<li>
+<p><strong>Determine the HIL you will implement.</strong></p>
+<p>The HILs in Tock are the contract between the MCU-specific hardware and the
+more generic capsules which use the hardware resources. They provide a
+common interface that is consistent between different microcontrollers,
+enabling code higher in the stack to use the interfaces without needing to
+know any details about the underlying hardware. This common interface also
+allows the same higher-level code to be portable across different
+microcontrollers. HILs are implemented as
+<a href="https://doc.rust-lang.org/1.8.0/book/traits.html">traits</a> in Rust.</p>
+<p>All HILs are defined in the <code>kernel/src/hil</code> directory. You should find a
+HIL that exposes the interface the peripheral you are writing a driver for
+can provide. There should only be one HIL that matches your peripheral.</p>
+<blockquote>
+<p>Note: As of Dec 2019, the <code>hil</code> directory also contains interfaces that
+are only provided by capsules for other capsules. For example, the ambient
+light HIL interface is likely not something an MCU would implement.</p>
+</blockquote>
+<p>It is possible Tock does not currently include a HIL that matches the
+peripheral you are implementing a driver for. In that case you will also
+need to create a HIL, which is explained in a different development guide.</p>
+<p><strong>Checkpoint</strong>: You have identified the HIL your driver will implement.</p>
+</li>
+<li>
+<p><strong>Create a register mapping for the peripheral.</strong></p>
+<p>To start implementing the peripheral driver, you must create a new source
+file within the MCU-specific directory inside of <code>chips/src</code> directory. The
+name of this file generally should match the name of the peripheral in the
+the MCU's datasheet.</p>
+<p>Include the name of this file inside of the <code>lib.rs</code> (or potentially
+<code>mod.rs</code>) file inside the same directory. This should look like:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+pub mod ast;
+#}</code></pre></pre>
+<p>Inside of the new file, you will first need to define the memory-mapped
+input/output (MMIO) registers that correspond to the peripheral. Different
+embedded code ecosystems have devised different methods for doing this, and
+Tock is no different. Tock has a special library and set of Rust macros to
+make defining the register map straightforward and using the registers
+intuitive.</p>
+<p>The full register library is
+<a href="https://github.com/tock/tock/tree/master/libraries/tock-register-interface">here</a>,
+but to get started, you will first create a structure like this:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+use tock_registers::registers::{ReadOnly, ReadWrite, WriteOnly};
+
+register_structs! {
+    XyzPeripheralRegisters {
+        /// Control register.
+        /// The 'Control' parameter constrains this register to only use
+        /// fields from a certain group (defined below in the bitfields
+        /// section).
+        (0x000 =&gt; cr: ReadWrite&lt;u32, Control::Register&gt;),
+        // Status register.
+        (0x004 =&gt; s: ReadOnly&lt;u8, Status::Register&gt;),
+        /// spacing between registers in memory
+        (0x008 =&gt; _reserved),
+        /// Another register with no meaningful fields.
+        (0x014 =&gt; word: ReadWrite&lt;u32&gt;),
+
+        // Etc.
+
+        // The end of the struct is marked as follows.
+        (0x100 =&gt; @END),
+    }
+}
+#}</code></pre></pre>
+<p>You should replace <code>XyzPeripheral</code> with the name of the peripheral you are
+writing a driver for. Then, for each register defined in the datasheet, you
+must specify an entry in the macro. For example, a register is defined like:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+(0x000 =&gt; cr: ReadWrite&lt;u32, Control::Register&gt;),
+#}</code></pre></pre>
+<p>where:</p>
+<ul>
+<li><code>0x000</code> is the offset (in bytes) of the register from the beginning of the
+register map.</li>
+<li><code>cr</code> is the name of the register in the datasheet.</li>
+<li><code>ReadWrite</code> is the access control of the register as defined in the
+datasheet.</li>
+<li><code>u32</code> is the size of the register.</li>
+<li><code>Control::Register</code> maps to the actual bitfields used in the register. You
+will create this type for this particular peripheral, so you can name this
+whatever makes sense at this point. Note that it will always end with
+<code>::Register</code> due to how Rust macros work. If it doesn't make sense to
+define the specific bitfields in this register, you can omit this field.
+For example, an esoteric field in the register map that the implementation
+does not use likely does not need its bitfields mapped.</li>
+</ul>
+<p>Once the register map is defined, you must specify the bitfields for any
+registers that you gave a specific type to. This looks like the following:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+register_bitfields! [
+    // First parameter is the register width for the bitfields. Can be u8,
+    // u16, u32, or u64.
+    u32,
+
+    // Each subsequent parameter is a register abbreviation, its descriptive
+    // name, and its associated bitfields. The descriptive name defines this
+    // 'group' of bitfields. Only registers defined as
+    // ReadWrite&lt;_, Control::Register&gt; can use these bitfields.
+    Control [
+        // Bitfields are defined as:
+        // name OFFSET(shift) NUMBITS(num) [ /* optional values */ ]
+
+        // This is a two-bit field which includes bits 4 and 5
+        RANGE OFFSET(4) NUMBITS(3) [
+            // Each of these defines a name for a value that the bitfield
+            // can be written with or matched against. Note that this set is
+            // not exclusive--the field can still be written with arbitrary
+            // constants.
+            VeryHigh = 0,
+            High = 1,
+            Low = 2
+        ],
+
+        // A common case is single-bit bitfields, which usually just mean
+        // 'enable' or 'disable' something.
+        EN  OFFSET(3) NUMBITS(1) [],
+        INT OFFSET(2) NUMBITS(1) []
+    ],
+
+    // Another example:
+    // Status register
+    Status [
+        TXCOMPLETE  OFFSET(0) NUMBITS(1) [],
+        TXINTERRUPT OFFSET(1) NUMBITS(1) [],
+        RXCOMPLETE  OFFSET(2) NUMBITS(1) [],
+        RXINTERRUPT OFFSET(3) NUMBITS(1) [],
+        MODE        OFFSET(4) NUMBITS(3) [
+            FullDuplex = 0,
+            HalfDuplex = 1,
+            Loopback = 2,
+            Disabled = 3
+        ],
+        ERRORCOUNT OFFSET(6) NUMBITS(3) []
+    ],
+]
+#}</code></pre></pre>
+<p>The name in each entry of the <code>register_bitfields! []</code> list must match the
+register type provided in the register map declaration. Each register that
+is used in the driver implementation should have its bitfields declared.</p>
+<p><strong>Checkpoint</strong>: The register map is correctly described in the driver source
+file.</p>
+</li>
+<li>
+<p><strong>Create a struct for the peripheral.</strong></p>
+<p>Each peripheral driver is implemented with a struct which is later used to
+create an object that can be passed to code that will use this peripheral
+driver. The actual fields of the struct are very peripheral specific, but
+should contain any state that the driver needs to correctly function.</p>
+<p>An example struct looks for a timer peripheral called the AST by the MCU
+datasheet looks like:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+pub struct Ast&lt;'a&gt; {
+    registers: StaticRef&lt;AstRegisters&gt;,
+    callback: OptionalCell&lt;&amp;'a dyn hil::time::AlarmClient&gt;,
+}
+#}</code></pre></pre>
+<p>The struct should contain a reference to the registers defined above (we
+will explain the <code>StaticRef</code> later). Typically, many drivers respond to
+certain events (like in this case a timer firing) and therefore need a
+reference to a client to notify when that event occurs. Notice that the type
+of the callback handler is specified in the HIL interface.</p>
+<p>Peripheral structs typically need a lifetime for references like the
+callback client reference. By convention Tock peripheral structs use <code>'a</code>
+for this lifetime, and you likely want to copy that as well.</p>
+<p>Think of what state your driver might need to keep around. This could
+include a direct memory access (DMA) reference, some configuration flags
+like the baud rate, or buffer indices. See other Tock peripheral drivers for
+more examples.</p>
+<blockquote>
+<p>Note: you will most likely need to update this struct as you implement the
+driver, so to start with this just has to be a best guess.</p>
+</blockquote>
+<blockquote>
+<p>Hint: you should avoid keeping any state in the peripheral driver struct
+that is already stored by the hardware itself. For example, if there is an
+&quot;enabled&quot; bit in a register, then you do not need an &quot;enabled&quot; flag in the
+struct. Replicating this state leads to bugs when those values get out of
+sync, and makes it difficult to update the driver in the future.</p>
+</blockquote>
+<p>Peripheral driver structs make extensive use of different &quot;cell&quot; types to
+hold references to various shared state. The general wisdom is that if the
+value will ever need to be updated, then it needs to be contained in a cell.
+See the Tock cell documentation for more details on the cell types and when
+to use which one. In this example, the callback is stored in an
+<code>OptionalCell</code>, which can contain a value or not (if the callback is not
+set), and can be updated if the callback needs to change.</p>
+<p>With the struct defined, you should next create a <code>new()</code> function for that
+struct. This will look like:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+impl Ast {
+    const fn new(registers: StaticRef&lt;AstRegisters&gt;) -&gt; Ast {
+        Ast {
+            registers: registers,
+            callback: OptionalCell::empty(),
+        }
+    }
+}
+#}</code></pre></pre>
+<p><strong>Checkpoint</strong>: There is a struct for the peripheral that can be created.</p>
+</li>
+<li>
+<p><strong>Implement the HIL interface for the peripheral.</strong></p>
+<p>With the peripheral driver struct created, now the main work begins. You can
+now write the actual logic for the peripheral driver that implements the HIL
+interface you identified earlier. Implementing the HIL interface is done
+just like implementing a trait in Rust. For example, to implement the <code>Time</code>
+HIL for the AST:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+impl hil::time::Time for Ast&lt;'a&gt; {
+    type Frequency = Freq16KHz;
+
+    fn now(&amp;self) -&gt; u32 {
+        self.get_counter()
+    }
+
+    fn max_tics(&amp;self) -&gt; u32 {
+        core::u32::MAX
+    }
+}
+#}</code></pre></pre>
+<p>You should include all of the functions from the HIL and decide how to
+implement them.</p>
+<p>Some operations will be shared among multiple HIL functions. These should be
+implemented as functions for the original struct. For example, in the <code>Ast</code>
+example the HIL function <code>now()</code> uses the <code>get_counter()</code> function. This should be
+implemented on the main <code>Ast</code> struct:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+impl Ast {
+    const fn new(registers: StaticRef&lt;AstRegisters&gt;) -&gt; Ast {
+        Ast {
+            registers: registers,
+            callback: OptionalCell::empty(),
+        }
+    }
+
+    fn get_counter(&amp;self) -&gt; u32 {
+        let regs = &amp;*self.registers;
+        while self.busy() {}
+        regs.cv.read(Value::VALUE)
+    }
+}
+#}</code></pre></pre>
+<p>Note the <code>get_counter()</code> function also illustrates how to use the register
+reference and the Tock register library. The <a href="https://github.com/tock/tock/tree/master/libraries/tock-register-interface">register
+library</a>
+includes much more detail on the various register operations enabled by the
+library.</p>
+<p><strong>Checkpoint</strong>: All of the functions in the HIL interface have MCU
+peripheral-specific implementations.</p>
+</li>
+<li>
+<p><strong>Create the peripheral driver object and cast the registers to the correct
+memory location.</strong></p>
+<p>The last step is to actually create the object so that the peripheral driver
+can be used by other code. Start by casting the register map to the correct
+memory address where the registers are actually mapped to. For example:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+use kernel::common::StaticRef;
+
+const AST_BASE: StaticRef&lt;AstRegisters&gt; =
+    unsafe { StaticRef::new(0x400F0800 as *const AstRegisters) };
+#}</code></pre></pre>
+<p><code>StaticRef</code> is a type in Tock designed explicitly for this operation of
+casting register maps to the correct location in memory. The <code>0x400F0800</code> is
+the address in memory of the start of the registers and this location will
+be specified by the datasheet.</p>
+<blockquote>
+<p>Note that creating the <code>StaticRef</code> requires using the <code>unsafe</code> keyword.
+This is because doing this cast is a fundamentally memory-unsafe
+operation: this allows whatever is at that address in memory to be
+accessed through the register interface (which is exposed as a safe
+interface). In the normal case where the correct memory address is
+provided there is no concern for system safety as the register interface
+faithfully represents the underlying hardware. However, suppose an
+incorrect address was used, and that address actually points to live
+memory used by the Tock kernel. Now kernel data structures could be
+altered through the register interface, and this would violate memory
+safety.</p>
+</blockquote>
+<p>With the address reference created, we can now create the actual driver
+object:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+pub static mut AST: Ast = Ast::new(AST_BASE);
+#}</code></pre></pre>
+<p>This object will be used by a board's main.rs file to pass, in this case,
+the driver for the timer hardware to various capsules and other code that
+needs the underlying timer hardware.</p>
+</li>
+</ol>
+<h2><a class="header" href="#wrap-up" id="wrap-up">Wrap-Up</a></h2>
+<p>Congratulations! You have implemented a peripheral driver for a microcontroller
+in Tock! We encourage you to submit a pull request to upstream this to the Tock
+repository.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../development/guides.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="../development/guides.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+            </nav>
+
+        </div>
+
+        
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3001");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload(true); // force reload from server (not from cache)
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+        
+
+        
+
+        
+
+        
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
