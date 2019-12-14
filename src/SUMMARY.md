@@ -25,3 +25,4 @@ Tock OS Course
 - [Kernel Development Guides](./development/guides.md)
 
     - [Chip Peripheral Driver](./development/peripheral.md)
+    - [Sensor Driver](./development/sensor.md)
