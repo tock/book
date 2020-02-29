@@ -231,7 +231,7 @@ console once on boot.
 
 The `imix` board configuration you've looked through has a capsule for the this
 tutorial already set up. The capsule is a separate Rust crate located in
-`excercises/capsule`. You'll complete this excercise by filling it in.
+`exercises/capsule`. You'll complete this exercise by filling it in.
 
 In addition to a constructor, Our capsule has `start` function defined that is
 currently empty. The board configuration calls this function once it has

@@ -99,7 +99,7 @@ Now that we have the ability to write applications, let's do something a little
 more complex. The development board you are using has several sensors on it.
 These sensors include a light sensor, a humidity sensor, and a temperature
 sensor. Each sensing medium can be accessed separately via the Tock user
-library. We'll just be using the light and temperature for this excercise.
+library. We'll just be using the light and temperature for this exercise.
 
 #### Light
 
