@@ -10,7 +10,7 @@ During this portion of the course you will:
 
 ## Compile and program the kernel
 
-All of the hands-on excercises will be done within the source code for this
+All of the hands-on exercises will be done within the source code for this
 book. So pop open a terminal, and navigate to the repository. If you're using
 the VM, that'll be:
 
