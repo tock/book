@@ -59,6 +59,19 @@ the `cargo` target installed. We can use `rustup` to fix that:
 >
 >   If this generates an error, often unplugging/replugging fixes it. You can also
 >   create a rule in the VM USB settings which will auto-attach the imix to the VM.
+>
+> * With Windows Subsystem for Linux (WSL), the serial device parameters stored in
+>   the FTDI chip do not seem to get passed to Ubuntu. Plus, WSL enumerates every possible
+>   serial device. Therefore, tockloader cannot automatically guess which serial
+>   port is the correct one, and there are a lot to choose from.
+>
+>   You will need to open Device Manager on Windows, and find which `COM` port
+>   the tock board is using. It will likely be called "USB Serial Port" and be
+>   listed as an FTDI device. The COM number will match what is used in WSL.
+>   For example, `COM9` is `/dev/ttyS9` on WSL.
+>
+>   To use tockloader you should be able to specify the port manually. For example:
+>   `tockloader --port /dev/ttyS9 list`.
 
 To connect your development machine to the imix, connect them with a micro-USB
 cable. Any cable will do, but notice that there are two USB ports on the imix.
