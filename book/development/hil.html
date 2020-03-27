@@ -1,0 +1,341 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>HIL - Tock Tutorial</title>
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="affix"><a href="../introduction.html">Introduction</a></li><li><a href="../guides.html"><strong aria-hidden="true">1.</strong> Hands-on Guides</a></li><li><ol class="section"><li><a href="../course.html"><strong aria-hidden="true">1.1.</strong> Tock Course</a></li><li><ol class="section"><li><a href="../prerequisites.html"><strong aria-hidden="true">1.1.1.</strong> Prerequisites</a></li><li><a href="../environment.html"><strong aria-hidden="true">1.1.2.</strong> Environment Setup</a></li><li><a href="../modules.html"><strong aria-hidden="true">1.1.3.</strong> Modules</a></li><li><ol class="section"><li><a href="../application.html"><strong aria-hidden="true">1.1.3.1.</strong> Application</a></li><li><a href="../important_client.html"><strong aria-hidden="true">1.1.3.2.</strong> Important Client</a></li><li><a href="../capsule.html"><strong aria-hidden="true">1.1.3.3.</strong> Capsule</a></li></ol></li><li><a href="../graduation.html"><strong aria-hidden="true">1.1.4.</strong> Graduation</a></li></ol></li><li><a href="../tutorials/tutorials.html"><strong aria-hidden="true">1.2.</strong> Mini Tutorials</a></li><li><ol class="section"><li><a href="../tutorials/01_running_blink.html"><strong aria-hidden="true">1.2.1.</strong> Blink an LED</a></li><li><a href="../tutorials/02_button_print.html"><strong aria-hidden="true">1.2.2.</strong> Button to Printf()</a></li><li><a href="../tutorials/03_ble_scan.html"><strong aria-hidden="true">1.2.3.</strong> BLE Advertisement Scanning</a></li><li><a href="../tutorials/04_sensors_and_drivers.html"><strong aria-hidden="true">1.2.4.</strong> Sample Sensors and Use Drivers</a></li><li><a href="../tutorials/05_ipc.html"><strong aria-hidden="true">1.2.5.</strong> Inter-process Communication</a></li></ol></li></ol></li><li><a href="../development/guides.html"><strong aria-hidden="true">2.</strong> Kernel Development Guides</a></li><li><ol class="section"><li><a href="../development/peripheral.html"><strong aria-hidden="true">2.1.</strong> Chip Peripheral Driver</a></li><li><a href="../development/sensor.html"><strong aria-hidden="true">2.2.</strong> Sensor Driver</a></li><li><a href="../development/syscall.html"><strong aria-hidden="true">2.3.</strong> Syscall Interface</a></li><li><a href="../development/hil.html" class="active"><strong aria-hidden="true">2.4.</strong> HIL</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Tock Tutorial</h1>
+
+                        <div class="right-buttons">
+                            <a href="../print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#implementing-a-hil-interface" id="implementing-a-hil-interface">Implementing a HIL Interface</a></h1>
+<p>This guide describes the process of creating a new HIL interface in Tock. &quot;HIL&quot;s
+are one or more Rust traits that provide a standard and shared interface between
+pieces of the Tock kernel.</p>
+<h2><a class="header" href="#background" id="background">Background</a></h2>
+<p>The most canonical use for a HIL is to provide an interface to hardware
+peripherals to capsules. For example, a HIL for SPI provides an interface
+between the SPI hardware peripheral in a microcontroller and a capsule that
+needs a SPI bus for its operation. The HIL is a generic interface, so that same
+capsule can work on different microcontrollers, as long as each microcontroller
+implements the SPI HIL.</p>
+<p>HILs are also used for other generic kernel interfaces that are relevant to
+capsules. For example, Tock defines a HIL for a &quot;temperature sensor&quot;. While a
+temperature sensor is not generally a hardware peripheral, a capsule may want to
+use a generic temperature sensor interface and not be restricted to using a
+particular temperature sensor driver. Having a HIL allows the capsule to use a
+generic interface. For consistency, these HILs are also specified in the kernel
+crate.</p>
+<blockquote>
+<p>Note: In the future Tock will likely split these interface types into separate
+groups.</p>
+</blockquote>
+<p>HIL development often significantly differs from other development in Tock. In
+particular, HILs can often be written quickly, but tend to take numerous
+iterations over relatively long periods of time to refine. This happens for
+three general reasons:</p>
+<ol>
+<li>HILs are intended to be generic, and therefore implementable by a range of
+different hardware platforms. Designing an interface that works for a range
+of different hardware takes time and experience with various MCUs, and often
+incompatibilities aren't discovered until an implementation proves to be
+difficult (or impossible).</li>
+<li>HILs are Rust traits, and Rust traits are reasonably complex and offer a fair
+bit of flexibility. Balancing both leveraging the flexibility Rust provides
+and avoiding undue complexity takes time. Again, often trial-and-error is
+required to settle on how traits should be composed to best capture the
+interface.</li>
+<li>HILs are intended to be generic, and therefore will be used in a variety of
+different use cases. Ensuring that the HIL is expressive enough for a diverse
+set of uses takes time. Again, often the set of uses is not known initially,
+and HILs often have to be revised as new use cases are discovered.</li>
+</ol>
+<p>Therefore, we consider HILs to be evolving interfaces.</p>
+<h2><a class="header" href="#tips-on-hil-development" id="tips-on-hil-development">Tips on HIL Development</a></h2>
+<p>As getting a HIL interface &quot;correct&quot; is difficult, Tock tends to prefer starting
+with simple HIL interfaces that are typically inspired by the hardware used when
+the HIL is initially created. Trying to generalize a HIL too early can lead to
+complexity that is never actually warranted, or complexity that didn't actually
+address a problem.</p>
+<p>Also, Tock prefers to only include code (or in this case HIL interface
+functions) that are actually in use by the Tock code base. This ensures that
+there is at least some method of using or testing various components of Tock.
+This also suggests that initial HIL development should only focus on an interface
+that is needed by the initial use case.</p>
+<h2><a class="header" href="#overview" id="overview">Overview</a></h2>
+<p>The high-level steps required are:</p>
+<ol>
+<li>Determine that a new HIL interface is needed.</li>
+<li>Create the new HIL in the kernel crate.</li>
+<li>Ensure the HIL file includes sufficient documentation.</li>
+</ol>
+<h2><a class="header" href="#step-by-step-guide" id="step-by-step-guide">Step-by-Step Guide</a></h2>
+<p>The steps from the overview are elaborated on here.</p>
+<ol>
+<li>
+<p><strong>Determine that a new HIL interface is needed.</strong></p>
+<p>Tock includes a number of existing HIL interfaces, and modifying an existing
+HIL is preferred to creating a new HIL that is similar to an existing
+interface. Therefore, you should start by verifying an existing HIL does not
+already meet your need or could be modified to meet your need.</p>
+<p>This may seem to be a straightforward step, but it can be complicated by
+microcontrollers calling similar functionality by different names, and the
+existing HIL using a standard name or a different name from another
+microcontroller.</p>
+<p>Also, you can reach out via the email list or slack if you have questions
+about whether a new HIL is needed or an existing one should suffice.</p>
+</li>
+<li>
+<p><strong>Create the new HIL in the kernel crate.</strong></p>
+<p>Once you have determined a new HIL is required, you should create
+the appropriate file in <code>kernel/src/hil</code>. Often the best way to start is
+to copy an existing HIL that is similar in nature to the interface you are
+trying to create.</p>
+<p>As noted above, HILs evolve over time, and HILs will be periodically updated
+as issues are discovered or best practices for HIL design are learned.
+Unfortunately, this means that copying an existing HIL might lead to
+&quot;mistakes&quot; that must be remedied before the new HIL can be merged.</p>
+<p>Likely, it is helpful to open a pull request relatively early in the HIL
+creation process so that any substantial issues can be detected and
+corrected quickly.</p>
+<p>While Tock does not have a full guide to writing a HIL (although perhaps
+that could be created eventually), there are some guidelines that HILs
+generally follow:</p>
+<ul>
+<li>Avoid <code>initialize()</code> or <code>start()</code> or <code>on()</code> functions in HIL interfaces.
+While these types of methods are intuitive when implementing a HIL, they
+are often not intuitive for users of that HIL. For example, when should
+<code>initialize()</code> be called? Once when the board boots? Or before every use?
+What if there are multiple users of the peripheral? In general, it is
+better to require that the implementation track the state of the
+underlying hardware and configure it as needed.</li>
+<li>Avoid using <code>'static</code> lifetimes in HILs. This limits flexibility, and Tock
+prefers to use a generic <code>'a</code> lifetime instead. Also, unless there is a
+clear reason not to, only a single lifetime should be used.</li>
+<li>Include the <code>set_client()</code> function in the HIL if needed. Not all HILs
+require split-phase operation and need a client interface, but for those
+that do the <code>set_client()</code> function should be included in the HIL. This
+makes writing generic components for boards possible.</li>
+</ul>
+<p>Tock only uses <strong>non-blocking</strong> interfaces in the kernel, and HILs should
+reflect that as well. Therefore, for any operation that will take more than
+a couple cycles to complete, or would require waiting on a hardware flag,
+a split interface design should be used with a <code>Client</code> trait that receives
+a callback when the operation has completed.</p>
+</li>
+<li>
+<p><strong>Ensure the HIL file includes sufficient documentation.</strong></p>
+<p>HIL files should be well commented with Rustdoc style (i.e. <code>///</code>) comments.
+These comments are the main source of documentation for HILs.</p>
+<p>As HILs grow in complexity or stability, they will be documented separately
+to fully explain their design and intended use cases.</p>
+</li>
+</ol>
+<h2><a class="header" href="#wrap-up" id="wrap-up">Wrap-Up</a></h2>
+<p>Congratulations! You have implemented a new HIL in Tock! We encourage you to
+submit a pull request to upstream this to the Tock repository.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../development/syscall.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="../development/syscall.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+            </nav>
+
+        </div>
+
+        
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3001");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload(true); // force reload from server (not from cache)
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+        
+
+        
+
+        
+
+        
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

@@ -27,3 +27,4 @@ Tock OS Course
     - [Chip Peripheral Driver](./development/peripheral.md)
     - [Sensor Driver](./development/sensor.md)
     - [Syscall Interface](./development/syscall.md)
+    - [HIL](./development/hil.md)
