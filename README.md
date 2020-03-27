@@ -3,6 +3,8 @@ Tock Book
 
 Getting started guide for Tock.
 
+[book.tockos.org](https://book.tockos.org/)
+
 This should be generic and expanded as new courses and tutorials are added.
 
 
