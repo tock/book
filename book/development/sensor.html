@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js">
+<html lang="en" class="sidebar-visible no-js light">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -32,11 +32,11 @@
 
         
     </head>
-    <body class="light">
+    <body>
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
             var path_to_root = "../";
-            var default_theme = "light";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
@@ -60,8 +60,11 @@
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
-            document.body.className = theme;
-            document.querySelector('html').className = theme + ' js';
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
         </script>
 
         <!-- Hide / unhide sidebar before it is displayed -->
@@ -78,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="affix"><a href="../introduction.html">Introduction</a></li><li><a href="../guides.html"><strong aria-hidden="true">1.</strong> Hands-on Guides</a></li><li><ol class="section"><li><a href="../course.html"><strong aria-hidden="true">1.1.</strong> Tock Course</a></li><li><ol class="section"><li><a href="../prerequisites.html"><strong aria-hidden="true">1.1.1.</strong> Prerequisites</a></li><li><a href="../environment.html"><strong aria-hidden="true">1.1.2.</strong> Environment Setup</a></li><li><a href="../modules.html"><strong aria-hidden="true">1.1.3.</strong> Modules</a></li><li><ol class="section"><li><a href="../application.html"><strong aria-hidden="true">1.1.3.1.</strong> Application</a></li><li><a href="../important_client.html"><strong aria-hidden="true">1.1.3.2.</strong> Important Client</a></li><li><a href="../capsule.html"><strong aria-hidden="true">1.1.3.3.</strong> Capsule</a></li></ol></li><li><a href="../graduation.html"><strong aria-hidden="true">1.1.4.</strong> Graduation</a></li></ol></li><li><a href="../tutorials/tutorials.html"><strong aria-hidden="true">1.2.</strong> Mini Tutorials</a></li><li><ol class="section"><li><a href="../tutorials/01_running_blink.html"><strong aria-hidden="true">1.2.1.</strong> Blink an LED</a></li><li><a href="../tutorials/02_button_print.html"><strong aria-hidden="true">1.2.2.</strong> Button to Printf()</a></li><li><a href="../tutorials/03_ble_scan.html"><strong aria-hidden="true">1.2.3.</strong> BLE Advertisement Scanning</a></li><li><a href="../tutorials/04_sensors_and_drivers.html"><strong aria-hidden="true">1.2.4.</strong> Sample Sensors and Use Drivers</a></li><li><a href="../tutorials/05_ipc.html"><strong aria-hidden="true">1.2.5.</strong> Inter-process Communication</a></li></ol></li></ol></li><li><a href="../development/guides.html"><strong aria-hidden="true">2.</strong> Kernel Development Guides</a></li><li><ol class="section"><li><a href="../development/peripheral.html"><strong aria-hidden="true">2.1.</strong> Chip Peripheral Driver</a></li><li><a href="../development/sensor.html" class="active"><strong aria-hidden="true">2.2.</strong> Sensor Driver</a></li><li><a href="../development/syscall.html"><strong aria-hidden="true">2.3.</strong> Syscall Interface</a></li><li><a href="../development/hil.html"><strong aria-hidden="true">2.4.</strong> HIL</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../guides.html"><strong aria-hidden="true">1.</strong> Hands-on Guides</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../course.html"><strong aria-hidden="true">1.1.</strong> Tock Course</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../prerequisites.html"><strong aria-hidden="true">1.1.1.</strong> Prerequisites</a></li><li class="chapter-item expanded "><a href="../environment.html"><strong aria-hidden="true">1.1.2.</strong> Environment Setup</a></li><li class="chapter-item expanded "><a href="../modules.html"><strong aria-hidden="true">1.1.3.</strong> Modules</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../application.html"><strong aria-hidden="true">1.1.3.1.</strong> Application</a></li><li class="chapter-item expanded "><a href="../important_client.html"><strong aria-hidden="true">1.1.3.2.</strong> Important Client</a></li><li class="chapter-item expanded "><a href="../capsule.html"><strong aria-hidden="true">1.1.3.3.</strong> Capsule</a></li></ol></li><li class="chapter-item expanded "><a href="../graduation.html"><strong aria-hidden="true">1.1.4.</strong> Graduation</a></li></ol></li><li class="chapter-item expanded "><a href="../tutorials/tutorials.html"><strong aria-hidden="true">1.2.</strong> Mini Tutorials</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tutorials/01_running_blink.html"><strong aria-hidden="true">1.2.1.</strong> Blink an LED</a></li><li class="chapter-item expanded "><a href="../tutorials/02_button_print.html"><strong aria-hidden="true">1.2.2.</strong> Button to Printf()</a></li><li class="chapter-item expanded "><a href="../tutorials/03_ble_scan.html"><strong aria-hidden="true">1.2.3.</strong> BLE Advertisement Scanning</a></li><li class="chapter-item expanded "><a href="../tutorials/04_sensors_and_drivers.html"><strong aria-hidden="true">1.2.4.</strong> Sample Sensors and Use Drivers</a></li><li class="chapter-item expanded "><a href="../tutorials/05_ipc.html"><strong aria-hidden="true">1.2.5.</strong> Inter-process Communication</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../development/guides.html"><strong aria-hidden="true">2.</strong> Kernel Development Guides</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../development/peripheral.html"><strong aria-hidden="true">2.1.</strong> Chip Peripheral Driver</a></li><li class="chapter-item expanded "><a href="../development/sensor.html" class="active"><strong aria-hidden="true">2.2.</strong> Sensor Driver</a></li><li class="chapter-item expanded "><a href="../development/syscall.html"><strong aria-hidden="true">2.3.</strong> Syscall Interface</a></li><li class="chapter-item expanded "><a href="../development/hil.html"><strong aria-hidden="true">2.4.</strong> HIL</a></li><li class="chapter-item expanded "><a href="../development/tests.html"><strong aria-hidden="true">2.5.</strong> Kernel Tests</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -87,37 +90,36 @@
 
             <div class="page">
                 
-                <div id="menu-bar" class="menu-bar">
-                    <div id="menu-bar-sticky-container">
-                        <div class="left-buttons">
-                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
-                                <i class="fa fa-bars"></i>
-                            </button>
-                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
-                                <i class="fa fa-paint-brush"></i>
-                            </button>
-                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
-                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
-                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
-                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
-                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
-                            </ul>
-                            
-                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
-                                <i class="fa fa-search"></i>
-                            </button>
-                            
-                        </div>
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
 
-                        <h1 class="menu-title">Tock Tutorial</h1>
+                    <h1 class="menu-title">Tock Tutorial</h1>
 
-                        <div class="right-buttons">
-                            <a href="../print.html" title="Print this book" aria-label="Print this book">
-                                <i id="print-button" class="fa fa-print"></i>
-                            </a>
-                            
-                        </div>
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
                     </div>
                 </div>
 
@@ -194,10 +196,11 @@ folder.</p>
 <p>For our example we will assume the part number is <code>ls1234</code>.</p>
 <p>You then need to add the filename to <code>capsules/src/lib.rs</code> like:</p>
 <pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub mod ls1234;
-#}</code></pre></pre>
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>pub mod ls1234;
+<span class="boring">}
+</span></code></pre></pre>
 <p>Now inside of the new file you should create a struct with the fields
 necessary to implement the driver for the IC. In our example we will assume
 the IC is connected to the MCU with an I2C bus. Your IC might use SPI, UART,
@@ -206,15 +209,16 @@ struct based on the interface. You should be able to find examples in the
 capsules directory to copy from.</p>
 <p>The struct will look something like:</p>
 <pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct Ls1234 {
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>pub struct Ls1234 {
     i2c: &amp;'a dyn I2CDevice,
     state: Cell&lt;State&gt;,
     buffer: TakeCell&lt;'static, [u8]&gt;,
     client: OptionalCell&lt;&amp;'a dyn Ls1234Client&gt;,
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>You can see the resources this driver requires to successfully interface
 with the light sensor:</p>
 <ul>
@@ -233,15 +237,16 @@ the correct address.</p>
 communicate with the IC, and it is common for drivers to keep some state
 variable to manage this. Our <code>State</code> is defined as an enum, like so:</p>
 <pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-#[derive(Copy, Clone, PartialEq)]
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>#[derive(Copy, Clone, PartialEq)]
 enum State {
     Disabled,
     Enabling,
     ReadingLight,
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>Also note that the <code>state</code> variable uses a <code>Cell</code>. This is so that the
 driver can update the state.</p>
 </li>
@@ -254,10 +259,11 @@ buffer to use, while still allowing the driver to hint at the size
 required for successful operation. In our case the static buffer is
 defined as:</p>
 <pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub static mut BUF: [u8; 3] = [0; 3];
-#}</code></pre></pre>
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>pub static mut BUF: [u8; 3] = [0; 3];
+<span class="boring">}
+</span></code></pre></pre>
 <p>Note the buffer is wrapped in a <code>TakeCell</code> such that it can be passed
 to the I2C hardware when necessary, and re-stored in the driver struct
 when the I2C code returns the buffer.</p>
@@ -270,12 +276,13 @@ a callback via the client when the same is ready. The driver has to define
 the type of the callback by defining the <code>Ls1234Client</code> trait in this
 case:</p>
 <pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub trait Ls1234Client {
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>pub trait Ls1234Client {
 	 fn callback(light_reading: usize);
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>Note that the client is stored in an <code>OptionalCell</code>. This allows the
 callback to not be set initially, and configured at bootup.</p>
 </li>
@@ -294,9 +301,9 @@ out of sync, and makes further development on the driver difficult.</p>
 your driver. By convention, the function is called <code>new()</code> and looks
 something like:</p>
 <pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl Ls1234&lt;'a&gt; {
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>impl Ls1234&lt;'a&gt; {
     pub fn new(i2c: &amp;'a dyn I2CDevice, buffer: &amp;'static mut [u8]) -&gt; Ls1234&lt;'a&gt; {
         Ls1234 {
             i2c: i2c,
@@ -306,7 +313,8 @@ impl Ls1234&lt;'a&gt; {
         }
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>This function will get called by the board's <code>main.rs</code> file when the driver
 is instantiated. All of the static objects or configuration that the driver
 requires must be passed in here. In this example, a reference to the I2C
@@ -322,14 +330,15 @@ appropriate for your particular IC.</p>
 <p>With our light sensor example, we likely want to write a sample function for
 reading a light sensor value:</p>
 <pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl Ls1234&lt;'a&gt; {
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>impl Ls1234&lt;'a&gt; {
     pub fn new(...) -&gt; Ls1234&lt;'a&gt; {...}
 
     pub fn start_light_reading(&amp;self) {...}
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>Note that the function name is &quot;start light reading&quot;, which is appropriate
 because of the event-driven, non-blocking nature of the Tock kernel.
 Actually communicating with the sensor will take some time, and likely
@@ -341,9 +350,9 @@ described earlier.</p>
 that is IC-specific, then send the command to the IC. A rough example of
 that operation looks like:</p>
 <pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl Ls1234&lt;'a&gt; {
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>impl Ls1234&lt;'a&gt; {
     pub fn new(...) -&gt; Ls1234&lt;'a&gt; {...}
 
     pub fn start_light_reading(&amp;self) {
@@ -364,28 +373,30 @@ impl Ls1234&lt;'a&gt; {
         }
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>The <code>start_light_reading()</code> function kicks off reading the light value from
 the IC and updates our internal state machine state to mark that we are
 waiting for the IC to turn on. Now the <code>Ls1234</code> code is finished for the
 time being and we now wait for the I2C message to finish being sent. We will
 know when this has completed based on a callback from the I2C hardware.</p>
 <pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl I2CClient for Ls1234&lt;'a&gt; {
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>impl I2CClient for Ls1234&lt;'a&gt; {
     fn command_complete(&amp;self, buffer: &amp;'static mut [u8], error: Error) {
         // Handle what happens with the I2C send is complete here.
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>In our example, we have to send a new command after turning on the light
 sensor to actually read a sampled value. We use our state machine here to
 organize the code as in this example:</p>
 <pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl I2CClient for Ls1234&lt;'a&gt; {
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>impl I2CClient for Ls1234&lt;'a&gt; {
     fn command_complete(&amp;self, buffer: &amp;'static mut [u8], _error: Error) {
         match self.state.get() {
             State::Enabling =&gt; {
@@ -400,7 +411,8 @@ impl I2CClient for Ls1234&lt;'a&gt; {
         }
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>This will send another command to the sensor to read the actual light
 measurement. We also update our <code>self.state</code> variable because when this I2C
 transaction finishes the exact same <code>command_complete</code> callback will be
@@ -410,9 +422,9 @@ communicating with the sensor.</p>
 and we must handle the result. Since we now have the reading we can call our
 client's callback after updating out state machine.</p>
 <pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl I2CClient for Ls1234&lt;'a&gt; {
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>impl I2CClient for Ls1234&lt;'a&gt; {
     fn command_complete(&amp;self, buffer: &amp;'static mut [u8], _error: Error) {
         match self.state.get() {
             State::Enabling =&gt; {
@@ -438,7 +450,8 @@ impl I2CClient for Ls1234&lt;'a&gt; {
         }
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <blockquote>
 <p>Note: likely the sensor would need to be disabled and returned to a low
 power state.</p>
@@ -467,9 +480,9 @@ the <code>sensors.rs</code> file. Drivers can implement one of these HILs and th
 higher-level code can use the HIL interface rather than a specific IC.</p>
 <p>To implement the HIL, you must implement the HIL trait functions:</p>
 <pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl AmbientLight for Ls1234&lt;'a&gt; {
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>impl AmbientLight for Ls1234&lt;'a&gt; {
     fn set_client(&amp;self, client: &amp;'static dyn AmbientLightClient) {
 
     }
@@ -478,7 +491,8 @@ impl AmbientLight for Ls1234&lt;'a&gt; {
 
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>The user of the <code>AmbientLight</code> HIL will implement the <code>AmbientLightClient</code>
 and provide the client through the <code>set_client()</code> function.</p>
 </li>
@@ -518,13 +532,13 @@ currently use the driver.</p>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a href="../development/peripheral.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../development/peripheral.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
                 
-                    <a href="../development/syscall.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../development/syscall.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 
@@ -533,22 +547,15 @@ currently use the driver.</p>
         </div>
 
         
-        <!-- Livereload script (if served using the cli tool) -->
-        <script type="text/javascript">
-            var socket = new WebSocket("ws://localhost:3001");
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload(true); // force reload from server (not from cache)
-                }
-            };
 
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
         
 
+        
+        
+        
+        <script type="text/javascript">
+            window.playpen_copyable = true;
+        </script>
         
 
         

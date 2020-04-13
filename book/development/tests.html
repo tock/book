@@ -1,0 +1,629 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Kernel Tests - Tock Tutorial</title>
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../guides.html"><strong aria-hidden="true">1.</strong> Hands-on Guides</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../course.html"><strong aria-hidden="true">1.1.</strong> Tock Course</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../prerequisites.html"><strong aria-hidden="true">1.1.1.</strong> Prerequisites</a></li><li class="chapter-item expanded "><a href="../environment.html"><strong aria-hidden="true">1.1.2.</strong> Environment Setup</a></li><li class="chapter-item expanded "><a href="../modules.html"><strong aria-hidden="true">1.1.3.</strong> Modules</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../application.html"><strong aria-hidden="true">1.1.3.1.</strong> Application</a></li><li class="chapter-item expanded "><a href="../important_client.html"><strong aria-hidden="true">1.1.3.2.</strong> Important Client</a></li><li class="chapter-item expanded "><a href="../capsule.html"><strong aria-hidden="true">1.1.3.3.</strong> Capsule</a></li></ol></li><li class="chapter-item expanded "><a href="../graduation.html"><strong aria-hidden="true">1.1.4.</strong> Graduation</a></li></ol></li><li class="chapter-item expanded "><a href="../tutorials/tutorials.html"><strong aria-hidden="true">1.2.</strong> Mini Tutorials</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tutorials/01_running_blink.html"><strong aria-hidden="true">1.2.1.</strong> Blink an LED</a></li><li class="chapter-item expanded "><a href="../tutorials/02_button_print.html"><strong aria-hidden="true">1.2.2.</strong> Button to Printf()</a></li><li class="chapter-item expanded "><a href="../tutorials/03_ble_scan.html"><strong aria-hidden="true">1.2.3.</strong> BLE Advertisement Scanning</a></li><li class="chapter-item expanded "><a href="../tutorials/04_sensors_and_drivers.html"><strong aria-hidden="true">1.2.4.</strong> Sample Sensors and Use Drivers</a></li><li class="chapter-item expanded "><a href="../tutorials/05_ipc.html"><strong aria-hidden="true">1.2.5.</strong> Inter-process Communication</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../development/guides.html"><strong aria-hidden="true">2.</strong> Kernel Development Guides</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../development/peripheral.html"><strong aria-hidden="true">2.1.</strong> Chip Peripheral Driver</a></li><li class="chapter-item expanded "><a href="../development/sensor.html"><strong aria-hidden="true">2.2.</strong> Sensor Driver</a></li><li class="chapter-item expanded "><a href="../development/syscall.html"><strong aria-hidden="true">2.3.</strong> Syscall Interface</a></li><li class="chapter-item expanded "><a href="../development/hil.html"><strong aria-hidden="true">2.4.</strong> HIL</a></li><li class="chapter-item expanded "><a href="../development/tests.html" class="active"><strong aria-hidden="true">2.5.</strong> Kernel Tests</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Tock Tutorial</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#implementing-a-kernel-test" id="implementing-a-kernel-test">Implementing a Kernel Test</a></h1>
+<p>This guide covers how to write in-kernel tests of hardware functionality.
+For example, if you have implemented a chip peripheral, you may want to write
+in-kernel tests of that peripheral to test peripheral-specific functionality
+that will not be exposed via the HIL for that peripheral. This guide
+outlines the general steps for implementing kernel tests.</p>
+<h2><a class="header" href="#setup" id="setup">Setup</a></h2>
+<p>This guide assumes you have existing chip, board, or architecture specific code
+that you wish to test from within the kernel.</p>
+<blockquote>
+<p>Note: If you wish to test kernel code with no hardware dependencies at all, such as
+a ring buffer implementation, you can use cargo's test framework instead. These
+tests can be run by simply calling <code>cargo test</code> within the crate that the test
+is located, and will be executed during CI for all tests merged into upstream Tock.
+An example of this approach can be found in <code>kernel/src/common/ring_buffer.rs</code>.</p>
+</blockquote>
+<h2><a class="header" href="#overview" id="overview">Overview</a></h2>
+<p>The general steps you will follow are:</p>
+<ol>
+<li>Determine the board(s) you want to run your tests on</li>
+<li>Add a test file in <code>boards/{board}/src/</code></li>
+<li>Determine where to write actual tests -- in the test file or a capsule test</li>
+<li>Write your tests</li>
+<li>Call the test from <code>main.rs</code></li>
+<li>Document the expected output from the test at the top of the test file</li>
+</ol>
+<p>This guide will walk through how to do each of these steps.</p>
+<h2><a class="header" href="#background" id="background">Background</a></h2>
+<p>Kernel tests allow for testing of hardware-specific functionality
+that is not exposed to userspace, and allows for fail-fast tests
+at boot that otherwise would not be exposed until apps are loaded. Kernel
+tests can be useful to test chip peripherals prior to exposing these peripherals
+outside the Kernel. Kernel tests can also be included as required tests run prior to releases,
+to ensure there have been no regressions for a particular component. Additionally,
+kernel tests can be useful for testing capsule functionality from within the
+kernel, such as when <code>unsafe</code> is required to verify the results of tests,
+or for testing virtualization capsules in a controlled environment.</p>
+<p>Kernel tests are generally implemented on an as-needed basis, and are not required
+for all chip peripherals in Tock. In general, they are not expected to be run in
+the default case, though they should always be included from <code>main.rs</code> so they
+are compiled. These tests are allowed to use <code>unsafe</code> as needed, and are
+permitted to conflict with normal operation, by stealing callbacks from
+drivers or modifying global state.</p>
+<p>Notably, your specific use case may differ some from the one outline here.
+It is always recommended to attempt to copy from existing Tock code when
+developing your own solutions. A good collection of kernel tests can be
+found in <code>boards/imix/src/tests/</code> for that purpose.</p>
+<h2><a class="header" href="#step-by-step-guide" id="step-by-step-guide">Step-by-Step Guide</a></h2>
+<p>The steps from the overview are elaborated on here.</p>
+<ol>
+<li>
+<p><strong>Determine the board(s) you want to run your test on.</strong></p>
+<p>If you are testing chip or architecture specific functionality, you simply
+need to choose a board that uses that chip or architecture. For board specific
+functionality you of course need to choose that board.
+If you are testing a virtualization capsule, then any board that implements
+the underlying resource being virtualized is acceptable. Currently,
+most kernel tests are implemented for the Imix platform, and can be
+found in <code>boards/imix/src/tests/</code></p>
+<p><strong>Checkpoint</strong>: You have identified the board you will implement your test for.</p>
+</li>
+<li>
+<p><strong>Add a test file in <code>boards/{board}/src/</code></strong></p>
+<p>To start implementing the test, you should create a new source
+file inside the <code>boards/{board}/src</code> directory. For boards with lots of tests,
+like the Imix board, there may be a <code>tests</code> subdirectory -- if so, the test should
+go in <code>tests</code> instead, and be added to the <code>tests/mod.rs</code> file.
+The name of this test file generally should indicate the functionality being tested.</p>
+<blockquote>
+<p>Note: If the board you select is one of the nrf52dk variants (nrf52840_dongle,
+nrf52840dk, or nrf52dk), tests should be moved into the <code>nrf52dk_base/src/</code> folder,
+and called from <code>lib.rs</code>.</p>
+</blockquote>
+<p><strong>Checkpoint</strong>: You have chosen a board for your test and created a test file.</p>
+</li>
+<li>
+<p><strong>Determine where to write actual tests -- in the test file or a capsule test.</strong></p>
+<p>Depending on what you are testing, it may be best practice to write a capsule test
+that you call from the test file you created in the previous step.</p>
+<p>Writing a capsule test is best practice if your test meets the following criteria:</p>
+<ol>
+<li>Test does not require <code>unsafe</code></li>
+<li>The test is for a peripheral available on multiple boards</li>
+<li>A HIL or capsule exists for that peripheral, so it is accessible from the <code>capsules</code> crate</li>
+<li>The test relies only on functionality exposed via the HIL or a capsule</li>
+<li>You care about being able to call this test from multiple boards</li>
+</ol>
+<p>Examples:</p>
+<ul>
+<li>UART Virtualization (all boards support UART, there is a HIL for UART devices and a capsule
+for the <code>virtual_uart</code>)</li>
+<li>Alarm test (all boards will have some form of hardware alarm, there is an Alarm HIL)</li>
+<li>Other examples: see <code>capsules/src/test</code></li>
+</ul>
+<p>If your test meets the criteria for writing a capsule test, follow these steps:</p>
+<p>Add a file in <code>capsules/src/test/</code>, and then add the filename to
+<code>capsules/src/mod.rs</code> like this:</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>pub mod virtual_uart;
+<span class="boring">}
+</span></code></pre></pre>
+<p>Next, create a test struct in this file that can be instantiated by any board
+using this test capsule. This struct should implement a <code>new()</code> function so it
+can be instantiated from the test file in <code>boards</code>, and a <code>run()</code> function that
+will run the actual tests. An example for UART follows:</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>//! capsules/src/test/virtual_uart.rs
+
+pub struct TestVirtualUartReceive {
+    device: &amp;'static UartDevice&lt;'static&gt;,
+    buffer: TakeCell&lt;'static, [u8]&gt;,
+}
+
+impl TestVirtualUartReceive {
+    pub fn new(device: &amp;'static UartDevice&lt;'static&gt;, buffer: &amp;'static mut [u8]) -&gt; Self {
+        TestVirtualUartReceive {
+            device: device,
+            buffer: TakeCell::new(buffer),
+        }
+    }
+
+    pub fn run(&amp;self) {
+        // TODO: See Next Step
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>If your test does not meet the above requirements, you can simply implement your tests in the file
+that you created in step 2.
+This can involve creating a test structure with test methods. The UDP test file takes this approach,
+by definining a number of self-contained tests. One such example follows:</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>//! boards/imix/src/test/udp_lowpan_test.rs
+
+pub struct LowpanTest {
+    port_table: &amp;'static UdpPortManager,
+    // ...
+}
+
+impl LowpanTest {
+
+    // This test ensures that an app and capsule cant bind to the same port
+    // but can bind to different ports
+    fn bind_test(&amp;self) {
+        let create_cap = create_capability!(NetworkCapabilityCreationCapability);
+        let net_cap = unsafe {
+            static_init!(
+                NetworkCapability,
+                NetworkCapability::new(AddrRange::Any, PortRange::Any, PortRange::Any, &amp;create_cap)
+            )
+        };
+        let mut socket1 = self.port_table.create_socket().unwrap();
+        // Attempt to bind to a port that has already been bound by an app.
+        let result = self.port_table.bind(socket1, 1000, net_cap);
+        assert!(result.is_err());
+        socket1 = result.unwrap_err(); // Get the socket back
+
+        //now bind to an open port
+        let (_send_bind, _recv_bind) = self
+            .port_table
+            .bind(socket1, 1001, net_cap)
+            .expect(&quot;UDP Bind fail&quot;);
+
+        debug!(&quot;bind_test passed&quot;);
+    }
+    // ...
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p><strong>Checkpoint</strong>: There is a test capsule with <code>new()</code> and <code>run()</code> implementations.</p>
+</li>
+<li>
+<p><strong>Write your tests</strong></p>
+<p>The first part of this step takes place in the test file you just created -- writing
+the actual tests. This part is highly dependent on the funcitonality being verified.
+If you are writing your tests in test capsule, this should all be  triggered from the <code>run()</code>
+function.</p>
+<p>Depending on the specifics of your test, you may need to implement additional functions
+or traits in this file to make your test functional. One example is implementing a client
+trait on the test struct so that the test can receive the results of asynchronous operations.
+Our UART example requires implementing the <code>uart::RecieveClient</code> on the test struct.</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>//! boards/imix/src/test/virtual_uart_rx_test.rs
+
+impl TestVirtualUartReceive {
+    // ...
+
+    pub fn run(&amp;self) {
+        let buf = self.buffer.take().unwrap();
+        let len = buf.len();
+        debug!(&quot;Starting receive of length {}&quot;, len);
+        let (err, _opt) = self.device.receive_buffer(buf, len);
+        if err != ReturnCode::SUCCESS {
+            panic!(
+                &quot;Calling receive_buffer() in virtual_uart test failed: {:?}&quot;,
+                err
+            );
+        }
+    }
+}
+
+impl uart::ReceiveClient for TestVirtualUartReceive {
+    fn received_buffer(
+        &amp;self,
+        rx_buffer: &amp;'static mut [u8],
+        rx_len: usize,
+        rcode: ReturnCode,
+        _error: uart::Error,
+    ) {
+        debug!(&quot;Virtual uart read complete: {:?}: &quot;, rcode);
+        for i in 0..rx_len {
+            debug!(&quot;{:02x} &quot;, rx_buffer[i]);
+        }
+        debug!(&quot;Starting receive of length {}&quot;, rx_len);
+        let (err, _opt) = self.device.receive_buffer(rx_buffer, rx_len);
+        if err != ReturnCode::SUCCESS {
+            panic!(
+                &quot;Calling receive_buffer() in virtual_uart test failed: {:?}&quot;,
+                err
+            );
+        }
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<blockquote>
+<p>Note that the above test calls <code>panic!()</code> in the case of failure. This pattern,
+or the similar use of <code>assert!()</code> statements, is the preferred way to communicate
+test failures. If communicating errors in this way is not possible, tests
+can indicate success/failure by printing different results to the console
+in each case and asking users to verify the actual output matches the expected output.</p>
+</blockquote>
+<p>The next step in this process is determining all of the parameters that need to be passed to
+the test. It is preferred that all logically related tests be called from a single
+<code>pub unsafe fn run(/* optional args */)</code> to maintain convention. This ensures that all tests can be run
+by adding a single line to <code>main.rs</code>. Many tests require a reference to an alarm
+in order to seperate tests in time, or a reference to a virtualization capsule that
+is being tested. Notably, the <code>run()</code> function should initialize any components itself that
+would not have already been created in <code>main.rs</code>.
+As an example, the below function is a starting point for the
+<code>virtual_uart_receive</code> test for Imix:</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>pub unsafe fn run_virtual_uart_receive(mux: &amp;'static MuxUart&lt;'static&gt;) {
+    debug!(&quot;Starting virtual reads.&quot;);
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Next, a test function should initialize any objects required to run tests.
+This is best split out into subfunctions, like the following:</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>unsafe fn static_init_test_receive_small(
+    mux: &amp;'static MuxUart&lt;'static&gt;,
+) -&gt; &amp;'static TestVirtualUartReceive {
+    static mut SMALL: [u8; 3] = [0; 3];
+    let device = static_init!(UartDevice&lt;'static&gt;, UartDevice::new(mux, true));
+    device.setup();
+    let test = static_init!(
+        TestVirtualUartReceive,
+        TestVirtualUartReceive::new(device, &amp;mut SMALL)
+    );
+    device.set_receive_client(test);
+    test
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>This initializes an instance of the test capsule we constructed earlier. Simpler tests
+(such as those not relying on capsule tests)
+might simply use <code>static_init!()</code> to initialize normal capsules directly and test them.
+The log test does this, for example:</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>//! boards/imix/src/test/log_test.rs
+
+pub unsafe fn run(
+    mux_alarm: &amp;'static MuxAlarm&lt;'static, Ast&gt;,
+    deferred_caller: &amp;'static DynamicDeferredCall,
+) {
+    // Set up flash controller.
+    flashcalw::FLASH_CONTROLLER.configure();
+    static mut PAGEBUFFER: flashcalw::Sam4lPage = flashcalw::Sam4lPage::new();
+
+    // Create actual log storage abstraction on top of flash.
+    let log = static_init!(
+        Log,
+        log::Log::new(
+            &amp;TEST_LOG,
+            &amp;mut flashcalw::FLASH_CONTROLLER,
+            &amp;mut PAGEBUFFER,
+            deferred_caller,
+            true
+        )
+    );
+    flash::HasClient::set_client(&amp;flashcalw::FLASH_CONTROLLER, log);
+    log.initialize_callback_handle(
+        deferred_caller
+            .register(log)
+            .expect(&quot;no deferred call slot available for log storage&quot;),
+    );
+
+    // ...
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Finally, your <code>run()</code> function should call the actual tests. This may involve simply
+calling a <code>run()</code> function on a capsule test, or may involve calling test functions
+written in the board specific test file. The virtual UART test <code>run()</code> looks like this:</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>pub unsafe fn run_virtual_uart_receive(mux: &amp;'static MuxUart&lt;'static&gt;) {
+    debug!(&quot;Starting virtual reads.&quot;);
+    let small = static_init_test_receive_small(mux);
+    let large = static_init_test_receive_large(mux);
+    small.run();
+    large.run();
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>As you develop your kernel tests, you may not immediately know what functions are required
+in your test capsule -- this is okay! It is often easiest to start with a basic test and expand
+this file to test additional functionality once basic tests are working.</p>
+<p><strong>Checkpoint</strong>: Your tests are written, and can be called from a single <code>run()</code> function.</p>
+</li>
+<li>
+<p><strong>Call the test from <code>main.rs</code>, and iterate on it until it works</strong></p>
+<p>Next, you should run your test by calling it from the <code>reset_handler()</code> in <code>main.rs</code>.
+In order to do so, you will also need it import it into the file by adding a line like this:</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>#[allow(dead_code)]
+mod virtual_uart_test;
+<span class="boring">}
+</span></code></pre></pre>
+<p>However, if your test is located inside a <code>test</code> module this is not needed -- your test will
+already be included.</p>
+<p>Typically, tests are called after completing setup of the board, immediately before
+the call to <code>load_processes()</code>:</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>virtual_uart_rx_test::run_virtual_uart_receive(uart_mux);
+debug!(&quot;Initialization complete. Entering main loop&quot;);
+
+extern &quot;C&quot; {
+    /// Beginning of the ROM region containing app images.
+    static _sapps: u8;
+
+    /// End of the ROM region containing app images.
+    ///
+    /// This symbol is defined in the linker script.
+    static _eapps: u8;
+}
+kernel::procs::load_processes(
+  // ...
+<span class="boring">}
+</span></code></pre></pre>
+<p>Observe your results, and tune or add tests as needed.</p>
+<p>Before you submit a PR including any kernel tests, however, please remove or comment out
+any lines of code that call these tests.</p>
+<p><strong>Checkpoint</strong>: You have a functional test that can be called in a single line from <code>main.rs</code></p>
+</li>
+<li>
+<p><strong>Document the expected output from the test at the top of the test file</strong></p>
+<p>For tests that will be merged to upstream, it is good practice to document how to
+run a test and what the expected output of a test is. This is best done using<br />
+document level coments (<code>//!</code>) at the top of the test file. The documentation
+for the virtual UART test follows:</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>//! Test reception on the virtualized UART by creating two readers that
+//! read in parallel. To add this test, include the line
+//! ```
+//!    virtual_uart_rx_test::run_virtual_uart_receive(uart_mux);
+//! ```
+//! to the imix boot sequence, where `uart_mux` is a
+//! `capsules::virtual_uart::MuxUart`.  There is a 3-byte and a 7-byte
+//! read running in parallel. Test that they are both working by typing
+//! and seeing that they both get all characters. If you repeatedly
+//! type 'a', for example (0x61), you should see something like:
+//! ```
+//! Starting receive of length 3
+//! Virtual uart read complete: CommandComplete:
+//! 61
+//! 61
+//! 61
+//! 61
+//! 61
+//! 61
+//! 61
+//! Starting receive of length 7
+//! Virtual uart read complete: CommandComplete:
+//! 61
+//! 61
+//! 61
+//! ```
+<span class="boring">}
+</span></code></pre></pre>
+<p><strong>Checkpoint</strong>: You have documented your tests</p>
+</li>
+</ol>
+<h2><a class="header" href="#wrap-up" id="wrap-up">Wrap-Up</a></h2>
+<p>Congratulations! You have written a kernel test for Tock!
+We encourage you to submit a pull request to upstream this to the Tock
+repository.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../development/hil.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="../development/hil.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+        
+        
+        <script type="text/javascript">
+            window.playpen_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
