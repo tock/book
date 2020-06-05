@@ -21,29 +21,8 @@ This course assumes some experience programming embedded devices and fluency in
 C. It assumes no knowledge of Rust, although knowing Rust will allow you to be
 more creative during the kernel exploration at the end.
 
-### Course Outline
-
-You should first make sure you have the [requisite](prerequisites.html)
-hardware and software to complete the guide.
-
-The guide is divided into sections, each with an brief introduction to
-introduce concepts, followed by hands-on exercises.
-
-1. [Environment Setup](environment.html): Get familiar with the Tock tools and
-   getting a board setup.
-
-2. [Userland programming](application.html): write a basic sensing application
-   in C.
-
-3. [Import Client](important_client.html): debug a problem for an important
-   client.
-
-3. [Kernel programming](capsule.html): understand the kernel's boot sequence and
-   write a simple driver in Rust.
-
 ## Tock Mini Tutorials
 
 These [tutorials](./tutorials/tutorials.html) feature specific examples of Tock
 applications. They can be completed after the course to learn about different
 capabilities of Tock apps.
-

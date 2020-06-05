@@ -6,9 +6,10 @@ Tock OS Course
 
 - [Hands-on Guides](./guides.md)
 
+    - [Getting Started](./getting_started.md)
+
     - [Tock Course](./course.md)
-        - [Prerequisites](./prerequisites.md)
-        - [Environment Setup](./environment.md)
+        - [Course Setup](./course_setup.md)
         - [Modules](./modules.md)
     	    - [Application](./application.md)
     	    - [Important Client](./important_client.md)

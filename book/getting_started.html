@@ -1,0 +1,647 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Getting Started - Tock Tutorial</title>
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li><a href="guides.html"><strong aria-hidden="true">1.</strong> Hands-on Guides</a></li><li><ol class="section"><li><a href="getting_started.html" class="active"><strong aria-hidden="true">1.1.</strong> Getting Started</a></li><li><a href="course.html"><strong aria-hidden="true">1.2.</strong> Tock Course</a></li><li><ol class="section"><li><a href="course_setup.html"><strong aria-hidden="true">1.2.1.</strong> Course Setup</a></li><li><a href="modules.html"><strong aria-hidden="true">1.2.2.</strong> Modules</a></li><li><ol class="section"><li><a href="application.html"><strong aria-hidden="true">1.2.2.1.</strong> Application</a></li><li><a href="important_client.html"><strong aria-hidden="true">1.2.2.2.</strong> Important Client</a></li><li><a href="capsule.html"><strong aria-hidden="true">1.2.2.3.</strong> Capsule</a></li></ol></li><li><a href="graduation.html"><strong aria-hidden="true">1.2.3.</strong> Graduation</a></li></ol></li><li><a href="tutorials/tutorials.html"><strong aria-hidden="true">1.3.</strong> Mini Tutorials</a></li><li><ol class="section"><li><a href="tutorials/01_running_blink.html"><strong aria-hidden="true">1.3.1.</strong> Blink an LED</a></li><li><a href="tutorials/02_button_print.html"><strong aria-hidden="true">1.3.2.</strong> Button to Printf()</a></li><li><a href="tutorials/03_ble_scan.html"><strong aria-hidden="true">1.3.3.</strong> BLE Advertisement Scanning</a></li><li><a href="tutorials/04_sensors_and_drivers.html"><strong aria-hidden="true">1.3.4.</strong> Sample Sensors and Use Drivers</a></li><li><a href="tutorials/05_ipc.html"><strong aria-hidden="true">1.3.5.</strong> Inter-process Communication</a></li></ol></li></ol></li><li><a href="development/guides.html"><strong aria-hidden="true">2.</strong> Kernel Development Guides</a></li><li><ol class="section"><li><a href="development/peripheral.html"><strong aria-hidden="true">2.1.</strong> Chip Peripheral Driver</a></li><li><a href="development/sensor.html"><strong aria-hidden="true">2.2.</strong> Sensor Driver</a></li><li><a href="development/syscall.html"><strong aria-hidden="true">2.3.</strong> Syscall Interface</a></li><li><a href="development/hil.html"><strong aria-hidden="true">2.4.</strong> HIL</a></li><li><a href="development/tests.html"><strong aria-hidden="true">2.5.</strong> Kernel Tests</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Tock Tutorial</h1>
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#getting-started" id="getting-started">Getting Started</a></h1>
+<p>This getting started guide covers how to get started using Tock.</p>
+<h2><a class="header" href="#hardware" id="hardware">Hardware</a></h2>
+<p>To really be able to use Tock and get a feel for the operating system, you will
+need a hardware platform that tock supports. The <a href="https://www.tockos.org/hardware/">TockOs
+Hardware</a> includes a list of supported
+hardware boards. You can also view the <a href="https://github.com/tock/tock/tree/master/boards">boards
+folder</a> to see what platforms
+are supported.</p>
+<p>Note, not all boards are equally supported, and some may have some &quot;quirks&quot;
+around what is implemented (or not), and exactly how to load code and test that
+it is working. This guides tries to be general, and Tock generally tries to
+follow a certain convention, but the project is under active development and new
+boards are added rapidly. You should definitely consult the board-specific
+README to see if there are any board-specific details you should be aware of.</p>
+<h2><a class="header" href="#software" id="software">Software</a></h2>
+<p>You can either download a <a href="#virtual-machine">virtual machine</a> with the
+development environment pre-installed, or, if you have a Linux or OS X
+workstation, you may install the development environment
+<a href="#native-installation">natively</a>. Using a virtual machine is quicker and easier
+to set up, while installing natively will yield the most comfortable development
+environment and is better for long term use.</p>
+<h3><a class="header" href="#virtual-machine" id="virtual-machine">Virtual Machine</a></h3>
+<p>If you're comfortable working inside a Debian virtual machine, you can download
+an image with all of the dependencies already installed
+<a href="https://cesar.cs.princeton.edu/Tock.ova">here</a> or
+<a href="https://www.cs.virginia.edu/%7Ebjc8c/archive/Tock.ova">here</a>. Using <code>curl</code> to
+download the image is recommended, but your browser should be able to download
+it as well:</p>
+<pre><code>$ curl -O &lt;url&gt;
+</code></pre>
+<p>With the virtual machine image downloaded, you can run it with VirtualBox or
+VMWare:</p>
+<ul>
+<li>VirtualBox users: <a href="https://docs.oracle.com/cd/E26217_01/E26796/html/qs-import-vm.html">File → Import Appliance...</a>,</li>
+<li>VMWare users: <a href="https://pubs.vmware.com/workstation-9/index.jsp?topic=%2Fcom.vmware.ws.using.doc%2FGUID-DDCBE9C0-0EC9-4D09-8042-18436DA62F7A.html">File → Open...</a></li>
+</ul>
+<p>The VM account is &quot;tock&quot; with password &quot;tock&quot;. Feel free to customize it with
+whichever editors, window managers, etc. you like before the training starts.</p>
+<blockquote>
+<p>If the Host OS is Linux, you may need to add your user to the <code>vboxusers</code>
+group on your machine in order to connect the hardware boards to the virtual
+machine.</p>
+</blockquote>
+<h3><a class="header" href="#native-installation" id="native-installation">Native Installation</a></h3>
+<p>If you choose to install the development environment natively on an existing
+operating system install, you will need the following software:</p>
+<ol>
+<li>
+<p>Command line utilities: <code>curl</code>, <code>make</code>, <code>git</code>, <code>python</code> (version 3) and <code>pip3</code>.</p>
+</li>
+<li>
+<p>Clone the Tock kernel repository.</p>
+<pre><code> $ git clone https://github.com/tock/tock
+</code></pre>
+</li>
+<li>
+<p><a href="http://rustup.rs/">rustup</a>. This tool helps manage installations of the
+Rust compiler and related tools.</p>
+<pre><code> $ curl https://sh.rustup.rs -sSf | sh
+</code></pre>
+</li>
+<li>
+<p><a href="https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads">arm-none-eabi toolchain</a> (version &gt;= 5.2)</p>
+<pre><code> # mac
+ $ brew tap ARMmbed/homebrew-formulae &amp;&amp; brew update &amp;&amp; brew install arm-none-eabi-gcc
+
+ # linux
+ $ sudo apt install gcc-arm-none-eabi
+</code></pre>
+<p>OS-specific installation instructions can be found
+<a href="https://github.com/tock/tock/blob/master/doc/Getting_Started.md#arm-none-eabi-toolchain">here</a></p>
+</li>
+<li>
+<p><a href="https://www.sifive.com/boards">riscv64-unknown-elf toolchain</a> (version &gt;=
+v2019.08.0). Scroll down to the &quot;Prebuilt RISC‑V GCC Toolchain&quot; section.</p>
+<pre><code> # mac
+ $ brew install riscv-gnu-toolchain --with-multilib
+</code></pre>
+</li>
+<li>
+<p><a href="https://github.com/tock/tockloader">tockloader</a></p>
+<pre><code> $ pip3 install -U --user tockloader
+</code></pre>
+<blockquote>
+<p>Note: On MacOS, you may need to add <code>tockloader</code> to your path. If you
+cannot run it after installation, run the following:</p>
+</blockquote>
+<pre><code> $ export PATH=$HOME/Library/Python/3.6/bin/:$PATH
+</code></pre>
+<blockquote>
+<p>Similarly, on Linux distributions, this will typically install to
+<code>$HOME/.local/bin</code>, and you may need to add that to your <code>$PATH</code> if not
+already present:</p>
+</blockquote>
+<pre><code> $ PATH=$HOME/.local/bin:$PATH
+</code></pre>
+</li>
+</ol>
+<h3><a class="header" href="#testing" id="testing">Testing</a></h3>
+<p>To test if your environment is working, go to the <code>tock/boards/imix</code> directory
+and type <code>make program</code> (even if you don't have an imix board). This should
+compile the kernel for the imix board, and try to program it over a USB serial
+connection. It may need to compile several supporting libraries first (so may
+take 30 seconds or so the first time). You should see output like this:</p>
+<pre><code>$ make program
+   Compiling tock-cells v0.1.0 (/Users/bradjc/git/tock/libraries/tock-cells)
+   Compiling tock-registers v0.5.0 (/Users/bradjc/git/tock/libraries/tock-register-interface)
+   Compiling enum_primitive v0.1.0 (/Users/bradjc/git/tock/libraries/enum_primitive)
+   Compiling tock-rt0 v0.1.0 (/Users/bradjc/git/tock/libraries/tock-rt0)
+   Compiling imix v0.1.0 (/Users/bradjc/git/tock/boards/imix)
+   Compiling kernel v0.1.0 (/Users/bradjc/git/tock/kernel)
+   Compiling cortexm v0.1.0 (/Users/bradjc/git/tock/arch/cortex-m)
+   Compiling capsules v0.1.0 (/Users/bradjc/git/tock/capsules)
+   Compiling cortexm4 v0.1.0 (/Users/bradjc/git/tock/arch/cortex-m4)
+   Compiling sam4l v0.1.0 (/Users/bradjc/git/tock/chips/sam4l)
+   Compiling components v0.1.0 (/Users/bradjc/git/tock/boards/components)
+    Finished release [optimized + debuginfo] target(s) in 28.67s
+   text    data     bss     dec     hex filename
+ 165376    3272   54072  222720   36600 /Users/bradjc/git/tock/target/thumbv7em-none-eabi/release/imix
+   Compiling typenum v1.11.2
+   Compiling byteorder v1.3.4
+   Compiling byte-tools v0.3.1
+   Compiling fake-simd v0.1.2
+   Compiling opaque-debug v0.2.3
+   Compiling block-padding v0.1.5
+   Compiling generic-array v0.12.3
+   Compiling block-buffer v0.7.3
+   Compiling digest v0.8.1
+   Compiling sha2 v0.8.1
+   Compiling sha256sum v0.1.0 (/Users/bradjc/git/tock/tools/sha256sum)
+6fa1b0d8e224e775d08e8b58c6c521c7b51fb0332b0ab5031fdec2bd612c907f  /Users/bradjc/git/tock/target/thumbv7em-none-eabi/release/imix.bin
+tockloader  flash --address 0x10000 /Users/bradjc/git/tock/target/thumbv7em-none-eabi/release/imix.bin
+[INFO   ] No device name specified. Using default name &quot;tock&quot;.
+[ERROR  ] No serial ports found. Is the board connected?
+
+make: *** [program] Error 1
+</code></pre>
+<p>Note, that this failed because it couldn't find the board, which is fine. It
+still demonstrates that the kernel compiled and that tockloader was successfully
+invoked.</p>
+<h2><a class="header" href="#getting-the-hardware-connected" id="getting-the-hardware-connected">Getting the Hardware Connected</a></h2>
+<p>Plug your hardware board into your computer. Generally this requires a micro USB
+cable, but your board may be different.</p>
+<blockquote>
+<h4><a class="header" href="#note-some-boards-have-multiple-usb-ports" id="note-some-boards-have-multiple-usb-ports">Note! Some boards have multiple USB ports.</a></h4>
+<p>Some boards have two USB ports, where one is generally for debugging, and the
+other allows the board to act as any USB peripheral. You will want to connect
+using the &quot;debug&quot; port.</p>
+<p>Some example boards:</p>
+<ul>
+<li>imix: Use the port labeled <code>DEBUG</code>.</li>
+<li>nRF52 development boards: Use the port of the left, on the skinny side of
+the board.</li>
+</ul>
+</blockquote>
+<p>The board should appear as a regular serial device (e.g.
+<code>/dev/tty.usbserial-c098e5130006</code> on my Mac or <code>/dev/ttyUSB0</code> on my Linux box).
+This may require some setup, see the &quot;one-time fixups&quot; box.</p>
+<blockquote>
+<h4><a class="header" href="#one-time-fixups" id="one-time-fixups">One-Time Fixups</a></h4>
+<ul>
+<li>
+<p>On Linux, you might need to give your user access to the serial port used by
+the board. If you get permission errors or you cannot access the serial
+port, this is likely the issue.</p>
+<p>You can fix this by setting up a udev rule to set the permissions correctly
+for the serial device when it is attached. You only need to run the command
+below for your specific board, but if you don't know which one to use,
+running both is totally fine, and will set things up in case you get a
+different hardware board!</p>
+<pre><code>$ sudo bash -c &quot;echo 'ATTRS{idVendor}==\&quot;0403\&quot;, ATTRS{idProduct}==\&quot;6015\&quot;, MODE=\&quot;0666\&quot;' &gt; /etc/udev/rules.d/99-ftdi.rules&quot;
+$ sudo bash -c &quot;echo 'ATTRS{idVendor}==\&quot;2341\&quot;, ATTRS{idProduct}==\&quot;005a\&quot;, MODE=\&quot;0666\&quot;' &gt; /etc/udev/rules.d/98-arduino.rules&quot;
+</code></pre>
+<p>Afterwards, detach and re-attach the board to reload the rule.</p>
+</li>
+<li>
+<p>With a virtual machine, you might need to attach the USB device to the
+VM. To do so, after plugging in the board, select in the VirtualBox/VMWare
+menu bar:</p>
+<pre><code>Devices -&gt; USB Devices -&gt; [The name of your board]
+</code></pre>
+<p>If you aren't sure which board to select, it is often easiest to unplug and
+re-plug the board and see which entry is removed and then added.</p>
+<p>If this generates an error, often unplugging/replugging fixes it. You can
+also create a rule in the VM USB settings which will auto-attach the board
+to the VM.</p>
+</li>
+<li>
+<p>With Windows Subsystem for Linux (WSL), the serial device parameters stored in
+the FTDI chip do not seem to get passed to Ubuntu. Plus, WSL enumerates
+every possible serial device. Therefore, tockloader cannot automatically
+guess which serial port is the correct one, and there are a lot to choose
+from.</p>
+<p>You will need to open Device Manager on Windows, and find which <code>COM</code> port
+the tock board is using. It will likely be called &quot;USB Serial Port&quot; and be
+listed as an FTDI device. The COM number will match what is used in WSL.
+For example, <code>COM9</code> is <code>/dev/ttyS9</code> on WSL.</p>
+<p>To use tockloader you should be able to specify the port manually. For example:
+<code>tockloader --port /dev/ttyS9 list</code>.</p>
+</li>
+</ul>
+</blockquote>
+<p>With the board connected, you should be able to use tockloader to interact with
+the board. For example, to retrieve serial UART data from the board, run
+<code>tockloader listen</code>, and you should see something like:</p>
+<pre><code>$ tockloader listen
+No device name specified. Using default &quot;tock&quot;
+Using &quot;/dev/ttyUSB0 - Imix - TockOS&quot;
+
+Listening for serial output.
+Initialization complete. Entering main loop
+Hello World!
+</code></pre>
+<p>You may also need to reset (by pressing the reset button on the board) the board
+to see the message.</p>
+<h3><a class="header" href="#flash-the-kernel" id="flash-the-kernel">Flash the kernel</a></h3>
+<p>Now that the board is connected and you have verified that the kernel compiles
+(from the steps above), we can flash the board with the latest Tock kernel:</p>
+<pre><code>$ cd boards/&lt;your board&gt;
+$ make
+</code></pre>
+<p>Generally boards are programmed with either <code>make program</code> or <code>make flash</code>. Try
+<code>make program</code> first:</p>
+<pre><code>$ make program
+</code></pre>
+<p>You can also look at the board's README for more details.</p>
+<blockquote>
+<h4><a class="header" href="#why-both-make-program-and-make-flash" id="why-both-make-program-and-make-flash">Why both <code>make program</code> and <code>make flash</code>?</a></h4>
+<p>While these commands do the same thing, the way they go about it is very
+different.</p>
+<p>The <code>make program</code> version communicates with the board via a serial connection
+and a bootloader running on the board. You may need to manually enter the
+bootloader when using <code>make program</code>.</p>
+<p>The <code>make flash</code> version uses a JTAG debugger to communicate with the chip and
+flash the kernel binary directly to the chip.</p>
+</blockquote>
+<h3><a class="header" href="#install-some-applications" id="install-some-applications">Install Some Applications</a></h3>
+<p>We have the kernel flashed, but the kernel doesn't actually <em>do</em> anything.
+Applications do! To load applications, we are going to use tockloader.</p>
+<h4><a class="header" href="#note-about-identifying-boards" id="note-about-identifying-boards">Note about Identifying Boards</a></h4>
+<p>Tockloader tries to automatically identify which board is attached to make this
+process simple. However, tockloader often does not have a good way to identify
+which board is attached, and requires that you manually specify which board you
+are trying to program. This can be done with the <code>--board</code> argument. For
+example, if you have an nrf52dk or nrf52840dk, you would run Tockloader like:</p>
+<pre><code>$ tockloader &lt;command&gt; --board nrf52dk --jlink
+</code></pre>
+<p>The <code>--jlink</code> flag tells tockloader to use the JLink JTAG tool to communicate
+with the board (this mirrors using <code>make flash</code> above). Some boards support
+OpenOCD, in which case you would pass <code>--openocd</code> instead.</p>
+<p>To see a list of boards that tockloader supports, you can run <code>tockloader list-boards</code>. If you have an imix or Hail board, you should not need to specify
+the board.</p>
+<blockquote>
+<p>Note, a board listed in <code>tockloader list-boards</code> means there are default
+settings hardcoded into tockloader's source on how to support those boards.
+However, all of those settings can be passed in via command-line parameters
+for boards that tockloader does not know about. See <code>tockloader --help</code> for
+more information.</p>
+</blockquote>
+<h4><a class="header" href="#loading-pre-built-applications" id="loading-pre-built-applications">Loading Pre-built Applications</a></h4>
+<p>We're going to install some pre-built applications, but first, let's make sure
+we're in a clean state, in case your board already has some applications
+installed. This command removes any processes that may have already been
+installed.</p>
+<pre><code>$ tockloader erase-apps [--board &lt;your board&gt; --jlink|--openocd]
+</code></pre>
+<p>Now, let's install two pre-compiled example apps. Remember, you may need to
+specify which board you are using and how to communicate with it for all of
+these commands. If you are using Hail or imix you will not have to.</p>
+<pre><code>$ tockloader install https://www.tockos.org/assets/tabs/blink.tab
+</code></pre>
+<blockquote>
+<p>The <code>install</code> subcommand takes a path or URL to an TAB (Tock Application
+Binary) file to install.</p>
+</blockquote>
+<p>The board should restart and the user LED should start blinking. Let's also
+install a simple &quot;Hello World&quot; application:</p>
+<pre><code>$ tockloader install https://www.tockos.org/assets/tabs/c_hello.tab
+</code></pre>
+<p>If you now run <code>tockloader listen</code> you should be able to see the output of the
+Hello World! application. You may need to manually reset the board for this to
+happen. Also, since <code>tockloader listen</code> is only receiving from a serial port,
+you will <em>not</em> need to pass in <code>--board</code> or <code>--jlink</code> or <code>--openocd</code>.</p>
+<pre><code>$ tockloader listen
+[INFO   ] No device name specified. Using default name &quot;tock&quot;.
+[INFO   ] Using &quot;/dev/cu.usbserial-c098e513000a - Hail IoT Module - TockOS&quot;.
+
+[INFO   ] Listening for serial output.
+Initialization complete. Entering main loop.
+Hello World!
+␀
+</code></pre>
+<h3><a class="header" href="#uninstalling-and-installing-more-apps" id="uninstalling-and-installing-more-apps">Uninstalling and Installing More Apps</a></h3>
+<p>Lets check what's on the board right now:</p>
+<pre><code>$ tockloader list
+...
+[App 0]
+  Name:                  blink
+  Enabled:               True
+  Sticky:                False
+  Total Size in Flash:   2048 bytes
+
+[App 1]
+  Name:                  c_hello
+  Enabled:               True
+  Sticky:                False
+  Total Size in Flash:   1024 bytes
+</code></pre>
+<p>As you can see, the apps are still installed on the board. We can remove apps
+with the following command:</p>
+<pre><code>$ tockloader uninstall
+</code></pre>
+<p>Following the prompt, if you remove the <code>blink</code> app, the LED will stop blinking,
+however the console will still print <code>Hello World</code>.</p>
+<p>Now let's try adding a more interesting app:</p>
+<pre><code>$ tockloader install https://www.tockos.org/assets/tabs/sensors.tab
+</code></pre>
+<p>The <code>sensors</code> app will automatically discover all available sensors, sample them
+once a second, and print the results.</p>
+<pre><code>$ tockloader listen
+[INFO   ] No device name specified. Using default name &quot;tock&quot;.
+[INFO   ] Using &quot;/dev/cu.usbserial-c098e513000a - Hail IoT Module - TockOS&quot;.
+
+[INFO   ] Listening for serial output.
+Initialization complete. Entering main loop.
+[Sensors] Starting Sensors App.
+Hello World!
+␀[Sensors] All available sensors on the platform will be sampled.
+ISL29035:   Light Intensity: 218
+Temperature:                 28 deg C
+Humidity:                    42%
+FXOS8700CQ: X:               -112
+FXOS8700CQ: Y:               23
+FXOS8700CQ: Z:               987
+</code></pre>
+<h2><a class="header" href="#familiarize-yourself-with-tockloader-commands" id="familiarize-yourself-with-tockloader-commands">Familiarize Yourself with <code>tockloader</code> Commands</a></h2>
+<p>The <code>tockloader</code> tool is a useful and versatile tool for managing and installing
+applications on Tock. It supports a number of commands, and a more complete list
+can be found in the tockloader repository, located at
+<a href="https://github.com/tock/tockloader#usage">github.com/tock/tockloader</a>. Below is
+a list of the more useful and important commands for programming and querying a
+board.</p>
+<h3><a class="header" href="#tockloader-install" id="tockloader-install"><code>tockloader install</code></a></h3>
+<p>This is the main tockloader command, used to load Tock applications onto a
+board.  By default, <code>tockloader install</code> adds the new application, but does not
+erase any others, replacing any already existing application with the same name.
+Use the <code>--no-replace</code> flag to install multiple copies of the same app. To
+install an app, either specify the <code>tab</code> file as an argument, or navigate to the
+app's source directory, build it (probably using <code>make</code>), then issue the install
+command:</p>
+<pre><code>$ tockloader install
+</code></pre>
+<blockquote>
+<p><em>Tip:</em> You can add the <code>--make</code> flag to have tockloader automatically
+run make before installing, i.e. <code>tockloader install --make</code></p>
+</blockquote>
+<blockquote>
+<p><em>Tip:</em> You can add the <code>--erase</code> flag to have tockloader automatically
+remove other applications when installing a new one.</p>
+</blockquote>
+<h3><a class="header" href="#tockloader-uninstall-application-names" id="tockloader-uninstall-application-names"><code>tockloader uninstall [application name(s)]</code></a></h3>
+<p>Removes one or more applications from the board by name.</p>
+<h3><a class="header" href="#tockloader-erase-apps" id="tockloader-erase-apps"><code>tockloader erase-apps</code></a></h3>
+<p>Removes all applications from the board.</p>
+<h3><a class="header" href="#tockloader-list" id="tockloader-list"><code>tockloader list</code></a></h3>
+<p>Prints basic information about the apps currently loaded onto the board.</p>
+<h3><a class="header" href="#tockloader-info" id="tockloader-info"><code>tockloader info</code></a></h3>
+<p>Shows all properties of the board, including information about currently
+loaded applications, their sizes and versions, and any set attributes.</p>
+<h3><a class="header" href="#tockloader-listen" id="tockloader-listen"><code>tockloader listen</code></a></h3>
+<p>This command prints output from Tock apps to the terminal. It listens via UART,
+and will print out anything written to stdout/stderr from a board.</p>
+<blockquote>
+<p><em>Tip:</em> As a long-running command, <code>listen</code> interacts with other tockloader
+sessions. You can leave a terminal window open and listening. If another
+tockloader process needs access to the board (e.g. to install an app update),
+tockloader will automatically pause and resume listening.</p>
+</blockquote>
+<h3><a class="header" href="#tockloader-flash" id="tockloader-flash"><code>tockloader flash</code></a></h3>
+<p>Loads binaries onto hardware platforms that are running a compatible bootloader.
+This is used by the Tock Make system when kernel binaries are programmed to the
+board with <code>make program</code>.</p>
+<h2><a class="header" href="#explore-other-example-applications" id="explore-other-example-applications">Explore Other Example Applications</a></h2>
+<p>There are many example applications in the <code>libtock-c</code> repository. To use them,
+first clone the repository:</p>
+<pre><code>$ git clone https://github.com/tock/libtock-c
+$ cd libtock-c
+</code></pre>
+<p>Then you can build an example app. For example, if you want to use inter-process
+communication (IPC) with Tock:</p>
+<pre><code># First remove the existing applications:
+$ tockloader erase-apps
+
+# Now build the IPC client app, and install it:
+$ cd examples/rot13_client
+$ make
+$ tockloader install
+
+# Now build the IPC service app, and install it:
+$ cd ../rot13_server
+$ make
+$ tockloader install
+</code></pre>
+<p>With those two applications installed, you should be able to see the following
+output from the board:</p>
+<pre><code>$ tockloader listen
+[INFO   ] No device name specified. Using default name &quot;tock&quot;.
+[INFO   ] Using &quot;/dev/cu.usbserial-c098e513000a - Hail IoT Module - TockOS&quot;.
+
+[INFO   ] Listening for serial output.
+Initialization complete. Entering main loop.
+12: Uryyb Jbeyq!
+12: Hello World!
+12: Uryyb Jbeyq!
+12: Hello World!
+</code></pre>
+<blockquote>
+<p>Note: Tock platforms are limited in the number of apps they can load and run.
+However, it is possible to install more apps than this limit, since tockloader
+is (currently) unaware of this limitation and will allow to you to load
+additional apps. However the kernel will only load the first apps until the
+limit is reached.</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="guides.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="course.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="guides.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="course.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3001");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload(true); // force reload from server (not from cache)
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+        
+
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

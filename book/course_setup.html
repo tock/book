@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Tock Course - Tock Tutorial</title>
+        <title>Course Setup - Tock Tutorial</title>
         
 
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
@@ -78,7 +78,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li><a href="guides.html"><strong aria-hidden="true">1.</strong> Hands-on Guides</a></li><li><ol class="section"><li><a href="getting_started.html"><strong aria-hidden="true">1.1.</strong> Getting Started</a></li><li><a href="course.html" class="active"><strong aria-hidden="true">1.2.</strong> Tock Course</a></li><li><ol class="section"><li><a href="course_setup.html"><strong aria-hidden="true">1.2.1.</strong> Course Setup</a></li><li><a href="modules.html"><strong aria-hidden="true">1.2.2.</strong> Modules</a></li><li><ol class="section"><li><a href="application.html"><strong aria-hidden="true">1.2.2.1.</strong> Application</a></li><li><a href="important_client.html"><strong aria-hidden="true">1.2.2.2.</strong> Important Client</a></li><li><a href="capsule.html"><strong aria-hidden="true">1.2.2.3.</strong> Capsule</a></li></ol></li><li><a href="graduation.html"><strong aria-hidden="true">1.2.3.</strong> Graduation</a></li></ol></li><li><a href="tutorials/tutorials.html"><strong aria-hidden="true">1.3.</strong> Mini Tutorials</a></li><li><ol class="section"><li><a href="tutorials/01_running_blink.html"><strong aria-hidden="true">1.3.1.</strong> Blink an LED</a></li><li><a href="tutorials/02_button_print.html"><strong aria-hidden="true">1.3.2.</strong> Button to Printf()</a></li><li><a href="tutorials/03_ble_scan.html"><strong aria-hidden="true">1.3.3.</strong> BLE Advertisement Scanning</a></li><li><a href="tutorials/04_sensors_and_drivers.html"><strong aria-hidden="true">1.3.4.</strong> Sample Sensors and Use Drivers</a></li><li><a href="tutorials/05_ipc.html"><strong aria-hidden="true">1.3.5.</strong> Inter-process Communication</a></li></ol></li></ol></li><li><a href="development/guides.html"><strong aria-hidden="true">2.</strong> Kernel Development Guides</a></li><li><ol class="section"><li><a href="development/peripheral.html"><strong aria-hidden="true">2.1.</strong> Chip Peripheral Driver</a></li><li><a href="development/sensor.html"><strong aria-hidden="true">2.2.</strong> Sensor Driver</a></li><li><a href="development/syscall.html"><strong aria-hidden="true">2.3.</strong> Syscall Interface</a></li><li><a href="development/hil.html"><strong aria-hidden="true">2.4.</strong> HIL</a></li><li><a href="development/tests.html"><strong aria-hidden="true">2.5.</strong> Kernel Tests</a></li></ol></li></ol>
+                <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li><a href="guides.html"><strong aria-hidden="true">1.</strong> Hands-on Guides</a></li><li><ol class="section"><li><a href="getting_started.html"><strong aria-hidden="true">1.1.</strong> Getting Started</a></li><li><a href="course.html"><strong aria-hidden="true">1.2.</strong> Tock Course</a></li><li><ol class="section"><li><a href="course_setup.html" class="active"><strong aria-hidden="true">1.2.1.</strong> Course Setup</a></li><li><a href="modules.html"><strong aria-hidden="true">1.2.2.</strong> Modules</a></li><li><ol class="section"><li><a href="application.html"><strong aria-hidden="true">1.2.2.1.</strong> Application</a></li><li><a href="important_client.html"><strong aria-hidden="true">1.2.2.2.</strong> Important Client</a></li><li><a href="capsule.html"><strong aria-hidden="true">1.2.2.3.</strong> Capsule</a></li></ol></li><li><a href="graduation.html"><strong aria-hidden="true">1.2.3.</strong> Graduation</a></li></ol></li><li><a href="tutorials/tutorials.html"><strong aria-hidden="true">1.3.</strong> Mini Tutorials</a></li><li><ol class="section"><li><a href="tutorials/01_running_blink.html"><strong aria-hidden="true">1.3.1.</strong> Blink an LED</a></li><li><a href="tutorials/02_button_print.html"><strong aria-hidden="true">1.3.2.</strong> Button to Printf()</a></li><li><a href="tutorials/03_ble_scan.html"><strong aria-hidden="true">1.3.3.</strong> BLE Advertisement Scanning</a></li><li><a href="tutorials/04_sensors_and_drivers.html"><strong aria-hidden="true">1.3.4.</strong> Sample Sensors and Use Drivers</a></li><li><a href="tutorials/05_ipc.html"><strong aria-hidden="true">1.3.5.</strong> Inter-process Communication</a></li></ol></li></ol></li><li><a href="development/guides.html"><strong aria-hidden="true">2.</strong> Kernel Development Guides</a></li><li><ol class="section"><li><a href="development/peripheral.html"><strong aria-hidden="true">2.1.</strong> Chip Peripheral Driver</a></li><li><a href="development/sensor.html"><strong aria-hidden="true">2.2.</strong> Sensor Driver</a></li><li><a href="development/syscall.html"><strong aria-hidden="true">2.3.</strong> Syscall Interface</a></li><li><a href="development/hil.html"><strong aria-hidden="true">2.4.</strong> HIL</a></li><li><a href="development/tests.html"><strong aria-hidden="true">2.5.</strong> Kernel Tests</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -145,24 +145,56 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#tock-course" id="tock-course">Tock Course</a></h1>
-<p>The Tock course includes several different modules that guide you through
-various aspects of Tock and Tock applications. Each module is designed to be
-standalone such that a full course can be composed of different modules
-depending on the interests and backgrounds of those doing the course.</p>
+                        <h1><a class="header" href="#prerequisites" id="prerequisites">Prerequisites</a></h1>
+<p>You should follow the <a href="../getting_started.html">getting started guide</a> to get
+your development setup and ensure you can communicate with the hardware.</p>
+<h2><a class="header" href="#hardware" id="hardware">Hardware</a></h2>
+<p><img src="../imgs/imix.svg" alt="" /></p>
+<p>The Tock course is currently written for an imix hardware platform. To follow
+the directions directly, you will need an <em>imix</em> hardware platform (pictured
+above). Tock is a general operating system, however, and other boards <em>should</em>
+work, but they might not provide the exact same hardware sensors or peripherals.</p>
+<p>To complete the 6LoWPAN networking portion of this guide, you'll need an
+additional imix to act as a hub.</p>
+<h2><a class="header" href="#setup-to-compile-and-program-the-kernel" id="setup-to-compile-and-program-the-kernel">Setup to Compile and Program the Kernel</a></h2>
+<p>All of the hands-on exercises will be done within the source code for this book.
+So pop open a terminal, and navigate to the repository. If you're using the VM,
+that'll be:</p>
+<pre><code>$ cd ~/book
+</code></pre>
+<h3><a class="header" href="#make-sure-your-tock-repository-is-up-to-date" id="make-sure-your-tock-repository-is-up-to-date">Make sure your Tock repository is up to date</a></h3>
+<pre><code>$ git pull
+</code></pre>
+<h3><a class="header" href="#build-the-kernel" id="build-the-kernel">Build the kernel</a></h3>
+<p>To build the kernel, just type make in the <code>imix/</code> subdirectory.</p>
+<pre><code>$ cd imix/
+$ make
+</code></pre>
+<p>If this is the first time you are trying to make the kernel, the build system
+will use cargo and rustup to install various Tock dependencies.</p>
+<p>If this is your first time building a Tock kernel for this particular
+architecture, you may get an error complaining that you don't have the proper
+the <code>cargo</code> target installed. We can use <code>rustup</code> to fix that:</p>
+<pre><code>$ rustup target add thumbv7em-none-eabi
+</code></pre>
+<blockquote>
+<p><code>imix</code> is based around an ARM Cortex-M4 microcontroller, which uses the
+thumbv7em instruction set. The rustup command above just downloads Rust core
+libraries for this architecture.</p>
+</blockquote>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="getting_started.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="course.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
 
                         
-                            <a rel="next" href="course_setup.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="modules.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -174,13 +206,13 @@ depending on the interests and backgrounds of those doing the course.</p>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a href="getting_started.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a href="course.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
                 
-                    <a href="course_setup.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a href="modules.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 
