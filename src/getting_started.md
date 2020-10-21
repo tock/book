@@ -276,10 +276,10 @@ with the board (this mirrors using `make flash` above). Some boards support
 OpenOCD, in which case you would pass `--openocd` instead.
 
 To see a list of boards that tockloader supports, you can run `tockloader
-list-boards`. If you have an imix or Hail board, you should not need to specify
-the board.
+list-known-boards`. If you have an imix or Hail board, you should not need to
+specify the board.
 
-> Note, a board listed in `tockloader list-boards` means there are default
+> Note, a board listed in `tockloader list-known-boards` means there are default
 > settings hardcoded into tockloader's source on how to support those boards.
 > However, all of those settings can be passed in via command-line parameters
 > for boards that tockloader does not know about. See `tockloader --help` for
