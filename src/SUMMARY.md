@@ -29,4 +29,5 @@ Tock OS Course
     - [Sensor Driver](./development/sensor.md)
     - [Syscall Interface](./development/syscall.md)
     - [HIL](./development/hil.md)
+    - [Virtualizers](./development/virtual.md)
     - [Kernel Tests](./development/tests.md)

@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js">
+<html lang="en" class="sidebar-visible no-js light">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -32,11 +32,11 @@
 
         
     </head>
-    <body class="light">
+    <body>
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
             var path_to_root = "../";
-            var default_theme = "light";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
@@ -60,8 +60,11 @@
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
-            document.body.className = theme;
-            document.querySelector('html').className = theme + ' js';
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
         </script>
 
         <!-- Hide / unhide sidebar before it is displayed -->
@@ -78,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="affix"><a href="../introduction.html">Introduction</a></li><li><a href="../guides.html"><strong aria-hidden="true">1.</strong> Hands-on Guides</a></li><li><ol class="section"><li><a href="../getting_started.html"><strong aria-hidden="true">1.1.</strong> Getting Started</a></li><li><a href="../course.html"><strong aria-hidden="true">1.2.</strong> Tock Course</a></li><li><ol class="section"><li><a href="../course_setup.html"><strong aria-hidden="true">1.2.1.</strong> Course Setup</a></li><li><a href="../modules.html"><strong aria-hidden="true">1.2.2.</strong> Modules</a></li><li><ol class="section"><li><a href="../application.html"><strong aria-hidden="true">1.2.2.1.</strong> Application</a></li><li><a href="../important_client.html"><strong aria-hidden="true">1.2.2.2.</strong> Important Client</a></li><li><a href="../capsule.html"><strong aria-hidden="true">1.2.2.3.</strong> Capsule</a></li></ol></li><li><a href="../graduation.html"><strong aria-hidden="true">1.2.3.</strong> Graduation</a></li></ol></li><li><a href="../tutorials/tutorials.html"><strong aria-hidden="true">1.3.</strong> Mini Tutorials</a></li><li><ol class="section"><li><a href="../tutorials/01_running_blink.html"><strong aria-hidden="true">1.3.1.</strong> Blink an LED</a></li><li><a href="../tutorials/02_button_print.html"><strong aria-hidden="true">1.3.2.</strong> Button to Printf()</a></li><li><a href="../tutorials/03_ble_scan.html"><strong aria-hidden="true">1.3.3.</strong> BLE Advertisement Scanning</a></li><li><a href="../tutorials/04_sensors_and_drivers.html"><strong aria-hidden="true">1.3.4.</strong> Sample Sensors and Use Drivers</a></li><li><a href="../tutorials/05_ipc.html"><strong aria-hidden="true">1.3.5.</strong> Inter-process Communication</a></li></ol></li></ol></li><li><a href="../development/guides.html"><strong aria-hidden="true">2.</strong> Kernel Development Guides</a></li><li><ol class="section"><li><a href="../development/peripheral.html" class="active"><strong aria-hidden="true">2.1.</strong> Chip Peripheral Driver</a></li><li><a href="../development/sensor.html"><strong aria-hidden="true">2.2.</strong> Sensor Driver</a></li><li><a href="../development/syscall.html"><strong aria-hidden="true">2.3.</strong> Syscall Interface</a></li><li><a href="../development/hil.html"><strong aria-hidden="true">2.4.</strong> HIL</a></li><li><a href="../development/tests.html"><strong aria-hidden="true">2.5.</strong> Kernel Tests</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../guides.html"><strong aria-hidden="true">1.</strong> Hands-on Guides</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../getting_started.html"><strong aria-hidden="true">1.1.</strong> Getting Started</a></li><li class="chapter-item expanded "><a href="../course.html"><strong aria-hidden="true">1.2.</strong> Tock Course</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../course_setup.html"><strong aria-hidden="true">1.2.1.</strong> Course Setup</a></li><li class="chapter-item expanded "><a href="../modules.html"><strong aria-hidden="true">1.2.2.</strong> Modules</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../application.html"><strong aria-hidden="true">1.2.2.1.</strong> Application</a></li><li class="chapter-item expanded "><a href="../important_client.html"><strong aria-hidden="true">1.2.2.2.</strong> Important Client</a></li><li class="chapter-item expanded "><a href="../capsule.html"><strong aria-hidden="true">1.2.2.3.</strong> Capsule</a></li></ol></li><li class="chapter-item expanded "><a href="../graduation.html"><strong aria-hidden="true">1.2.3.</strong> Graduation</a></li></ol></li><li class="chapter-item expanded "><a href="../tutorials/tutorials.html"><strong aria-hidden="true">1.3.</strong> Mini Tutorials</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tutorials/01_running_blink.html"><strong aria-hidden="true">1.3.1.</strong> Blink an LED</a></li><li class="chapter-item expanded "><a href="../tutorials/02_button_print.html"><strong aria-hidden="true">1.3.2.</strong> Button to Printf()</a></li><li class="chapter-item expanded "><a href="../tutorials/03_ble_scan.html"><strong aria-hidden="true">1.3.3.</strong> BLE Advertisement Scanning</a></li><li class="chapter-item expanded "><a href="../tutorials/04_sensors_and_drivers.html"><strong aria-hidden="true">1.3.4.</strong> Sample Sensors and Use Drivers</a></li><li class="chapter-item expanded "><a href="../tutorials/05_ipc.html"><strong aria-hidden="true">1.3.5.</strong> Inter-process Communication</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../development/guides.html"><strong aria-hidden="true">2.</strong> Kernel Development Guides</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../development/peripheral.html" class="active"><strong aria-hidden="true">2.1.</strong> Chip Peripheral Driver</a></li><li class="chapter-item expanded "><a href="../development/sensor.html"><strong aria-hidden="true">2.2.</strong> Sensor Driver</a></li><li class="chapter-item expanded "><a href="../development/syscall.html"><strong aria-hidden="true">2.3.</strong> Syscall Interface</a></li><li class="chapter-item expanded "><a href="../development/hil.html"><strong aria-hidden="true">2.4.</strong> HIL</a></li><li class="chapter-item expanded "><a href="../development/virtual.html"><strong aria-hidden="true">2.5.</strong> Virtualizers</a></li><li class="chapter-item expanded "><a href="../development/tests.html"><strong aria-hidden="true">2.6.</strong> Kernel Tests</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -87,37 +90,36 @@
 
             <div class="page">
                 
-                <div id="menu-bar" class="menu-bar">
-                    <div id="menu-bar-sticky-container">
-                        <div class="left-buttons">
-                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
-                                <i class="fa fa-bars"></i>
-                            </button>
-                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
-                                <i class="fa fa-paint-brush"></i>
-                            </button>
-                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
-                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
-                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
-                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
-                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
-                            </ul>
-                            
-                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
-                                <i class="fa fa-search"></i>
-                            </button>
-                            
-                        </div>
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
 
-                        <h1 class="menu-title">Tock Tutorial</h1>
+                    <h1 class="menu-title">Tock Tutorial</h1>
 
-                        <div class="right-buttons">
-                            <a href="../print.html" title="Print this book" aria-label="Print this book">
-                                <i id="print-button" class="fa fa-print"></i>
-                            </a>
-                            
-                        </div>
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
                     </div>
                 </div>
 
@@ -210,10 +212,11 @@ the MCU's datasheet.</p>
 <p>Include the name of this file inside of the <code>lib.rs</code> (or potentially
 <code>mod.rs</code>) file inside the same directory. This should look like:</p>
 <pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub mod ast;
-#}</code></pre></pre>
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>pub mod ast;
+<span class="boring">}
+</span></code></pre></pre>
 <p>Inside of the new file, you will first need to define the memory-mapped
 input/output (MMIO) registers that correspond to the peripheral. Different
 embedded code ecosystems have devised different methods for doing this, and
@@ -224,9 +227,9 @@ intuitive.</p>
 <a href="https://github.com/tock/tock/tree/master/libraries/tock-register-interface">here</a>,
 but to get started, you will first create a structure like this:</p>
 <pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-use tock_registers::registers::{ReadOnly, ReadWrite, WriteOnly};
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>use tock_registers::registers::{ReadOnly, ReadWrite, WriteOnly};
 
 register_structs! {
     XyzPeripheralRegisters {
@@ -248,15 +251,17 @@ register_structs! {
         (0x100 =&gt; @END),
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>You should replace <code>XyzPeripheral</code> with the name of the peripheral you are
 writing a driver for. Then, for each register defined in the datasheet, you
 must specify an entry in the macro. For example, a register is defined like:</p>
 <pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-(0x000 =&gt; cr: ReadWrite&lt;u32, Control::Register&gt;),
-#}</code></pre></pre>
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>(0x000 =&gt; cr: ReadWrite&lt;u32, Control::Register&gt;),
+<span class="boring">}
+</span></code></pre></pre>
 <p>where:</p>
 <ul>
 <li><code>0x000</code> is the offset (in bytes) of the register from the beginning of the
@@ -276,9 +281,9 @@ does not use likely does not need its bitfields mapped.</li>
 <p>Once the register map is defined, you must specify the bitfields for any
 registers that you gave a specific type to. This looks like the following:</p>
 <pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-register_bitfields! [
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>register_bitfields! [
     // First parameter is the register width for the bitfields. Can be u8,
     // u16, u32, or u64.
     u32,
@@ -324,7 +329,8 @@ register_bitfields! [
         ERRORCOUNT OFFSET(6) NUMBITS(3) []
     ],
 ]
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>The name in each entry of the <code>register_bitfields! []</code> list must match the
 register type provided in the register map declaration. Each register that
 is used in the driver implementation should have its bitfields declared.</p>
@@ -340,13 +346,14 @@ should contain any state that the driver needs to correctly function.</p>
 <p>An example struct looks for a timer peripheral called the AST by the MCU
 datasheet looks like:</p>
 <pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct Ast&lt;'a&gt; {
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>pub struct Ast&lt;'a&gt; {
     registers: StaticRef&lt;AstRegisters&gt;,
     callback: OptionalCell&lt;&amp;'a dyn hil::time::AlarmClient&gt;,
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>The struct should contain a reference to the registers defined above (we
 will explain the <code>StaticRef</code> later). Typically, many drivers respond to
 certain events (like in this case a timer firing) and therefore need a
@@ -380,9 +387,9 @@ set), and can be updated if the callback needs to change.</p>
 <p>With the struct defined, you should next create a <code>new()</code> function for that
 struct. This will look like:</p>
 <pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl Ast {
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>impl Ast {
     const fn new(registers: StaticRef&lt;AstRegisters&gt;) -&gt; Ast {
         Ast {
             registers: registers,
@@ -390,7 +397,8 @@ impl Ast {
         }
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p><strong>Checkpoint</strong>: There is a struct for the peripheral that can be created.</p>
 </li>
 <li>
@@ -401,9 +409,9 @@ interface you identified earlier. Implementing the HIL interface is done
 just like implementing a trait in Rust. For example, to implement the <code>Time</code>
 HIL for the AST:</p>
 <pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl hil::time::Time for Ast&lt;'a&gt; {
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>impl hil::time::Time for Ast&lt;'a&gt; {
     type Frequency = Freq16KHz;
 
     fn now(&amp;self) -&gt; u32 {
@@ -414,7 +422,8 @@ impl hil::time::Time for Ast&lt;'a&gt; {
         core::u32::MAX
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>You should include all of the functions from the HIL and decide how to
 implement them.</p>
 <p>Some operations will be shared among multiple HIL functions. These should be
@@ -422,9 +431,9 @@ implemented as functions for the original struct. For example, in the <code>Ast<
 example the HIL function <code>now()</code> uses the <code>get_counter()</code> function. This should be
 implemented on the main <code>Ast</code> struct:</p>
 <pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl Ast {
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>impl Ast {
     const fn new(registers: StaticRef&lt;AstRegisters&gt;) -&gt; Ast {
         Ast {
             registers: registers,
@@ -438,7 +447,8 @@ impl Ast {
         regs.cv.read(Value::VALUE)
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>Note the <code>get_counter()</code> function also illustrates how to use the register
 reference and the Tock register library. The <a href="https://github.com/tock/tock/tree/master/libraries/tock-register-interface">register
 library</a>
@@ -454,13 +464,14 @@ memory location.</strong></p>
 can be used by other code. Start by casting the register map to the correct
 memory address where the registers are actually mapped to. For example:</p>
 <pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-use kernel::common::StaticRef;
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>use kernel::common::StaticRef;
 
 const AST_BASE: StaticRef&lt;AstRegisters&gt; =
     unsafe { StaticRef::new(0x400F0800 as *const AstRegisters) };
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p><code>StaticRef</code> is a type in Tock designed explicitly for this operation of
 casting register maps to the correct location in memory. The <code>0x400F0800</code> is
 the address in memory of the start of the registers and this location will
@@ -481,10 +492,11 @@ safety.</p>
 <p>With the address reference created, we can now create the actual driver
 object:</p>
 <pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub static mut AST: Ast = Ast::new(AST_BASE);
-#}</code></pre></pre>
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>pub static mut AST: Ast = Ast::new(AST_BASE);
+<span class="boring">}
+</span></code></pre></pre>
 <p>This object will be used by a board's main.rs file to pass, in this case,
 the driver for the timer hardware to various capsules and other code that
 needs the underlying timer hardware.</p>
@@ -518,13 +530,13 @@ repository.</p>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a href="../development/guides.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../development/guides.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
                 
-                    <a href="../development/sensor.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../development/sensor.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 
@@ -533,22 +545,15 @@ repository.</p>
         </div>
 
         
-        <!-- Livereload script (if served using the cli tool) -->
-        <script type="text/javascript">
-            var socket = new WebSocket("ws://localhost:3001");
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload(true); // force reload from server (not from cache)
-                }
-            };
 
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
         
 
+        
+        
+        
+        <script type="text/javascript">
+            window.playpen_copyable = true;
+        </script>
         
 
         

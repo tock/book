@@ -1,0 +1,702 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Virtualizers - Tock Tutorial</title>
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../guides.html"><strong aria-hidden="true">1.</strong> Hands-on Guides</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../getting_started.html"><strong aria-hidden="true">1.1.</strong> Getting Started</a></li><li class="chapter-item expanded "><a href="../course.html"><strong aria-hidden="true">1.2.</strong> Tock Course</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../course_setup.html"><strong aria-hidden="true">1.2.1.</strong> Course Setup</a></li><li class="chapter-item expanded "><a href="../modules.html"><strong aria-hidden="true">1.2.2.</strong> Modules</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../application.html"><strong aria-hidden="true">1.2.2.1.</strong> Application</a></li><li class="chapter-item expanded "><a href="../important_client.html"><strong aria-hidden="true">1.2.2.2.</strong> Important Client</a></li><li class="chapter-item expanded "><a href="../capsule.html"><strong aria-hidden="true">1.2.2.3.</strong> Capsule</a></li></ol></li><li class="chapter-item expanded "><a href="../graduation.html"><strong aria-hidden="true">1.2.3.</strong> Graduation</a></li></ol></li><li class="chapter-item expanded "><a href="../tutorials/tutorials.html"><strong aria-hidden="true">1.3.</strong> Mini Tutorials</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../tutorials/01_running_blink.html"><strong aria-hidden="true">1.3.1.</strong> Blink an LED</a></li><li class="chapter-item expanded "><a href="../tutorials/02_button_print.html"><strong aria-hidden="true">1.3.2.</strong> Button to Printf()</a></li><li class="chapter-item expanded "><a href="../tutorials/03_ble_scan.html"><strong aria-hidden="true">1.3.3.</strong> BLE Advertisement Scanning</a></li><li class="chapter-item expanded "><a href="../tutorials/04_sensors_and_drivers.html"><strong aria-hidden="true">1.3.4.</strong> Sample Sensors and Use Drivers</a></li><li class="chapter-item expanded "><a href="../tutorials/05_ipc.html"><strong aria-hidden="true">1.3.5.</strong> Inter-process Communication</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../development/guides.html"><strong aria-hidden="true">2.</strong> Kernel Development Guides</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../development/peripheral.html"><strong aria-hidden="true">2.1.</strong> Chip Peripheral Driver</a></li><li class="chapter-item expanded "><a href="../development/sensor.html"><strong aria-hidden="true">2.2.</strong> Sensor Driver</a></li><li class="chapter-item expanded "><a href="../development/syscall.html"><strong aria-hidden="true">2.3.</strong> Syscall Interface</a></li><li class="chapter-item expanded "><a href="../development/hil.html"><strong aria-hidden="true">2.4.</strong> HIL</a></li><li class="chapter-item expanded "><a href="../development/virtual.html" class="active"><strong aria-hidden="true">2.5.</strong> Virtualizers</a></li><li class="chapter-item expanded "><a href="../development/tests.html"><strong aria-hidden="true">2.6.</strong> Kernel Tests</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Tock Tutorial</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#implementing-an-in-kernel-virtualization-layer" id="implementing-an-in-kernel-virtualization-layer">Implementing an in-kernel Virtualization Layer</a></h1>
+<p>This guide provides an overview and walkthrough on how to add an in-kernel virtualization
+layer, such that a given hardware interface can be used simultaneously by multiple
+kernel capsules, or used simultaneously by a single kernel capsule and userspace.
+Ideally, virtual interfaces will be available for all hardware interfaces in Tock. 
+Some example interfaces which have already been virtualized include Alarm, SPI, Flash,
+UART, I2C, ADC, and others.</p>
+<p>In this guide we will use a running example of virtualizing a single hardware SPI peripheral
+and bus for use as a SPI Master.</p>
+<h2><a class="header" href="#setup" id="setup">Setup</a></h2>
+<p>This guide assumes you already have existing kernel code that needs to be virtualized.
+There should be an existing HIL for the resource you are virtualizing.</p>
+<p>We will assume there is a <code>trait SpiMaster {...}</code> already defined and implemented
+that includes all of the logic needed to interface with the underlying SPI.
+We also assume there is a <code>trait SpiMasterClient</code> that determines the interface a client
+of the SPI exposes to the underlying resource. In most cases, equivalent traits will
+represent a necessary precursor to virtualization.</p>
+<h2><a class="header" href="#overview" id="overview">Overview</a></h2>
+<p>The high-level steps required are:</p>
+<ol>
+<li>Create a capsule file for your virtualizer</li>
+<li>Determine what portions of this interface should be virtuzlized.</li>
+<li>Create a <code>MuxXXX</code> struct, which will serve as the lone client of the underlying resource.</li>
+<li>Create a <code>VirtualXXXDevice</code> which will implement the underlying HIL trait, allowing for the appearance
+of multiple of the lone resource.</li>
+<li>Implement the logic for queuing requests from capsules.</li>
+<li>Implement the logic for dispatching callbacks from the underlying resource to the appropriate client.</li>
+<li>Document the interface.</li>
+<li>(Optional) Write tests for the virtualization logic.</li>
+</ol>
+<h2><a class="header" href="#step-by-step-guide" id="step-by-step-guide">Step-by-Step Guide</a></h2>
+<p>The steps from the overview are elaborated on here.</p>
+<ol>
+<li>
+<p><strong>Create a capsule file for your virtualizer</strong></p>
+<p>This step is easy. Navigate to the <code>capsules/src/</code> directory and create a new file
+named <code>virtual_xxx</code>, where <code>xxx</code> is the name of the underlying resource being virtualized.
+All of the code you will write while following this guide belongs in that file.
+Additionally, open <code>capsules/src/lib.rs</code> and add <code>pub mod virtual_xxx;</code> to the list
+of modules.</p>
+</li>
+<li>
+<p><strong>Determine what portions of this interface should be virtualized</strong></p>
+<p>Generally, this step requires looking at the HIL being virtualized, and
+determining what portions of the HIL require additional logic to handle
+multiple concurrent clients. Lets take a look at the SPIMaster HIL:</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>pub trait SpiMaster {
+    fn set_client(&amp;self, client: &amp;'static dyn SpiMasterClient);
+
+    fn init(&amp;self);
+    fn is_busy(&amp;self) -&gt; bool;
+
+    /// Perform an asynchronous read/write operation, whose
+    /// completion is signaled by invoking SpiMasterClient on
+    /// the initialized client.
+    fn read_write_bytes(
+        &amp;self,
+        write_buffer: &amp;'static mut [u8],
+        read_buffer: Option&lt;&amp;'static mut [u8]&gt;,
+        len: usize,
+    ) -&gt; ReturnCode;
+    fn write_byte(&amp;self, val: u8);
+    fn read_byte(&amp;self) -&gt; u8;
+    fn read_write_byte(&amp;self, val: u8) -&gt; u8;
+
+    /// Tell the SPI peripheral what to use as a chip select pin.
+    fn specify_chip_select(&amp;self, cs: Self::ChipSelect);
+
+    /// Returns the actual rate set
+    fn set_rate(&amp;self, rate: u32) -&gt; u32;
+    fn get_rate(&amp;self) -&gt; u32;
+    fn set_clock(&amp;self, polarity: ClockPolarity);
+    fn get_clock(&amp;self) -&gt; ClockPolarity;
+    fn set_phase(&amp;self, phase: ClockPhase);
+    fn get_phase(&amp;self) -&gt; ClockPhase;
+
+    // These two functions determine what happens to the chip
+    // select line between transfers. If hold_low() is called,
+    // then the chip select line is held low after transfers
+    // complete. If release_low() is called, then the chip select
+    // line is brought high after a transfer completes. A &quot;transfer&quot;
+    // is any of the read/read_write calls. These functions
+    // allow an application to manually control when the
+    // CS line is high or low, such that it can issue multi-byte
+    // requests with single byte operations.
+    fn hold_low(&amp;self);
+    fn release_low(&amp;self);
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>For some of these functions, it is clear that no virtualization is required.
+For example, <code>get_rate()</code>, <code>get_phase()</code> and <code>get_polarity()</code> simply request
+information on the current configuration of the underlying hardware. Implementations
+of these can simply pass the call straight through the mux.</p>
+<p>Some other functions are not appropriate to expose to virtual clients at all.
+For example, <code>hold_low()</code>, <code>release_low()</code>, and <code>specify_chip_select()</code> are
+not suitable for use when the underlying bus is shared. <code>init()</code> does not make sense
+when it is unclear which client should call it. The mux should queue operations,
+so clients should not need access to <code>is_busy()</code>.</p>
+<p>For other functions, it is clear that virtualization <em>is</em> necessary. For example,
+it is clear that if multiple clients are using the Mux, they cannot all be allowed
+set the rate of the underlying hardware at arbitrary times, as doing so could
+break an ongoing operation initiated by an underlying client. However, it is
+important to expose this functionality to clients. Thus <code>set_rate()</code>, <code>set_clock()</code>
+and <code>set_phase()</code> need to be virtualized, and provided to virtual clients.
+<code>set_client()</code> needs to be adapted to support multiple simultaneous clients.</p>
+<p>Finally, virtual clients need a way to send and receive on the bus. Singly byte
+writes and reads are typically only used under the assumption that a single client
+is going to make multiple single byte reads/writes consecutively, and thus are inappropriate to
+virtualize. Instead, the virtual interface should only include <code>read_write_bytes()</code>,
+as that encapsulates the entire transaction that would be desired by a virtual client.</p>
+<p>Given that not all parts of the original HIL trait (<code>SpiMaster</code>) are appropriate for
+virtualization, we should create a new trait in the SPI HIL that will represent the
+interface provided to clients of the Virtual SPI:</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>//! kernel/src/hil/spi.rs
+...
+/// SPIMasterDevice provides a chip-specific interface to the SPI Master
+/// hardware. The interface wraps the chip select line so that chip drivers
+/// cannot communicate with different SPI devices.
+pub trait SpiMasterDevice {
+    /// Perform an asynchronous read/write operation, whose
+    /// completion is signaled by invoking SpiMasterClient.read_write_done on
+    /// the provided client.
+    fn read_write_bytes(
+        &amp;self,
+        write_buffer: &amp;'static mut [u8],
+        read_buffer: Option&lt;&amp;'static mut [u8]&gt;,
+        len: usize,
+    ) -&gt; ReturnCode;
+
+    /// Helper function to set polarity, clock phase, and rate all at once.
+    fn configure(&amp;self, cpol: ClockPolarity, cpal: ClockPhase, rate: u32);
+    fn set_polarity(&amp;self, cpol: ClockPolarity);
+    fn set_phase(&amp;self, cpal: ClockPhase);
+    fn set_rate(&amp;self, rate: u32);
+
+    fn get_polarity(&amp;self) -&gt; ClockPolarity;
+    fn get_phase(&amp;self) -&gt; ClockPhase;
+    fn get_rate(&amp;self) -&gt; u32;
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Not all virtualizers will require a new trait to provide virtualization! For example,
+<code>VirtualMuxDigest</code> exposes the same <code>Digest</code> HIL as the underlying hardware. Same for
+<code>VirtualAlarm</code>, <code>VirtualUart</code>, and <code>MuxFlash</code>. <code>VirtualI2C</code> does use a different trait, similarly
+to SPI, and <code>VirtualADC</code> introduces an <code>AdcChannel</code> trait to enable virtualization that
+is not possible with the ADC interface implemented by hardware.</p>
+<p>There is no fixed algorithm for deciding exactly how to virtualize a given interface,
+and doing so will require thinking carefully about the requirements of the clients and
+nature of the underlying resource. Tock's <a href="https://github.com/tock/tock/tree/master/doc/threat_model">threat model</a>
+describes several requirements for virtualizers in its <a href="https://github.com/tock/tock/blob/master/doc/threat_model/Virtualization.md">virtualization section</a>.</p>
+<blockquote>
+<p>Note: You should read these requirements!! They discuss things
+like the confidentiality and fairness requirements for virtualizers.</p>
+</blockquote>
+<p>Beyond the threat model, you should think carefully about how virtual clients will use
+the interface, the overhead (in cycles / code size / RAM use) of different approaches,
+and how the interface will work in the face of multiple concurrent requests. It is also
+important to consider the potential for two layers of virtualization, when one of the
+clients of the virtualization capsule is a userspace driver that will also be virtualizing
+that same resource. In some cases (see: UDP port reservations) special casing the userspace
+driver may be valuable.</p>
+<p>Frequently the best approach will involve looking for an already virtualized resource that
+is qualitatively similar to the resource you are working with, and using its virtualization
+as a template.</p>
+</li>
+<li>
+<p><strong>Create a <code>MuxXXX</code> struct, which will serve as the lone client of the underlying resource.</strong></p>
+<p>In order to virtualize a hardware resource, we need to create some object that has
+a reference to the underlying hardware resource and that will hold the multiple &quot;virtual&quot;
+devices which clients will interact with. For the SPI interface, we call this struct
+<code>MuxSpiMaster</code>:</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>/// The Mux struct manages multiple Spi clients. Each client may have
+/// at most one outstanding Spi request.
+pub struct MuxSpiMaster&lt;'a, Spi: hil::spi::SpiMaster&gt; {
+    // The underlying resource being virtualized
+    spi: &amp;'a Spi,
+
+    // A list of virtual devices which clients will interact with.
+    // (See next step for details)
+    devices: List&lt;'a, VirtualSpiMasterDevice&lt;'a, Spi&gt;&gt;,
+
+    // Additional data storage needed to implement virtualization logic
+    inflight: OptionalCell&lt;&amp;'a VirtualSpiMasterDevice&lt;'a, Spi&gt;&gt;,
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Here we use Tock's built-in <code>List</code> type, which is a LinkedList of statically
+allocated structures that implement a given trait. This type is required because
+Tock does not allow heap allocation in the Kernel.</p>
+<p>Typically, this struct will implement some number of private helper functions used
+as part of virtualization, and provide a public constructor. For now we will just
+implement the constructor:</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>impl&lt;'a, Spi: hil::spi::SpiMaster&gt; MuxSpiMaster&lt;'a, Spi&gt; {
+    pub const fn new(spi: &amp;'a Spi) -&gt; MuxSpiMaster&lt;'a, Spi&gt; {
+        MuxSpiMaster {
+            spi: spi,
+            devices: List::new(),
+            inflight: OptionalCell::empty(),
+        }
+    }
+
+    // TODO: Implement virtualization logic helper functions
+}
+<span class="boring">}
+</span></code></pre></pre>
+</li>
+<li>
+<p><strong>Create a <code>VirtualXXXDevice</code> which will implement the underlying HIL trait</strong></p>
+<p>In the previous step you probably noticed the list of virtual devices referencing a
+<code>VirtualSpiMasterDevice</code>, which we had not created yet. We will define and implement that
+struct here. In practice, both must be defined simultaneously because each type references
+the other. The <code>VirtualSpiMasterDevice</code> should have a reference to the mux, a <code>ListLink</code>
+field (required so that lists of <code>VirtualSpiMasterDevice</code>s can be constructed),
+and other fields for data that needs to be stored <em>for each client</em> of the virtualizer.</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>pub struct VirtualSpiMasterDevice&lt;'a, Spi: hil::spi::SpiMaster&gt; {
+    //reference to the mux
+    mux: &amp;'a MuxSpiMaster&lt;'a, Spi&gt;,
+
+    // Pointer to next element in the list of devices
+    next: ListLink&lt;'a, VirtualSpiMasterDevice&lt;'a, Spi&gt;&gt;,
+
+    // Per client data that must be stored across calls
+    chip_select: Cell&lt;Spi::ChipSelect&gt;,
+    txbuffer: TakeCell&lt;'static, [u8]&gt;,
+    rxbuffer: TakeCell&lt;'static, [u8]&gt;,
+    operation: Cell&lt;Op&gt;,
+    client: OptionalCell&lt;&amp;'a dyn hil::spi::SpiMasterClient&gt;,
+}
+
+impl&lt;'a, Spi: hil::spi::SpiMaster&gt; VirtualSpiMasterDevice&lt;'a, Spi&gt; {
+    pub const fn new(
+        mux: &amp;'a MuxSpiMaster&lt;'a, Spi&gt;,
+        chip_select: Spi::ChipSelect,
+    ) -&gt; VirtualSpiMasterDevice&lt;'a, Spi&gt; {
+        VirtualSpiMasterDevice {
+            mux: mux,
+            chip_select: Cell::new(chip_select),
+            txbuffer: TakeCell::empty(),
+            rxbuffer: TakeCell::empty(),
+            operation: Cell::new(Op::Idle),
+            next: ListLink::empty(),
+            client: OptionalCell::empty(),
+        }
+    }
+
+    // Most virtualizers will use a set_client method that looks exactly like this
+    pub fn set_client(&amp;'a self, client: &amp;'a dyn hil::spi::SpiMasterClient) {
+        self.mux.devices.push_head(self);
+        self.client.set(client);
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>This is the struct that will implement whatever HIL trait we decided on in step 1.
+In our case, this is the <code>SpiMasterDevice</code> trait:</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>// Given that there are multiple types of operations we might need to queue,
+// create an enum that can represent each operation and the data that operation
+// needs to store.
+#[derive(Copy, Clone, PartialEq)]
+enum Op {
+    Idle,
+    Configure(hil::spi::ClockPolarity, hil::spi::ClockPhase, u32),
+    ReadWriteBytes(usize),
+    SetPolarity(hil::spi::ClockPolarity),
+    SetPhase(hil::spi::ClockPhase),
+    SetRate(u32),
+}
+
+impl&lt;Spi: hil::spi::SpiMaster&gt; hil::spi::SpiMasterDevice for VirtualSpiMasterDevice&lt;'_, Spi&gt; {
+    fn configure(&amp;self, cpol: hil::spi::ClockPolarity, cpal: hil::spi::ClockPhase, rate: u32) {
+        self.operation.set(Op::Configure(cpol, cpal, rate));
+        self.mux.do_next_op();
+    }
+
+    fn read_write_bytes(
+        &amp;self,
+        write_buffer: &amp;'static mut [u8],
+        read_buffer: Option&lt;&amp;'static mut [u8]&gt;,
+        len: usize,
+    ) -&gt; ReturnCode {
+        self.txbuffer.replace(write_buffer);
+        self.rxbuffer.put(read_buffer);
+        self.operation.set(Op::ReadWriteBytes(len));
+        self.mux.do_next_op();
+        ReturnCode::SUCCESS
+    }
+
+    fn set_polarity(&amp;self, cpol: hil::spi::ClockPolarity) {
+        self.operation.set(Op::SetPolarity(cpol));
+        self.mux.do_next_op();
+    }
+
+    fn set_phase(&amp;self, cpal: hil::spi::ClockPhase) {
+        self.operation.set(Op::SetPhase(cpal));
+        self.mux.do_next_op();
+    }
+
+    fn set_rate(&amp;self, rate: u32) {
+        self.operation.set(Op::SetRate(rate));
+        self.mux.do_next_op();
+    }
+
+    fn get_polarity(&amp;self) -&gt; hil::spi::ClockPolarity {
+        self.mux.spi.get_clock()
+    }
+
+    fn get_phase(&amp;self) -&gt; hil::spi::ClockPhase {
+        self.mux.spi.get_phase()
+    }
+
+    fn get_rate(&amp;self) -&gt; u32 {
+        self.mux.spi.get_rate()
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Now we can begin to see the virtualization logic. Each <code>get_x()</code> method just forwards calls
+directly to the underlying hardware driver, as these operations are synchronous and non-blocking.
+But the <code>set()</code> calls and the read/write calls
+are queued as operations. Each client can have only a single outstanding operation (a common
+requirement for virtualizers in Tock given the lack of dynamic allocation). These operations
+are &quot;queued&quot; by each client simply setting the operation field of its <code>VirtualSpiMasterDevice</code>
+to whatever operation it would like to perform next. The Mux can iterate through the list
+of devices to choose a pending operation. Clients learn about the completion of operations
+via callbacks, informing them that they can begin new operations.</p>
+</li>
+<li>
+<p><strong>Implement the logic for queuing requests from capsules.</strong></p>
+<p>So far, we have sketched out a skelton for how we will queue requests from capsules, but
+not yet implemented the <code>do_next_op()</code> function that will handle the order in which operations
+are performed, or how operations are translated into calls by the actual hardware driver.</p>
+<p>We know that all operations in Tock are asynchronous, so it is always possible that
+the underlying hardware device is busy when <code>do_next_op()</code> is called -- accordingly,
+we need some mechanism for tracking if the underlying device is currently busy. We also
+need to restore the state expected by the device performing a given operaion (e.g. the chip
+select pin in use). Beyond that, we just forward calls to the hardware driver:</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>fn do_next_op(&amp;self) {
+    if self.inflight.is_none() {
+        let mnode = self
+            .devices
+            .iter()
+            .find(|node| node.operation.get() != Op::Idle);
+        mnode.map(|node| {
+            self.spi.specify_chip_select(node.chip_select.get());
+            let op = node.operation.get();
+            // Need to set idle here in case callback changes state
+            node.operation.set(Op::Idle);
+            match op {
+                Op::Configure(cpol, cpal, rate) =&gt; {
+                    // The `chip_select` type will be correct based on
+                    // what implemented `SpiMaster`.
+                    self.spi.set_clock(cpol);
+                    self.spi.set_phase(cpal);
+                    self.spi.set_rate(rate);
+                }
+                Op::ReadWriteBytes(len) =&gt; {
+                    // Only async operations want to block by setting
+                    // the devices as inflight.
+                    self.inflight.set(node);
+                    node.txbuffer.take().map(|txbuffer| {
+                        let rxbuffer = node.rxbuffer.take();
+                        self.spi.read_write_bytes(txbuffer, rxbuffer, len);
+                    });
+                }
+                Op::SetPolarity(pol) =&gt; {
+                    self.spi.set_clock(pol);
+                }
+                Op::SetPhase(pal) =&gt; {
+                    self.spi.set_phase(pal);
+                }
+                Op::SetRate(rate) =&gt; {
+                    self.spi.set_rate(rate);
+                }
+                Op::Idle =&gt; {} // Can't get here...
+            }
+        });
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Notably, the SPI driver does not implement any fairness schemes, despite the requirements of
+the threat model. As of this writing, the threat model is still aspirational, and not followed
+for all virtualizers. Eventually, this driver should be updated to use round robin queueing of
+clients, rather than always giving priority to whichever client was added to the List first.</p>
+</li>
+<li>
+<p><strong>Implement the logic for dispatching callbacks from the underlying resource to the appropriate client.</strong></p>
+<p>We are getting close! At this point, we have a mechanism for adding clients to the virtualizer,
+and for queueing and making calls. However, we have not yet addressed how to handle callbacks
+from the underlying resource (usually used to forward interrupts up to the appropriate client).
+Additionally, our queueing logic is still incomplete, as we have not yet seen when subsequent
+operations are triggered if an operation is requested while the underlying device is in use.</p>
+<p>Handling callbacks in virtualizers requires two layers of handling. First, the <code>MuxXXX</code> device
+must implement the appropriate <code>XXXClient</code> trait such that it can subscribe to callbacks
+from the underlying resource, and dispatch them to the appropriate <code>VirtualXXXDevice</code>:</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>impl&lt;Spi: hil::spi::SpiMaster&gt; hil::spi::SpiMasterClient for MuxSpiMaster&lt;'_, Spi&gt; {
+    fn read_write_done(
+        &amp;self,
+        write_buffer: &amp;'static mut [u8],
+        read_buffer: Option&lt;&amp;'static mut [u8]&gt;,
+        len: usize,
+    ) {
+        self.inflight.take().map(move |device| {
+            self.do_next_op();
+            device.read_write_done(write_buffer, read_buffer, len);
+        });
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>This takes advantage of the fact that we stored a reference to device that initiated
+the inflight operation, so we can dispatch the callback directly to that device.
+One thing to note is that the call to <code>take()</code> sets <code>inflight</code> to <code>None</code>, and then 
+the callback calls <code>do_next_op()</code>, triggering any still queued operations. This ensures that
+all queued operations will take place.
+This all requires that the device also has implemented the callback:</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>impl&lt;Spi: hil::spi::SpiMaster&gt; hil::spi::SpiMasterClient for VirtualSpiMasterDevice&lt;'_, Spi&gt; {
+fn read_write_done(
+    &amp;self,
+    write_buffer: &amp;'static mut [u8],
+    read_buffer: Option&lt;&amp;'static mut [u8]&gt;,
+    len: usize,
+) {
+    self.client.map(move |client| {
+        client.read_write_done(write_buffer, read_buffer, len);
+    });
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Finally, we have dispatched the callback all the way up to the client of the virtualizer,
+completing the round trip process.</p>
+</li>
+<li>
+<p><strong>Document the interface.</strong></p>
+<p>Finally, you need to document the interface. Do so by placing a comment at the top
+of the file describing what the file does:</p>
+<pre><pre class="playpen"><code class="language-rust">
+<span class="boring">#![allow(unused_variables)]
+</span><span class="boring">fn main() {
+</span>//! Virtualize a SPI master bus to enable multiple users of the SPI bus.
+
+<span class="boring">}
+</span></code></pre></pre>
+<p>and add doc comments (<code>/// doc comment example</code>) to any new traits created in <code>kernel/src/hil</code>.</p>
+</li>
+<li>
+<p><strong>(Optional) Write tests for the virtualization logic.</strong></p>
+<p>Some virtualizers provide additional stress tests of virtualization logic, which can be run on
+hardware to perform correct operation in edge cases. For examples of such tests, look at
+<code>capsules/src/test/virtual_uart.rs</code> or <code>capsules/src/test/random_alarm.rs</code>.</p>
+</li>
+</ol>
+<h2><a class="header" href="#wrap-up" id="wrap-up">Wrap-Up</a></h2>
+<p>Congratulations! You have virtualized a resource in the Tock kernel!
+We encourage you to submit a pull request to upstream
+this to the Tock repository.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../development/hil.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../development/tests.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="../development/hil.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="../development/tests.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+        
+        
+        <script type="text/javascript">
+            window.playpen_copyable = true;
+        </script>
+        
+
+        
+
+        
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
