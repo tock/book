@@ -119,7 +119,7 @@ The steps from the overview are elaborated on here.
     and `set_phase()` need to be virtualized, and provided to virtual clients.
     `set_client()` needs to be adapted to support multiple simultaneous clients.
 
-    Finally, virtual clients need a way to send and receive on the bus. Singly byte
+    Finally, virtual clients need a way to send and receive on the bus. Single byte
     writes and reads are typically only used under the assumption that a single client
     is going to make multiple single byte reads/writes consecutively, and thus are inappropriate to
     virtualize. Instead, the virtual interface should only include `read_write_bytes()`,
