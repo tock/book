@@ -35,6 +35,8 @@ The high-level steps required are:
 7. Document the interface.
 8. (Optional) Write tests for the virtualization logic.
 
+![](../imgs/virtual.svg)
+
 ## Step-by-Step Guide
 
 The steps from the overview are elaborated on here.
