@@ -26,7 +26,7 @@ represent a necessary precursor to virtualization.
 The high-level steps required are:
 
 1. Create a capsule file for your virtualizer
-2. Determine what portions of this interface should be virtuzlized.
+2. Determine what portions of this interface should be virtualized.
 3. Create a `MuxXXX` struct, which will serve as the lone client of the underlying resource.
 4. Create a `VirtualXXXDevice` which will implement the underlying HIL trait, allowing for the appearance
    of multiple of the lone resource.
