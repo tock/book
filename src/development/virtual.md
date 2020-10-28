@@ -26,7 +26,7 @@ represent a necessary precursor to virtualization.
 The high-level steps required are:
 
 1. Create a capsule file for your virtualizer
-2. Determine what portions of this interface should be virtuzlized.
+2. Determine what portions of this interface should be virtualized.
 3. Create a `MuxXXX` struct, which will serve as the lone client of the underlying resource.
 4. Create a `VirtualXXXDevice` which will implement the underlying HIL trait, allowing for the appearance
    of multiple of the lone resource.
@@ -34,6 +34,8 @@ The high-level steps required are:
 6. Implement the logic for dispatching callbacks from the underlying resource to the appropriate client.
 7. Document the interface.
 8. (Optional) Write tests for the virtualization logic.
+
+![](../imgs/virtual.svg)
 
 ## Step-by-Step Guide
 
@@ -117,7 +119,7 @@ The steps from the overview are elaborated on here.
     and `set_phase()` need to be virtualized, and provided to virtual clients.
     `set_client()` needs to be adapted to support multiple simultaneous clients.
 
-    Finally, virtual clients need a way to send and receive on the bus. Singly byte
+    Finally, virtual clients need a way to send and receive on the bus. Single byte
     writes and reads are typically only used under the assumption that a single client
     is going to make multiple single byte reads/writes consecutively, and thus are inappropriate to
     virtualize. Instead, the virtual interface should only include `read_write_bytes()`,

@@ -5,22 +5,36 @@
         <meta charset="UTF-8">
         <title>Syscall Interface - Tock Tutorial</title>
         
+        
+
+
+        <!-- Custom HTML head -->
+        
+
 
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        
+        <link rel="icon" href="../favicon.svg">
+        
+        
         <link rel="shortcut icon" href="../favicon.png">
+        
         <link rel="stylesheet" href="../css/variables.css">
         <link rel="stylesheet" href="../css/general.css">
         <link rel="stylesheet" href="../css/chrome.css">
+        
         <link rel="stylesheet" href="../css/print.css" media="print">
+        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
-        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+        
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="../highlight.css">
@@ -36,7 +50,7 @@
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
             var path_to_root = "../";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
@@ -116,9 +130,11 @@
                     <h1 class="menu-title">Tock Tutorial</h1>
 
                     <div class="right-buttons">
+                        
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+                        
                         
                     </div>
                 </div>
@@ -272,8 +288,8 @@ able to store the callback that a process registers with us.</p>
 of the state we want to store for each process that uses our syscall interface. By convention in Tock, this struct is named <code>App</code>, but it could
 have a different name. We will need to keep two values, the callback and the
 high water alert threshold:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub struct App {
     callback: Option&lt;Callback&gt;,
@@ -283,8 +299,8 @@ high water alert threshold:</p>
 </span></code></pre></pre>
 <p>Now that we have the type we want to store in the grant region we can create
 the grant type for it by extending our <code>WS00123</code> struct:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub struct WS00123 {
 	...
@@ -294,8 +310,8 @@ the grant type for it by extending our <code>WS00123</code> struct:</p>
 </span></code></pre></pre>
 <p>We will also need the grant region to be created by the board and passed in
 to us by adding it to the capsules <code>new()</code> function:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl WS00123 {
     pub fn new(
@@ -316,8 +332,8 @@ to us by adding it to the capsules <code>new()</code> function:</p>
 <p><strong>Implement the <code>Driver</code> trait.</strong></p>
 <p>The <code>Driver</code> trait is how a capsule provides implementations for the various
 syscalls an application might call. The basic framework looks like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl Driver for WS00123 {
 	fn allow(
@@ -352,8 +368,8 @@ returns <code>&lt;0</code> then the syscall interface is not present. Many imple
 return <code>SUCCESS</code> (i.e. 0), however, some return other positive numbers, like
 for example the number of LEDs present on the board. For our example, we use
 the simple case:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl Driver for WS00123 {
 	fn command(&amp;self,
@@ -374,8 +390,8 @@ the simple case:</p>
 should use. For this capsule, we will use a single callback for both when a
 measurement is ready and for when a high water alert is triggered, but with
 different arguments passed into the callback.</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl Driver for WS00123 {
     /// Setup callbacks.
@@ -414,8 +430,8 @@ to sample and one to enable the alert. In both cases the commands must
 return a <code>ReturnCode</code>, and call functions that likely already exist in the
 original implementation of the <code>WS00123</code> sensor. If the functions don't
 quite exist, then they will need to be added as well.</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl Driver for WS00123 {
 	/// Command interface.
@@ -462,8 +478,8 @@ issuing the callback will need to be added to the existing implementation of
 the capsule. As an example, if our water sensor was attached to the board
 over I2C, then we might trigger the callback in response to a finished I2C
 command:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl i2c::I2CClient for WS00123 {
     fn command_complete(&amp;self, buffer: &amp;'static mut [u8], _error: i2c::Error) {
@@ -485,8 +501,8 @@ essential elements for implementing the syscall interface.</p>
 the kernel (and userspace apps) can differentiate this syscall interface
 from all others that a board supports. By convention this is specified by
 a global value at the top of the capsule file:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub const DRIVER_NUM: usize = 0x80000A;
 <span class="boring">}
@@ -581,8 +597,8 @@ kernel knows which implementation of <code>Driver</code> to call. In each board'
 the <code>Platform</code> trait where the board can setup which syscall interfaces it
 supports. To enable our water sensor interface we add a new entry to the
 match statement there:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl Platform for Hail {
     fn with_driver&lt;F, R&gt;(&amp;self, driver_num: usize, f: F) -&gt; R
@@ -698,10 +714,10 @@ this to the Tock repository.</p>
         
 
         
-        
+
         
         <script type="text/javascript">
-            window.playpen_copyable = true;
+            window.playground_copyable = true;
         </script>
         
 

@@ -5,22 +5,36 @@
         <meta charset="UTF-8">
         <title>Virtualizers - Tock Tutorial</title>
         
+        
+
+
+        <!-- Custom HTML head -->
+        
+
 
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        
+        <link rel="icon" href="../favicon.svg">
+        
+        
         <link rel="shortcut icon" href="../favicon.png">
+        
         <link rel="stylesheet" href="../css/variables.css">
         <link rel="stylesheet" href="../css/general.css">
         <link rel="stylesheet" href="../css/chrome.css">
+        
         <link rel="stylesheet" href="../css/print.css" media="print">
+        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
-        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+        
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="../highlight.css">
@@ -36,7 +50,7 @@
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
             var path_to_root = "../";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
@@ -116,9 +130,11 @@
                     <h1 class="menu-title">Tock Tutorial</h1>
 
                     <div class="right-buttons">
+                        
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+                        
                         
                     </div>
                 </div>
@@ -168,7 +184,7 @@ represent a necessary precursor to virtualization.</p>
 <p>The high-level steps required are:</p>
 <ol>
 <li>Create a capsule file for your virtualizer</li>
-<li>Determine what portions of this interface should be virtuzlized.</li>
+<li>Determine what portions of this interface should be virtualized.</li>
 <li>Create a <code>MuxXXX</code> struct, which will serve as the lone client of the underlying resource.</li>
 <li>Create a <code>VirtualXXXDevice</code> which will implement the underlying HIL trait, allowing for the appearance
 of multiple of the lone resource.</li>
@@ -177,6 +193,7 @@ of multiple of the lone resource.</li>
 <li>Document the interface.</li>
 <li>(Optional) Write tests for the virtualization logic.</li>
 </ol>
+<p><img src="../imgs/virtual.svg" alt="" /></p>
 <h2><a class="header" href="#step-by-step-guide" id="step-by-step-guide">Step-by-Step Guide</a></h2>
 <p>The steps from the overview are elaborated on here.</p>
 <ol>
@@ -193,8 +210,8 @@ of modules.</p>
 <p>Generally, this step requires looking at the HIL being virtualized, and
 determining what portions of the HIL require additional logic to handle
 multiple concurrent clients. Lets take a look at the SPIMaster HIL:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub trait SpiMaster {
     fn set_client(&amp;self, client: &amp;'static dyn SpiMasterClient);
@@ -256,7 +273,7 @@ break an ongoing operation initiated by an underlying client. However, it is
 important to expose this functionality to clients. Thus <code>set_rate()</code>, <code>set_clock()</code>
 and <code>set_phase()</code> need to be virtualized, and provided to virtual clients.
 <code>set_client()</code> needs to be adapted to support multiple simultaneous clients.</p>
-<p>Finally, virtual clients need a way to send and receive on the bus. Singly byte
+<p>Finally, virtual clients need a way to send and receive on the bus. Single byte
 writes and reads are typically only used under the assumption that a single client
 is going to make multiple single byte reads/writes consecutively, and thus are inappropriate to
 virtualize. Instead, the virtual interface should only include <code>read_write_bytes()</code>,
@@ -264,8 +281,8 @@ as that encapsulates the entire transaction that would be desired by a virtual c
 <p>Given that not all parts of the original HIL trait (<code>SpiMaster</code>) are appropriate for
 virtualization, we should create a new trait in the SPI HIL that will represent the
 interface provided to clients of the Virtual SPI:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>//! kernel/src/hil/spi.rs
 ...
@@ -325,8 +342,8 @@ as a template.</p>
 a reference to the underlying hardware resource and that will hold the multiple &quot;virtual&quot;
 devices which clients will interact with. For the SPI interface, we call this struct
 <code>MuxSpiMaster</code>:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>/// The Mux struct manages multiple Spi clients. Each client may have
 /// at most one outstanding Spi request.
@@ -349,8 +366,8 @@ Tock does not allow heap allocation in the Kernel.</p>
 <p>Typically, this struct will implement some number of private helper functions used
 as part of virtualization, and provide a public constructor. For now we will just
 implement the constructor:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl&lt;'a, Spi: hil::spi::SpiMaster&gt; MuxSpiMaster&lt;'a, Spi&gt; {
     pub const fn new(spi: &amp;'a Spi) -&gt; MuxSpiMaster&lt;'a, Spi&gt; {
@@ -374,8 +391,8 @@ struct here. In practice, both must be defined simultaneously because each type 
 the other. The <code>VirtualSpiMasterDevice</code> should have a reference to the mux, a <code>ListLink</code>
 field (required so that lists of <code>VirtualSpiMasterDevice</code>s can be constructed),
 and other fields for data that needs to be stored <em>for each client</em> of the virtualizer.</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub struct VirtualSpiMasterDevice&lt;'a, Spi: hil::spi::SpiMaster&gt; {
     //reference to the mux
@@ -418,8 +435,8 @@ impl&lt;'a, Spi: hil::spi::SpiMaster&gt; VirtualSpiMasterDevice&lt;'a, Spi&gt; {
 </span></code></pre></pre>
 <p>This is the struct that will implement whatever HIL trait we decided on in step 1.
 In our case, this is the <code>SpiMasterDevice</code> trait:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>// Given that there are multiple types of operations we might need to queue,
 // create an enum that can represent each operation and the data that operation
@@ -502,8 +519,8 @@ the underlying hardware device is busy when <code>do_next_op()</code> is called 
 we need some mechanism for tracking if the underlying device is currently busy. We also
 need to restore the state expected by the device performing a given operaion (e.g. the chip
 select pin in use). Beyond that, we just forward calls to the hardware driver:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>fn do_next_op(&amp;self) {
     if self.inflight.is_none() {
@@ -564,8 +581,8 @@ operations are triggered if an operation is requested while the underlying devic
 <p>Handling callbacks in virtualizers requires two layers of handling. First, the <code>MuxXXX</code> device
 must implement the appropriate <code>XXXClient</code> trait such that it can subscribe to callbacks
 from the underlying resource, and dispatch them to the appropriate <code>VirtualXXXDevice</code>:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl&lt;Spi: hil::spi::SpiMaster&gt; hil::spi::SpiMasterClient for MuxSpiMaster&lt;'_, Spi&gt; {
     fn read_write_done(
@@ -588,8 +605,8 @@ One thing to note is that the call to <code>take()</code> sets <code>inflight</c
 the callback calls <code>do_next_op()</code>, triggering any still queued operations. This ensures that
 all queued operations will take place.
 This all requires that the device also has implemented the callback:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl&lt;Spi: hil::spi::SpiMaster&gt; hil::spi::SpiMasterClient for VirtualSpiMasterDevice&lt;'_, Spi&gt; {
 fn read_write_done(
@@ -611,8 +628,8 @@ completing the round trip process.</p>
 <p><strong>Document the interface.</strong></p>
 <p>Finally, you need to document the interface. Do so by placing a comment at the top
 of the file describing what the file does:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>//! Virtualize a SPI master bus to enable multiple users of the SPI bus.
 
@@ -674,10 +691,10 @@ this to the Tock repository.</p>
         
 
         
-        
+
         
         <script type="text/javascript">
-            window.playpen_copyable = true;
+            window.playground_copyable = true;
         </script>
         
 

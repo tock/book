@@ -7,22 +7,36 @@
         
         <meta name="robots" content="noindex" />
         
+        
+
+
+        <!-- Custom HTML head -->
+        
+
 
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        
+        <link rel="icon" href="favicon.svg">
+        
+        
         <link rel="shortcut icon" href="favicon.png">
+        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
+        
         <link rel="stylesheet" href="css/print.css" media="print">
+        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
-        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
@@ -38,7 +52,7 @@
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
             var path_to_root = "";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
@@ -118,9 +132,11 @@
                     <h1 class="menu-title">Tock Tutorial</h1>
 
                     <div class="right-buttons">
+                        
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+                        
                         
                     </div>
                 </div>
@@ -437,10 +453,10 @@ example, if you have an nrf52dk or nrf52840dk, you would run Tockloader like:</p
 <p>The <code>--jlink</code> flag tells tockloader to use the JLink JTAG tool to communicate
 with the board (this mirrors using <code>make flash</code> above). Some boards support
 OpenOCD, in which case you would pass <code>--openocd</code> instead.</p>
-<p>To see a list of boards that tockloader supports, you can run <code>tockloader list-boards</code>. If you have an imix or Hail board, you should not need to specify
-the board.</p>
+<p>To see a list of boards that tockloader supports, you can run <code>tockloader list-known-boards</code>. If you have an imix or Hail board, you should not need to
+specify the board.</p>
 <blockquote>
-<p>Note, a board listed in <code>tockloader list-boards</code> means there are default
+<p>Note, a board listed in <code>tockloader list-known-boards</code> means there are default
 settings hardcoded into tockloader's source on how to support those boards.
 However, all of those settings can be passed in via command-line parameters
 for boards that tockloader does not know about. See <code>tockloader --help</code> for
@@ -970,8 +986,8 @@ sets up the system clocks, and configures the GPIO pins.</p>
 <h3><a class="header" href="#how-do-capsules-get-created" id="how-do-capsules-get-created">How do capsules get created?</a></h3>
 <p>The next lines of <code>reset_handler</code> create and initialize the system console,
 which is what turns calls to <code>println</code> into bytes sent to the USB serial port:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>let uart_mux = static_init!(
     MuxUart&lt;'static&gt;,
@@ -991,8 +1007,8 @@ let console = ConsoleComponent::new(board_kernel, uart_mux).finalize();
 </span></code></pre></pre>
 <p>Eventually, once all of the capsules have been created, we will populate
 a imix structure with them:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>let imix = Imix {
     console: console,
@@ -1041,8 +1057,8 @@ macro).</p>
 <p>Some capsules require <em>initialization</em>, some code that must be executed
 before they can be used. For example, a few lines after creating the imix
 struct, we initialize the console:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>imix.nrf51822.initialize();
 <span class="boring">}
@@ -1052,8 +1068,8 @@ configure the associated UART peripheral for use as a text console
 (8 data bits, 1 stop bit, no parity bit, no hardware flow control).</p>
 <h3><a class="header" href="#inter-capsule-dependencies" id="inter-capsule-dependencies">Inter-capsule dependencies</a></h3>
 <p>Just after initializing the console capsule, we find this line:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>kernel::debug::assign_console_driver(Some(imix.console), kc);
 <span class="boring">}
@@ -1100,8 +1116,8 @@ shouldn't need to worry about the mechanics of this for now.</p>
 <h3><a class="header" href="#loading-processes" id="loading-processes">Loading processes</a></h3>
 <p>Once the platform is all set up, the board is responsible for loading processes
 into memory:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>kernel::process::load_processes(&amp;_sapps as *const u8,
                                 &amp;mut APP_MEMORY,
@@ -1118,8 +1134,8 @@ iteratively parsing TBF entries and making <code>Process</code>es.</p>
 <p>Finally, the board passes a reference to the current platform, the chip the
 platform is built on (used for interrupt and power handling), the processes to
 run, and an IPC server instance to the main loop of the kernel:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>kernel::main(&amp;imix, &amp;mut chip, &amp;mut PROCESSES, &amp;imix.ipc);
 <span class="boring">}
@@ -1141,8 +1157,8 @@ initialized the capsule.</p>
 <p>Eventually, the <code>start</code> method will kick off a state machine for periodic
 humidity readings, but for now, let's just print something to the debug console
 and return:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>debug!(&quot;Hello from the kernel!&quot;);
 <span class="boring">}
@@ -1163,8 +1179,8 @@ in the <code>kernel::hil::time</code> module. You'll use the <code>set_alarm</co
 from the <code>Alarm</code> trait to set an alarm for a particular value of the clock.
 Note that both methods accept arguments in the alarm's native clock frequency,
 which is available using the Alarm trait's associated <code>Frequency</code> type:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>// native clock frequency in Herz
 let frequency = &lt;A::Frequency&gt;::frequency();
@@ -1172,8 +1188,8 @@ let frequency = &lt;A::Frequency&gt;::frequency();
 </span></code></pre></pre>
 <p>Your capsule already implements the <code>alarm::Client</code> trait so it can receive
 alarm events. The <code>alarm::Client</code> trait has a single method:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>fn fired(&amp;self)
 <span class="boring">}
@@ -1199,8 +1215,8 @@ includes the <code>HumidityDriver</code> and <code>HumidityClient</code> traits,
 <p>The <code>HumidityDriver</code> trait includes the method <code>read_accelerometer</code> which
 initiates an accelerometer reading. The <code>HumidityClient</code> trait has a single
 method for receiving readings:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>fn callback(&amp;self, humidity: usize);
 <span class="boring">}
@@ -2115,8 +2131,8 @@ name of this file generally should match the name of the peripheral in the
 the MCU's datasheet.</p>
 <p>Include the name of this file inside of the <code>lib.rs</code> (or potentially
 <code>mod.rs</code>) file inside the same directory. This should look like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub mod ast;
 <span class="boring">}
@@ -2130,8 +2146,8 @@ intuitive.</p>
 <p>The full register library is
 <a href="https://github.com/tock/tock/tree/master/libraries/tock-register-interface">here</a>,
 but to get started, you will first create a structure like this:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>use tock_registers::registers::{ReadOnly, ReadWrite, WriteOnly};
 
@@ -2160,8 +2176,8 @@ register_structs! {
 <p>You should replace <code>XyzPeripheral</code> with the name of the peripheral you are
 writing a driver for. Then, for each register defined in the datasheet, you
 must specify an entry in the macro. For example, a register is defined like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>(0x000 =&gt; cr: ReadWrite&lt;u32, Control::Register&gt;),
 <span class="boring">}
@@ -2184,8 +2200,8 @@ does not use likely does not need its bitfields mapped.</li>
 </ul>
 <p>Once the register map is defined, you must specify the bitfields for any
 registers that you gave a specific type to. This looks like the following:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>register_bitfields! [
     // First parameter is the register width for the bitfields. Can be u8,
@@ -2249,8 +2265,8 @@ driver. The actual fields of the struct are very peripheral specific, but
 should contain any state that the driver needs to correctly function.</p>
 <p>An example struct looks for a timer peripheral called the AST by the MCU
 datasheet looks like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub struct Ast&lt;'a&gt; {
     registers: StaticRef&lt;AstRegisters&gt;,
@@ -2290,8 +2306,8 @@ to use which one. In this example, the callback is stored in an
 set), and can be updated if the callback needs to change.</p>
 <p>With the struct defined, you should next create a <code>new()</code> function for that
 struct. This will look like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl Ast {
     const fn new(registers: StaticRef&lt;AstRegisters&gt;) -&gt; Ast {
@@ -2312,8 +2328,8 @@ now write the actual logic for the peripheral driver that implements the HIL
 interface you identified earlier. Implementing the HIL interface is done
 just like implementing a trait in Rust. For example, to implement the <code>Time</code>
 HIL for the AST:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl hil::time::Time for Ast&lt;'a&gt; {
     type Frequency = Freq16KHz;
@@ -2334,8 +2350,8 @@ implement them.</p>
 implemented as functions for the original struct. For example, in the <code>Ast</code>
 example the HIL function <code>now()</code> uses the <code>get_counter()</code> function. This should be
 implemented on the main <code>Ast</code> struct:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl Ast {
     const fn new(registers: StaticRef&lt;AstRegisters&gt;) -&gt; Ast {
@@ -2367,8 +2383,8 @@ memory location.</strong></p>
 <p>The last step is to actually create the object so that the peripheral driver
 can be used by other code. Start by casting the register map to the correct
 memory address where the registers are actually mapped to. For example:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>use kernel::common::StaticRef;
 
@@ -2395,8 +2411,8 @@ safety.</p>
 </blockquote>
 <p>With the address reference created, we can now create the actual driver
 object:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub static mut AST: Ast = Ast::new(AST_BASE);
 <span class="boring">}
@@ -2458,8 +2474,8 @@ writing the driver for. There are several other examples in the capsules
 folder.</p>
 <p>For our example we will assume the part number is <code>ls1234</code>.</p>
 <p>You then need to add the filename to <code>capsules/src/lib.rs</code> like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub mod ls1234;
 <span class="boring">}
@@ -2471,8 +2487,8 @@ or some other standard interface. You will need to adjust how you create the
 struct based on the interface. You should be able to find examples in the
 capsules directory to copy from.</p>
 <p>The struct will look something like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub struct Ls1234 {
     i2c: &amp;'a dyn I2CDevice,
@@ -2499,8 +2515,8 @@ the correct address.</p>
 <p><code>state</code>: Often drivers will iterate through various states as they
 communicate with the IC, and it is common for drivers to keep some state
 variable to manage this. Our <code>State</code> is defined as an enum, like so:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>#[derive(Copy, Clone, PartialEq)]
 enum State {
@@ -2521,8 +2537,8 @@ driver when the board boots. This provides the board flexibility on the
 buffer to use, while still allowing the driver to hint at the size
 required for successful operation. In our case the static buffer is
 defined as:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub static mut BUF: [u8; 3] = [0; 3];
 <span class="boring">}
@@ -2538,8 +2554,8 @@ so the caller will not block waiting for a sample, but instead will expect
 a callback via the client when the same is ready. The driver has to define
 the type of the callback by defining the <code>Ls1234Client</code> trait in this
 case:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub trait Ls1234Client {
 	 fn callback(light_reading: usize);
@@ -2563,8 +2579,8 @@ out of sync, and makes further development on the driver difficult.</p>
 <p>The last step is to write a function that enables creating an instance of
 your driver. By convention, the function is called <code>new()</code> and looks
 something like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl Ls1234&lt;'a&gt; {
     pub fn new(i2c: &amp;'a dyn I2CDevice, buffer: &amp;'static mut [u8]) -&gt; Ls1234&lt;'a&gt; {
@@ -2592,8 +2608,8 @@ requires extending the <code>impl</code> of the driver struct with additional fu
 appropriate for your particular IC.</p>
 <p>With our light sensor example, we likely want to write a sample function for
 reading a light sensor value:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl Ls1234&lt;'a&gt; {
     pub fn new(...) -&gt; Ls1234&lt;'a&gt; {...}
@@ -2612,8 +2628,8 @@ described earlier.</p>
 <p>The start reading function will likely prepare the message buffer in a way
 that is IC-specific, then send the command to the IC. A rough example of
 that operation looks like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl Ls1234&lt;'a&gt; {
     pub fn new(...) -&gt; Ls1234&lt;'a&gt; {...}
@@ -2643,8 +2659,8 @@ the IC and updates our internal state machine state to mark that we are
 waiting for the IC to turn on. Now the <code>Ls1234</code> code is finished for the
 time being and we now wait for the I2C message to finish being sent. We will
 know when this has completed based on a callback from the I2C hardware.</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl I2CClient for Ls1234&lt;'a&gt; {
     fn command_complete(&amp;self, buffer: &amp;'static mut [u8], error: Error) {
@@ -2656,8 +2672,8 @@ know when this has completed based on a callback from the I2C hardware.</p>
 <p>In our example, we have to send a new command after turning on the light
 sensor to actually read a sampled value. We use our state machine here to
 organize the code as in this example:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl I2CClient for Ls1234&lt;'a&gt; {
     fn command_complete(&amp;self, buffer: &amp;'static mut [u8], _error: Error) {
@@ -2684,8 +2700,8 @@ communicating with the sensor.</p>
 <p>When the read finishes, the <code>command_complete()</code> callback will fire again,
 and we must handle the result. Since we now have the reading we can call our
 client's callback after updating out state machine.</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl I2CClient for Ls1234&lt;'a&gt; {
     fn command_complete(&amp;self, buffer: &amp;'static mut [u8], _error: Error) {
@@ -2742,8 +2758,8 @@ specific IC is being used on a particular hardware platform.</p>
 the <code>sensors.rs</code> file. Drivers can implement one of these HILs and then
 higher-level code can use the HIL interface rather than a specific IC.</p>
 <p>To implement the HIL, you must implement the HIL trait functions:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl AmbientLight for Ls1234&lt;'a&gt; {
     fn set_client(&amp;self, client: &amp;'static dyn AmbientLightClient) {
@@ -2896,8 +2912,8 @@ able to store the callback that a process registers with us.</p>
 of the state we want to store for each process that uses our syscall interface. By convention in Tock, this struct is named <code>App</code>, but it could
 have a different name. We will need to keep two values, the callback and the
 high water alert threshold:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub struct App {
     callback: Option&lt;Callback&gt;,
@@ -2907,8 +2923,8 @@ high water alert threshold:</p>
 </span></code></pre></pre>
 <p>Now that we have the type we want to store in the grant region we can create
 the grant type for it by extending our <code>WS00123</code> struct:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub struct WS00123 {
 	...
@@ -2918,8 +2934,8 @@ the grant type for it by extending our <code>WS00123</code> struct:</p>
 </span></code></pre></pre>
 <p>We will also need the grant region to be created by the board and passed in
 to us by adding it to the capsules <code>new()</code> function:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl WS00123 {
     pub fn new(
@@ -2940,8 +2956,8 @@ to us by adding it to the capsules <code>new()</code> function:</p>
 <p><strong>Implement the <code>Driver</code> trait.</strong></p>
 <p>The <code>Driver</code> trait is how a capsule provides implementations for the various
 syscalls an application might call. The basic framework looks like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl Driver for WS00123 {
 	fn allow(
@@ -2976,8 +2992,8 @@ returns <code>&lt;0</code> then the syscall interface is not present. Many imple
 return <code>SUCCESS</code> (i.e. 0), however, some return other positive numbers, like
 for example the number of LEDs present on the board. For our example, we use
 the simple case:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl Driver for WS00123 {
 	fn command(&amp;self,
@@ -2998,8 +3014,8 @@ the simple case:</p>
 should use. For this capsule, we will use a single callback for both when a
 measurement is ready and for when a high water alert is triggered, but with
 different arguments passed into the callback.</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl Driver for WS00123 {
     /// Setup callbacks.
@@ -3038,8 +3054,8 @@ to sample and one to enable the alert. In both cases the commands must
 return a <code>ReturnCode</code>, and call functions that likely already exist in the
 original implementation of the <code>WS00123</code> sensor. If the functions don't
 quite exist, then they will need to be added as well.</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl Driver for WS00123 {
 	/// Command interface.
@@ -3086,8 +3102,8 @@ issuing the callback will need to be added to the existing implementation of
 the capsule. As an example, if our water sensor was attached to the board
 over I2C, then we might trigger the callback in response to a finished I2C
 command:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl i2c::I2CClient for WS00123 {
     fn command_complete(&amp;self, buffer: &amp;'static mut [u8], _error: i2c::Error) {
@@ -3109,8 +3125,8 @@ essential elements for implementing the syscall interface.</p>
 the kernel (and userspace apps) can differentiate this syscall interface
 from all others that a board supports. By convention this is specified by
 a global value at the top of the capsule file:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub const DRIVER_NUM: usize = 0x80000A;
 <span class="boring">}
@@ -3205,8 +3221,8 @@ kernel knows which implementation of <code>Driver</code> to call. In each board'
 the <code>Platform</code> trait where the board can setup which syscall interfaces it
 supports. To enable our water sensor interface we add a new entry to the
 match statement there:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl Platform for Hail {
     fn with_driver&lt;F, R&gt;(&amp;self, driver_num: usize, f: F) -&gt; R
@@ -3426,7 +3442,7 @@ represent a necessary precursor to virtualization.</p>
 <p>The high-level steps required are:</p>
 <ol>
 <li>Create a capsule file for your virtualizer</li>
-<li>Determine what portions of this interface should be virtuzlized.</li>
+<li>Determine what portions of this interface should be virtualized.</li>
 <li>Create a <code>MuxXXX</code> struct, which will serve as the lone client of the underlying resource.</li>
 <li>Create a <code>VirtualXXXDevice</code> which will implement the underlying HIL trait, allowing for the appearance
 of multiple of the lone resource.</li>
@@ -3435,6 +3451,7 @@ of multiple of the lone resource.</li>
 <li>Document the interface.</li>
 <li>(Optional) Write tests for the virtualization logic.</li>
 </ol>
+<p><img src="development/../imgs/virtual.svg" alt="" /></p>
 <h2><a class="header" href="#step-by-step-guide-4" id="step-by-step-guide-4">Step-by-Step Guide</a></h2>
 <p>The steps from the overview are elaborated on here.</p>
 <ol>
@@ -3451,8 +3468,8 @@ of modules.</p>
 <p>Generally, this step requires looking at the HIL being virtualized, and
 determining what portions of the HIL require additional logic to handle
 multiple concurrent clients. Lets take a look at the SPIMaster HIL:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub trait SpiMaster {
     fn set_client(&amp;self, client: &amp;'static dyn SpiMasterClient);
@@ -3514,7 +3531,7 @@ break an ongoing operation initiated by an underlying client. However, it is
 important to expose this functionality to clients. Thus <code>set_rate()</code>, <code>set_clock()</code>
 and <code>set_phase()</code> need to be virtualized, and provided to virtual clients.
 <code>set_client()</code> needs to be adapted to support multiple simultaneous clients.</p>
-<p>Finally, virtual clients need a way to send and receive on the bus. Singly byte
+<p>Finally, virtual clients need a way to send and receive on the bus. Single byte
 writes and reads are typically only used under the assumption that a single client
 is going to make multiple single byte reads/writes consecutively, and thus are inappropriate to
 virtualize. Instead, the virtual interface should only include <code>read_write_bytes()</code>,
@@ -3522,8 +3539,8 @@ as that encapsulates the entire transaction that would be desired by a virtual c
 <p>Given that not all parts of the original HIL trait (<code>SpiMaster</code>) are appropriate for
 virtualization, we should create a new trait in the SPI HIL that will represent the
 interface provided to clients of the Virtual SPI:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>//! kernel/src/hil/spi.rs
 ...
@@ -3583,8 +3600,8 @@ as a template.</p>
 a reference to the underlying hardware resource and that will hold the multiple &quot;virtual&quot;
 devices which clients will interact with. For the SPI interface, we call this struct
 <code>MuxSpiMaster</code>:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>/// The Mux struct manages multiple Spi clients. Each client may have
 /// at most one outstanding Spi request.
@@ -3607,8 +3624,8 @@ Tock does not allow heap allocation in the Kernel.</p>
 <p>Typically, this struct will implement some number of private helper functions used
 as part of virtualization, and provide a public constructor. For now we will just
 implement the constructor:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl&lt;'a, Spi: hil::spi::SpiMaster&gt; MuxSpiMaster&lt;'a, Spi&gt; {
     pub const fn new(spi: &amp;'a Spi) -&gt; MuxSpiMaster&lt;'a, Spi&gt; {
@@ -3632,8 +3649,8 @@ struct here. In practice, both must be defined simultaneously because each type 
 the other. The <code>VirtualSpiMasterDevice</code> should have a reference to the mux, a <code>ListLink</code>
 field (required so that lists of <code>VirtualSpiMasterDevice</code>s can be constructed),
 and other fields for data that needs to be stored <em>for each client</em> of the virtualizer.</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub struct VirtualSpiMasterDevice&lt;'a, Spi: hil::spi::SpiMaster&gt; {
     //reference to the mux
@@ -3676,8 +3693,8 @@ impl&lt;'a, Spi: hil::spi::SpiMaster&gt; VirtualSpiMasterDevice&lt;'a, Spi&gt; {
 </span></code></pre></pre>
 <p>This is the struct that will implement whatever HIL trait we decided on in step 1.
 In our case, this is the <code>SpiMasterDevice</code> trait:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>// Given that there are multiple types of operations we might need to queue,
 // create an enum that can represent each operation and the data that operation
@@ -3760,8 +3777,8 @@ the underlying hardware device is busy when <code>do_next_op()</code> is called 
 we need some mechanism for tracking if the underlying device is currently busy. We also
 need to restore the state expected by the device performing a given operaion (e.g. the chip
 select pin in use). Beyond that, we just forward calls to the hardware driver:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>fn do_next_op(&amp;self) {
     if self.inflight.is_none() {
@@ -3822,8 +3839,8 @@ operations are triggered if an operation is requested while the underlying devic
 <p>Handling callbacks in virtualizers requires two layers of handling. First, the <code>MuxXXX</code> device
 must implement the appropriate <code>XXXClient</code> trait such that it can subscribe to callbacks
 from the underlying resource, and dispatch them to the appropriate <code>VirtualXXXDevice</code>:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl&lt;Spi: hil::spi::SpiMaster&gt; hil::spi::SpiMasterClient for MuxSpiMaster&lt;'_, Spi&gt; {
     fn read_write_done(
@@ -3846,8 +3863,8 @@ One thing to note is that the call to <code>take()</code> sets <code>inflight</c
 the callback calls <code>do_next_op()</code>, triggering any still queued operations. This ensures that
 all queued operations will take place.
 This all requires that the device also has implemented the callback:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl&lt;Spi: hil::spi::SpiMaster&gt; hil::spi::SpiMasterClient for VirtualSpiMasterDevice&lt;'_, Spi&gt; {
 fn read_write_done(
@@ -3869,8 +3886,8 @@ completing the round trip process.</p>
 <p><strong>Document the interface.</strong></p>
 <p>Finally, you need to document the interface. Do so by placing a comment at the top
 of the file describing what the file does:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>//! Virtualize a SPI master bus to enable multiple users of the SPI bus.
 
@@ -3986,8 +4003,8 @@ for the <code>virtual_uart</code>)</li>
 <p>If your test meets the criteria for writing a capsule test, follow these steps:</p>
 <p>Add a file in <code>capsules/src/test/</code>, and then add the filename to
 <code>capsules/src/mod.rs</code> like this:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub mod virtual_uart;
 <span class="boring">}
@@ -3996,8 +4013,8 @@ for the <code>virtual_uart</code>)</li>
 using this test capsule. This struct should implement a <code>new()</code> function so it
 can be instantiated from the test file in <code>boards</code>, and a <code>run()</code> function that
 will run the actual tests. An example for UART follows:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>//! capsules/src/test/virtual_uart.rs
 
@@ -4024,8 +4041,8 @@ impl TestVirtualUartReceive {
 that you created in step 2.
 This can involve creating a test structure with test methods. The UDP test file takes this approach,
 by definining a number of self-contained tests. One such example follows:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>//! boards/imix/src/test/udp_lowpan_test.rs
 
@@ -4076,8 +4093,8 @@ function.</p>
 or traits in this file to make your test functional. One example is implementing a client
 trait on the test struct so that the test can receive the results of asynchronous operations.
 Our UART example requires implementing the <code>uart::RecieveClient</code> on the test struct.</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>//! boards/imix/src/test/virtual_uart_rx_test.rs
 
@@ -4138,8 +4155,8 @@ is being tested. Notably, the <code>run()</code> function should initialize any 
 would not have already been created in <code>main.rs</code>.
 As an example, the below function is a starting point for the
 <code>virtual_uart_receive</code> test for Imix:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub unsafe fn run_virtual_uart_receive(mux: &amp;'static MuxUart&lt;'static&gt;) {
     debug!(&quot;Starting virtual reads.&quot;);
@@ -4148,8 +4165,8 @@ As an example, the below function is a starting point for the
 </span></code></pre></pre>
 <p>Next, a test function should initialize any objects required to run tests.
 This is best split out into subfunctions, like the following:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>unsafe fn static_init_test_receive_small(
     mux: &amp;'static MuxUart&lt;'static&gt;,
@@ -4170,8 +4187,8 @@ This is best split out into subfunctions, like the following:</p>
 (such as those not relying on capsule tests)
 might simply use <code>static_init!()</code> to initialize normal capsules directly and test them.
 The log test does this, for example:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>//! boards/imix/src/test/log_test.rs
 
@@ -4208,8 +4225,8 @@ pub unsafe fn run(
 <p>Finally, your <code>run()</code> function should call the actual tests. This may involve simply
 calling a <code>run()</code> function on a capsule test, or may involve calling test functions
 written in the board specific test file. The virtual UART test <code>run()</code> looks like this:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub unsafe fn run_virtual_uart_receive(mux: &amp;'static MuxUart&lt;'static&gt;) {
     debug!(&quot;Starting virtual reads.&quot;);
@@ -4229,8 +4246,8 @@ this file to test additional functionality once basic tests are working.</p>
 <p><strong>Call the test from <code>main.rs</code>, and iterate on it until it works</strong></p>
 <p>Next, you should run your test by calling it from the <code>reset_handler()</code> in <code>main.rs</code>.
 In order to do so, you will also need it import it into the file by adding a line like this:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>#[allow(dead_code)]
 mod virtual_uart_test;
@@ -4240,8 +4257,8 @@ mod virtual_uart_test;
 already be included.</p>
 <p>Typically, tests are called after completing setup of the board, immediately before
 the call to <code>load_processes()</code>:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>virtual_uart_rx_test::run_virtual_uart_receive(uart_mux);
 debug!(&quot;Initialization complete. Entering main loop&quot;);
@@ -4270,8 +4287,8 @@ any lines of code that call these tests.</p>
 run a test and what the expected output of a test is. This is best done using<br />
 document level coments (<code>//!</code>) at the top of the test file. The documentation
 for the virtual UART test follows:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>//! Test reception on the virtualized UART by creating two readers that
 //! read in parallel. To add this test, include the line
@@ -4335,10 +4352,10 @@ repository.</p>
         
 
         
-        
+
         
         <script type="text/javascript">
-            window.playpen_copyable = true;
+            window.playground_copyable = true;
         </script>
         
 
