@@ -5,22 +5,36 @@
         <meta charset="UTF-8">
         <title>Chip Peripheral Driver - Tock Tutorial</title>
         
+        
+
+
+        <!-- Custom HTML head -->
+        
+
 
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        
+        <link rel="icon" href="../favicon.svg">
+        
+        
         <link rel="shortcut icon" href="../favicon.png">
+        
         <link rel="stylesheet" href="../css/variables.css">
         <link rel="stylesheet" href="../css/general.css">
         <link rel="stylesheet" href="../css/chrome.css">
+        
         <link rel="stylesheet" href="../css/print.css" media="print">
+        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
-        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+        
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="../highlight.css">
@@ -36,7 +50,7 @@
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
             var path_to_root = "../";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
@@ -116,9 +130,11 @@
                     <h1 class="menu-title">Tock Tutorial</h1>
 
                     <div class="right-buttons">
+                        
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+                        
                         
                     </div>
                 </div>
@@ -211,8 +227,8 @@ name of this file generally should match the name of the peripheral in the
 the MCU's datasheet.</p>
 <p>Include the name of this file inside of the <code>lib.rs</code> (or potentially
 <code>mod.rs</code>) file inside the same directory. This should look like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub mod ast;
 <span class="boring">}
@@ -226,8 +242,8 @@ intuitive.</p>
 <p>The full register library is
 <a href="https://github.com/tock/tock/tree/master/libraries/tock-register-interface">here</a>,
 but to get started, you will first create a structure like this:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>use tock_registers::registers::{ReadOnly, ReadWrite, WriteOnly};
 
@@ -256,8 +272,8 @@ register_structs! {
 <p>You should replace <code>XyzPeripheral</code> with the name of the peripheral you are
 writing a driver for. Then, for each register defined in the datasheet, you
 must specify an entry in the macro. For example, a register is defined like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>(0x000 =&gt; cr: ReadWrite&lt;u32, Control::Register&gt;),
 <span class="boring">}
@@ -280,8 +296,8 @@ does not use likely does not need its bitfields mapped.</li>
 </ul>
 <p>Once the register map is defined, you must specify the bitfields for any
 registers that you gave a specific type to. This looks like the following:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>register_bitfields! [
     // First parameter is the register width for the bitfields. Can be u8,
@@ -345,8 +361,8 @@ driver. The actual fields of the struct are very peripheral specific, but
 should contain any state that the driver needs to correctly function.</p>
 <p>An example struct looks for a timer peripheral called the AST by the MCU
 datasheet looks like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub struct Ast&lt;'a&gt; {
     registers: StaticRef&lt;AstRegisters&gt;,
@@ -386,8 +402,8 @@ to use which one. In this example, the callback is stored in an
 set), and can be updated if the callback needs to change.</p>
 <p>With the struct defined, you should next create a <code>new()</code> function for that
 struct. This will look like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl Ast {
     const fn new(registers: StaticRef&lt;AstRegisters&gt;) -&gt; Ast {
@@ -408,8 +424,8 @@ now write the actual logic for the peripheral driver that implements the HIL
 interface you identified earlier. Implementing the HIL interface is done
 just like implementing a trait in Rust. For example, to implement the <code>Time</code>
 HIL for the AST:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl hil::time::Time for Ast&lt;'a&gt; {
     type Frequency = Freq16KHz;
@@ -430,8 +446,8 @@ implement them.</p>
 implemented as functions for the original struct. For example, in the <code>Ast</code>
 example the HIL function <code>now()</code> uses the <code>get_counter()</code> function. This should be
 implemented on the main <code>Ast</code> struct:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl Ast {
     const fn new(registers: StaticRef&lt;AstRegisters&gt;) -&gt; Ast {
@@ -463,8 +479,8 @@ memory location.</strong></p>
 <p>The last step is to actually create the object so that the peripheral driver
 can be used by other code. Start by casting the register map to the correct
 memory address where the registers are actually mapped to. For example:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>use kernel::common::StaticRef;
 
@@ -491,8 +507,8 @@ safety.</p>
 </blockquote>
 <p>With the address reference created, we can now create the actual driver
 object:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub static mut AST: Ast = Ast::new(AST_BASE);
 <span class="boring">}
@@ -549,10 +565,10 @@ repository.</p>
         
 
         
-        
+
         
         <script type="text/javascript">
-            window.playpen_copyable = true;
+            window.playground_copyable = true;
         </script>
         
 

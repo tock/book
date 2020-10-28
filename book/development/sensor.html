@@ -5,22 +5,36 @@
         <meta charset="UTF-8">
         <title>Sensor Driver - Tock Tutorial</title>
         
+        
+
+
+        <!-- Custom HTML head -->
+        
+
 
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        
+        <link rel="icon" href="../favicon.svg">
+        
+        
         <link rel="shortcut icon" href="../favicon.png">
+        
         <link rel="stylesheet" href="../css/variables.css">
         <link rel="stylesheet" href="../css/general.css">
         <link rel="stylesheet" href="../css/chrome.css">
+        
         <link rel="stylesheet" href="../css/print.css" media="print">
+        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
-        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+        
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="../highlight.css">
@@ -36,7 +50,7 @@
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
             var path_to_root = "../";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
@@ -116,9 +130,11 @@
                     <h1 class="menu-title">Tock Tutorial</h1>
 
                     <div class="right-buttons">
+                        
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
+                        
                         
                     </div>
                 </div>
@@ -195,8 +211,8 @@ writing the driver for. There are several other examples in the capsules
 folder.</p>
 <p>For our example we will assume the part number is <code>ls1234</code>.</p>
 <p>You then need to add the filename to <code>capsules/src/lib.rs</code> like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub mod ls1234;
 <span class="boring">}
@@ -208,8 +224,8 @@ or some other standard interface. You will need to adjust how you create the
 struct based on the interface. You should be able to find examples in the
 capsules directory to copy from.</p>
 <p>The struct will look something like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub struct Ls1234 {
     i2c: &amp;'a dyn I2CDevice,
@@ -236,8 +252,8 @@ the correct address.</p>
 <p><code>state</code>: Often drivers will iterate through various states as they
 communicate with the IC, and it is common for drivers to keep some state
 variable to manage this. Our <code>State</code> is defined as an enum, like so:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>#[derive(Copy, Clone, PartialEq)]
 enum State {
@@ -258,8 +274,8 @@ driver when the board boots. This provides the board flexibility on the
 buffer to use, while still allowing the driver to hint at the size
 required for successful operation. In our case the static buffer is
 defined as:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub static mut BUF: [u8; 3] = [0; 3];
 <span class="boring">}
@@ -275,8 +291,8 @@ so the caller will not block waiting for a sample, but instead will expect
 a callback via the client when the same is ready. The driver has to define
 the type of the callback by defining the <code>Ls1234Client</code> trait in this
 case:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub trait Ls1234Client {
 	 fn callback(light_reading: usize);
@@ -300,8 +316,8 @@ out of sync, and makes further development on the driver difficult.</p>
 <p>The last step is to write a function that enables creating an instance of
 your driver. By convention, the function is called <code>new()</code> and looks
 something like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl Ls1234&lt;'a&gt; {
     pub fn new(i2c: &amp;'a dyn I2CDevice, buffer: &amp;'static mut [u8]) -&gt; Ls1234&lt;'a&gt; {
@@ -329,8 +345,8 @@ requires extending the <code>impl</code> of the driver struct with additional fu
 appropriate for your particular IC.</p>
 <p>With our light sensor example, we likely want to write a sample function for
 reading a light sensor value:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl Ls1234&lt;'a&gt; {
     pub fn new(...) -&gt; Ls1234&lt;'a&gt; {...}
@@ -349,8 +365,8 @@ described earlier.</p>
 <p>The start reading function will likely prepare the message buffer in a way
 that is IC-specific, then send the command to the IC. A rough example of
 that operation looks like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl Ls1234&lt;'a&gt; {
     pub fn new(...) -&gt; Ls1234&lt;'a&gt; {...}
@@ -380,8 +396,8 @@ the IC and updates our internal state machine state to mark that we are
 waiting for the IC to turn on. Now the <code>Ls1234</code> code is finished for the
 time being and we now wait for the I2C message to finish being sent. We will
 know when this has completed based on a callback from the I2C hardware.</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl I2CClient for Ls1234&lt;'a&gt; {
     fn command_complete(&amp;self, buffer: &amp;'static mut [u8], error: Error) {
@@ -393,8 +409,8 @@ know when this has completed based on a callback from the I2C hardware.</p>
 <p>In our example, we have to send a new command after turning on the light
 sensor to actually read a sampled value. We use our state machine here to
 organize the code as in this example:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl I2CClient for Ls1234&lt;'a&gt; {
     fn command_complete(&amp;self, buffer: &amp;'static mut [u8], _error: Error) {
@@ -421,8 +437,8 @@ communicating with the sensor.</p>
 <p>When the read finishes, the <code>command_complete()</code> callback will fire again,
 and we must handle the result. Since we now have the reading we can call our
 client's callback after updating out state machine.</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl I2CClient for Ls1234&lt;'a&gt; {
     fn command_complete(&amp;self, buffer: &amp;'static mut [u8], _error: Error) {
@@ -479,8 +495,8 @@ specific IC is being used on a particular hardware platform.</p>
 the <code>sensors.rs</code> file. Drivers can implement one of these HILs and then
 higher-level code can use the HIL interface rather than a specific IC.</p>
 <p>To implement the HIL, you must implement the HIL trait functions:</p>
-<pre><pre class="playpen"><code class="language-rust">
-<span class="boring">#![allow(unused_variables)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl AmbientLight for Ls1234&lt;'a&gt; {
     fn set_client(&amp;self, client: &amp;'static dyn AmbientLightClient) {
@@ -551,10 +567,10 @@ currently use the driver.</p>
         
 
         
-        
+
         
         <script type="text/javascript">
-            window.playpen_copyable = true;
+            window.playground_copyable = true;
         </script>
         
 
