@@ -62,16 +62,16 @@ Okay, let's build and load this simple program.
 
         $ tockloader listen
 
-The output should look something like:
+    The output should look something like:
 
-```
-$ tockloader listen
-No device name specified. Using default "tock"
-Using "/dev/cu.usbserial-c098e5130012 - Hail IoT Module - TockOS"
+    ```
+    $ tockloader listen
+    No device name specified. Using default "tock"
+    Using "/dev/cu.usbserial-c098e5130012 - Hail IoT Module - TockOS"
 
-Listening for serial output.
-Hello, World!
-```
+    Listening for serial output.
+    Hello, World!
+    ```
 
 ## Creating your own application
 

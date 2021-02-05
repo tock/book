@@ -87,7 +87,7 @@ is the expression to produce an instance of the type. This call creates
 a `Console` that uses serial port 3 (`USART3`) at 115200 bits per second.
 
 > #### A brief aside on buffers:
-> 
+>
 > Notice that you have to pass a write buffer to the console for it to use:
 > this buffer has to have a `` `static`` lifetime. This is because low-level
 > hardware drivers, especially those that use DMA, require `` `static`` buffers.
@@ -99,7 +99,7 @@ a `Console` that uses serial port 3 (`USART3`) at 115200 bits per second.
 > `Console`, it copies them into its own internal `` `static`` buffer before
 > passing it to the serial port. So the buffer passing architecture looks like
 > this:
-> 
+>
 > ![Console/UART buffer lifetimes](../imgs/console.svg)
 >
 > It's a little weird that Console's `new` method takes in a reference to
@@ -115,7 +115,7 @@ a `Console` that uses serial port 3 (`USART3`) at 115200 bits per second.
 The code continues on, creating all of the other capsules that are needed
 by the imix platform. By the time we get down to around line 360, we've
 created all of the capsules we need, and it's time to create the actual
-imix platform structure (`let imix = Imix {` ...).
+imix platform structure (`let imix = Imix {...}`).
 
 ### Capsule _initialization_
 

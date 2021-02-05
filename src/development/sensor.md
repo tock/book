@@ -88,7 +88,6 @@ The steps from the overview are elaborated on here.
       address is provided. This is because the `I2CDevice` type wraps the
       address in internally, so that the driver code can _only_ communicate with
       the correct address.
-    - `alarm`:
     - `state`: Often drivers will iterate through various states as they
       communicate with the IC, and it is common for drivers to keep some state
       variable to manage this. Our `State` is defined as an enum, like so:
