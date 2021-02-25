@@ -11,14 +11,26 @@ hardware boards. You can also view the [boards
 folder](https://github.com/tock/tock/tree/master/boards) to see what platforms
 are supported.
 
-Note, not all boards are equally supported, and some may have some "quirks"
-around what is implemented (or not), and exactly how to load code and test that
-it is working. This guides tries to be general, and Tock generally tries to
-follow a certain convention, but the project is under active development and new
-boards are added rapidly. You should definitely consult the board-specific
-README to see if there are any board-specific details you should be aware of.
+As of February 2021, this getting started guide is based around five hardware
+platforms. Steps for each of these platforms are explicitly described here.
+Other platforms will work for Tock, but you may need to reference the README
+files in `tock/boards/` for specific setup information. The five boards are:
 
-## Software
+- Hail
+- imix
+- nRF52840dk (PCA10056)
+- Arduino Nano 33 BLE (regular or Sense version)
+- BBC Micro:bit v2
+
+These boards are reasonably well supported, but note that others in Tock may
+have some "quirks" around what is implemented (or not), and exactly how to load
+code and test that it is working. This guides tries to be general, and Tock
+generally tries to follow a certain convention, but the project is under active
+development and new boards are added rapidly. You should definitely consult the
+board-specific README to see if there are any board-specific details you should
+be aware of.
+
+## Host Machine Setup
 
 You can either download a [virtual machine](#virtual-machine) with the
 development environment pre-installed, or, if you have a Linux or OS X
@@ -67,7 +79,10 @@ operating system install, you will need the following software:
 
         $ curl https://sh.rustup.rs -sSf | sh
 
-1. [arm-none-eabi toolchain](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads) (version >= 5.2)
+1. [arm-none-eabi
+   toolchain](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads)
+   (version >= 5.2). This enables you to compile apps written in C for Cortex-M
+   boards.
 
         # mac
         $ brew tap ARMmbed/homebrew-formulae && brew update && brew install arm-none-eabi-gcc
@@ -75,16 +90,15 @@ operating system install, you will need the following software:
         # linux
         $ sudo apt install gcc-arm-none-eabi
 
-   OS-specific installation instructions can be found
-   [here](https://github.com/tock/tock/blob/master/doc/Getting_Started.md#arm-none-eabi-toolchain)
-
 1. [riscv64-unknown-elf toolchain](https://www.sifive.com/boards) (version >=
-   v2019.08.0). Scroll down to the "Prebuilt RISC‑V GCC Toolchain" section.
+   v2019.08.0). Scroll down to the "Prebuilt RISC‑V GCC Toolchain" section. This
+   enables you to compile apps written in C for RISC-V boards.
 
         # mac
         $ brew install riscv-gnu-toolchain --with-multilib
 
-1. [tockloader](https://github.com/tock/tockloader)
+1. [tockloader](https://github.com/tock/tockloader). This is an all-in-one tool
+   for programming boards and using Tock.
 
         $ pip3 install -U --user tockloader
 
@@ -100,16 +114,18 @@ operating system install, you will need the following software:
         $ PATH=$HOME/.local/bin:$PATH
 
 
-### Testing
+### Testing You Can Compile the Kernel
 
-To test if your environment is working, go to the `tock/boards/imix` directory
-and type `make program` (even if you don't have an imix board). This should
-compile the kernel for the imix board, and try to program it over a USB serial
-connection. It may need to compile several supporting libraries first (so may
-take 30 seconds or so the first time). You should see output like this:
+To test if your environment is working enough to compile Tock, go to the
+`tock/boards/` directory and then to the board folder for the hardware you have
+(e.g. `tock/boards/imix` for imix). Then run `make` in that directory. This
+should compile the kernel. It may need to compile several supporting libraries
+first (so may take 30 seconds or so the first time). You should see output like
+this:
 
 ```
-$ make program
+$ cd tock/boards/imix
+$ make
    Compiling tock-cells v0.1.0 (/Users/bradjc/git/tock/libraries/tock-cells)
    Compiling tock-registers v0.5.0 (/Users/bradjc/git/tock/libraries/tock-register-interface)
    Compiling enum_primitive v0.1.0 (/Users/bradjc/git/tock/libraries/enum_primitive)
@@ -136,19 +152,18 @@ $ make program
    Compiling sha2 v0.8.1
    Compiling sha256sum v0.1.0 (/Users/bradjc/git/tock/tools/sha256sum)
 6fa1b0d8e224e775d08e8b58c6c521c7b51fb0332b0ab5031fdec2bd612c907f  /Users/bradjc/git/tock/target/thumbv7em-none-eabi/release/imix.bin
-tockloader  flash --address 0x10000 /Users/bradjc/git/tock/target/thumbv7em-none-eabi/release/imix.bin
-[INFO   ] No device name specified. Using default name "tock".
-[ERROR  ] No serial ports found. Is the board connected?
-
-make: *** [program] Error 1
 ```
 
-Note, that this failed because it couldn't find the board, which is fine. It
-still demonstrates that the kernel compiled and that tockloader was successfully
-invoked.
+You can check that tockloader is installed by running:
 
+```
+$ tockloader --help
+```
 
-## Getting the Hardware Connected
+If either of these steps fail, please double check that you followed the
+environment setup instructions above.
+
+## Getting the Hardware Connected and Setup
 
 Plug your hardware board into your computer. Generally this requires a micro USB
 cable, but your board may be different.
@@ -213,6 +228,24 @@ This may require some setup, see the "one-time fixups" box.
 >   To use tockloader you should be able to specify the port manually. For example:
 >   `tockloader --port /dev/ttyS9 list`.
 
+
+### One Time Board Setup
+
+If you have a **Hail**, **imix**, or **nRF52840dk** please skip to the next
+section.
+
+If you have an **Arduino Nano 33 BLE** (sense or regular), you need to update
+the bootloader on the board to the Tock bootloader. Please follow the
+[bootloader update
+instructions](https://github.com/tock/tock/tree/master/boards/nano33ble#getting-started).
+
+If you have a **Micro:bit v2** then you need to load the Tock booloader. Please
+follow the [bootloader installation
+instructions](https://github.com/tock/tock/tree/master/boards/microbit_v2).
+
+
+### Test The Board
+
 With the board connected, you should be able to use tockloader to interact with
 the board. For example, to retrieve serial UART data from the board, run
 `tockloader listen`, and you should see something like:
@@ -226,7 +259,26 @@ the board. For example, to retrieve serial UART data from the board, run
     Hello World!
 
 You may also need to reset (by pressing the reset button on the board) the board
-to see the message.
+to see the message. You may also not see any output if the Tock kernel has not
+been flashed yet.
+
+You can also see if any applications are installed with `tockloader list`:
+
+    $ tockloader list
+    [INFO   ] No device name specified. Using default name "tock".
+    [INFO   ] Using "/dev/cu.usbmodem14101 - Nano 33 BLE - TockOS".
+    [INFO   ] Paused an active tockloader listen in another session.
+    [INFO   ] Waiting for the bootloader to start
+    [INFO   ] No found apps.
+    [INFO   ] Finished in 2.928 seconds
+    [INFO   ] Resumed other tockloader listen session
+
+If these commands fail you may not have installed Tockloader, or you may need to
+update to a later version of Tockloader. There may be other issues as well, and
+you can ask on
+[Slack](https://join.slack.com/t/tockos/shared_invite/enQtNDE5ODQyNDU4NTE1LWVjNTgzMTMwYzA1NDI1MjExZjljMjFmOTMxMGIwOGJlMjk0ZTI4YzY0NTYzNWM0ZmJmZGFjYmY5MTJiMDBlOTk)
+if you need help.
+
 
 ### Flash the kernel
 
@@ -240,6 +292,10 @@ Generally boards are programmed with either `make program` or `make flash`. Try
 `make program` first:
 
     $ make program
+
+If that is not available, you can use `make flash`:
+
+    $ make flash
 
 You can also look at the board's README for more details.
 
@@ -261,30 +317,6 @@ You can also look at the board's README for more details.
 We have the kernel flashed, but the kernel doesn't actually _do_ anything.
 Applications do! To load applications, we are going to use tockloader.
 
-#### Note about Identifying Boards
-
-Tockloader tries to automatically identify which board is attached to make this
-process simple. However, tockloader often does not have a good way to identify
-which board is attached, and requires that you manually specify which board you
-are trying to program. This can be done with the `--board` argument. For
-example, if you have an nrf52dk or nrf52840dk, you would run Tockloader like:
-
-    $ tockloader <command> --board nrf52dk --jlink
-
-The `--jlink` flag tells tockloader to use the JLink JTAG tool to communicate
-with the board (this mirrors using `make flash` above). Some boards support
-OpenOCD, in which case you would pass `--openocd` instead.
-
-To see a list of boards that tockloader supports, you can run `tockloader
-list-known-boards`. If you have an imix or Hail board, you should not need to
-specify the board.
-
-> Note, a board listed in `tockloader list-known-boards` means there are default
-> settings hardcoded into tockloader's source on how to support those boards.
-> However, all of those settings can be passed in via command-line parameters
-> for boards that tockloader does not know about. See `tockloader --help` for
-> more information.
-
 #### Loading Pre-built Applications
 
 We're going to install some pre-built applications, but first, let's make sure
@@ -292,7 +324,7 @@ we're in a clean state, in case your board already has some applications
 installed. This command removes any processes that may have already been
 installed.
 
-    $ tockloader erase-apps [--board <your board> --jlink|--openocd]
+    $ tockloader erase-apps
 
 Now, let's install two pre-compiled example apps. Remember, you may need to
 specify which board you are using and how to communicate with it for all of
@@ -310,8 +342,7 @@ install a simple "Hello World" application:
 
 If you now run `tockloader listen` you should be able to see the output of the
 Hello World! application. You may need to manually reset the board for this to
-happen. Also, since `tockloader listen` is only receiving from a serial port,
-you will _not_ need to pass in `--board` or `--jlink` or `--openocd`.
+happen.
 
     $ tockloader listen
     [INFO   ] No device name specified. Using default name "tock".
@@ -322,23 +353,32 @@ you will _not_ need to pass in `--board` or `--jlink` or `--openocd`.
     Hello World!
     ␀
 
-### Uninstalling and Installing More Apps
+
+#### Uninstalling and Installing More Apps
 
 Lets check what's on the board right now:
 
     $ tockloader list
     ...
-    [App 0]
+    ┌──────────────────────────────────────────────────┐
+    │ App 0                                            |
+    └──────────────────────────────────────────────────┘
       Name:                  blink
       Enabled:               True
       Sticky:                False
       Total Size in Flash:   2048 bytes
 
-    [App 1]
+
+    ┌──────────────────────────────────────────────────┐
+    │ App 1                                            |
+    └──────────────────────────────────────────────────┘
       Name:                  c_hello
       Enabled:               True
       Sticky:                False
       Total Size in Flash:   1024 bytes
+
+
+    [INFO   ] Finished in 2.939 seconds
 
 
 As you can see, the apps are still installed on the board. We can remove apps
@@ -371,6 +411,83 @@ once a second, and print the results.
     FXOS8700CQ: X:               -112
     FXOS8700CQ: Y:               23
     FXOS8700CQ: Z:               987
+
+
+
+#### Compiling and Loading Applications
+
+There are many more example applications in the `libtock-c` repository that you
+can use. Let's try installing the ROT13 cipher pair. These two applications use
+inter-process communication (IPC) to implement a [ROT13
+cipher](https://en.wikipedia.org/wiki/ROT13).
+
+Start by uninstalling any applications:
+
+    $ tockloader uninstall
+
+Get the libtock-c repository:
+
+    $ git clone https://github.com/tock/libtock-c
+
+Build the rot13_client application and install it:
+
+    $ cd libtock-c/examples/rot13_client
+    $ make
+    $ tockloader install
+
+Then make and install the rot13_service application:
+
+    $ cd ../rot13_service
+    $ tockloader install --make
+
+Then you should be able to see the output:
+
+    $ tockloader listen
+    [INFO   ] No device name specified. Using default name "tock".
+    [INFO   ] Using "/dev/cu.usbserial-c098e5130152 - Hail IoT Module - TockOS".
+    [INFO   ] Listening for serial output.
+    Initialization complete. Entering main loop.
+    12: Uryyb Jbeyq!
+    12: Hello World!
+    12: Uryyb Jbeyq!
+    12: Hello World!
+    12: Uryyb Jbeyq!
+    12: Hello World!
+    12: Uryyb Jbeyq!
+    12: Hello World!
+
+> Note: Tock platforms are limited in the number of apps they can load and run.
+> However, it is possible to install more apps than this limit, since tockloader
+> is (currently) unaware of this limitation and will allow to you to load
+> additional apps. However the kernel will only load the first apps until the
+> limit is reached.
+
+#### Note about Identifying Boards
+
+Tockloader tries to automatically identify which board is attached to make this
+process simple. This means for many boards (particularly the ones listed at the
+top of this guide) tockloader should "just work".
+
+However, for some boards tockloader does not have a good way to identify which
+board is attached, and requires that you manually specify which board you are
+trying to program. This can be done with the `--board` argument. For example, if
+you have an nrf52dk or nrf52840dk, you would run Tockloader like:
+
+    $ tockloader <command> --board nrf52dk --jlink
+
+The `--jlink` flag tells tockloader to use the JLink JTAG tool to communicate
+with the board (this mirrors using `make flash` above). Some boards support
+OpenOCD, in which case you would pass `--openocd` instead.
+
+To see a list of boards that tockloader supports, you can run `tockloader
+list-known-boards`. If you have an imix or Hail board, you should not need to
+specify the board.
+
+> Note, a board listed in `tockloader list-known-boards` means there are default
+> settings hardcoded into tockloader's source on how to support those boards.
+> However, all of those settings can be passed in via command-line parameters
+> for boards that tockloader does not know about. See `tockloader --help` for
+> more information.
 
 
 ## Familiarize Yourself with `tockloader` Commands
@@ -426,47 +543,3 @@ and will print out anything written to stdout/stderr from a board.
 Loads binaries onto hardware platforms that are running a compatible bootloader.
 This is used by the Tock Make system when kernel binaries are programmed to the
 board with `make program`.
-
-## Explore Other Example Applications
-
-There are many example applications in the `libtock-c` repository. To use them,
-first clone the repository:
-
-    $ git clone https://github.com/tock/libtock-c
-    $ cd libtock-c
-
-Then you can build an example app. For example, if you want to use inter-process
-communication (IPC) with Tock:
-
-    # First remove the existing applications:
-    $ tockloader erase-apps
-
-    # Now build the IPC client app, and install it:
-    $ cd examples/rot13_client
-    $ make
-    $ tockloader install
-
-    # Now build the IPC service app, and install it:
-    $ cd ../rot13_server
-    $ make
-    $ tockloader install
-
-With those two applications installed, you should be able to see the following
-output from the board:
-
-    $ tockloader listen
-    [INFO   ] No device name specified. Using default name "tock".
-    [INFO   ] Using "/dev/cu.usbserial-c098e513000a - Hail IoT Module - TockOS".
-
-    [INFO   ] Listening for serial output.
-    Initialization complete. Entering main loop.
-    12: Uryyb Jbeyq!
-    12: Hello World!
-    12: Uryyb Jbeyq!
-    12: Hello World!
-
-> Note: Tock platforms are limited in the number of apps they can load and run.
-> However, it is possible to install more apps than this limit, since tockloader
-> is (currently) unaware of this limitation and will allow to you to load
-> additional apps. However the kernel will only load the first apps until the
-> limit is reached.
