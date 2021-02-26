@@ -24,7 +24,4 @@ Deploying the Book
 
 The book is auto-deployed by Netlify on pushes to the main branch.
 
-Netlify runs:
-> `curl -L https://github.com/rust-lang/mdBook/releases/download/v0.4.7/mdbook-v0.4.7-x86_64-unknown-linux-gnu.tar.gz | tar xvz && ./mdbook build`
-
-And published the `book/` directory.
+If you update mdbook version, you must also update `netlify.toml`.
