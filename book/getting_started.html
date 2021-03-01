@@ -1,26 +1,40 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js">
+<html lang="en" class="sidebar-visible no-js light">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Getting Started - Tock Tutorial</title>
         
+        
+
+
+        <!-- Custom HTML head -->
+        
+
 
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        
+        <link rel="icon" href="favicon.svg">
+        
+        
         <link rel="shortcut icon" href="favicon.png">
+        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
+        
         <link rel="stylesheet" href="css/print.css" media="print">
+        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
-        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
@@ -32,11 +46,11 @@
 
         
     </head>
-    <body class="light">
+    <body>
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
             var path_to_root = "";
-            var default_theme = "light";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
@@ -60,8 +74,11 @@
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
-            document.body.className = theme;
-            document.querySelector('html').className = theme + ' js';
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
         </script>
 
         <!-- Hide / unhide sidebar before it is displayed -->
@@ -78,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li><a href="guides.html"><strong aria-hidden="true">1.</strong> Hands-on Guides</a></li><li><ol class="section"><li><a href="getting_started.html" class="active"><strong aria-hidden="true">1.1.</strong> Getting Started</a></li><li><a href="course.html"><strong aria-hidden="true">1.2.</strong> Tock Course</a></li><li><ol class="section"><li><a href="course_setup.html"><strong aria-hidden="true">1.2.1.</strong> Course Setup</a></li><li><a href="modules.html"><strong aria-hidden="true">1.2.2.</strong> Modules</a></li><li><ol class="section"><li><a href="application.html"><strong aria-hidden="true">1.2.2.1.</strong> Application</a></li><li><a href="important_client.html"><strong aria-hidden="true">1.2.2.2.</strong> Important Client</a></li><li><a href="capsule.html"><strong aria-hidden="true">1.2.2.3.</strong> Capsule</a></li></ol></li><li><a href="graduation.html"><strong aria-hidden="true">1.2.3.</strong> Graduation</a></li></ol></li><li><a href="tutorials/tutorials.html"><strong aria-hidden="true">1.3.</strong> Mini Tutorials</a></li><li><ol class="section"><li><a href="tutorials/01_running_blink.html"><strong aria-hidden="true">1.3.1.</strong> Blink an LED</a></li><li><a href="tutorials/02_button_print.html"><strong aria-hidden="true">1.3.2.</strong> Button to Printf()</a></li><li><a href="tutorials/03_ble_scan.html"><strong aria-hidden="true">1.3.3.</strong> BLE Advertisement Scanning</a></li><li><a href="tutorials/04_sensors_and_drivers.html"><strong aria-hidden="true">1.3.4.</strong> Sample Sensors and Use Drivers</a></li><li><a href="tutorials/05_ipc.html"><strong aria-hidden="true">1.3.5.</strong> Inter-process Communication</a></li></ol></li></ol></li><li><a href="development/guides.html"><strong aria-hidden="true">2.</strong> Kernel Development Guides</a></li><li><ol class="section"><li><a href="development/peripheral.html"><strong aria-hidden="true">2.1.</strong> Chip Peripheral Driver</a></li><li><a href="development/sensor.html"><strong aria-hidden="true">2.2.</strong> Sensor Driver</a></li><li><a href="development/syscall.html"><strong aria-hidden="true">2.3.</strong> Syscall Interface</a></li><li><a href="development/hil.html"><strong aria-hidden="true">2.4.</strong> HIL</a></li><li><a href="development/virtual.html"><strong aria-hidden="true">2.5.</strong> Virtualizers</a></li><li><a href="development/tests.html"><strong aria-hidden="true">2.6.</strong> Kernel Tests</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="guides.html"><strong aria-hidden="true">1.</strong> Hands-on Guides</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="getting_started.html" class="active"><strong aria-hidden="true">1.1.</strong> Getting Started</a></li><li class="chapter-item expanded "><a href="course.html"><strong aria-hidden="true">1.2.</strong> Tock Course</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="course_setup.html"><strong aria-hidden="true">1.2.1.</strong> Course Setup</a></li><li class="chapter-item expanded "><a href="modules.html"><strong aria-hidden="true">1.2.2.</strong> Modules</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="application.html"><strong aria-hidden="true">1.2.2.1.</strong> Application</a></li><li class="chapter-item expanded "><a href="important_client.html"><strong aria-hidden="true">1.2.2.2.</strong> Important Client</a></li><li class="chapter-item expanded "><a href="capsule.html"><strong aria-hidden="true">1.2.2.3.</strong> Capsule</a></li></ol></li><li class="chapter-item expanded "><a href="graduation.html"><strong aria-hidden="true">1.2.3.</strong> Graduation</a></li></ol></li><li class="chapter-item expanded "><a href="tutorials/tutorials.html"><strong aria-hidden="true">1.3.</strong> Mini Tutorials</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="tutorials/01_running_blink.html"><strong aria-hidden="true">1.3.1.</strong> Blink an LED</a></li><li class="chapter-item expanded "><a href="tutorials/02_button_print.html"><strong aria-hidden="true">1.3.2.</strong> Button to Printf()</a></li><li class="chapter-item expanded "><a href="tutorials/03_ble_scan.html"><strong aria-hidden="true">1.3.3.</strong> BLE Advertisement Scanning</a></li><li class="chapter-item expanded "><a href="tutorials/04_sensors_and_drivers.html"><strong aria-hidden="true">1.3.4.</strong> Sample Sensors and Use Drivers</a></li><li class="chapter-item expanded "><a href="tutorials/05_ipc.html"><strong aria-hidden="true">1.3.5.</strong> Inter-process Communication</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="development/guides.html"><strong aria-hidden="true">2.</strong> Kernel Development Guides</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="development/peripheral.html"><strong aria-hidden="true">2.1.</strong> Chip Peripheral Driver</a></li><li class="chapter-item expanded "><a href="development/sensor.html"><strong aria-hidden="true">2.2.</strong> Sensor Driver</a></li><li class="chapter-item expanded "><a href="development/syscall.html"><strong aria-hidden="true">2.3.</strong> System Call Interface</a></li><li class="chapter-item expanded "><a href="development/hil.html"><strong aria-hidden="true">2.4.</strong> HIL</a></li><li class="chapter-item expanded "><a href="development/virtual.html"><strong aria-hidden="true">2.5.</strong> Virtualizers</a></li><li class="chapter-item expanded "><a href="development/tests.html"><strong aria-hidden="true">2.6.</strong> Kernel Tests</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -87,37 +104,38 @@
 
             <div class="page">
                 
-                <div id="menu-bar" class="menu-bar">
-                    <div id="menu-bar-sticky-container">
-                        <div class="left-buttons">
-                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
-                                <i class="fa fa-bars"></i>
-                            </button>
-                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
-                                <i class="fa fa-paint-brush"></i>
-                            </button>
-                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
-                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
-                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
-                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
-                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
-                            </ul>
-                            
-                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
-                                <i class="fa fa-search"></i>
-                            </button>
-                            
-                        </div>
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
 
-                        <h1 class="menu-title">Tock Tutorial</h1>
+                    <h1 class="menu-title">Tock Tutorial</h1>
 
-                        <div class="right-buttons">
-                            <a href="print.html" title="Print this book" aria-label="Print this book">
-                                <i id="print-button" class="fa fa-print"></i>
-                            </a>
-                            
-                        </div>
+                    <div class="right-buttons">
+                        
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                        
                     </div>
                 </div>
 
@@ -145,9 +163,9 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#getting-started" id="getting-started">Getting Started</a></h1>
+                        <h1 id="getting-started"><a class="header" href="#getting-started">Getting Started</a></h1>
 <p>This getting started guide covers how to get started using Tock.</p>
-<h2><a class="header" href="#hardware" id="hardware">Hardware</a></h2>
+<h2 id="hardware"><a class="header" href="#hardware">Hardware</a></h2>
 <p>To really be able to use Tock and get a feel for the operating system, you will
 need a hardware platform that tock supports. The <a href="https://www.tockos.org/hardware/">TockOs
 Hardware</a> includes a list of supported
@@ -172,14 +190,14 @@ generally tries to follow a certain convention, but the project is under active
 development and new boards are added rapidly. You should definitely consult the
 board-specific README to see if there are any board-specific details you should
 be aware of.</p>
-<h2><a class="header" href="#host-machine-setup" id="host-machine-setup">Host Machine Setup</a></h2>
+<h2 id="host-machine-setup"><a class="header" href="#host-machine-setup">Host Machine Setup</a></h2>
 <p>You can either download a <a href="#virtual-machine">virtual machine</a> with the
 development environment pre-installed, or, if you have a Linux or OS X
 workstation, you may install the development environment
 <a href="#native-installation">natively</a>. Using a virtual machine is quicker and easier
 to set up, while installing natively will yield the most comfortable development
 environment and is better for long term use.</p>
-<h3><a class="header" href="#virtual-machine" id="virtual-machine">Virtual Machine</a></h3>
+<h3 id="virtual-machine"><a class="header" href="#virtual-machine">Virtual Machine</a></h3>
 <p>If you're comfortable working inside a Debian virtual machine, you can download
 an image with all of the dependencies already installed
 <a href="https://cesar.cs.princeton.edu/Tock.ova">here</a> or
@@ -201,7 +219,7 @@ whichever editors, window managers, etc. you like before the training starts.</p
 group on your machine in order to connect the hardware boards to the virtual
 machine.</p>
 </blockquote>
-<h3><a class="header" href="#native-installation" id="native-installation">Native Installation</a></h3>
+<h3 id="native-installation"><a class="header" href="#native-installation">Native Installation</a></h3>
 <p>If you choose to install the development environment natively on an existing
 operating system install, you will need the following software:</p>
 <ol>
@@ -259,7 +277,7 @@ already present:</p>
 </code></pre>
 </li>
 </ol>
-<h3><a class="header" href="#testing-you-can-compile-the-kernel" id="testing-you-can-compile-the-kernel">Testing You Can Compile the Kernel</a></h3>
+<h3 id="testing-you-can-compile-the-kernel"><a class="header" href="#testing-you-can-compile-the-kernel">Testing You Can Compile the Kernel</a></h3>
 <p>To test if your environment is working enough to compile Tock, go to the
 <code>tock/boards/</code> directory and then to the board folder for the hardware you have
 (e.g. <code>tock/boards/imix</code> for imix). Then run <code>make</code> in that directory. This
@@ -300,11 +318,11 @@ $ make
 </code></pre>
 <p>If either of these steps fail, please double check that you followed the
 environment setup instructions above.</p>
-<h2><a class="header" href="#getting-the-hardware-connected-and-setup" id="getting-the-hardware-connected-and-setup">Getting the Hardware Connected and Setup</a></h2>
+<h2 id="getting-the-hardware-connected-and-setup"><a class="header" href="#getting-the-hardware-connected-and-setup">Getting the Hardware Connected and Setup</a></h2>
 <p>Plug your hardware board into your computer. Generally this requires a micro USB
 cable, but your board may be different.</p>
 <blockquote>
-<h4><a class="header" href="#note-some-boards-have-multiple-usb-ports" id="note-some-boards-have-multiple-usb-ports">Note! Some boards have multiple USB ports.</a></h4>
+<h4 id="note-some-boards-have-multiple-usb-ports"><a class="header" href="#note-some-boards-have-multiple-usb-ports">Note! Some boards have multiple USB ports.</a></h4>
 <p>Some boards have two USB ports, where one is generally for debugging, and the
 other allows the board to act as any USB peripheral. You will want to connect
 using the &quot;debug&quot; port.</p>
@@ -319,7 +337,7 @@ the board.</li>
 <code>/dev/tty.usbserial-c098e5130006</code> on my Mac or <code>/dev/ttyUSB0</code> on my Linux box).
 This may require some setup, see the &quot;one-time fixups&quot; box.</p>
 <blockquote>
-<h4><a class="header" href="#one-time-fixups" id="one-time-fixups">One-Time Fixups</a></h4>
+<h4 id="one-time-fixups"><a class="header" href="#one-time-fixups">One-Time Fixups</a></h4>
 <ul>
 <li>
 <p>On Linux, you might need to give your user access to the serial port used by
@@ -362,7 +380,7 @@ For example, <code>COM9</code> is <code>/dev/ttyS9</code> on WSL.</p>
 </li>
 </ul>
 </blockquote>
-<h3><a class="header" href="#one-time-board-setup" id="one-time-board-setup">One Time Board Setup</a></h3>
+<h3 id="one-time-board-setup"><a class="header" href="#one-time-board-setup">One Time Board Setup</a></h3>
 <p>If you have a <strong>Hail</strong>, <strong>imix</strong>, or <strong>nRF52840dk</strong> please skip to the next
 section.</p>
 <p>If you have an <strong>Arduino Nano 33 BLE</strong> (sense or regular), you need to update
@@ -372,7 +390,7 @@ instructions</a>.</p>
 <p>If you have a <strong>Micro:bit v2</strong> then you need to load the Tock booloader. Please
 follow the <a href="https://github.com/tock/tock/tree/master/boards/microbit_v2">bootloader installation
 instructions</a>.</p>
-<h3><a class="header" href="#test-the-board" id="test-the-board">Test The Board</a></h3>
+<h3 id="test-the-board"><a class="header" href="#test-the-board">Test The Board</a></h3>
 <p>With the board connected, you should be able to use tockloader to interact with
 the board. For example, to retrieve serial UART data from the board, run
 <code>tockloader listen</code>, and you should see something like:</p>
@@ -402,7 +420,7 @@ update to a later version of Tockloader. There may be other issues as well, and
 you can ask on
 <a href="https://join.slack.com/t/tockos/shared_invite/enQtNDE5ODQyNDU4NTE1LWVjNTgzMTMwYzA1NDI1MjExZjljMjFmOTMxMGIwOGJlMjk0ZTI4YzY0NTYzNWM0ZmJmZGFjYmY5MTJiMDBlOTk">Slack</a>
 if you need help.</p>
-<h3><a class="header" href="#flash-the-kernel" id="flash-the-kernel">Flash the kernel</a></h3>
+<h3 id="flash-the-kernel"><a class="header" href="#flash-the-kernel">Flash the kernel</a></h3>
 <p>Now that the board is connected and you have verified that the kernel compiles
 (from the steps above), we can flash the board with the latest Tock kernel:</p>
 <pre><code>$ cd boards/&lt;your board&gt;
@@ -417,7 +435,7 @@ $ make
 </code></pre>
 <p>You can also look at the board's README for more details.</p>
 <blockquote>
-<h4><a class="header" href="#why-both-make-program-and-make-flash" id="why-both-make-program-and-make-flash">Why both <code>make program</code> and <code>make flash</code>?</a></h4>
+<h4 id="why-both-make-program-and-make-flash"><a class="header" href="#why-both-make-program-and-make-flash">Why both <code>make program</code> and <code>make flash</code>?</a></h4>
 <p>While these commands do the same thing, the way they go about it is very
 different.</p>
 <p>The <code>make program</code> version communicates with the board via a serial connection
@@ -426,10 +444,10 @@ bootloader when using <code>make program</code>.</p>
 <p>The <code>make flash</code> version uses a JTAG debugger to communicate with the chip and
 flash the kernel binary directly to the chip.</p>
 </blockquote>
-<h3><a class="header" href="#install-some-applications" id="install-some-applications">Install Some Applications</a></h3>
+<h3 id="install-some-applications"><a class="header" href="#install-some-applications">Install Some Applications</a></h3>
 <p>We have the kernel flashed, but the kernel doesn't actually <em>do</em> anything.
 Applications do! To load applications, we are going to use tockloader.</p>
-<h4><a class="header" href="#loading-pre-built-applications" id="loading-pre-built-applications">Loading Pre-built Applications</a></h4>
+<h4 id="loading-pre-built-applications"><a class="header" href="#loading-pre-built-applications">Loading Pre-built Applications</a></h4>
 <p>We're going to install some pre-built applications, but first, let's make sure
 we're in a clean state, in case your board already has some applications
 installed. This command removes any processes that may have already been
@@ -461,7 +479,7 @@ Initialization complete. Entering main loop.
 Hello World!
 ␀
 </code></pre>
-<h4><a class="header" href="#uninstalling-and-installing-more-apps" id="uninstalling-and-installing-more-apps">Uninstalling and Installing More Apps</a></h4>
+<h4 id="uninstalling-and-installing-more-apps"><a class="header" href="#uninstalling-and-installing-more-apps">Uninstalling and Installing More Apps</a></h4>
 <p>Lets check what's on the board right now:</p>
 <pre><code>$ tockloader list
 ...
@@ -512,7 +530,7 @@ FXOS8700CQ: X:               -112
 FXOS8700CQ: Y:               23
 FXOS8700CQ: Z:               987
 </code></pre>
-<h4><a class="header" href="#compiling-and-loading-applications" id="compiling-and-loading-applications">Compiling and Loading Applications</a></h4>
+<h4 id="compiling-and-loading-applications"><a class="header" href="#compiling-and-loading-applications">Compiling and Loading Applications</a></h4>
 <p>There are many more example applications in the <code>libtock-c</code> repository that you
 can use. Let's try installing the ROT13 cipher pair. These two applications use
 inter-process communication (IPC) to implement a <a href="https://en.wikipedia.org/wiki/ROT13">ROT13
@@ -554,7 +572,7 @@ is (currently) unaware of this limitation and will allow to you to load
 additional apps. However the kernel will only load the first apps until the
 limit is reached.</p>
 </blockquote>
-<h4><a class="header" href="#note-about-identifying-boards" id="note-about-identifying-boards">Note about Identifying Boards</a></h4>
+<h4 id="note-about-identifying-boards"><a class="header" href="#note-about-identifying-boards">Note about Identifying Boards</a></h4>
 <p>Tockloader tries to automatically identify which board is attached to make this
 process simple. This means for many boards (particularly the ones listed at the
 top of this guide) tockloader should &quot;just work&quot;.</p>
@@ -576,14 +594,14 @@ However, all of those settings can be passed in via command-line parameters
 for boards that tockloader does not know about. See <code>tockloader --help</code> for
 more information.</p>
 </blockquote>
-<h2><a class="header" href="#familiarize-yourself-with-tockloader-commands" id="familiarize-yourself-with-tockloader-commands">Familiarize Yourself with <code>tockloader</code> Commands</a></h2>
+<h2 id="familiarize-yourself-with-tockloader-commands"><a class="header" href="#familiarize-yourself-with-tockloader-commands">Familiarize Yourself with <code>tockloader</code> Commands</a></h2>
 <p>The <code>tockloader</code> tool is a useful and versatile tool for managing and installing
 applications on Tock. It supports a number of commands, and a more complete list
 can be found in the tockloader repository, located at
 <a href="https://github.com/tock/tockloader#usage">github.com/tock/tockloader</a>. Below is
 a list of the more useful and important commands for programming and querying a
 board.</p>
-<h3><a class="header" href="#tockloader-install" id="tockloader-install"><code>tockloader install</code></a></h3>
+<h3 id="tockloader-install"><a class="header" href="#tockloader-install"><code>tockloader install</code></a></h3>
 <p>This is the main tockloader command, used to load Tock applications onto a
 board.  By default, <code>tockloader install</code> adds the new application, but does not
 erase any others, replacing any already existing application with the same name.
@@ -601,16 +619,16 @@ run make before installing, i.e. <code>tockloader install --make</code></p>
 <p><em>Tip:</em> You can add the <code>--erase</code> flag to have tockloader automatically
 remove other applications when installing a new one.</p>
 </blockquote>
-<h3><a class="header" href="#tockloader-uninstall-application-names" id="tockloader-uninstall-application-names"><code>tockloader uninstall [application name(s)]</code></a></h3>
+<h3 id="tockloader-uninstall-application-names"><a class="header" href="#tockloader-uninstall-application-names"><code>tockloader uninstall [application name(s)]</code></a></h3>
 <p>Removes one or more applications from the board by name.</p>
-<h3><a class="header" href="#tockloader-erase-apps" id="tockloader-erase-apps"><code>tockloader erase-apps</code></a></h3>
+<h3 id="tockloader-erase-apps"><a class="header" href="#tockloader-erase-apps"><code>tockloader erase-apps</code></a></h3>
 <p>Removes all applications from the board.</p>
-<h3><a class="header" href="#tockloader-list" id="tockloader-list"><code>tockloader list</code></a></h3>
+<h3 id="tockloader-list"><a class="header" href="#tockloader-list"><code>tockloader list</code></a></h3>
 <p>Prints basic information about the apps currently loaded onto the board.</p>
-<h3><a class="header" href="#tockloader-info" id="tockloader-info"><code>tockloader info</code></a></h3>
+<h3 id="tockloader-info"><a class="header" href="#tockloader-info"><code>tockloader info</code></a></h3>
 <p>Shows all properties of the board, including information about currently
 loaded applications, their sizes and versions, and any set attributes.</p>
-<h3><a class="header" href="#tockloader-listen" id="tockloader-listen"><code>tockloader listen</code></a></h3>
+<h3 id="tockloader-listen"><a class="header" href="#tockloader-listen"><code>tockloader listen</code></a></h3>
 <p>This command prints output from Tock apps to the terminal. It listens via UART,
 and will print out anything written to stdout/stderr from a board.</p>
 <blockquote>
@@ -619,7 +637,7 @@ sessions. You can leave a terminal window open and listening. If another
 tockloader process needs access to the board (e.g. to install an app update),
 tockloader will automatically pause and resume listening.</p>
 </blockquote>
-<h3><a class="header" href="#tockloader-flash" id="tockloader-flash"><code>tockloader flash</code></a></h3>
+<h3 id="tockloader-flash"><a class="header" href="#tockloader-flash"><code>tockloader flash</code></a></h3>
 <p>Loads binaries onto hardware platforms that are running a compatible bootloader.
 This is used by the Tock Make system when kernel binaries are programmed to the
 board with <code>make program</code>.</p>
@@ -647,13 +665,13 @@ board with <code>make program</code>.</p>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a href="guides.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="guides.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
                 
-                    <a href="course.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="course.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 
@@ -662,22 +680,15 @@ board with <code>make program</code>.</p>
         </div>
 
         
-        <!-- Livereload script (if served using the cli tool) -->
-        <script type="text/javascript">
-            var socket = new WebSocket("ws://localhost:3001");
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload(true); // force reload from server (not from cache)
-                }
-            };
 
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
         
 
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
         
 
         

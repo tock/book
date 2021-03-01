@@ -329,7 +329,7 @@ The steps from the overview are elaborated on here.
     				    	|err| CommandReturn::failure(ErrorCode::from),
     				    	|ok| self.set_high_level_detection()
     				    )
-    			}
+    			},
 
     			_ => CommandReturn::failure(ErrorCode::NOSUPPORT),
     		}

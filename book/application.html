@@ -1,26 +1,40 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js">
+<html lang="en" class="sidebar-visible no-js light">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>Application - Tock Tutorial</title>
         
+        
+
+
+        <!-- Custom HTML head -->
+        
+
 
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        
+        <link rel="icon" href="favicon.svg">
+        
+        
         <link rel="shortcut icon" href="favicon.png">
+        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
+        
         <link rel="stylesheet" href="css/print.css" media="print">
+        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
-        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
@@ -32,11 +46,11 @@
 
         
     </head>
-    <body class="light">
+    <body>
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
             var path_to_root = "";
-            var default_theme = "light";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
@@ -60,8 +74,11 @@
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
-            document.body.className = theme;
-            document.querySelector('html').className = theme + ' js';
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
         </script>
 
         <!-- Hide / unhide sidebar before it is displayed -->
@@ -78,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li><a href="guides.html"><strong aria-hidden="true">1.</strong> Hands-on Guides</a></li><li><ol class="section"><li><a href="getting_started.html"><strong aria-hidden="true">1.1.</strong> Getting Started</a></li><li><a href="course.html"><strong aria-hidden="true">1.2.</strong> Tock Course</a></li><li><ol class="section"><li><a href="course_setup.html"><strong aria-hidden="true">1.2.1.</strong> Course Setup</a></li><li><a href="modules.html"><strong aria-hidden="true">1.2.2.</strong> Modules</a></li><li><ol class="section"><li><a href="application.html" class="active"><strong aria-hidden="true">1.2.2.1.</strong> Application</a></li><li><a href="important_client.html"><strong aria-hidden="true">1.2.2.2.</strong> Important Client</a></li><li><a href="capsule.html"><strong aria-hidden="true">1.2.2.3.</strong> Capsule</a></li></ol></li><li><a href="graduation.html"><strong aria-hidden="true">1.2.3.</strong> Graduation</a></li></ol></li><li><a href="tutorials/tutorials.html"><strong aria-hidden="true">1.3.</strong> Mini Tutorials</a></li><li><ol class="section"><li><a href="tutorials/01_running_blink.html"><strong aria-hidden="true">1.3.1.</strong> Blink an LED</a></li><li><a href="tutorials/02_button_print.html"><strong aria-hidden="true">1.3.2.</strong> Button to Printf()</a></li><li><a href="tutorials/03_ble_scan.html"><strong aria-hidden="true">1.3.3.</strong> BLE Advertisement Scanning</a></li><li><a href="tutorials/04_sensors_and_drivers.html"><strong aria-hidden="true">1.3.4.</strong> Sample Sensors and Use Drivers</a></li><li><a href="tutorials/05_ipc.html"><strong aria-hidden="true">1.3.5.</strong> Inter-process Communication</a></li></ol></li></ol></li><li><a href="development/guides.html"><strong aria-hidden="true">2.</strong> Kernel Development Guides</a></li><li><ol class="section"><li><a href="development/peripheral.html"><strong aria-hidden="true">2.1.</strong> Chip Peripheral Driver</a></li><li><a href="development/sensor.html"><strong aria-hidden="true">2.2.</strong> Sensor Driver</a></li><li><a href="development/syscall.html"><strong aria-hidden="true">2.3.</strong> Syscall Interface</a></li><li><a href="development/hil.html"><strong aria-hidden="true">2.4.</strong> HIL</a></li><li><a href="development/virtual.html"><strong aria-hidden="true">2.5.</strong> Virtualizers</a></li><li><a href="development/tests.html"><strong aria-hidden="true">2.6.</strong> Kernel Tests</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="guides.html"><strong aria-hidden="true">1.</strong> Hands-on Guides</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="getting_started.html"><strong aria-hidden="true">1.1.</strong> Getting Started</a></li><li class="chapter-item expanded "><a href="course.html"><strong aria-hidden="true">1.2.</strong> Tock Course</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="course_setup.html"><strong aria-hidden="true">1.2.1.</strong> Course Setup</a></li><li class="chapter-item expanded "><a href="modules.html"><strong aria-hidden="true">1.2.2.</strong> Modules</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="application.html" class="active"><strong aria-hidden="true">1.2.2.1.</strong> Application</a></li><li class="chapter-item expanded "><a href="important_client.html"><strong aria-hidden="true">1.2.2.2.</strong> Important Client</a></li><li class="chapter-item expanded "><a href="capsule.html"><strong aria-hidden="true">1.2.2.3.</strong> Capsule</a></li></ol></li><li class="chapter-item expanded "><a href="graduation.html"><strong aria-hidden="true">1.2.3.</strong> Graduation</a></li></ol></li><li class="chapter-item expanded "><a href="tutorials/tutorials.html"><strong aria-hidden="true">1.3.</strong> Mini Tutorials</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="tutorials/01_running_blink.html"><strong aria-hidden="true">1.3.1.</strong> Blink an LED</a></li><li class="chapter-item expanded "><a href="tutorials/02_button_print.html"><strong aria-hidden="true">1.3.2.</strong> Button to Printf()</a></li><li class="chapter-item expanded "><a href="tutorials/03_ble_scan.html"><strong aria-hidden="true">1.3.3.</strong> BLE Advertisement Scanning</a></li><li class="chapter-item expanded "><a href="tutorials/04_sensors_and_drivers.html"><strong aria-hidden="true">1.3.4.</strong> Sample Sensors and Use Drivers</a></li><li class="chapter-item expanded "><a href="tutorials/05_ipc.html"><strong aria-hidden="true">1.3.5.</strong> Inter-process Communication</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="development/guides.html"><strong aria-hidden="true">2.</strong> Kernel Development Guides</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="development/peripheral.html"><strong aria-hidden="true">2.1.</strong> Chip Peripheral Driver</a></li><li class="chapter-item expanded "><a href="development/sensor.html"><strong aria-hidden="true">2.2.</strong> Sensor Driver</a></li><li class="chapter-item expanded "><a href="development/syscall.html"><strong aria-hidden="true">2.3.</strong> System Call Interface</a></li><li class="chapter-item expanded "><a href="development/hil.html"><strong aria-hidden="true">2.4.</strong> HIL</a></li><li class="chapter-item expanded "><a href="development/virtual.html"><strong aria-hidden="true">2.5.</strong> Virtualizers</a></li><li class="chapter-item expanded "><a href="development/tests.html"><strong aria-hidden="true">2.6.</strong> Kernel Tests</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -87,37 +104,38 @@
 
             <div class="page">
                 
-                <div id="menu-bar" class="menu-bar">
-                    <div id="menu-bar-sticky-container">
-                        <div class="left-buttons">
-                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
-                                <i class="fa fa-bars"></i>
-                            </button>
-                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
-                                <i class="fa fa-paint-brush"></i>
-                            </button>
-                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
-                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
-                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
-                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
-                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
-                            </ul>
-                            
-                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
-                                <i class="fa fa-search"></i>
-                            </button>
-                            
-                        </div>
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
 
-                        <h1 class="menu-title">Tock Tutorial</h1>
+                    <h1 class="menu-title">Tock Tutorial</h1>
 
-                        <div class="right-buttons">
-                            <a href="print.html" title="Print this book" aria-label="Print this book">
-                                <i id="print-button" class="fa fa-print"></i>
-                            </a>
-                            
-                        </div>
+                    <div class="right-buttons">
+                        
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                        
                     </div>
                 </div>
 
@@ -145,11 +163,11 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#write-an-environment-sensing-application" id="write-an-environment-sensing-application">Write an environment sensing application</a></h1>
-<h2><a class="header" href="#process-overview-relocation-model-and-system-call-api" id="process-overview-relocation-model-and-system-call-api">Process overview, relocation model and system call API</a></h2>
+                        <h1 id="write-an-environment-sensing-application"><a class="header" href="#write-an-environment-sensing-application">Write an environment sensing application</a></h1>
+<h2 id="process-overview-relocation-model-and-system-call-api"><a class="header" href="#process-overview-relocation-model-and-system-call-api">Process overview, relocation model and system call API</a></h2>
 <p>In this section, we're going to learn about processes (a.k.a applications) in
 Tock, and build our own applications in C.</p>
-<h2><a class="header" href="#get-a-c-application-running-on-your-board" id="get-a-c-application-running-on-your-board">Get a C application running on your board</a></h2>
+<h2 id="get-a-c-application-running-on-your-board"><a class="header" href="#get-a-c-application-running-on-your-board">Get a C application running on your board</a></h2>
 <p>You'll find the outline of a C application in the directory
 <code>exercises/app</code>.</p>
 <p>Take a look at the code in <code>main.c</code>. So far, this application merely prints
@@ -188,7 +206,7 @@ the write is complete, and begin the write operation respectively.</p>
 <p>The application could accomplish all of this by invoking Tock system calls
 directly, but using libraries makes for a much cleaner interface and allows
 users to not need to know the inner workings of the OS.</p>
-<h3><a class="header" href="#loading-an-application" id="loading-an-application">Loading an application</a></h3>
+<h3 id="loading-an-application"><a class="header" href="#loading-an-application">Loading an application</a></h3>
 <p>Okay, let's build and load this simple program.</p>
 <ol>
 <li>
@@ -216,11 +234,11 @@ Hello, World!
 </code></pre>
 </li>
 </ol>
-<h2><a class="header" href="#creating-your-own-application" id="creating-your-own-application">Creating your own application</a></h2>
+<h2 id="creating-your-own-application"><a class="header" href="#creating-your-own-application">Creating your own application</a></h2>
 <p>Now that you've got a basic app working, modify it so that it continuously
 prints out <code>Hello World</code> twice per second.  You'll want to use the user
 library's timer facilities to manage this:</p>
-<h3><a class="header" href="#timer" id="timer">Timer</a></h3>
+<h3 id="timer"><a class="header" href="#timer">Timer</a></h3>
 <p>You'll find the interface for timers in <code>libtock/timer.h</code>. The
 function you'll find useful today is:</p>
 <pre><code class="language-c">#include &lt;timer.h&gt;
@@ -229,13 +247,13 @@ void delay_ms(uint32_t ms);
 <p>This function sleeps until the specified number of milliseconds have passed, and
 then returns.  So we call this function &quot;synchronous&quot;: no further code will run
 until the delay is complete.</p>
-<h2><a class="header" href="#write-an-app-that-periodically-samples-the-on-board-sensors" id="write-an-app-that-periodically-samples-the-on-board-sensors">Write an app that periodically samples the on-board sensors</a></h2>
+<h2 id="write-an-app-that-periodically-samples-the-on-board-sensors"><a class="header" href="#write-an-app-that-periodically-samples-the-on-board-sensors">Write an app that periodically samples the on-board sensors</a></h2>
 <p>Now that we have the ability to write applications, let's do something a little
 more complex. The development board you are using has several sensors on it.
 These sensors include a light sensor, a humidity sensor, and a temperature
 sensor. Each sensing medium can be accessed separately via the Tock user
 library. We'll just be using the light and temperature for this exercise.</p>
-<h4><a class="header" href="#light" id="light">Light</a></h4>
+<h4 id="light"><a class="header" href="#light">Light</a></h4>
 <p>The interface in <code>libtock/ambient_light.h</code> is used to measure ambient
 light conditions in <a href="https://en.wikipedia.org/wiki/Lux">lux</a>. imix uses the
 <a href="https://www.intersil.com/en/products/optoelectronics/ambient-light-sensors/light-to-digital-sensors/ISL29035.html">ISL29035</a>
@@ -246,7 +264,7 @@ int ambient_light_read_intensity_sync(int* lux);
 </code></pre>
 <p>Note that the light reading is written to the location passed as an
 argument, and the function returns non-zero in the case of an error.</p>
-<h4><a class="header" href="#temperature" id="temperature">Temperature</a></h4>
+<h4 id="temperature"><a class="header" href="#temperature">Temperature</a></h4>
 <p>The interface in <code>libtock/temperature.h</code> is used to measure ambient
 temperature in degrees Celsius, times 100. imix uses the
 <a href="https://www.silabs.com/products/sensors/humidity-sensors/Pages/si7013-20-21.aspx">SI7021</a>
@@ -255,13 +273,13 @@ sensor. It contains the function:</p>
 int temperature_read_sync(int* temperature);
 </code></pre>
 <p>Again, this function returns non-zero in the case of an error.</p>
-<h3><a class="header" href="#read-sensors-in-a-tock-application" id="read-sensors-in-a-tock-application">Read sensors in a Tock application</a></h3>
+<h3 id="read-sensors-in-a-tock-application"><a class="header" href="#read-sensors-in-a-tock-application">Read sensors in a Tock application</a></h3>
 <p>Using the example program you're working on, write an application that reads
 all of the sensors on your development board and reports their readings over
 the serial port.</p>
 <p>As a bonus, experiment with toggling an LED when readings are above or below a
 certain threshold:</p>
-<h4><a class="header" href="#led" id="led">LED</a></h4>
+<h4 id="led"><a class="header" href="#led">LED</a></h4>
 <p>The interface in <code>libtock/led.h</code> is used to control lights on Tock boards. On the Hail
 board, there are three LEDs which can be controlled: Red, Blue, and Green. The
 functions in the LED module are:</p>
@@ -302,13 +320,13 @@ int led_count(void);
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a href="modules.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="modules.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
                 
-                    <a href="important_client.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="important_client.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 
@@ -317,22 +335,15 @@ int led_count(void);
         </div>
 
         
-        <!-- Livereload script (if served using the cli tool) -->
-        <script type="text/javascript">
-            var socket = new WebSocket("ws://localhost:3001");
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload(true); // force reload from server (not from cache)
-                }
-            };
 
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
         
 
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
         
 
         
