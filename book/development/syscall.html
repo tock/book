@@ -366,12 +366,12 @@ syscalls an application might call. The basic framework looks like:</p>
         app_id: AppId,
     ) -&gt; Result&lt;Callback, (Callback, ErrorCode)&gt; { }
 
-     fn command(
-	     &amp;self, 
-		 which: usize, 
-		 r2: usize, 
-		 r3: usize, 
-		 caller_id: AppId) -&gt; CommandReturn { }
+    fn command(
+        &amp;self, 
+	    which: usize, 
+		r2: usize, 
+		r3: usize, 
+		caller_id: AppId) -&gt; CommandReturn { }
 }
 <span class="boring">}
 </span></code></pre></pre>
@@ -401,21 +401,19 @@ the simple case:</p>
 				0 =&gt; CommandReturn::success(),
 				_ =&gt; CommandReturn::failure(ErrorCode::NOSUPPORT)
 			}
+        }
+    }
+}
 <span class="boring">}
 </span></code></pre></pre>
-</li>
-</ol>
-<p>}
-}
-}
-```</p>
-<pre><code>Now let's handle the subscribe call where the app can setup the callback we
+<p>Now let's handle the subscribe call where the app can setup the callback we
 should use. For this capsule, we will use a single callback for both when a
 measurement is ready and for when a high water alert is triggered, but with
-different arguments passed into the callback.
-
-```rust
-impl Driver for WS00123 {
+different arguments passed into the callback.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Driver for WS00123 {
     /// Setup callbacks.
     ///
     /// ### `subscribe_num`
@@ -446,23 +444,23 @@ impl Driver for WS00123 {
 	 	}
     }
 }
-```
-
-As you can see, we use the `enter()` function to &quot;enter&quot; the grant region of
-the specific requesting app `app_id`. This performs checks like ensuring the
-grant region exists and that the application is valid. If `enter()` succeeds
-then we can update the `App` state like normal. Here we only need to save
-the callback.
-
-Next we can implement more commands so that the application can direct our
+<span class="boring">}
+</span></code></pre></pre>
+<p>As you can see, we use the <code>enter()</code> function to &quot;enter&quot; the grant region of
+the specific requesting app <code>app_id</code>. This performs checks like ensuring the
+grant region exists and that the application is valid. If <code>enter()</code> succeeds
+then we can update the <code>App</code> state like normal. Here we only need to save
+the callback.</p>
+<p>Next we can implement more commands so that the application can direct our
 capsule as to what the application wants us to do. We need two commands, one
 to sample and one to enable the alert. In both cases the commands must
-return a `ReturnCode`, and call functions that likely already exist in the
-original implementation of the `WS00123` sensor. If the functions don't
-quite exist, then they will need to be added as well.
-
-```rust
-impl Driver for WS00123 {
+return a <code>ReturnCode</code>, and call functions that likely already exist in the
+original implementation of the <code>WS00123</code> sensor. If the functions don't
+quite exist, then they will need to be added as well.</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Driver for WS00123 {
 	/// Command interface.
 	///
 	/// ### `command_num`
@@ -497,17 +495,18 @@ impl Driver for WS00123 {
 		}
     }
 }
-```
-
-The last item that needs to be added is to actually use the callback when
+<span class="boring">}
+</span></code></pre></pre>
+<p>The last item that needs to be added is to actually use the callback when
 the sensor has been sampled or the alert has been triggered. Actually
 issuing the callback will need to be added to the existing implementation of
 the capsule. As an example, if our water sensor was attached to the board
 over I2C, then we might trigger the callback in response to a finished I2C
-command:
-
-```rust
-impl i2c::I2CClient for WS00123 {
+command:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl i2c::I2CClient for WS00123 {
     fn command_complete(&amp;self, buffer: &amp;'static mut [u8], _error: i2c::Error) {
     	...
     	let app_id = &lt;get saved appid for the app that issued the command&gt;;
@@ -518,30 +517,28 @@ impl i2c::I2CClient for WS00123 {
     	});
     }
 }
-```
-
-There may be other cleanup code required to reset state or prepare the
+<span class="boring">}
+</span></code></pre></pre>
+<p>There may be other cleanup code required to reset state or prepare the
 sensor for another sample by a different application, but these are the
-essential elements for implementing the syscall interface.
-
-Finally, we need to assign our new `Driver` implementation a number so that
+essential elements for implementing the syscall interface.</p>
+<p>Finally, we need to assign our new <code>Driver</code> implementation a number so that
 the kernel (and userspace apps) can differentiate this syscall interface
 from all others that a board supports. By convention this is specified by
-a global value at the top of the capsule file:
-
-```rust
-pub const DRIVER_NUM: usize = 0x80000A;
-```
-
-The value cannot conflict with other capsules in use, but can be set
+a global value at the top of the capsule file:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub const DRIVER_NUM: usize = 0x80000A;
+<span class="boring">}
+</span></code></pre></pre>
+<p>The value cannot conflict with other capsules in use, but can be set
 arbitrarily, particularly for testing. Tock has a procedure for assigning
 numbers, and you may need to change this number if the capsule is to merged
-into the main Tock repository.
-
-**Checkpoint**: You have the syscall interface translated from a design to
-code that can run inside the Tock kernel.
-</code></pre>
-<ol start="5">
+into the main Tock repository.</p>
+<p><strong>Checkpoint</strong>: You have the syscall interface translated from a design to
+code that can run inside the Tock kernel.</p>
+</li>
 <li>
 <p><strong>Document the interface.</strong></p>
 <p>A syscall interface is a contract between the kernel and any number of

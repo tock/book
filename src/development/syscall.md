@@ -206,12 +206,12 @@ The steps from the overview are elaborated on here.
             app_id: AppId,
         ) -> Result<Callback, (Callback, ErrorCode)> { }
 
-         fn command(
-		     &self, 
-			 which: usize, 
-			 r2: usize, 
-			 r3: usize, 
-			 caller_id: AppId) -> CommandReturn { }
+        fn command(
+ 	        &self, 
+		    which: usize, 
+			r2: usize, 
+			r3: usize, 
+			caller_id: AppId) -> CommandReturn { }
     }
     ```
 
@@ -242,7 +242,7 @@ The steps from the overview are elaborated on here.
     				0 => CommandReturn::success(),
  					_ => CommandReturn::failure(ErrorCode::NOSUPPORT)
 				}
-}
+            }
         }
     }
     ```
