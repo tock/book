@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js">
+<html lang="en" class="sidebar-visible no-js light">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -7,22 +7,36 @@
         
         <meta name="robots" content="noindex" />
         
+        
+
+
+        <!-- Custom HTML head -->
+        
+
 
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        
+        <link rel="icon" href="favicon.svg">
+        
+        
         <link rel="shortcut icon" href="favicon.png">
+        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
+        
         <link rel="stylesheet" href="css/print.css" media="print">
+        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
-        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+        
+        <link rel="stylesheet" href="fonts/fonts.css">
+        
 
         <!-- Highlight.js Stylesheets -->
         <link rel="stylesheet" href="highlight.css">
@@ -34,11 +48,11 @@
 
         
     </head>
-    <body class="light">
+    <body>
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
             var path_to_root = "";
-            var default_theme = "light";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
@@ -62,8 +76,11 @@
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
-            document.body.className = theme;
-            document.querySelector('html').className = theme + ' js';
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
         </script>
 
         <!-- Hide / unhide sidebar before it is displayed -->
@@ -80,7 +97,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li><a href="guides.html"><strong aria-hidden="true">1.</strong> Hands-on Guides</a></li><li><ol class="section"><li><a href="getting_started.html"><strong aria-hidden="true">1.1.</strong> Getting Started</a></li><li><a href="course.html"><strong aria-hidden="true">1.2.</strong> Tock Course</a></li><li><ol class="section"><li><a href="course_setup.html"><strong aria-hidden="true">1.2.1.</strong> Course Setup</a></li><li><a href="modules.html"><strong aria-hidden="true">1.2.2.</strong> Modules</a></li><li><ol class="section"><li><a href="application.html"><strong aria-hidden="true">1.2.2.1.</strong> Application</a></li><li><a href="important_client.html"><strong aria-hidden="true">1.2.2.2.</strong> Important Client</a></li><li><a href="capsule.html"><strong aria-hidden="true">1.2.2.3.</strong> Capsule</a></li></ol></li><li><a href="graduation.html"><strong aria-hidden="true">1.2.3.</strong> Graduation</a></li></ol></li><li><a href="tutorials/tutorials.html"><strong aria-hidden="true">1.3.</strong> Mini Tutorials</a></li><li><ol class="section"><li><a href="tutorials/01_running_blink.html"><strong aria-hidden="true">1.3.1.</strong> Blink an LED</a></li><li><a href="tutorials/02_button_print.html"><strong aria-hidden="true">1.3.2.</strong> Button to Printf()</a></li><li><a href="tutorials/03_ble_scan.html"><strong aria-hidden="true">1.3.3.</strong> BLE Advertisement Scanning</a></li><li><a href="tutorials/04_sensors_and_drivers.html"><strong aria-hidden="true">1.3.4.</strong> Sample Sensors and Use Drivers</a></li><li><a href="tutorials/05_ipc.html"><strong aria-hidden="true">1.3.5.</strong> Inter-process Communication</a></li></ol></li></ol></li><li><a href="development/guides.html"><strong aria-hidden="true">2.</strong> Kernel Development Guides</a></li><li><ol class="section"><li><a href="development/peripheral.html"><strong aria-hidden="true">2.1.</strong> Chip Peripheral Driver</a></li><li><a href="development/sensor.html"><strong aria-hidden="true">2.2.</strong> Sensor Driver</a></li><li><a href="development/syscall.html"><strong aria-hidden="true">2.3.</strong> Syscall Interface</a></li><li><a href="development/hil.html"><strong aria-hidden="true">2.4.</strong> HIL</a></li><li><a href="development/virtual.html"><strong aria-hidden="true">2.5.</strong> Virtualizers</a></li><li><a href="development/tests.html"><strong aria-hidden="true">2.6.</strong> Kernel Tests</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="guides.html"><strong aria-hidden="true">1.</strong> Hands-on Guides</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="getting_started.html"><strong aria-hidden="true">1.1.</strong> Getting Started</a></li><li class="chapter-item expanded "><a href="course.html"><strong aria-hidden="true">1.2.</strong> Tock Course</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="course_setup.html"><strong aria-hidden="true">1.2.1.</strong> Course Setup</a></li><li class="chapter-item expanded "><a href="modules.html"><strong aria-hidden="true">1.2.2.</strong> Modules</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="application.html"><strong aria-hidden="true">1.2.2.1.</strong> Application</a></li><li class="chapter-item expanded "><a href="important_client.html"><strong aria-hidden="true">1.2.2.2.</strong> Important Client</a></li><li class="chapter-item expanded "><a href="capsule.html"><strong aria-hidden="true">1.2.2.3.</strong> Capsule</a></li></ol></li><li class="chapter-item expanded "><a href="graduation.html"><strong aria-hidden="true">1.2.3.</strong> Graduation</a></li></ol></li><li class="chapter-item expanded "><a href="tutorials/tutorials.html"><strong aria-hidden="true">1.3.</strong> Mini Tutorials</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="tutorials/01_running_blink.html"><strong aria-hidden="true">1.3.1.</strong> Blink an LED</a></li><li class="chapter-item expanded "><a href="tutorials/02_button_print.html"><strong aria-hidden="true">1.3.2.</strong> Button to Printf()</a></li><li class="chapter-item expanded "><a href="tutorials/03_ble_scan.html"><strong aria-hidden="true">1.3.3.</strong> BLE Advertisement Scanning</a></li><li class="chapter-item expanded "><a href="tutorials/04_sensors_and_drivers.html"><strong aria-hidden="true">1.3.4.</strong> Sample Sensors and Use Drivers</a></li><li class="chapter-item expanded "><a href="tutorials/05_ipc.html"><strong aria-hidden="true">1.3.5.</strong> Inter-process Communication</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="development/guides.html"><strong aria-hidden="true">2.</strong> Kernel Development Guides</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="development/peripheral.html"><strong aria-hidden="true">2.1.</strong> Chip Peripheral Driver</a></li><li class="chapter-item expanded "><a href="development/sensor.html"><strong aria-hidden="true">2.2.</strong> Sensor Driver</a></li><li class="chapter-item expanded "><a href="development/syscall.html"><strong aria-hidden="true">2.3.</strong> System Call Interface</a></li><li class="chapter-item expanded "><a href="development/hil.html"><strong aria-hidden="true">2.4.</strong> HIL</a></li><li class="chapter-item expanded "><a href="development/virtual.html"><strong aria-hidden="true">2.5.</strong> Virtualizers</a></li><li class="chapter-item expanded "><a href="development/tests.html"><strong aria-hidden="true">2.6.</strong> Kernel Tests</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -89,37 +106,38 @@
 
             <div class="page">
                 
-                <div id="menu-bar" class="menu-bar">
-                    <div id="menu-bar-sticky-container">
-                        <div class="left-buttons">
-                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
-                                <i class="fa fa-bars"></i>
-                            </button>
-                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
-                                <i class="fa fa-paint-brush"></i>
-                            </button>
-                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
-                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
-                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
-                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
-                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
-                            </ul>
-                            
-                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
-                                <i class="fa fa-search"></i>
-                            </button>
-                            
-                        </div>
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
 
-                        <h1 class="menu-title">Tock Tutorial</h1>
+                    <h1 class="menu-title">Tock Tutorial</h1>
 
-                        <div class="right-buttons">
-                            <a href="print.html" title="Print this book" aria-label="Print this book">
-                                <i id="print-button" class="fa fa-print"></i>
-                            </a>
-                            
-                        </div>
+                    <div class="right-buttons">
+                        
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                        
                     </div>
                 </div>
 
@@ -147,7 +165,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1><a class="header" href="#tock-os-book" id="tock-os-book">Tock OS Book</a></h1>
+                        <h1 id="tock-os-book"><a class="header" href="#tock-os-book">Tock OS Book</a></h1>
 <img src="../imgs/tock.svg" style="float:right;" />
 This book introduces you to Tock, a secure embedded operating system for sensor
 networks and the Internet of Things. Tock is the first operating system to allow
@@ -155,21 +173,21 @@ multiple untrusted applications to run concurrently on a microcontroller-based
 computer. The Tock kernel is written in Rust, a memory-safe systems language
 that does not rely on a garbage collector. Userspace applications are run in
 single-threaded processes that can be written in any language.
-<h2><a class="header" href="#getting-started" id="getting-started">Getting Started</a></h2>
+<h2 id="getting-started"><a class="header" href="#getting-started">Getting Started</a></h2>
 <p>The book includes a <a href="../getting_started.html">quick start guide</a>.</p>
-<h2><a class="header" href="#tock-workshop-courses" id="tock-workshop-courses">Tock Workshop Courses</a></h2>
+<h2 id="tock-workshop-courses"><a class="header" href="#tock-workshop-courses">Tock Workshop Courses</a></h2>
 <p>For a more in-depth walkthough-style less, look <a href="../course.html">here</a>.</p>
-<h2><a class="header" href="#development-guides" id="development-guides">Development Guides</a></h2>
+<h2 id="development-guides"><a class="header" href="#development-guides">Development Guides</a></h2>
 <p>The book also has <a href="../development/guides.html">walkthoughs</a> on how to implement
 different features in Tock OS.</p>
-<h1><a class="header" href="#hands-on-guides" id="hands-on-guides">Hands-on Guides</a></h1>
+<h1 id="hands-on-guides"><a class="header" href="#hands-on-guides">Hands-on Guides</a></h1>
 <p>This portion of the book includes workshops and tutorials to teach how to use
 and develop with Tock, and is divided into two sections: the course and a series
 of mini tutorials. The course is a good place to start, and provides a
 structured introduction to Tock that should take a few hours to complete (it was
 designed for a half day workshop). The tutorials are smaller examples that
 highlight specific features.</p>
-<h2><a class="header" href="#tock-course" id="tock-course">Tock Course</a></h2>
+<h2 id="tock-course"><a class="header" href="#tock-course">Tock Course</a></h2>
 <p>In this hands-on guide, we will look at some of the high-level services provided
 by Tock.  We will start with an understanding of the OS and its programming
 environment.  Then we'll look at how a process management application can help
@@ -180,13 +198,13 @@ to dig into the kernel a bit and explore how to enhance and extend the kernel.</
 <p>This course assumes some experience programming embedded devices and fluency in
 C. It assumes no knowledge of Rust, although knowing Rust will allow you to be
 more creative during the kernel exploration at the end.</p>
-<h2><a class="header" href="#tock-mini-tutorials" id="tock-mini-tutorials">Tock Mini Tutorials</a></h2>
+<h2 id="tock-mini-tutorials"><a class="header" href="#tock-mini-tutorials">Tock Mini Tutorials</a></h2>
 <p>These <a href="./tutorials/tutorials.html">tutorials</a> feature specific examples of Tock
 applications. They can be completed after the course to learn about different
 capabilities of Tock apps.</p>
-<h1><a class="header" href="#getting-started-1" id="getting-started-1">Getting Started</a></h1>
+<h1 id="getting-started-1"><a class="header" href="#getting-started-1">Getting Started</a></h1>
 <p>This getting started guide covers how to get started using Tock.</p>
-<h2><a class="header" href="#hardware" id="hardware">Hardware</a></h2>
+<h2 id="hardware"><a class="header" href="#hardware">Hardware</a></h2>
 <p>To really be able to use Tock and get a feel for the operating system, you will
 need a hardware platform that tock supports. The <a href="https://www.tockos.org/hardware/">TockOs
 Hardware</a> includes a list of supported
@@ -211,14 +229,14 @@ generally tries to follow a certain convention, but the project is under active
 development and new boards are added rapidly. You should definitely consult the
 board-specific README to see if there are any board-specific details you should
 be aware of.</p>
-<h2><a class="header" href="#host-machine-setup" id="host-machine-setup">Host Machine Setup</a></h2>
+<h2 id="host-machine-setup"><a class="header" href="#host-machine-setup">Host Machine Setup</a></h2>
 <p>You can either download a <a href="getting_started.html#virtual-machine">virtual machine</a> with the
 development environment pre-installed, or, if you have a Linux or OS X
 workstation, you may install the development environment
 <a href="getting_started.html#native-installation">natively</a>. Using a virtual machine is quicker and easier
 to set up, while installing natively will yield the most comfortable development
 environment and is better for long term use.</p>
-<h3><a class="header" href="#virtual-machine" id="virtual-machine">Virtual Machine</a></h3>
+<h3 id="virtual-machine"><a class="header" href="#virtual-machine">Virtual Machine</a></h3>
 <p>If you're comfortable working inside a Debian virtual machine, you can download
 an image with all of the dependencies already installed
 <a href="https://cesar.cs.princeton.edu/Tock.ova">here</a> or
@@ -240,7 +258,7 @@ whichever editors, window managers, etc. you like before the training starts.</p
 group on your machine in order to connect the hardware boards to the virtual
 machine.</p>
 </blockquote>
-<h3><a class="header" href="#native-installation" id="native-installation">Native Installation</a></h3>
+<h3 id="native-installation"><a class="header" href="#native-installation">Native Installation</a></h3>
 <p>If you choose to install the development environment natively on an existing
 operating system install, you will need the following software:</p>
 <ol>
@@ -298,7 +316,7 @@ already present:</p>
 </code></pre>
 </li>
 </ol>
-<h3><a class="header" href="#testing-you-can-compile-the-kernel" id="testing-you-can-compile-the-kernel">Testing You Can Compile the Kernel</a></h3>
+<h3 id="testing-you-can-compile-the-kernel"><a class="header" href="#testing-you-can-compile-the-kernel">Testing You Can Compile the Kernel</a></h3>
 <p>To test if your environment is working enough to compile Tock, go to the
 <code>tock/boards/</code> directory and then to the board folder for the hardware you have
 (e.g. <code>tock/boards/imix</code> for imix). Then run <code>make</code> in that directory. This
@@ -339,11 +357,11 @@ $ make
 </code></pre>
 <p>If either of these steps fail, please double check that you followed the
 environment setup instructions above.</p>
-<h2><a class="header" href="#getting-the-hardware-connected-and-setup" id="getting-the-hardware-connected-and-setup">Getting the Hardware Connected and Setup</a></h2>
+<h2 id="getting-the-hardware-connected-and-setup"><a class="header" href="#getting-the-hardware-connected-and-setup">Getting the Hardware Connected and Setup</a></h2>
 <p>Plug your hardware board into your computer. Generally this requires a micro USB
 cable, but your board may be different.</p>
 <blockquote>
-<h4><a class="header" href="#note-some-boards-have-multiple-usb-ports" id="note-some-boards-have-multiple-usb-ports">Note! Some boards have multiple USB ports.</a></h4>
+<h4 id="note-some-boards-have-multiple-usb-ports"><a class="header" href="#note-some-boards-have-multiple-usb-ports">Note! Some boards have multiple USB ports.</a></h4>
 <p>Some boards have two USB ports, where one is generally for debugging, and the
 other allows the board to act as any USB peripheral. You will want to connect
 using the &quot;debug&quot; port.</p>
@@ -358,7 +376,7 @@ the board.</li>
 <code>/dev/tty.usbserial-c098e5130006</code> on my Mac or <code>/dev/ttyUSB0</code> on my Linux box).
 This may require some setup, see the &quot;one-time fixups&quot; box.</p>
 <blockquote>
-<h4><a class="header" href="#one-time-fixups" id="one-time-fixups">One-Time Fixups</a></h4>
+<h4 id="one-time-fixups"><a class="header" href="#one-time-fixups">One-Time Fixups</a></h4>
 <ul>
 <li>
 <p>On Linux, you might need to give your user access to the serial port used by
@@ -401,7 +419,7 @@ For example, <code>COM9</code> is <code>/dev/ttyS9</code> on WSL.</p>
 </li>
 </ul>
 </blockquote>
-<h3><a class="header" href="#one-time-board-setup" id="one-time-board-setup">One Time Board Setup</a></h3>
+<h3 id="one-time-board-setup"><a class="header" href="#one-time-board-setup">One Time Board Setup</a></h3>
 <p>If you have a <strong>Hail</strong>, <strong>imix</strong>, or <strong>nRF52840dk</strong> please skip to the next
 section.</p>
 <p>If you have an <strong>Arduino Nano 33 BLE</strong> (sense or regular), you need to update
@@ -411,7 +429,7 @@ instructions</a>.</p>
 <p>If you have a <strong>Micro:bit v2</strong> then you need to load the Tock booloader. Please
 follow the <a href="https://github.com/tock/tock/tree/master/boards/microbit_v2">bootloader installation
 instructions</a>.</p>
-<h3><a class="header" href="#test-the-board" id="test-the-board">Test The Board</a></h3>
+<h3 id="test-the-board"><a class="header" href="#test-the-board">Test The Board</a></h3>
 <p>With the board connected, you should be able to use tockloader to interact with
 the board. For example, to retrieve serial UART data from the board, run
 <code>tockloader listen</code>, and you should see something like:</p>
@@ -441,7 +459,7 @@ update to a later version of Tockloader. There may be other issues as well, and
 you can ask on
 <a href="https://join.slack.com/t/tockos/shared_invite/enQtNDE5ODQyNDU4NTE1LWVjNTgzMTMwYzA1NDI1MjExZjljMjFmOTMxMGIwOGJlMjk0ZTI4YzY0NTYzNWM0ZmJmZGFjYmY5MTJiMDBlOTk">Slack</a>
 if you need help.</p>
-<h3><a class="header" href="#flash-the-kernel" id="flash-the-kernel">Flash the kernel</a></h3>
+<h3 id="flash-the-kernel"><a class="header" href="#flash-the-kernel">Flash the kernel</a></h3>
 <p>Now that the board is connected and you have verified that the kernel compiles
 (from the steps above), we can flash the board with the latest Tock kernel:</p>
 <pre><code>$ cd boards/&lt;your board&gt;
@@ -456,7 +474,7 @@ $ make
 </code></pre>
 <p>You can also look at the board's README for more details.</p>
 <blockquote>
-<h4><a class="header" href="#why-both-make-program-and-make-flash" id="why-both-make-program-and-make-flash">Why both <code>make program</code> and <code>make flash</code>?</a></h4>
+<h4 id="why-both-make-program-and-make-flash"><a class="header" href="#why-both-make-program-and-make-flash">Why both <code>make program</code> and <code>make flash</code>?</a></h4>
 <p>While these commands do the same thing, the way they go about it is very
 different.</p>
 <p>The <code>make program</code> version communicates with the board via a serial connection
@@ -465,10 +483,10 @@ bootloader when using <code>make program</code>.</p>
 <p>The <code>make flash</code> version uses a JTAG debugger to communicate with the chip and
 flash the kernel binary directly to the chip.</p>
 </blockquote>
-<h3><a class="header" href="#install-some-applications" id="install-some-applications">Install Some Applications</a></h3>
+<h3 id="install-some-applications"><a class="header" href="#install-some-applications">Install Some Applications</a></h3>
 <p>We have the kernel flashed, but the kernel doesn't actually <em>do</em> anything.
 Applications do! To load applications, we are going to use tockloader.</p>
-<h4><a class="header" href="#loading-pre-built-applications" id="loading-pre-built-applications">Loading Pre-built Applications</a></h4>
+<h4 id="loading-pre-built-applications"><a class="header" href="#loading-pre-built-applications">Loading Pre-built Applications</a></h4>
 <p>We're going to install some pre-built applications, but first, let's make sure
 we're in a clean state, in case your board already has some applications
 installed. This command removes any processes that may have already been
@@ -500,7 +518,7 @@ Initialization complete. Entering main loop.
 Hello World!
 ␀
 </code></pre>
-<h4><a class="header" href="#uninstalling-and-installing-more-apps" id="uninstalling-and-installing-more-apps">Uninstalling and Installing More Apps</a></h4>
+<h4 id="uninstalling-and-installing-more-apps"><a class="header" href="#uninstalling-and-installing-more-apps">Uninstalling and Installing More Apps</a></h4>
 <p>Lets check what's on the board right now:</p>
 <pre><code>$ tockloader list
 ...
@@ -551,7 +569,7 @@ FXOS8700CQ: X:               -112
 FXOS8700CQ: Y:               23
 FXOS8700CQ: Z:               987
 </code></pre>
-<h4><a class="header" href="#compiling-and-loading-applications" id="compiling-and-loading-applications">Compiling and Loading Applications</a></h4>
+<h4 id="compiling-and-loading-applications"><a class="header" href="#compiling-and-loading-applications">Compiling and Loading Applications</a></h4>
 <p>There are many more example applications in the <code>libtock-c</code> repository that you
 can use. Let's try installing the ROT13 cipher pair. These two applications use
 inter-process communication (IPC) to implement a <a href="https://en.wikipedia.org/wiki/ROT13">ROT13
@@ -593,7 +611,7 @@ is (currently) unaware of this limitation and will allow to you to load
 additional apps. However the kernel will only load the first apps until the
 limit is reached.</p>
 </blockquote>
-<h4><a class="header" href="#note-about-identifying-boards" id="note-about-identifying-boards">Note about Identifying Boards</a></h4>
+<h4 id="note-about-identifying-boards"><a class="header" href="#note-about-identifying-boards">Note about Identifying Boards</a></h4>
 <p>Tockloader tries to automatically identify which board is attached to make this
 process simple. This means for many boards (particularly the ones listed at the
 top of this guide) tockloader should &quot;just work&quot;.</p>
@@ -615,14 +633,14 @@ However, all of those settings can be passed in via command-line parameters
 for boards that tockloader does not know about. See <code>tockloader --help</code> for
 more information.</p>
 </blockquote>
-<h2><a class="header" href="#familiarize-yourself-with-tockloader-commands" id="familiarize-yourself-with-tockloader-commands">Familiarize Yourself with <code>tockloader</code> Commands</a></h2>
+<h2 id="familiarize-yourself-with-tockloader-commands"><a class="header" href="#familiarize-yourself-with-tockloader-commands">Familiarize Yourself with <code>tockloader</code> Commands</a></h2>
 <p>The <code>tockloader</code> tool is a useful and versatile tool for managing and installing
 applications on Tock. It supports a number of commands, and a more complete list
 can be found in the tockloader repository, located at
 <a href="https://github.com/tock/tockloader#usage">github.com/tock/tockloader</a>. Below is
 a list of the more useful and important commands for programming and querying a
 board.</p>
-<h3><a class="header" href="#tockloader-install" id="tockloader-install"><code>tockloader install</code></a></h3>
+<h3 id="tockloader-install"><a class="header" href="#tockloader-install"><code>tockloader install</code></a></h3>
 <p>This is the main tockloader command, used to load Tock applications onto a
 board.  By default, <code>tockloader install</code> adds the new application, but does not
 erase any others, replacing any already existing application with the same name.
@@ -640,16 +658,16 @@ run make before installing, i.e. <code>tockloader install --make</code></p>
 <p><em>Tip:</em> You can add the <code>--erase</code> flag to have tockloader automatically
 remove other applications when installing a new one.</p>
 </blockquote>
-<h3><a class="header" href="#tockloader-uninstall-application-names" id="tockloader-uninstall-application-names"><code>tockloader uninstall [application name(s)]</code></a></h3>
+<h3 id="tockloader-uninstall-application-names"><a class="header" href="#tockloader-uninstall-application-names"><code>tockloader uninstall [application name(s)]</code></a></h3>
 <p>Removes one or more applications from the board by name.</p>
-<h3><a class="header" href="#tockloader-erase-apps" id="tockloader-erase-apps"><code>tockloader erase-apps</code></a></h3>
+<h3 id="tockloader-erase-apps"><a class="header" href="#tockloader-erase-apps"><code>tockloader erase-apps</code></a></h3>
 <p>Removes all applications from the board.</p>
-<h3><a class="header" href="#tockloader-list" id="tockloader-list"><code>tockloader list</code></a></h3>
+<h3 id="tockloader-list"><a class="header" href="#tockloader-list"><code>tockloader list</code></a></h3>
 <p>Prints basic information about the apps currently loaded onto the board.</p>
-<h3><a class="header" href="#tockloader-info" id="tockloader-info"><code>tockloader info</code></a></h3>
+<h3 id="tockloader-info"><a class="header" href="#tockloader-info"><code>tockloader info</code></a></h3>
 <p>Shows all properties of the board, including information about currently
 loaded applications, their sizes and versions, and any set attributes.</p>
-<h3><a class="header" href="#tockloader-listen" id="tockloader-listen"><code>tockloader listen</code></a></h3>
+<h3 id="tockloader-listen"><a class="header" href="#tockloader-listen"><code>tockloader listen</code></a></h3>
 <p>This command prints output from Tock apps to the terminal. It listens via UART,
 and will print out anything written to stdout/stderr from a board.</p>
 <blockquote>
@@ -658,19 +676,19 @@ sessions. You can leave a terminal window open and listening. If another
 tockloader process needs access to the board (e.g. to install an app update),
 tockloader will automatically pause and resume listening.</p>
 </blockquote>
-<h3><a class="header" href="#tockloader-flash" id="tockloader-flash"><code>tockloader flash</code></a></h3>
+<h3 id="tockloader-flash"><a class="header" href="#tockloader-flash"><code>tockloader flash</code></a></h3>
 <p>Loads binaries onto hardware platforms that are running a compatible bootloader.
 This is used by the Tock Make system when kernel binaries are programmed to the
 board with <code>make program</code>.</p>
-<h1><a class="header" href="#tock-course-1" id="tock-course-1">Tock Course</a></h1>
+<h1 id="tock-course-1"><a class="header" href="#tock-course-1">Tock Course</a></h1>
 <p>The Tock course includes several different modules that guide you through
 various aspects of Tock and Tock applications. Each module is designed to be
 standalone such that a full course can be composed of different modules
 depending on the interests and backgrounds of those doing the course.</p>
-<h1><a class="header" href="#prerequisites" id="prerequisites">Prerequisites</a></h1>
+<h1 id="prerequisites"><a class="header" href="#prerequisites">Prerequisites</a></h1>
 <p>You should follow the <a href="../getting_started.html">getting started guide</a> to get
 your development setup and ensure you can communicate with the hardware.</p>
-<h2><a class="header" href="#hardware-1" id="hardware-1">Hardware</a></h2>
+<h2 id="hardware-1"><a class="header" href="#hardware-1">Hardware</a></h2>
 <p><img src="../imgs/imix.svg" alt="" /></p>
 <p>The Tock course is currently written for an imix hardware platform. To follow
 the directions directly, you will need an <em>imix</em> hardware platform (pictured
@@ -678,16 +696,16 @@ above). Tock is a general operating system, however, and other boards <em>should
 work, but they might not provide the exact same hardware sensors or peripherals.</p>
 <p>To complete the 6LoWPAN networking portion of this guide, you'll need an
 additional imix to act as a hub.</p>
-<h2><a class="header" href="#setup-to-compile-and-program-the-kernel" id="setup-to-compile-and-program-the-kernel">Setup to Compile and Program the Kernel</a></h2>
+<h2 id="setup-to-compile-and-program-the-kernel"><a class="header" href="#setup-to-compile-and-program-the-kernel">Setup to Compile and Program the Kernel</a></h2>
 <p>All of the hands-on exercises will be done within the source code for this book.
 So pop open a terminal, and navigate to the repository. If you're using the VM,
 that'll be:</p>
 <pre><code>$ cd ~/book
 </code></pre>
-<h3><a class="header" href="#make-sure-your-tock-repository-is-up-to-date" id="make-sure-your-tock-repository-is-up-to-date">Make sure your Tock repository is up to date</a></h3>
+<h3 id="make-sure-your-tock-repository-is-up-to-date"><a class="header" href="#make-sure-your-tock-repository-is-up-to-date">Make sure your Tock repository is up to date</a></h3>
 <pre><code>$ git pull
 </code></pre>
-<h3><a class="header" href="#build-the-kernel" id="build-the-kernel">Build the kernel</a></h3>
+<h3 id="build-the-kernel"><a class="header" href="#build-the-kernel">Build the kernel</a></h3>
 <p>To build the kernel, just type make in the <code>imix/</code> subdirectory.</p>
 <pre><code>$ cd imix/
 $ make
@@ -704,18 +722,18 @@ the <code>cargo</code> target installed. We can use <code>rustup</code> to fix t
 thumbv7em instruction set. The rustup command above just downloads Rust core
 libraries for this architecture.</p>
 </blockquote>
-<h1><a class="header" href="#modules" id="modules">Modules</a></h1>
+<h1 id="modules"><a class="header" href="#modules">Modules</a></h1>
 <p>The various modules are independent lessons that guide you through certain
 aspects of Tock. You should be able to do the lessons that are of interest to
 you.</p>
 <p>Each module begins with a description of the lesson, and then includes steps to
 follow. The modules cover both programming in the kernel as well as
 applications.</p>
-<h1><a class="header" href="#write-an-environment-sensing-application" id="write-an-environment-sensing-application">Write an environment sensing application</a></h1>
-<h2><a class="header" href="#process-overview-relocation-model-and-system-call-api" id="process-overview-relocation-model-and-system-call-api">Process overview, relocation model and system call API</a></h2>
+<h1 id="write-an-environment-sensing-application"><a class="header" href="#write-an-environment-sensing-application">Write an environment sensing application</a></h1>
+<h2 id="process-overview-relocation-model-and-system-call-api"><a class="header" href="#process-overview-relocation-model-and-system-call-api">Process overview, relocation model and system call API</a></h2>
 <p>In this section, we're going to learn about processes (a.k.a applications) in
 Tock, and build our own applications in C.</p>
-<h2><a class="header" href="#get-a-c-application-running-on-your-board" id="get-a-c-application-running-on-your-board">Get a C application running on your board</a></h2>
+<h2 id="get-a-c-application-running-on-your-board"><a class="header" href="#get-a-c-application-running-on-your-board">Get a C application running on your board</a></h2>
 <p>You'll find the outline of a C application in the directory
 <code>exercises/app</code>.</p>
 <p>Take a look at the code in <code>main.c</code>. So far, this application merely prints
@@ -754,7 +772,7 @@ the write is complete, and begin the write operation respectively.</p>
 <p>The application could accomplish all of this by invoking Tock system calls
 directly, but using libraries makes for a much cleaner interface and allows
 users to not need to know the inner workings of the OS.</p>
-<h3><a class="header" href="#loading-an-application" id="loading-an-application">Loading an application</a></h3>
+<h3 id="loading-an-application"><a class="header" href="#loading-an-application">Loading an application</a></h3>
 <p>Okay, let's build and load this simple program.</p>
 <ol>
 <li>
@@ -782,11 +800,11 @@ Hello, World!
 </code></pre>
 </li>
 </ol>
-<h2><a class="header" href="#creating-your-own-application" id="creating-your-own-application">Creating your own application</a></h2>
+<h2 id="creating-your-own-application"><a class="header" href="#creating-your-own-application">Creating your own application</a></h2>
 <p>Now that you've got a basic app working, modify it so that it continuously
 prints out <code>Hello World</code> twice per second.  You'll want to use the user
 library's timer facilities to manage this:</p>
-<h3><a class="header" href="#timer" id="timer">Timer</a></h3>
+<h3 id="timer"><a class="header" href="#timer">Timer</a></h3>
 <p>You'll find the interface for timers in <code>libtock/timer.h</code>. The
 function you'll find useful today is:</p>
 <pre><code class="language-c">#include &lt;timer.h&gt;
@@ -795,13 +813,13 @@ void delay_ms(uint32_t ms);
 <p>This function sleeps until the specified number of milliseconds have passed, and
 then returns.  So we call this function &quot;synchronous&quot;: no further code will run
 until the delay is complete.</p>
-<h2><a class="header" href="#write-an-app-that-periodically-samples-the-on-board-sensors" id="write-an-app-that-periodically-samples-the-on-board-sensors">Write an app that periodically samples the on-board sensors</a></h2>
+<h2 id="write-an-app-that-periodically-samples-the-on-board-sensors"><a class="header" href="#write-an-app-that-periodically-samples-the-on-board-sensors">Write an app that periodically samples the on-board sensors</a></h2>
 <p>Now that we have the ability to write applications, let's do something a little
 more complex. The development board you are using has several sensors on it.
 These sensors include a light sensor, a humidity sensor, and a temperature
 sensor. Each sensing medium can be accessed separately via the Tock user
 library. We'll just be using the light and temperature for this exercise.</p>
-<h4><a class="header" href="#light" id="light">Light</a></h4>
+<h4 id="light"><a class="header" href="#light">Light</a></h4>
 <p>The interface in <code>libtock/ambient_light.h</code> is used to measure ambient
 light conditions in <a href="https://en.wikipedia.org/wiki/Lux">lux</a>. imix uses the
 <a href="https://www.intersil.com/en/products/optoelectronics/ambient-light-sensors/light-to-digital-sensors/ISL29035.html">ISL29035</a>
@@ -812,7 +830,7 @@ int ambient_light_read_intensity_sync(int* lux);
 </code></pre>
 <p>Note that the light reading is written to the location passed as an
 argument, and the function returns non-zero in the case of an error.</p>
-<h4><a class="header" href="#temperature" id="temperature">Temperature</a></h4>
+<h4 id="temperature"><a class="header" href="#temperature">Temperature</a></h4>
 <p>The interface in <code>libtock/temperature.h</code> is used to measure ambient
 temperature in degrees Celsius, times 100. imix uses the
 <a href="https://www.silabs.com/products/sensors/humidity-sensors/Pages/si7013-20-21.aspx">SI7021</a>
@@ -821,13 +839,13 @@ sensor. It contains the function:</p>
 int temperature_read_sync(int* temperature);
 </code></pre>
 <p>Again, this function returns non-zero in the case of an error.</p>
-<h3><a class="header" href="#read-sensors-in-a-tock-application" id="read-sensors-in-a-tock-application">Read sensors in a Tock application</a></h3>
+<h3 id="read-sensors-in-a-tock-application"><a class="header" href="#read-sensors-in-a-tock-application">Read sensors in a Tock application</a></h3>
 <p>Using the example program you're working on, write an application that reads
 all of the sensors on your development board and reports their readings over
 the serial port.</p>
 <p>As a bonus, experiment with toggling an LED when readings are above or below a
 certain threshold:</p>
-<h4><a class="header" href="#led" id="led">LED</a></h4>
+<h4 id="led"><a class="header" href="#led">LED</a></h4>
 <p>The interface in <code>libtock/led.h</code> is used to control lights on Tock boards. On the Hail
 board, there are three LEDs which can be controlled: Red, Blue, and Green. The
 functions in the LED module are:</p>
@@ -844,7 +862,7 @@ int led_count(void);
 <pre><code class="language-c">int led_toggle(int led_num);
 </code></pre>
 <p>Which toggles the state of an LED, accessed by its number.</p>
-<h1><a class="header" href="#keep-the-client-happy" id="keep-the-client-happy">Keep the client happy</a></h1>
+<h1 id="keep-the-client-happy"><a class="header" href="#keep-the-client-happy">Keep the client happy</a></h1>
 <p>You, an engineer newly added to a top-secret project in your organization, have
 been directed to commission a new imix node for your most important client. The
 directions you receive are terse, but helpful:</p>
@@ -912,7 +930,7 @@ of the apps, and a URL. Ok, maybe you can check if everything is working.
 After trying things for a little bit, everything seems to be in order. You
 tell the director the board is ready and head home a little early—you did
 just successfully complete your first project for a major client after all.</p>
-<h2><a class="header" href="#back-at-work-the-next-day" id="back-at-work-the-next-day">Back at Work the Next Day</a></h2>
+<h2 id="back-at-work-the-next-day"><a class="header" href="#back-at-work-the-next-day">Back at Work the Next Day</a></h2>
 <p>Expecting a more challenging project after how well things went yesterday, you
 are instead greeted by this email:</p>
 <pre><code>On Monday, Nov 5, 2018, Director Hines wrote:
@@ -961,7 +979,7 @@ disable the faulty app somehow and see which data packets we are still getting.
 Going back to the help command, the <code>stop</code> command seems promising:</p>
 <pre><code>stop &lt;app name&gt;
 </code></pre>
-<h2><a class="header" href="#time-to-fix-the-app" id="time-to-fix-the-app">Time to Fix the App</a></h2>
+<h2 id="time-to-fix-the-app"><a class="header" href="#time-to-fix-the-app">Time to Fix the App</a></h2>
 <p>After debugging, we now know a couple things about the issue:</p>
 <ul>
 <li>The name of the faulty app.</li>
@@ -969,10 +987,10 @@ Going back to the help command, the <code>stop</code> command seems promising:</
 cycles.</li>
 </ul>
 <p>Using this information, dig into the the faulty app.</p>
-<h3><a class="header" href="#a-quick-fix" id="a-quick-fix">A Quick Fix</a></h3>
+<h3 id="a-quick-fix"><a class="header" href="#a-quick-fix">A Quick Fix</a></h3>
 <p>To get the director off your back, you should be able to introduce a simple fix
 that will reduce wakeups by waiting a bit between samples.</p>
-<h3><a class="header" href="#a-better-way" id="a-better-way">A Better Way</a></h3>
+<h3 id="a-better-way"><a class="header" href="#a-better-way">A Better Way</a></h3>
 <p>While the quick fix will slow the number of wakeups, you know that you can do
 better than polling for something like a button press! Tock supports
 asynchronous operations allowing user processes to <em>subscribe</em> to interrupts.</p>
@@ -980,7 +998,7 @@ asynchronous operations allowing user processes to <em>subscribe</em> to interru
 enable interrupts and then sign up to listen to them.</p>
 <p>Once this energy-optimal patch is in place, it'll be time to kick off a
 triumphant e-mail to the director, and then off to celebrate!</p>
-<h1><a class="header" href="#capsule" id="capsule">Capsule</a></h1>
+<h1 id="capsule"><a class="header" href="#capsule">Capsule</a></h1>
 <p>The goal of this part of the course is to make you comfortable with the
 Tock kernel and writing code for it. By the end of this part, you'll have
 written a new capsule that reads a humidity sensor and outputs its readings
@@ -992,11 +1010,11 @@ over the serial port.</p>
 <li>Learn about Tock's event-driven programming</li>
 <li>Write a new capsule that reads a humidity sensor and prints it over serial</li>
 </ol>
-<h2><a class="header" href="#read-the-tock-boot-sequence-20m" id="read-the-tock-boot-sequence-20m">Read the Tock boot sequence (20m)</a></h2>
+<h2 id="read-the-tock-boot-sequence-20m"><a class="header" href="#read-the-tock-boot-sequence-20m">Read the Tock boot sequence (20m)</a></h2>
 <p>Open <code>imix/src/main.rs</code> in your favorite editor. This file defines the
 imix platform: how it boots, what capsules it uses, and what system calls it
 supports for userland applications.</p>
-<h3><a class="header" href="#how-is-everything-organized" id="how-is-everything-organized">How is everything organized?</a></h3>
+<h3 id="how-is-everything-organized"><a class="header" href="#how-is-everything-organized">How is everything organized?</a></h3>
 <p>Find the declaration of <code>struct Imix</code> (it's pretty early in the file).
 This declares the structure representing the platform. It has many fields,
 all of which are capsules. These are the capsules that make up the imix
@@ -1011,7 +1029,7 @@ rely on this assumption.</p>
 <p>The boot process is primarily the construction of this <code>Imix</code> structure. Once
 everything is set up, the board will pass the constructed <code>imix</code> to
 <code>kernel::kernel_loop</code> and we're off to the races.</p>
-<h3><a class="header" href="#how-do-things-get-started" id="how-do-things-get-started">How do things get started?</a></h3>
+<h3 id="how-do-things-get-started"><a class="header" href="#how-do-things-get-started">How do things get started?</a></h3>
 <p>The method <code>reset_handler</code> is invoked when the chip resets (i.e., boots).
 It's pretty long because imix has a lot of drivers that need to be created
 and initialized, and many of them depend on other, lower layer abstractions
@@ -1019,13 +1037,13 @@ that need to be created and initialized as well.</p>
 <p>Take a look at the first few lines of the <code>reset_handler</code>. The boot sequence
 initializes memory (copies initialized variables into RAM, clears the BSS),
 sets up the system clocks, and configures the GPIO pins.</p>
-<h3><a class="header" href="#how-do-capsules-get-created" id="how-do-capsules-get-created">How do capsules get created?</a></h3>
+<h3 id="how-do-capsules-get-created"><a class="header" href="#how-do-capsules-get-created">How do capsules get created?</a></h3>
 <p>The next lines of <code>reset_handler</code> create and initialize the system console,
 which is what turns calls to <code>println</code> into bytes sent to the USB serial port:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-let uart_mux = static_init!(
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let uart_mux = static_init!(
     MuxUart&lt;'static&gt;,
     MuxUart::new(
         &amp;sam4l::usart::USART3,
@@ -1039,23 +1057,25 @@ hil::uart::Transmit::set_transmit_client(&amp;sam4l::usart::USART3, uart_mux);
 hil::uart::Receive::set_receive_client(&amp;sam4l::usart::USART3, uart_mux);
 
 let console = ConsoleComponent::new(board_kernel, uart_mux).finalize();
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>Eventually, once all of the capsules have been created, we will populate
 a imix structure with them:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-let imix = Imix {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let imix = Imix {
     console: console,
     gpio: gpio,
     ...
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>The <code>static_init!</code> macro is simply an easy way to allocate a static
 variable with a call to <code>new</code>. The first parameter is the type, the second
 is the expression to produce an instance of the type. This call creates
 a <code>Console</code> that uses serial port 3 (<code>USART3</code>) at 115200 bits per second.</p>
 <blockquote>
-<h4><a class="header" href="#a-brief-aside-on-buffers" id="a-brief-aside-on-buffers">A brief aside on buffers:</a></h4>
+<h4 id="a-brief-aside-on-buffers"><a class="header" href="#a-brief-aside-on-buffers">A brief aside on buffers:</a></h4>
 <p>Notice that you have to pass a write buffer to the console for it to use:
 this buffer has to have a <code> `static</code> lifetime. This is because low-level
 hardware drivers, especially those that use DMA, require <code> `static</code> buffers.
@@ -1076,12 +1096,12 @@ capsule itself, we make it the responsibility of the instantiator to give the
 Console a buffer to use, without burdening the instantiator with sizing the
 buffer.</p>
 </blockquote>
-<h3><a class="header" href="#lets-make-an-imix" id="lets-make-an-imix">Let's make an imix!</a></h3>
+<h3 id="lets-make-an-imix"><a class="header" href="#lets-make-an-imix">Let's make an imix!</a></h3>
 <p>The code continues on, creating all of the other capsules that are needed
 by the imix platform. By the time we get down to around line 360, we've
 created all of the capsules we need, and it's time to create the actual
 imix platform structure (<code>let imix = Imix {...}</code>).</p>
-<h3><a class="header" href="#capsule-initialization" id="capsule-initialization">Capsule <em>initialization</em></a></h3>
+<h3 id="capsule-initialization"><a class="header" href="#capsule-initialization">Capsule <em>initialization</em></a></h3>
 <p>Up to this point we have been creating numerous structures and setting some
 static configuration options and mappings, but nothing dynamic has occurred
 (said another way, all methods invoked by <code>static_init!</code> must be <code>const fn</code>,
@@ -1091,21 +1111,23 @@ macro).</p>
 <p>Some capsules require <em>initialization</em>, some code that must be executed
 before they can be used. For example, a few lines after creating the imix
 struct, we initialize the console:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-imix.nrf51822.initialize();
-#}</code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>imix.nrf51822.initialize();
+<span class="boring">}
+</span></code></pre></pre>
 <p>This method is responsible for actually writing the hardware registers that
 configure the associated UART peripheral for use as a text console
 (8 data bits, 1 stop bit, no parity bit, no hardware flow control).</p>
-<h3><a class="header" href="#inter-capsule-dependencies" id="inter-capsule-dependencies">Inter-capsule dependencies</a></h3>
+<h3 id="inter-capsule-dependencies"><a class="header" href="#inter-capsule-dependencies">Inter-capsule dependencies</a></h3>
 <p>Just after initializing the console capsule, we find this line:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-kernel::debug::assign_console_driver(Some(imix.console), kc);
-#}</code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>kernel::debug::assign_console_driver(Some(imix.console), kc);
+<span class="boring">}
+</span></code></pre></pre>
 <p>This configures the kernel's <code>debug!</code> macro to print messages to this console
 we've just created. The <code>debug!</code> mechanism can be very helpful during
 development and testing. Today we're going to use it to print output from the
@@ -1145,34 +1167,36 @@ into a buffer and the console prints them via DMA as the UART peripheral is
 available, interleaved with other console users (i.e. processes). You
 shouldn't need to worry about the mechanics of this for now.</p>
 </blockquote>
-<h3><a class="header" href="#loading-processes" id="loading-processes">Loading processes</a></h3>
+<h3 id="loading-processes"><a class="header" href="#loading-processes">Loading processes</a></h3>
 <p>Once the platform is all set up, the board is responsible for loading processes
 into memory:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-kernel::process::load_processes(&amp;_sapps as *const u8,
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>kernel::process::load_processes(&amp;_sapps as *const u8,
                                 &amp;mut APP_MEMORY,
                                 &amp;mut PROCESSES,
                                 FAULT_RESPONSE);
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>A Tock process is represented by a <code>kernel::Process</code> struct. In principle, a
 platform could load processes by any means. In practice, all existing platforms
 write an array of Tock Binary Format (TBF) entries to flash. The kernel provides
 the <code>load_processes</code> helper function that takes in a flash address and begins
 iteratively parsing TBF entries and making <code>Process</code>es.</p>
-<h3><a class="header" href="#starting-the-kernel" id="starting-the-kernel">Starting the kernel</a></h3>
+<h3 id="starting-the-kernel"><a class="header" href="#starting-the-kernel">Starting the kernel</a></h3>
 <p>Finally, the board passes a reference to the current platform, the chip the
 platform is built on (used for interrupt and power handling), the processes to
 run, and an IPC server instance to the main loop of the kernel:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-kernel::main(&amp;imix, &amp;mut chip, &amp;mut PROCESSES, &amp;imix.ipc);
-#}</code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>kernel::main(&amp;imix, &amp;mut chip, &amp;mut PROCESSES, &amp;imix.ipc);
+<span class="boring">}
+</span></code></pre></pre>
 <p>From here, Tock is initialized, the kernel event loop takes over, and the
 system enters steady state operation.</p>
-<h3><a class="header" href="#create-a-hello-world-capsule" id="create-a-hello-world-capsule">Create a &quot;Hello World&quot; capsule</a></h3>
+<h3 id="create-a-hello-world-capsule"><a class="header" href="#create-a-hello-world-capsule">Create a &quot;Hello World&quot; capsule</a></h3>
 <p>Now that you've seen how Tock initializes and uses capsules, you're going to
 write a new one. At the end of this section, your capsule will sample the
 humidity sensor once a second and print the results as serial output. But
@@ -1187,11 +1211,12 @@ initialized the capsule.</p>
 <p>Eventually, the <code>start</code> method will kick off a state machine for periodic
 humidity readings, but for now, let's just print something to the debug console
 and return:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-debug!(&quot;Hello from the kernel!&quot;);
-#}</code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>debug!(&quot;Hello from the kernel!&quot;);
+<span class="boring">}
+</span></code></pre></pre>
 <pre><code class="language-bash">$ cd [PATH_TO_BOOK]/imix
 $ make program
 $ tockloader listen
@@ -1199,7 +1224,7 @@ No device name specified. Using default &quot;tock&quot;                        
 Listening for serial output.
 Hello from the kernel!
 </code></pre>
-<h2><a class="header" href="#extend-your-capsule-to-print-hello-world-every-second" id="extend-your-capsule-to-print-hello-world-every-second">Extend your capsule to print &quot;Hello World&quot; every second</a></h2>
+<h2 id="extend-your-capsule-to-print-hello-world-every-second"><a class="header" href="#extend-your-capsule-to-print-hello-world-every-second">Extend your capsule to print &quot;Hello World&quot; every second</a></h2>
 <p>In order for your capsule to keep track of time, it will need to depend on
 another capsule that implements the Alarm interface. We'll have to do something
 similar for reading the accelerometer, so this is good practice.</p>
@@ -1208,19 +1233,21 @@ in the <code>kernel::hil::time</code> module. You'll use the <code>set_alarm</co
 from the <code>Alarm</code> trait to set an alarm for a particular value of the clock.
 Note that both methods accept arguments in the alarm's native clock frequency,
 which is available using the Alarm trait's associated <code>Frequency</code> type:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-// native clock frequency in Herz
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// native clock frequency in Herz
 let frequency = &lt;A::Frequency&gt;::frequency();
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>Your capsule already implements the <code>alarm::Client</code> trait so it can receive
 alarm events. The <code>alarm::Client</code> trait has a single method:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-fn fired(&amp;self)
-#}</code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn fired(&amp;self)
+<span class="boring">}
+</span></code></pre></pre>
 <p>Your capsule should now set an alarm in the <code>start</code> method, print the debug
 message and set an alarm again when the alarm fires.</p>
 <p>Compile and program your new kernel:</p>
@@ -1234,7 +1261,7 @@ TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.
 TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.rs:31: Hello World
 </code></pre>
 <p><a href="https://gist.github.com/alevy/73fca7b0dddcb5449088cebcbfc035f1">Sample Solution</a></p>
-<h2><a class="header" href="#extend-your-capsule-to-sample-the-humidity-once-a-second" id="extend-your-capsule-to-sample-the-humidity-once-a-second">Extend your capsule to sample the humidity once a second</a></h2>
+<h2 id="extend-your-capsule-to-sample-the-humidity-once-a-second"><a class="header" href="#extend-your-capsule-to-sample-the-humidity-once-a-second">Extend your capsule to sample the humidity once a second</a></h2>
 <p>The steps for reading an accelerometer from your capsule are similar to using
 the alarm. You'll use a capsule that implements the humidity HIL, which
 includes the <code>HumidityDriver</code> and <code>HumidityClient</code> traits, both in
@@ -1242,11 +1269,12 @@ includes the <code>HumidityDriver</code> and <code>HumidityClient</code> traits,
 <p>The <code>HumidityDriver</code> trait includes the method <code>read_accelerometer</code> which
 initiates an accelerometer reading. The <code>HumidityClient</code> trait has a single
 method for receiving readings:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-fn callback(&amp;self, humidity: usize);
-#}</code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn callback(&amp;self, humidity: usize);
+<span class="boring">}
+</span></code></pre></pre>
 <p>Implement logic to initiate a accelerometer reading every second and report the
 results.</p>
 <p><img src="../imgs/rustconf.svg" alt="Structure of rustconf capsule" /></p>
@@ -1259,7 +1287,7 @@ Humidity 2731
 Humidity 2732
 </code></pre>
 <p><a href="https://gist.github.com/alevy/798d11dbfa5409e0aa56d870b4b7afcf">Sample solution</a></p>
-<h2><a class="header" href="#some-further-questions-and-directions-to-explore" id="some-further-questions-and-directions-to-explore">Some further questions and directions to explore</a></h2>
+<h2 id="some-further-questions-and-directions-to-explore"><a class="header" href="#some-further-questions-and-directions-to-explore">Some further questions and directions to explore</a></h2>
 <p>Your capsule used the si7021 and virtual alarm. Take a look at the
 code behind each of these services:</p>
 <ol>
@@ -1276,18 +1304,18 @@ code behind each of these services:</p>
 <p>How many virtual alarms does the imix boot sequence create?</p>
 </li>
 </ol>
-<h3><a class="header" href="#extra-credit-write-a-virtualization-capsule-for-humidity-sensor-" id="extra-credit-write-a-virtualization-capsule-for-humidity-sensor-"><strong>Extra credit</strong>: Write a virtualization capsule for humidity sensor (∞)</a></h3>
+<h3 id="extra-credit-write-a-virtualization-capsule-for-humidity-sensor-"><a class="header" href="#extra-credit-write-a-virtualization-capsule-for-humidity-sensor-"><strong>Extra credit</strong>: Write a virtualization capsule for humidity sensor (∞)</a></h3>
 <p>If you have extra time, try writing a virtualization capsule for the <code>Humidity</code>
 HIL that will allow multiple clients to use it. This is a fairly open ended
 task, but you might find inspiration in the <code>virtua_alarm</code> and <code>virtual_i2c</code>
 capsules.</p>
-<h1><a class="header" href="#graduation" id="graduation">Graduation</a></h1>
+<h1 id="graduation"><a class="header" href="#graduation">Graduation</a></h1>
 <p>Now that you have the basics of Tock down, we encourage you to continue to
 explore and develop with Tock! This book includes a &quot;slimmed down&quot; version of
 Tock to make it easy to get started, but you will likely want to get a more
 complete development environment setup to continue. Luckily, this shouldn't be
 too difficult since you have the tools installed already.</p>
-<h2><a class="header" href="#using-the-latest-kernel" id="using-the-latest-kernel">Using the latest kernel</a></h2>
+<h2 id="using-the-latest-kernel"><a class="header" href="#using-the-latest-kernel">Using the latest kernel</a></h2>
 <p>The Tock kernel is actively developed, and you likely want to build upon the
 latest features. To do this, you should get the Tock source from the repository:</p>
 <pre><code class="language-bash">$ git clone https://github.com/tock/tock
@@ -1309,7 +1337,7 @@ $ make
 </code></pre>
 <p>All of the operations described in the course should work the same way on the
 main repository.</p>
-<h2><a class="header" href="#using-the-full-selection-of-apps" id="using-the-full-selection-of-apps">Using the full selection of apps</a></h2>
+<h2 id="using-the-full-selection-of-apps"><a class="header" href="#using-the-full-selection-of-apps">Using the full selection of apps</a></h2>
 <p>The book includes some very minimal apps, and many more can be found in the
 <code>libtock-c</code> repository. To use this, you should start by cloning the repository:</p>
 <pre><code class="language-bash">$ git clone https://github.com/tock/libtock-c
@@ -1322,7 +1350,7 @@ $ tockloader install
 </code></pre>
 <p>With the <code>libtock-c</code> repository you have access to the full suite of Tock apps,
 and additional libraries include BLE and Lua support.</p>
-<h1><a class="header" href="#tock-mini-tutorials-1" id="tock-mini-tutorials-1">Tock Mini Tutorials</a></h1>
+<h1 id="tock-mini-tutorials-1"><a class="header" href="#tock-mini-tutorials-1">Tock Mini Tutorials</a></h1>
 <p>These tutorials walk through how to use some various features of Tock. They are
 narrower in scope than the course, but try to explain in detail how various Tock
 apps work.</p>
@@ -1334,7 +1362,7 @@ check out a copy of <code>libtock-c</code> by running:</p>
 support code for running C and C++ apps on Tock. If you are looking to develop
 Tock applications you will likely want to start with an existing app in
 <code>libtock-c</code> and modify it.</p>
-<h2><a class="header" href="#setup" id="setup">Setup</a></h2>
+<h2 id="setup"><a class="header" href="#setup">Setup</a></h2>
 <p>You need to be able to compile and load the Tock kernel and Tock applications.
 See the <a href="tutorials/../prerequisites.html">prerequisites guide</a> on how to get setup.</p>
 <p>You also need <a href="https://tockos.org/hardware">hardware</a> that supports Tock.</p>
@@ -1382,7 +1410,7 @@ re-programming the kernel.</p>
 </li>
 </ol>
 <p>With the kernel setup, you are ready to try the mini tutorials.</p>
-<h2><a class="header" href="#tutorials" id="tutorials">Tutorials</a></h2>
+<h2 id="tutorials"><a class="header" href="#tutorials">Tutorials</a></h2>
 <ol>
 <li><strong><a href="tutorials/01_running_blink.html">Blink an LED</a></strong>: Get your first Tock app running.</li>
 <li><strong><a href="tutorials/02_button_print.html">Button to Printf()</a></strong>: Print to terminal in response
@@ -1392,7 +1420,7 @@ to button presses.</li>
 to interact with kernel drivers.</li>
 <li><strong><a href="tutorials/05_ipc.html">Inter-process Communication</a></strong>: Tock's IPC mechanism.</li>
 </ol>
-<h3><a class="header" href="#board-compatiblity-matrix" id="board-compatiblity-matrix">Board compatiblity matrix</a></h3>
+<h3 id="board-compatiblity-matrix"><a class="header" href="#board-compatiblity-matrix">Board compatiblity matrix</a></h3>
 <table><thead><tr><th>Tutorial #</th><th>Supported boards</th></tr></thead><tbody>
 <tr><td>1</td><td>All</td></tr>
 <tr><td>2</td><td>All Cortex-M based boards</td></tr>
@@ -1400,9 +1428,9 @@ to interact with kernel drivers.</li>
 <tr><td>4</td><td>Hail and imix</td></tr>
 <tr><td>5</td><td>All that support IPC</td></tr>
 </tbody></table>
-<h1><a class="header" href="#blink-running-your-first-app" id="blink-running-your-first-app">Blink: Running Your First App</a></h1>
+<h1 id="blink-running-your-first-app"><a class="header" href="#blink-running-your-first-app">Blink: Running Your First App</a></h1>
 <p>This guide will help you get the <code>blink</code> app running on top of Tock kernel.</p>
-<h2><a class="header" href="#instructions" id="instructions">Instructions</a></h2>
+<h2 id="instructions"><a class="header" href="#instructions">Instructions</a></h2>
 <ol>
 <li>
 <p><strong>Erase any existing applications</strong>. First, we need to remove any applications already
@@ -1449,7 +1477,7 @@ blinking. Congratulations! You have just programmed your first Tock
 application.</p>
 </li>
 </ol>
-<h1><a class="header" href="#say-hello-on-every-button-press" id="say-hello-on-every-button-press">Say &quot;Hello!&quot; On Every Button Press</a></h1>
+<h1 id="say-hello-on-every-button-press"><a class="header" href="#say-hello-on-every-button-press">Say &quot;Hello!&quot; On Every Button Press</a></h1>
 <p>This tutorial will walk you through calling <code>printf()</code> in response to a
 button press.</p>
 <ol>
@@ -1582,7 +1610,7 @@ application.</p>
 to the terminal!</p>
 </li>
 </ol>
-<h1><a class="header" href="#look-a-wild-ble-packet-appeared" id="look-a-wild-ble-packet-appeared">Look! A Wild BLE Packet Appeared!</a></h1>
+<h1 id="look-a-wild-ble-packet-appeared"><a class="header" href="#look-a-wild-ble-packet-appeared">Look! A Wild BLE Packet Appeared!</a></h1>
 <blockquote>
 <p>Note! This tutorial will only work on Hail and imix boards.</p>
 </blockquote>
@@ -1711,11 +1739,11 @@ so that the BLE serialization library is included.</p>
 </code></pre>
 </li>
 </ol>
-<h2><a class="header" href="#details" id="details">Details</a></h2>
+<h2 id="details"><a class="header" href="#details">Details</a></h2>
 <p>This section contains a few notes about the specific versions of BLE
 serialization used.</p>
 <p>Tock currently supports the S130 softdevice version 2.0.0 and SDK 11.0.0.</p>
-<h1><a class="header" href="#reading-sensors-from-scratch" id="reading-sensors-from-scratch">Reading Sensors From Scratch</a></h1>
+<h1 id="reading-sensors-from-scratch"><a class="header" href="#reading-sensors-from-scratch">Reading Sensors From Scratch</a></h1>
 <blockquote>
 <p>Note! This tutorial will only work on Hail and imix boards.</p>
 </blockquote>
@@ -1875,10 +1903,10 @@ int main() {
 for a more complete sensing application.</p>
 </li>
 </ol>
-<h1><a class="header" href="#friendly-apps-share-data" id="friendly-apps-share-data">Friendly Apps Share Data</a></h1>
+<h1 id="friendly-apps-share-data"><a class="header" href="#friendly-apps-share-data">Friendly Apps Share Data</a></h1>
 <p>This tutorial covers how to use Tock's IPC mechanism to allow applications
 to communicate and share memory.</p>
-<h2><a class="header" href="#tock-ipc-basics" id="tock-ipc-basics">Tock IPC Basics</a></h2>
+<h2 id="tock-ipc-basics"><a class="header" href="#tock-ipc-basics">Tock IPC Basics</a></h2>
 <p>IPC in Tock uses a client-server model. Applications can provide a service by
 telling the Tock kernel that they provide a service. Each application can only
 provide a single service, and that service's name is set to the name of the
@@ -1888,13 +1916,13 @@ notify the server to instruct the server to somehow interact with the shared
 buffer. The protocol for what the server should do with the buffer is service
 specific and not specified by Tock. Servers can also notify clients, but when
 and why servers notify clients is service specific.</p>
-<h2><a class="header" href="#example-application" id="example-application">Example Application</a></h2>
+<h2 id="example-application"><a class="header" href="#example-application">Example Application</a></h2>
 <p>To provide an overview of IPC, we will build an example system consisting of
 three apps: a random number service, a LED control service, and a main
 application that uses the two services. While simple, this example both
 demonstrates the core aspects of the IPC mechanism and should run on any
 hardware platform.</p>
-<h3><a class="header" href="#led-service" id="led-service">LED Service</a></h3>
+<h3 id="led-service"><a class="header" href="#led-service">LED Service</a></h3>
 <p>Lets start with the LED service. The goal of this service is to allow other
 applications to use the shared buffer as a command message to instruct the
 LED service on how to turn on or off the system's LEDs.</p>
@@ -1951,7 +1979,7 @@ static void ipc_callback(int pid, int len, int buf, void* ud) {
 </code></pre>
 </li>
 </ol>
-<h3><a class="header" href="#rng-service" id="rng-service">RNG Service</a></h3>
+<h3 id="rng-service"><a class="header" href="#rng-service">RNG Service</a></h3>
 <p>The RNG service returns the requested number of random bytes in the shared
 folder.</p>
 <ol>
@@ -1986,7 +2014,7 @@ static void ipc_callback(int pid, int len, int buf, void* ud) {
 <p>This is again not a complete example but illustrates the key aspects.</p>
 </li>
 </ol>
-<h3><a class="header" href="#main-logic-client-application" id="main-logic-client-application">Main Logic Client Application</a></h3>
+<h3 id="main-logic-client-application"><a class="header" href="#main-logic-client-application">Main Logic Client Application</a></h3>
 <p>The third application uses the two services to randomly control the LEDs on
 the board. This application is not a server but instead is a client of the
 two service applications.</p>
@@ -2070,7 +2098,7 @@ void app() {
 </code></pre>
 </li>
 </ol>
-<h2><a class="header" href="#try-it-out" id="try-it-out">Try It Out</a></h2>
+<h2 id="try-it-out"><a class="header" href="#try-it-out">Try It Out</a></h2>
 <p>To test this out, see the complete apps in the <a href="https://github.com/tock/libtock-c/tree/master/examples/tutorials/05_ipc">IPC tutorial
 example</a>
 folder.</p>
@@ -2082,7 +2110,7 @@ $ pushd rng &amp;&amp; make &amp;&amp; tockloader install &amp;&amp; popd
 $ pushd logic &amp;&amp; make &amp;&amp; tockloader install &amp;&amp; popd
 </code></pre>
 <p>You should see the LEDs randomly turning on and off!</p>
-<h1><a class="header" href="#kernel-development-guides" id="kernel-development-guides">Kernel Development Guides</a></h1>
+<h1 id="kernel-development-guides"><a class="header" href="#kernel-development-guides">Kernel Development Guides</a></h1>
 <p>These guides provide walkthroughs for specific kernel development tasks. For
 example, there is a guide on how to add a new syscall interface for userspace
 applications. The guides are intended to be general and provide high-level
@@ -2093,12 +2121,12 @@ code examples will fail to compile. However, the general design aspects and
 considerations should still be relevant even if the specific code details have
 changed. You are encourage to use these guides as just that, a general guide,
 and to copy from up-to-date examples contained in the Tock repository.</p>
-<h1><a class="header" href="#implementing-a-chip-peripheral-driver" id="implementing-a-chip-peripheral-driver">Implementing a Chip Peripheral Driver</a></h1>
+<h1 id="implementing-a-chip-peripheral-driver"><a class="header" href="#implementing-a-chip-peripheral-driver">Implementing a Chip Peripheral Driver</a></h1>
 <p>This guide covers how to implement a peripheral driver for a particular
 microcontroller (MCU). For example, if you wanted to add an analog to digital
 converter (ADC) driver for the Nordic nRF52840 MCU, you would follow the general
 steps described in this guide.</p>
-<h2><a class="header" href="#overview" id="overview">Overview</a></h2>
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
 <p>The general steps you will follow are:</p>
 <ol>
 <li>Determine the HIL you will implement.</li>
@@ -2109,7 +2137,7 @@ steps described in this guide.</p>
 memory location.</li>
 </ol>
 <p>The guide will walk through how to do each of these steps.</p>
-<h2><a class="header" href="#background" id="background">Background</a></h2>
+<h2 id="background"><a class="header" href="#background">Background</a></h2>
 <p>Implementing a chip peripheral driver increases Tock's support for a particular
 microcontroller and allows capsules and userspace apps to take more advantage of
 the hardware provided by the MCU. Peripheral drivers for an MCU are generally
@@ -2123,7 +2151,7 @@ also means more care must be taken to ensure they are correct. The use of
 necessary. This guide explains the one use of <code>unsafe</code> that is required. All
 other uses of <code>unsafe</code> in a peripheral driver will likely be very scrutinized
 during the pull request review period.</p>
-<h2><a class="header" href="#step-by-step-guide" id="step-by-step-guide">Step-by-Step Guide</a></h2>
+<h2 id="step-by-step-guide"><a class="header" href="#step-by-step-guide">Step-by-Step Guide</a></h2>
 <p>The steps from the overview are elaborated on here.</p>
 <ol>
 <li>
@@ -2157,11 +2185,12 @@ name of this file generally should match the name of the peripheral in the
 the MCU's datasheet.</p>
 <p>Include the name of this file inside of the <code>lib.rs</code> (or potentially
 <code>mod.rs</code>) file inside the same directory. This should look like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub mod ast;
-#}</code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod ast;
+<span class="boring">}
+</span></code></pre></pre>
 <p>Inside of the new file, you will first need to define the memory-mapped
 input/output (MMIO) registers that correspond to the peripheral. Different
 embedded code ecosystems have devised different methods for doing this, and
@@ -2171,10 +2200,10 @@ intuitive.</p>
 <p>The full register library is
 <a href="https://github.com/tock/tock/tree/master/libraries/tock-register-interface">here</a>,
 but to get started, you will first create a structure like this:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-use tock_registers::registers::{ReadOnly, ReadWrite, WriteOnly};
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use tock_registers::registers::{ReadOnly, ReadWrite, WriteOnly};
 
 register_structs! {
     XyzPeripheralRegisters {
@@ -2196,15 +2225,17 @@ register_structs! {
         (0x100 =&gt; @END),
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>You should replace <code>XyzPeripheral</code> with the name of the peripheral you are
 writing a driver for. Then, for each register defined in the datasheet, you
 must specify an entry in the macro. For example, a register is defined like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-(0x000 =&gt; cr: ReadWrite&lt;u32, Control::Register&gt;),
-#}</code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>(0x000 =&gt; cr: ReadWrite&lt;u32, Control::Register&gt;),
+<span class="boring">}
+</span></code></pre></pre>
 <p>where:</p>
 <ul>
 <li><code>0x000</code> is the offset (in bytes) of the register from the beginning of the
@@ -2223,10 +2254,10 @@ does not use likely does not need its bitfields mapped.</li>
 </ul>
 <p>Once the register map is defined, you must specify the bitfields for any
 registers that you gave a specific type to. This looks like the following:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-register_bitfields! [
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>register_bitfields! [
     // First parameter is the register width for the bitfields. Can be u8,
     // u16, u32, or u64.
     u32,
@@ -2272,7 +2303,8 @@ register_bitfields! [
         ERRORCOUNT OFFSET(6) NUMBITS(3) []
     ],
 ]
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>The name in each entry of the <code>register_bitfields! []</code> list must match the
 register type provided in the register map declaration. Each register that
 is used in the driver implementation should have its bitfields declared.</p>
@@ -2287,14 +2319,15 @@ driver. The actual fields of the struct are very peripheral specific, but
 should contain any state that the driver needs to correctly function.</p>
 <p>An example struct looks for a timer peripheral called the AST by the MCU
 datasheet looks like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct Ast&lt;'a&gt; {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct Ast&lt;'a&gt; {
     registers: StaticRef&lt;AstRegisters&gt;,
     callback: OptionalCell&lt;&amp;'a dyn hil::time::AlarmClient&gt;,
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>The struct should contain a reference to the registers defined above (we
 will explain the <code>StaticRef</code> later). Typically, many drivers respond to
 certain events (like in this case a timer firing) and therefore need a
@@ -2327,10 +2360,10 @@ to use which one. In this example, the callback is stored in an
 set), and can be updated if the callback needs to change.</p>
 <p>With the struct defined, you should next create a <code>new()</code> function for that
 struct. This will look like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl Ast {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Ast {
     const fn new(registers: StaticRef&lt;AstRegisters&gt;) -&gt; Ast {
         Ast {
             registers: registers,
@@ -2338,7 +2371,8 @@ impl Ast {
         }
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p><strong>Checkpoint</strong>: There is a struct for the peripheral that can be created.</p>
 </li>
 <li>
@@ -2348,10 +2382,10 @@ now write the actual logic for the peripheral driver that implements the HIL
 interface you identified earlier. Implementing the HIL interface is done
 just like implementing a trait in Rust. For example, to implement the <code>Time</code>
 HIL for the AST:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl hil::time::Time for Ast&lt;'a&gt; {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl hil::time::Time for Ast&lt;'a&gt; {
     type Frequency = Freq16KHz;
 
     fn now(&amp;self) -&gt; u32 {
@@ -2362,17 +2396,18 @@ impl hil::time::Time for Ast&lt;'a&gt; {
         core::u32::MAX
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>You should include all of the functions from the HIL and decide how to
 implement them.</p>
 <p>Some operations will be shared among multiple HIL functions. These should be
 implemented as functions for the original struct. For example, in the <code>Ast</code>
 example the HIL function <code>now()</code> uses the <code>get_counter()</code> function. This should be
 implemented on the main <code>Ast</code> struct:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl Ast {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Ast {
     const fn new(registers: StaticRef&lt;AstRegisters&gt;) -&gt; Ast {
         Ast {
             registers: registers,
@@ -2386,7 +2421,8 @@ impl Ast {
         regs.cv.read(Value::VALUE)
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>Note the <code>get_counter()</code> function also illustrates how to use the register
 reference and the Tock register library. The <a href="https://github.com/tock/tock/tree/master/libraries/tock-register-interface">register
 library</a>
@@ -2401,14 +2437,15 @@ memory location.</strong></p>
 <p>The last step is to actually create the object so that the peripheral driver
 can be used by other code. Start by casting the register map to the correct
 memory address where the registers are actually mapped to. For example:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-use kernel::common::StaticRef;
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use kernel::common::StaticRef;
 
 const AST_BASE: StaticRef&lt;AstRegisters&gt; =
     unsafe { StaticRef::new(0x400F0800 as *const AstRegisters) };
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p><code>StaticRef</code> is a type in Tock designed explicitly for this operation of
 casting register maps to the correct location in memory. The <code>0x400F0800</code> is
 the address in memory of the start of the registers and this location will
@@ -2428,21 +2465,22 @@ safety.</p>
 </blockquote>
 <p>With the address reference created, we can now create the actual driver
 object:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub static mut AST: Ast = Ast::new(AST_BASE);
-#}</code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub static mut AST: Ast = Ast::new(AST_BASE);
+<span class="boring">}
+</span></code></pre></pre>
 <p>This object will be used by a board's main.rs file to pass, in this case,
 the driver for the timer hardware to various capsules and other code that
 needs the underlying timer hardware.</p>
 </li>
 </ol>
-<h2><a class="header" href="#wrap-up" id="wrap-up">Wrap-Up</a></h2>
+<h2 id="wrap-up"><a class="header" href="#wrap-up">Wrap-Up</a></h2>
 <p>Congratulations! You have implemented a peripheral driver for a microcontroller
 in Tock! We encourage you to submit a pull request to upstream this to the Tock
 repository.</p>
-<h1><a class="header" href="#implementing-a-sensor-driver" id="implementing-a-sensor-driver">Implementing a Sensor Driver</a></h1>
+<h1 id="implementing-a-sensor-driver"><a class="header" href="#implementing-a-sensor-driver">Implementing a Sensor Driver</a></h1>
 <p>This guide describes the steps necessary to implement a capsule in Tock that
 interfaces with an external IC, like a sensor, memory chip, or display. These
 are devices which are not part of the same chip as the main microcontroller
@@ -2462,12 +2500,12 @@ use case.</p>
 <p>Often the goal of an IC driver is to expose an interface to that sensor or other
 IC to userspace applications. This guide does not cover creating that userspace
 interface as that is covered in a different guide.</p>
-<h2><a class="header" href="#background-1" id="background-1">Background</a></h2>
+<h2 id="background-1"><a class="header" href="#background-1">Background</a></h2>
 <p>As mentioned, this guide describes creating a capsule. Capsules in Tock are
 units of Rust code that extend the kernel to add interesting features, like
 interfacing with new sensors. Capsules are &quot;untrusted&quot;, meaning they cannot call
 unsafe code in Rust and cannot use the <code>unsafe</code> keyword.</p>
-<h2><a class="header" href="#overview-1" id="overview-1">Overview</a></h2>
+<h2 id="overview-1"><a class="header" href="#overview-1">Overview</a></h2>
 <p>The high-level steps required are:</p>
 <ol>
 <li>Create a struct for the IC driver.</li>
@@ -2478,7 +2516,7 @@ unsafe code in Rust and cannot use the <code>unsafe</code> keyword.</p>
 <li>Provide a HIL interface for the IC driver.</li>
 <li>Provide a userspace interface for the IC driver.</li>
 </ol>
-<h2><a class="header" href="#step-by-step-guide-1" id="step-by-step-guide-1">Step-by-Step Guide</a></h2>
+<h2 id="step-by-step-guide-1"><a class="header" href="#step-by-step-guide-1">Step-by-Step Guide</a></h2>
 <p>The steps from the overview are elaborated on here.</p>
 <ol>
 <li>
@@ -2490,11 +2528,12 @@ writing the driver for. There are several other examples in the capsules
 folder.</p>
 <p>For our example we will assume the part number is <code>ls1234</code>.</p>
 <p>You then need to add the filename to <code>capsules/src/lib.rs</code> like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub mod ls1234;
-#}</code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod ls1234;
+<span class="boring">}
+</span></code></pre></pre>
 <p>Now inside of the new file you should create a struct with the fields
 necessary to implement the driver for the IC. In our example we will assume
 the IC is connected to the MCU with an I2C bus. Your IC might use SPI, UART,
@@ -2502,16 +2541,17 @@ or some other standard interface. You will need to adjust how you create the
 struct based on the interface. You should be able to find examples in the
 capsules directory to copy from.</p>
 <p>The struct will look something like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct Ls1234 {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct Ls1234 {
     i2c: &amp;'a dyn I2CDevice,
     state: Cell&lt;State&gt;,
     buffer: TakeCell&lt;'static, [u8]&gt;,
     client: OptionalCell&lt;&amp;'a dyn Ls1234Client&gt;,
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>You can see the resources this driver requires to successfully interface
 with the light sensor:</p>
 <ul>
@@ -2526,16 +2566,17 @@ the correct address.</p>
 <p><code>state</code>: Often drivers will iterate through various states as they
 communicate with the IC, and it is common for drivers to keep some state
 variable to manage this. Our <code>State</code> is defined as an enum, like so:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-#[derive(Copy, Clone, PartialEq)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Copy, Clone, PartialEq)]
 enum State {
     Disabled,
     Enabling,
     ReadingLight,
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>Also note that the <code>state</code> variable uses a <code>Cell</code>. This is so that the
 driver can update the state.</p>
 </li>
@@ -2547,11 +2588,12 @@ driver when the board boots. This provides the board flexibility on the
 buffer to use, while still allowing the driver to hint at the size
 required for successful operation. In our case the static buffer is
 defined as:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub static mut BUF: [u8; 3] = [0; 3];
-#}</code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub static mut BUF: [u8; 3] = [0; 3];
+<span class="boring">}
+</span></code></pre></pre>
 <p>Note the buffer is wrapped in a <code>TakeCell</code> such that it can be passed
 to the I2C hardware when necessary, and re-stored in the driver struct
 when the I2C code returns the buffer.</p>
@@ -2563,13 +2605,14 @@ so the caller will not block waiting for a sample, but instead will expect
 a callback via the client when the same is ready. The driver has to define
 the type of the callback by defining the <code>Ls1234Client</code> trait in this
 case:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub trait Ls1234Client {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub trait Ls1234Client {
 	 fn callback(light_reading: usize);
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>Note that the client is stored in an <code>OptionalCell</code>. This allows the
 callback to not be set initially, and configured at bootup.</p>
 </li>
@@ -2587,10 +2630,10 @@ out of sync, and makes further development on the driver difficult.</p>
 <p>The last step is to write a function that enables creating an instance of
 your driver. By convention, the function is called <code>new()</code> and looks
 something like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl Ls1234&lt;'a&gt; {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Ls1234&lt;'a&gt; {
     pub fn new(i2c: &amp;'a dyn I2CDevice, buffer: &amp;'static mut [u8]) -&gt; Ls1234&lt;'a&gt; {
         Ls1234 {
             i2c: i2c,
@@ -2600,7 +2643,8 @@ impl Ls1234&lt;'a&gt; {
         }
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>This function will get called by the board's <code>main.rs</code> file when the driver
 is instantiated. All of the static objects or configuration that the driver
 requires must be passed in here. In this example, a reference to the I2C
@@ -2615,15 +2659,16 @@ requires extending the <code>impl</code> of the driver struct with additional fu
 appropriate for your particular IC.</p>
 <p>With our light sensor example, we likely want to write a sample function for
 reading a light sensor value:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl Ls1234&lt;'a&gt; {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Ls1234&lt;'a&gt; {
     pub fn new(...) -&gt; Ls1234&lt;'a&gt; {...}
 
     pub fn start_light_reading(&amp;self) {...}
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>Note that the function name is &quot;start light reading&quot;, which is appropriate
 because of the event-driven, non-blocking nature of the Tock kernel.
 Actually communicating with the sensor will take some time, and likely
@@ -2634,10 +2679,10 @@ described earlier.</p>
 <p>The start reading function will likely prepare the message buffer in a way
 that is IC-specific, then send the command to the IC. A rough example of
 that operation looks like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl Ls1234&lt;'a&gt; {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Ls1234&lt;'a&gt; {
     pub fn new(...) -&gt; Ls1234&lt;'a&gt; {...}
 
     pub fn start_light_reading(&amp;self) {
@@ -2658,28 +2703,30 @@ impl Ls1234&lt;'a&gt; {
         }
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>The <code>start_light_reading()</code> function kicks off reading the light value from
 the IC and updates our internal state machine state to mark that we are
 waiting for the IC to turn on. Now the <code>Ls1234</code> code is finished for the
 time being and we now wait for the I2C message to finish being sent. We will
 know when this has completed based on a callback from the I2C hardware.</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl I2CClient for Ls1234&lt;'a&gt; {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl I2CClient for Ls1234&lt;'a&gt; {
     fn command_complete(&amp;self, buffer: &amp;'static mut [u8], error: Error) {
         // Handle what happens with the I2C send is complete here.
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>In our example, we have to send a new command after turning on the light
 sensor to actually read a sampled value. We use our state machine here to
 organize the code as in this example:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl I2CClient for Ls1234&lt;'a&gt; {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl I2CClient for Ls1234&lt;'a&gt; {
     fn command_complete(&amp;self, buffer: &amp;'static mut [u8], _error: Error) {
         match self.state.get() {
             State::Enabling =&gt; {
@@ -2694,7 +2741,8 @@ impl I2CClient for Ls1234&lt;'a&gt; {
         }
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>This will send another command to the sensor to read the actual light
 measurement. We also update our <code>self.state</code> variable because when this I2C
 transaction finishes the exact same <code>command_complete</code> callback will be
@@ -2703,10 +2751,10 @@ communicating with the sensor.</p>
 <p>When the read finishes, the <code>command_complete()</code> callback will fire again,
 and we must handle the result. Since we now have the reading we can call our
 client's callback after updating out state machine.</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl I2CClient for Ls1234&lt;'a&gt; {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl I2CClient for Ls1234&lt;'a&gt; {
     fn command_complete(&amp;self, buffer: &amp;'static mut [u8], _error: Error) {
         match self.state.get() {
             State::Enabling =&gt; {
@@ -2732,7 +2780,8 @@ impl I2CClient for Ls1234&lt;'a&gt; {
         }
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <blockquote>
 <p>Note: likely the sensor would need to be disabled and returned to a low
 power state.</p>
@@ -2746,7 +2795,7 @@ machine for the IC. There are examples in the <code>capsules/src</code> folder w
 drivers that need different resources.</p>
 </li>
 </ol>
-<h2><a class="header" href="#optional-steps" id="optional-steps">Optional Steps</a></h2>
+<h2 id="optional-steps"><a class="header" href="#optional-steps">Optional Steps</a></h2>
 <ol>
 <li>
 <p><strong>Provide a HIL interface for the IC driver.</strong></p>
@@ -2760,10 +2809,10 @@ specific IC is being used on a particular hardware platform.</p>
 the <code>sensors.rs</code> file. Drivers can implement one of these HILs and then
 higher-level code can use the HIL interface rather than a specific IC.</p>
 <p>To implement the HIL, you must implement the HIL trait functions:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl AmbientLight for Ls1234&lt;'a&gt; {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl AmbientLight for Ls1234&lt;'a&gt; {
     fn set_client(&amp;self, client: &amp;'static dyn AmbientLightClient) {
 
     }
@@ -2772,7 +2821,8 @@ impl AmbientLight for Ls1234&lt;'a&gt; {
 
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>The user of the <code>AmbientLight</code> HIL will implement the <code>AmbientLightClient</code>
 and provide the client through the <code>set_client()</code> function.</p>
 </li>
@@ -2783,27 +2833,27 @@ interface so that userspace applications can use the IC. Please refer to a
 separate guide on how to implement a userspace interface for a capsule.</p>
 </li>
 </ol>
-<h2><a class="header" href="#wrap-up-1" id="wrap-up-1">Wrap-Up</a></h2>
+<h2 id="wrap-up-1"><a class="header" href="#wrap-up-1">Wrap-Up</a></h2>
 <p>Congratulations! You have implemented an IC driver as a capsule in Tock! We
 encourage you to submit a pull request to upstream this to the Tock repository.
 Tock is happy to accept capsule drivers even if no boards in the Tock repository
 currently use the driver.</p>
-<h1><a class="header" href="#implementing-a-syscall-interface-for-userspace" id="implementing-a-syscall-interface-for-userspace">Implementing a Syscall Interface for Userspace</a></h1>
-<p>This guide provides an overview and walkthrough on how to add a syscall
-interface for userspace applications in Tock. This syscall interface exposes
+<h1 id="implementing-a-system-call-interface-for-userspace"><a class="header" href="#implementing-a-system-call-interface-for-userspace">Implementing a System Call Interface for Userspace</a></h1>
+<p>This guide provides an overview and walkthrough on how to add a system call
+interface for userspace applications in Tock. The system call interface exposes
 some kernel functionality to applications. For example, this could be the
 ability to sample a new sensor, or use some service like doing AES encryption.</p>
 <p>In this guide we will use a running example of providing a userspace interface
 for a hypothetical water level sensor (the &quot;WS00123&quot; water level sensor). This
 interface will allow applications to query the current water level, as well as
 get notified when the water level exceeds a certain threshold.</p>
-<h2><a class="header" href="#setup-1" id="setup-1">Setup</a></h2>
+<h2 id="setup-1"><a class="header" href="#setup-1">Setup</a></h2>
 <p>This guide assumes you already have existing kernel code that needs a
 userspace interface. Likely that means there is already a capsule implemented.
 Please see the other guides if you also need to implement the capsule.</p>
 <p>We will assume there is a <code>struct WS00123 {...}</code> object already implemented
 that includes all of the logic needed to interface with this particular water sensor.</p>
-<h2><a class="header" href="#overview-2" id="overview-2">Overview</a></h2>
+<h2 id="overview-2"><a class="header" href="#overview-2">Overview</a></h2>
 <p>The high-level steps required are:</p>
 <ol>
 <li>Decide on the interface to expose to userspace.</li>
@@ -2814,7 +2864,7 @@ that includes all of the logic needed to interface with this particular water se
 <li>Expose the interface to userspace.</li>
 <li>Implement the syscall library in userspace.</li>
 </ol>
-<h2><a class="header" href="#step-by-step-guide-2" id="step-by-step-guide-2">Step-by-Step Guide</a></h2>
+<h2 id="step-by-step-guide-2"><a class="header" href="#step-by-step-guide-2">Step-by-Step Guide</a></h2>
 <p>The steps from the overview are elaborated on here.</p>
 <ol>
 <li>
@@ -2842,7 +2892,7 @@ be usable if a hardware board swapped one out for the other?</li>
 </ul>
 <p>The interface should include both actions (called &quot;commands&quot; in Tock) that
 the application can take (for example, &quot;sample this sensor now&quot;), as well as
-events (called subscribe callbacks in Tock) that the kernel can trigger
+events (called subscribe upcalls in Tock) that the kernel can trigger
 inside of an application (for example, when the sensed value is ready).</p>
 <p>The interface can also include memory sharing between the application and
 the kernel. For example, if the application wants to receive a number of
@@ -2859,24 +2909,28 @@ three main relevant syscall operations that applications can use when
 interfacing with the kernel:</p>
 <ol>
 <li>
-<p><code>allow</code>: This lets an application share some of its memory with the
-kernel.</p>
+<p><code>allow_readwrite</code>: This lets an application share some of its memory with the
+kernel, which the kernel can read or write to.</p>
 </li>
 <li>
-<p><code>subscribe</code>: This provides a callback function pointer that the kernel
-can use to trigger a callback in the application.</p>
+<p><code>allow_readonly</code>: This lets an application share some of its memory with the
+kernel, which the kernel can only read.</p>
 </li>
 <li>
-<p><code>command</code>: This enables the application to direct the kernel to do some
+<p><code>subscribe</code>: This provides a function pointer that the kernel
+can use to invoke an upcall on the application.</p>
+</li>
+<li>
+<p><code>command</code>: This enables the application to direct the kernel to take some
 action.</p>
 </li>
 </ol>
-<p>All three also include a couple other parameters to differentiate different
+<p>All four also include a couple other parameters to differentiate different
 commands, subscriptions, or allows. Refer to the more detailed documentation
 on the Tock syscalls for more information.</p>
 <p>As the Tock kernel only supports these syscalls, each feature in the design
-you created in the first step must be mapped to one or more of these
-syscalls. To help, consider these hypothetical interfaces that
+you created in the first step must be mapped to one or more of them.
+To help, consider these hypothetical interfaces that
 an application might have for our water sensor:</p>
 <ul>
 <li><em>What is the maximum water level?</em> This can be a simple command, where the
@@ -2898,6 +2952,11 @@ application to set the function that will get called when the high water
 level event occurs. Then the application will need to use a command to
 enable the high water level detection and to optionally set the threshold.</li>
 </ul>
+<p>As you do this, remember that kernel operations, and the above system calls,
+cannot execute for a long period of time. All of the four system calls are 
+non-blocking. Long-running operations should involve an application starting
+the operation with a command, then having the kernel signal completion with
+an upcall.</p>
 <p><strong>Checkpoint</strong>: You have defined how many allow, subscribe, and command
 syscalls you need, and what each will do.</p>
 </li>
@@ -2913,30 +2972,32 @@ able to store the callback that a process registers with us.</p>
 of the state we want to store for each process that uses our syscall interface. By convention in Tock, this struct is named <code>App</code>, but it could
 have a different name. We will need to keep two values, the callback and the
 high water alert threshold:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct App {
-    callback: Option&lt;Callback&gt;,
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct App {
+    callback: Callback,
     threshold: usize,
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>Now that we have the type we want to store in the grant region we can create
 the grant type for it by extending our <code>WS00123</code> struct:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct WS00123 {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct WS00123 {
 	...
     apps: Grant&lt;App&gt;,
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>We will also need the grant region to be created by the board and passed in
 to us by adding it to the capsules <code>new()</code> function:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl WS00123 {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl WS00123 {
     pub fn new(
         ...
         grant: Grant&lt;App&gt;,
@@ -2947,73 +3008,87 @@ impl WS00123 {
         }
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>Now we have somewhere to store values on a per-process basis.</p>
 </li>
 <li>
 <p><strong>Implement the <code>Driver</code> trait.</strong></p>
 <p>The <code>Driver</code> trait is how a capsule provides implementations for the various
 syscalls an application might call. The basic framework looks like:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl Driver for WS00123 {
-	fn allow(
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Driver for WS00123 {
+	fn allow_readwrite(
 	    &amp;self,
 	    appid: AppId,
-	    allow_num: usize,
-	    slice: Option&lt;AppSlice&lt;Shared, u8&gt;&gt;,
-	) -&gt; ReturnCode { }
-
+	    which, usize,
+	    slice: ReadWriteAppSlice,
+	) -&gt; Result&lt;ReadWriteAppSlice, (ReadWriteAppSlice, ErrorCode)&gt; { }
+	
+    fn allow_readonly(
+        &amp;self,
+        app: AppId,
+        which: usize,
+        slice: ReadOnlyAppSlice,
+    ) -&gt; Result&lt;ReadOnlyAppSlice, (ReadOnlyAppSlice, ErrorCode)&gt; { }
+	
     fn subscribe(
         &amp;self,
-        subscribe_num: usize,
-        callback: Option&lt;Callback&gt;,
-        _app_id: AppId,
-    ) -&gt; ReturnCode { }
+        subscribe_identifier: usize,
+        callback: Callback,
+        app_id: AppId,
+    ) -&gt; Result&lt;Callback, (Callback, ErrorCode)&gt; { }
 
-    fn command(&amp;self,
-    	       command_num: usize,
-    	       data: usize,
-    	       data2: usize,
-    	       app: AppId,
-    ) -&gt; ReturnCode { }
+    fn command(
+        &amp;self, 
+	    which: usize, 
+		r2: usize, 
+		r3: usize, 
+		caller_id: AppId) -&gt; CommandReturn { }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
+<p>For details on exactly how these methods work and their return values, 
+[TRD104]((https://github.com/tock/tock/blob/master/doc/reference/trd104-syscalls.md)
+is their reference document.</p>
 <p>Note: there are default implementations for each of these, so in our water
 level sensor case we can simply omit the <code>allow</code> call.</p>
 <p>By Tock convention, every syscall interface must at least support the
-command call with <code>command_num == 0</code>. This allows applications to check if
-the syscall interface is supported on the current platform. If the command
-returns <code>&lt;0</code> then the syscall interface is not present. Many implementations
-return <code>SUCCESS</code> (i.e. 0), however, some return other positive numbers, like
-for example the number of LEDs present on the board. For our example, we use
+command call with <code>which == 0</code>. This allows applications to check if
+the syscall interface is supported on the current platform. The command must
+return a <code>CommandReturn::success()</code>. If the command is not present, then the
+kernel automatically has it return a failure with an error code of <code>ErrorCode::NOSUPPORT</code>.
+For our example, we use
 the simple case:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl Driver for WS00123 {
-	fn command(&amp;self,
-    	       command_num: usize,
-    	       data: usize,
-    	       data2: usize,
-    	       app: AppId,
-    ) -&gt; ReturnCode {
-		match command_num {
-			0 =&gt; ReturnCode::SUCCESS,
-			_ =&gt; ReturnCode::ENOSUPPORT,
-		}
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Driver for WS00123 {
+    fn command(
+        &amp;self, 
+        which: usize, 
+        r2: usize, 
+		r3: usize, 
+		caller_id: AppId) -&gt; CommandReturn { 
+			match command_num {
+				0 =&gt; CommandReturn::success(),
+				_ =&gt; CommandReturn::failure(ErrorCode::NOSUPPORT)
+			}
+        }
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>Now let's handle the subscribe call where the app can setup the callback we
 should use. For this capsule, we will use a single callback for both when a
 measurement is ready and for when a high water alert is triggered, but with
 different arguments passed into the callback.</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl Driver for WS00123 {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Driver for WS00123 {
     /// Setup callbacks.
     ///
     /// ### `subscribe_num`
@@ -3022,22 +3097,30 @@ impl Driver for WS00123 {
     ///        and when any alerts are triggered.
     fn subscribe(
         &amp;self,
-        subscribe_num: usize,
-        callback: Option&lt;Callback&gt;,
+        subscribe_identifier: usize,
+		mut callback: Callback,
         app_id: AppId,
-    ) -&gt; ReturnCode {
-        self.apps
+    ) -&gt; Result&lt;Callback, (Callback, ErrorCode)&gt; {
+        let res = self.apps
             .enter(app_id, |app, _| {
                 match subscribe_num {
-                    0 =&gt; app.callback = callback,
-                    _ =&gt; return ReturnCode::ENOSUPPORT,
-                }
-                ReturnCode::SUCCESS
-            })
-            .unwrap_or_else(|err| err.into())
+                    0 =&gt; {
+					    // Swap the old and new callback
+					    mem::swap(&amp;mut app.callback, &amp;mut callback);
+						Ok(())
+					},
+                    _ =&gt; Err(ErrorCode:NOSUPPORT)
+            }).map_err(ErrorCode::from); // Turn a grant error to an ErrorCode
+		// We always return a callback
+        if let Err(e) = res {
+		    Err((callback, e))
+	    } else {
+		    Ok(callback)
+	 	}
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>As you can see, we use the <code>enter()</code> function to &quot;enter&quot; the grant region of
 the specific requesting app <code>app_id</code>. This performs checks like ensuring the
 grant region exists and that the application is valid. If <code>enter()</code> succeeds
@@ -3049,10 +3132,10 @@ to sample and one to enable the alert. In both cases the commands must
 return a <code>ReturnCode</code>, and call functions that likely already exist in the
 original implementation of the <code>WS00123</code> sensor. If the functions don't
 quite exist, then they will need to be added as well.</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl Driver for WS00123 {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Driver for WS00123 {
 	/// Command interface.
 	///
 	/// ### `command_num`
@@ -3061,56 +3144,56 @@ impl Driver for WS00123 {
 	/// - `1`: Start a water level measurement.
 	/// - `2`: Enable the water level detection alert. `data` is used as the
 	///        height to set as the the threshold for detection.
-	fn command(&amp;self,
-    	       command_num: usize,
-    	       data: usize,
-    	       data2: usize,
-    	       app: AppId,
-    ) -&gt; ReturnCode {
-		match command_num {
-			0 =&gt; ReturnCode::SUCCESS,
-
+    fn command(
+        &amp;self, 
+        which: usize, 
+        r2: usize, 
+		r3: usize, 
+		caller_id: AppId) -&gt; CommandReturn { 
+  	    match command_num {
+			0 =&gt; CommandReturn::success(),
 			1 =&gt; self.start_measurement(app),
-
 			2 =&gt; {
 				// Save the threshold for this app.
 				self.apps
 				    .enter(app_id, |app, _| {
 				        app.threshold = data;
-				        ReturnCode::SUCCESS
+				        CommandReturn::success()
 				    })
 				    .map_or_else(
-				    	|err| err.into(),
+				    	|err| CommandReturn::failure(ErrorCode::from),
 				    	|ok| self.set_high_level_detection()
 				    )
-			}
+			},
 
-			_ =&gt; ReturnCode::ENOSUPPORT,
+			_ =&gt; CommandReturn::failure(ErrorCode::NOSUPPORT),
 		}
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>The last item that needs to be added is to actually use the callback when
 the sensor has been sampled or the alert has been triggered. Actually
 issuing the callback will need to be added to the existing implementation of
 the capsule. As an example, if our water sensor was attached to the board
 over I2C, then we might trigger the callback in response to a finished I2C
 command:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl i2c::I2CClient for WS00123 {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl i2c::I2CClient for WS00123 {
     fn command_complete(&amp;self, buffer: &amp;'static mut [u8], _error: i2c::Error) {
     	...
     	let app_id = &lt;get saved appid for the app that issued the command&gt;;
     	let measurement = &lt;calculate water level based on returned I2C data&gt;;
 
     	self.apps.enter(app_id, |app, _| {
-    	    app.callback.map(|mut cb| cb.schedule(0, measurement, 0));
+    	    app.callback.schedule(0, measurement, 0));
     	});
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>There may be other cleanup code required to reset state or prepare the
 sensor for another sample by a different application, but these are the
 essential elements for implementing the syscall interface.</p>
@@ -3118,11 +3201,12 @@ essential elements for implementing the syscall interface.</p>
 the kernel (and userspace apps) can differentiate this syscall interface
 from all others that a board supports. By convention this is specified by
 a global value at the top of the capsule file:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub const DRIVER_NUM: usize = 0x80000A;
-#}</code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub const DRIVER_NUM: usize = 0x80000A;
+<span class="boring">}
+</span></code></pre></pre>
 <p>The value cannot conflict with other capsules in use, but can be set
 arbitrarily, particularly for testing. Tock has a procedure for assigning
 numbers, and you may need to change this number if the capsule is to merged
@@ -3213,10 +3297,10 @@ kernel knows which implementation of <code>Driver</code> to call. In each board'
 the <code>Platform</code> trait where the board can setup which syscall interfaces it
 supports. To enable our water sensor interface we add a new entry to the
 match statement there:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl Platform for Hail {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Platform for Hail {
     fn with_driver&lt;F, R&gt;(&amp;self, driver_num: usize, f: F) -&gt; R
     where
         F: FnOnce(Option&lt;&amp;dyn kernel::Driver&gt;) -&gt; R,
@@ -3229,7 +3313,8 @@ impl Platform for Hail {
         }
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 </li>
 <li>
 <p><strong>Implement the syscall library in userspace.</strong></p>
@@ -3282,15 +3367,15 @@ other examples in libtock for how to make synchronous versions of
 asynchronous operations (like reading the sensor).</p>
 </li>
 </ol>
-<h2><a class="header" href="#wrap-up-2" id="wrap-up-2">Wrap-Up</a></h2>
+<h2 id="wrap-up-2"><a class="header" href="#wrap-up-2">Wrap-Up</a></h2>
 <p>Congratulations! You have added a new API for userspace applications using the
 Tock syscall interface! We encourage you to submit a pull request to upstream
 this to the Tock repository.</p>
-<h1><a class="header" href="#implementing-a-hil-interface" id="implementing-a-hil-interface">Implementing a HIL Interface</a></h1>
+<h1 id="implementing-a-hil-interface"><a class="header" href="#implementing-a-hil-interface">Implementing a HIL Interface</a></h1>
 <p>This guide describes the process of creating a new HIL interface in Tock. &quot;HIL&quot;s
 are one or more Rust traits that provide a standard and shared interface between
 pieces of the Tock kernel.</p>
-<h2><a class="header" href="#background-2" id="background-2">Background</a></h2>
+<h2 id="background-2"><a class="header" href="#background-2">Background</a></h2>
 <p>The most canonical use for a HIL is to provide an interface to hardware
 peripherals to capsules. For example, a HIL for SPI provides an interface
 between the SPI hardware peripheral in a microcontroller and a capsule that
@@ -3329,7 +3414,7 @@ set of uses takes time. Again, often the set of uses is not known initially,
 and HILs often have to be revised as new use cases are discovered.</li>
 </ol>
 <p>Therefore, we consider HILs to be evolving interfaces.</p>
-<h2><a class="header" href="#tips-on-hil-development" id="tips-on-hil-development">Tips on HIL Development</a></h2>
+<h2 id="tips-on-hil-development"><a class="header" href="#tips-on-hil-development">Tips on HIL Development</a></h2>
 <p>As getting a HIL interface &quot;correct&quot; is difficult, Tock tends to prefer starting
 with simple HIL interfaces that are typically inspired by the hardware used when
 the HIL is initially created. Trying to generalize a HIL too early can lead to
@@ -3340,14 +3425,14 @@ functions) that are actually in use by the Tock code base. This ensures that
 there is at least some method of using or testing various components of Tock.
 This also suggests that initial HIL development should only focus on an interface
 that is needed by the initial use case.</p>
-<h2><a class="header" href="#overview-3" id="overview-3">Overview</a></h2>
+<h2 id="overview-3"><a class="header" href="#overview-3">Overview</a></h2>
 <p>The high-level steps required are:</p>
 <ol>
 <li>Determine that a new HIL interface is needed.</li>
 <li>Create the new HIL in the kernel crate.</li>
 <li>Ensure the HIL file includes sufficient documentation.</li>
 </ol>
-<h2><a class="header" href="#step-by-step-guide-3" id="step-by-step-guide-3">Step-by-Step Guide</a></h2>
+<h2 id="step-by-step-guide-3"><a class="header" href="#step-by-step-guide-3">Step-by-Step Guide</a></h2>
 <p>The steps from the overview are elaborated on here.</p>
 <ol>
 <li>
@@ -3409,10 +3494,10 @@ These comments are the main source of documentation for HILs.</p>
 to fully explain their design and intended use cases.</p>
 </li>
 </ol>
-<h2><a class="header" href="#wrap-up-3" id="wrap-up-3">Wrap-Up</a></h2>
+<h2 id="wrap-up-3"><a class="header" href="#wrap-up-3">Wrap-Up</a></h2>
 <p>Congratulations! You have implemented a new HIL in Tock! We encourage you to
 submit a pull request to upstream this to the Tock repository.</p>
-<h1><a class="header" href="#implementing-an-in-kernel-virtualization-layer" id="implementing-an-in-kernel-virtualization-layer">Implementing an in-kernel Virtualization Layer</a></h1>
+<h1 id="implementing-an-in-kernel-virtualization-layer"><a class="header" href="#implementing-an-in-kernel-virtualization-layer">Implementing an in-kernel Virtualization Layer</a></h1>
 <p>This guide provides an overview and walkthrough on how to add an in-kernel virtualization
 layer, such that a given hardware interface can be used simultaneously by multiple
 kernel capsules, or used simultaneously by a single kernel capsule and userspace.
@@ -3421,7 +3506,7 @@ Some example interfaces which have already been virtualized include Alarm, SPI, 
 UART, I2C, ADC, and others.</p>
 <p>In this guide we will use a running example of virtualizing a single hardware SPI peripheral
 and bus for use as a SPI Master.</p>
-<h2><a class="header" href="#setup-2" id="setup-2">Setup</a></h2>
+<h2 id="setup-2"><a class="header" href="#setup-2">Setup</a></h2>
 <p>This guide assumes you already have existing kernel code that needs to be virtualized.
 There should be an existing HIL for the resource you are virtualizing.</p>
 <p>We will assume there is a <code>trait SpiMaster {...}</code> already defined and implemented
@@ -3429,7 +3514,7 @@ that includes all of the logic needed to interface with the underlying SPI.
 We also assume there is a <code>trait SpiMasterClient</code> that determines the interface a client
 of the SPI exposes to the underlying resource. In most cases, equivalent traits will
 represent a necessary precursor to virtualization.</p>
-<h2><a class="header" href="#overview-4" id="overview-4">Overview</a></h2>
+<h2 id="overview-4"><a class="header" href="#overview-4">Overview</a></h2>
 <p>The high-level steps required are:</p>
 <ol>
 <li>Create a capsule file for your virtualizer</li>
@@ -3443,7 +3528,7 @@ of multiple of the lone resource.</li>
 <li>(Optional) Write tests for the virtualization logic.</li>
 </ol>
 <p><img src="development/../imgs/virtual.svg" alt="" /></p>
-<h2><a class="header" href="#step-by-step-guide-4" id="step-by-step-guide-4">Step-by-Step Guide</a></h2>
+<h2 id="step-by-step-guide-4"><a class="header" href="#step-by-step-guide-4">Step-by-Step Guide</a></h2>
 <p>The steps from the overview are elaborated on here.</p>
 <ol>
 <li>
@@ -3459,10 +3544,10 @@ of modules.</p>
 <p>Generally, this step requires looking at the HIL being virtualized, and
 determining what portions of the HIL require additional logic to handle
 multiple concurrent clients. Lets take a look at the SPIMaster HIL:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub trait SpiMaster {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub trait SpiMaster {
     fn set_client(&amp;self, client: &amp;'static dyn SpiMasterClient);
 
     fn init(&amp;self);
@@ -3504,7 +3589,8 @@ pub trait SpiMaster {
     fn hold_low(&amp;self);
     fn release_low(&amp;self);
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>For some of these functions, it is clear that no virtualization is required.
 For example, <code>get_rate()</code>, <code>get_phase()</code> and <code>get_polarity()</code> simply request
 information on the current configuration of the underlying hardware. Implementations
@@ -3529,10 +3615,10 @@ as that encapsulates the entire transaction that would be desired by a virtual c
 <p>Given that not all parts of the original HIL trait (<code>SpiMaster</code>) are appropriate for
 virtualization, we should create a new trait in the SPI HIL that will represent the
 interface provided to clients of the Virtual SPI:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-//! kernel/src/hil/spi.rs
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>//! kernel/src/hil/spi.rs
 ...
 /// SPIMasterDevice provides a chip-specific interface to the SPI Master
 /// hardware. The interface wraps the chip select line so that chip drivers
@@ -3558,7 +3644,8 @@ pub trait SpiMasterDevice {
     fn get_phase(&amp;self) -&gt; ClockPhase;
     fn get_rate(&amp;self) -&gt; u32;
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>Not all virtualizers will require a new trait to provide virtualization! For example,
 <code>VirtualMuxDigest</code> exposes the same <code>Digest</code> HIL as the underlying hardware. Same for
 <code>VirtualAlarm</code>, <code>VirtualUart</code>, and <code>MuxFlash</code>. <code>VirtualI2C</code> does use a different trait, similarly
@@ -3589,10 +3676,10 @@ as a template.</p>
 a reference to the underlying hardware resource and that will hold the multiple &quot;virtual&quot;
 devices which clients will interact with. For the SPI interface, we call this struct
 <code>MuxSpiMaster</code>:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-/// The Mux struct manages multiple Spi clients. Each client may have
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// The Mux struct manages multiple Spi clients. Each client may have
 /// at most one outstanding Spi request.
 pub struct MuxSpiMaster&lt;'a, Spi: hil::spi::SpiMaster&gt; {
     // The underlying resource being virtualized
@@ -3605,17 +3692,18 @@ pub struct MuxSpiMaster&lt;'a, Spi: hil::spi::SpiMaster&gt; {
     // Additional data storage needed to implement virtualization logic
     inflight: OptionalCell&lt;&amp;'a VirtualSpiMasterDevice&lt;'a, Spi&gt;&gt;,
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>Here we use Tock's built-in <code>List</code> type, which is a LinkedList of statically
 allocated structures that implement a given trait. This type is required because
 Tock does not allow heap allocation in the Kernel.</p>
 <p>Typically, this struct will implement some number of private helper functions used
 as part of virtualization, and provide a public constructor. For now we will just
 implement the constructor:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl&lt;'a, Spi: hil::spi::SpiMaster&gt; MuxSpiMaster&lt;'a, Spi&gt; {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl&lt;'a, Spi: hil::spi::SpiMaster&gt; MuxSpiMaster&lt;'a, Spi&gt; {
     pub const fn new(spi: &amp;'a Spi) -&gt; MuxSpiMaster&lt;'a, Spi&gt; {
         MuxSpiMaster {
             spi: spi,
@@ -3626,7 +3714,8 @@ impl&lt;'a, Spi: hil::spi::SpiMaster&gt; MuxSpiMaster&lt;'a, Spi&gt; {
 
     // TODO: Implement virtualization logic helper functions
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 </li>
 <li>
 <p><strong>Create a <code>VirtualXXXDevice</code> which will implement the underlying HIL trait</strong></p>
@@ -3636,10 +3725,10 @@ struct here. In practice, both must be defined simultaneously because each type 
 the other. The <code>VirtualSpiMasterDevice</code> should have a reference to the mux, a <code>ListLink</code>
 field (required so that lists of <code>VirtualSpiMasterDevice</code>s can be constructed),
 and other fields for data that needs to be stored <em>for each client</em> of the virtualizer.</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub struct VirtualSpiMasterDevice&lt;'a, Spi: hil::spi::SpiMaster&gt; {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct VirtualSpiMasterDevice&lt;'a, Spi: hil::spi::SpiMaster&gt; {
     //reference to the mux
     mux: &amp;'a MuxSpiMaster&lt;'a, Spi&gt;,
 
@@ -3676,13 +3765,14 @@ impl&lt;'a, Spi: hil::spi::SpiMaster&gt; VirtualSpiMasterDevice&lt;'a, Spi&gt; {
         self.client.set(client);
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>This is the struct that will implement whatever HIL trait we decided on in step 1.
 In our case, this is the <code>SpiMasterDevice</code> trait:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-// Given that there are multiple types of operations we might need to queue,
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Given that there are multiple types of operations we might need to queue,
 // create an enum that can represent each operation and the data that operation
 // needs to store.
 #[derive(Copy, Clone, PartialEq)]
@@ -3741,7 +3831,8 @@ impl&lt;Spi: hil::spi::SpiMaster&gt; hil::spi::SpiMasterDevice for VirtualSpiMas
         self.mux.spi.get_rate()
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>Now we can begin to see the virtualization logic. Each <code>get_x()</code> method just forwards calls
 directly to the underlying hardware driver, as these operations are synchronous and non-blocking.
 But the <code>set()</code> calls and the read/write calls
@@ -3762,10 +3853,10 @@ the underlying hardware device is busy when <code>do_next_op()</code> is called 
 we need some mechanism for tracking if the underlying device is currently busy. We also
 need to restore the state expected by the device performing a given operaion (e.g. the chip
 select pin in use). Beyond that, we just forward calls to the hardware driver:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-fn do_next_op(&amp;self) {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn do_next_op(&amp;self) {
     if self.inflight.is_none() {
         let mnode = self
             .devices
@@ -3807,7 +3898,8 @@ fn do_next_op(&amp;self) {
         });
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>Notably, the SPI driver does not implement any fairness schemes, despite the requirements of
 the threat model. As of this writing, the threat model is still aspirational, and not followed
 for all virtualizers. Eventually, this driver should be updated to use round robin queueing of
@@ -3823,10 +3915,10 @@ operations are triggered if an operation is requested while the underlying devic
 <p>Handling callbacks in virtualizers requires two layers of handling. First, the <code>MuxXXX</code> device
 must implement the appropriate <code>XXXClient</code> trait such that it can subscribe to callbacks
 from the underlying resource, and dispatch them to the appropriate <code>VirtualXXXDevice</code>:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl&lt;Spi: hil::spi::SpiMaster&gt; hil::spi::SpiMasterClient for MuxSpiMaster&lt;'_, Spi&gt; {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl&lt;Spi: hil::spi::SpiMaster&gt; hil::spi::SpiMasterClient for MuxSpiMaster&lt;'_, Spi&gt; {
     fn read_write_done(
         &amp;self,
         write_buffer: &amp;'static mut [u8],
@@ -3839,17 +3931,18 @@ impl&lt;Spi: hil::spi::SpiMaster&gt; hil::spi::SpiMasterClient for MuxSpiMaster&
         });
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>This takes advantage of the fact that we stored a reference to device that initiated
 the inflight operation, so we can dispatch the callback directly to that device.
 One thing to note is that the call to <code>take()</code> sets <code>inflight</code> to <code>None</code>, and then 
 the callback calls <code>do_next_op()</code>, triggering any still queued operations. This ensures that
 all queued operations will take place.
 This all requires that the device also has implemented the callback:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-impl&lt;Spi: hil::spi::SpiMaster&gt; hil::spi::SpiMasterClient for VirtualSpiMasterDevice&lt;'_, Spi&gt; {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl&lt;Spi: hil::spi::SpiMaster&gt; hil::spi::SpiMasterClient for VirtualSpiMasterDevice&lt;'_, Spi&gt; {
 fn read_write_done(
     &amp;self,
     write_buffer: &amp;'static mut [u8],
@@ -3860,7 +3953,8 @@ fn read_write_done(
         client.read_write_done(write_buffer, read_buffer, len);
     });
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>Finally, we have dispatched the callback all the way up to the client of the virtualizer,
 completing the round trip process.</p>
 </li>
@@ -3868,12 +3962,13 @@ completing the round trip process.</p>
 <p><strong>Document the interface.</strong></p>
 <p>Finally, you need to document the interface. Do so by placing a comment at the top
 of the file describing what the file does:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-//! Virtualize a SPI master bus to enable multiple users of the SPI bus.
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>//! Virtualize a SPI master bus to enable multiple users of the SPI bus.
 
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>and add doc comments (<code>/// doc comment example</code>) to any new traits created in <code>kernel/src/hil</code>.</p>
 </li>
 <li>
@@ -3883,17 +3978,17 @@ hardware to perform correct operation in edge cases. For examples of such tests,
 <code>capsules/src/test/virtual_uart.rs</code> or <code>capsules/src/test/random_alarm.rs</code>.</p>
 </li>
 </ol>
-<h2><a class="header" href="#wrap-up-4" id="wrap-up-4">Wrap-Up</a></h2>
+<h2 id="wrap-up-4"><a class="header" href="#wrap-up-4">Wrap-Up</a></h2>
 <p>Congratulations! You have virtualized a resource in the Tock kernel!
 We encourage you to submit a pull request to upstream
 this to the Tock repository.</p>
-<h1><a class="header" href="#implementing-a-kernel-test" id="implementing-a-kernel-test">Implementing a Kernel Test</a></h1>
+<h1 id="implementing-a-kernel-test"><a class="header" href="#implementing-a-kernel-test">Implementing a Kernel Test</a></h1>
 <p>This guide covers how to write in-kernel tests of hardware functionality.
 For example, if you have implemented a chip peripheral, you may want to write
 in-kernel tests of that peripheral to test peripheral-specific functionality
 that will not be exposed via the HIL for that peripheral. This guide
 outlines the general steps for implementing kernel tests.</p>
-<h2><a class="header" href="#setup-3" id="setup-3">Setup</a></h2>
+<h2 id="setup-3"><a class="header" href="#setup-3">Setup</a></h2>
 <p>This guide assumes you have existing chip, board, or architecture specific code
 that you wish to test from within the kernel.</p>
 <blockquote>
@@ -3903,7 +3998,7 @@ tests can be run by simply calling <code>cargo test</code> within the crate that
 is located, and will be executed during CI for all tests merged into upstream Tock.
 An example of this approach can be found in <code>kernel/src/common/ring_buffer.rs</code>.</p>
 </blockquote>
-<h2><a class="header" href="#overview-5" id="overview-5">Overview</a></h2>
+<h2 id="overview-5"><a class="header" href="#overview-5">Overview</a></h2>
 <p>The general steps you will follow are:</p>
 <ol>
 <li>Determine the board(s) you want to run your tests on</li>
@@ -3914,7 +4009,7 @@ An example of this approach can be found in <code>kernel/src/common/ring_buffer.
 <li>Document the expected output from the test at the top of the test file</li>
 </ol>
 <p>This guide will walk through how to do each of these steps.</p>
-<h2><a class="header" href="#background-3" id="background-3">Background</a></h2>
+<h2 id="background-3"><a class="header" href="#background-3">Background</a></h2>
 <p>Kernel tests allow for testing of hardware-specific functionality
 that is not exposed to userspace, and allows for fail-fast tests
 at boot that otherwise would not be exposed until apps are loaded. Kernel
@@ -3934,7 +4029,7 @@ drivers or modifying global state.</p>
 It is always recommended to attempt to copy from existing Tock code when
 developing your own solutions. A good collection of kernel tests can be
 found in <code>boards/imix/src/tests/</code> for that purpose.</p>
-<h2><a class="header" href="#step-by-step-guide-5" id="step-by-step-guide-5">Step-by-Step Guide</a></h2>
+<h2 id="step-by-step-guide-5"><a class="header" href="#step-by-step-guide-5">Step-by-Step Guide</a></h2>
 <p>The steps from the overview are elaborated on here.</p>
 <ol>
 <li>
@@ -3984,19 +4079,20 @@ for the <code>virtual_uart</code>)</li>
 <p>If your test meets the criteria for writing a capsule test, follow these steps:</p>
 <p>Add a file in <code>capsules/src/test/</code>, and then add the filename to
 <code>capsules/src/mod.rs</code> like this:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub mod virtual_uart;
-#}</code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod virtual_uart;
+<span class="boring">}
+</span></code></pre></pre>
 <p>Next, create a test struct in this file that can be instantiated by any board
 using this test capsule. This struct should implement a <code>new()</code> function so it
 can be instantiated from the test file in <code>boards</code>, and a <code>run()</code> function that
 will run the actual tests. An example for UART follows:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-//! capsules/src/test/virtual_uart.rs
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>//! capsules/src/test/virtual_uart.rs
 
 pub struct TestVirtualUartReceive {
     device: &amp;'static UartDevice&lt;'static&gt;,
@@ -4015,15 +4111,16 @@ impl TestVirtualUartReceive {
         // TODO: See Next Step
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>If your test does not meet the above requirements, you can simply implement your tests in the file
 that you created in step 2.
 This can involve creating a test structure with test methods. The UDP test file takes this approach,
 by definining a number of self-contained tests. One such example follows:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-//! boards/imix/src/test/udp_lowpan_test.rs
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>//! boards/imix/src/test/udp_lowpan_test.rs
 
 pub struct LowpanTest {
     port_table: &amp;'static UdpPortManager,
@@ -4058,7 +4155,8 @@ impl LowpanTest {
     }
     // ...
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p><strong>Checkpoint</strong>: There is a test capsule with <code>new()</code> and <code>run()</code> implementations.</p>
 </li>
 <li>
@@ -4071,10 +4169,10 @@ function.</p>
 or traits in this file to make your test functional. One example is implementing a client
 trait on the test struct so that the test can receive the results of asynchronous operations.
 Our UART example requires implementing the <code>uart::RecieveClient</code> on the test struct.</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-//! boards/imix/src/test/virtual_uart_rx_test.rs
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>//! boards/imix/src/test/virtual_uart_rx_test.rs
 
 impl TestVirtualUartReceive {
     // ...
@@ -4115,7 +4213,8 @@ impl uart::ReceiveClient for TestVirtualUartReceive {
         }
     }
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <blockquote>
 <p>Note that the above test calls <code>panic!()</code> in the case of failure. This pattern,
 or the similar use of <code>assert!()</code> statements, is the preferred way to communicate
@@ -4132,19 +4231,20 @@ is being tested. Notably, the <code>run()</code> function should initialize any 
 would not have already been created in <code>main.rs</code>.
 As an example, the below function is a starting point for the
 <code>virtual_uart_receive</code> test for Imix:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub unsafe fn run_virtual_uart_receive(mux: &amp;'static MuxUart&lt;'static&gt;) {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub unsafe fn run_virtual_uart_receive(mux: &amp;'static MuxUart&lt;'static&gt;) {
     debug!(&quot;Starting virtual reads.&quot;);
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>Next, a test function should initialize any objects required to run tests.
 This is best split out into subfunctions, like the following:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-unsafe fn static_init_test_receive_small(
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>unsafe fn static_init_test_receive_small(
     mux: &amp;'static MuxUart&lt;'static&gt;,
 ) -&gt; &amp;'static TestVirtualUartReceive {
     static mut SMALL: [u8; 3] = [0; 3];
@@ -4157,15 +4257,16 @@ unsafe fn static_init_test_receive_small(
     device.set_receive_client(test);
     test
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>This initializes an instance of the test capsule we constructed earlier. Simpler tests
 (such as those not relying on capsule tests)
 might simply use <code>static_init!()</code> to initialize normal capsules directly and test them.
 The log test does this, for example:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-//! boards/imix/src/test/log_test.rs
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>//! boards/imix/src/test/log_test.rs
 
 pub unsafe fn run(
     mux_alarm: &amp;'static MuxAlarm&lt;'static, Ast&gt;,
@@ -4195,21 +4296,23 @@ pub unsafe fn run(
 
     // ...
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>Finally, your <code>run()</code> function should call the actual tests. This may involve simply
 calling a <code>run()</code> function on a capsule test, or may involve calling test functions
 written in the board specific test file. The virtual UART test <code>run()</code> looks like this:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-pub unsafe fn run_virtual_uart_receive(mux: &amp;'static MuxUart&lt;'static&gt;) {
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub unsafe fn run_virtual_uart_receive(mux: &amp;'static MuxUart&lt;'static&gt;) {
     debug!(&quot;Starting virtual reads.&quot;);
     let small = static_init_test_receive_small(mux);
     let large = static_init_test_receive_large(mux);
     small.run();
     large.run();
 }
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>As you develop your kernel tests, you may not immediately know what functions are required
 in your test capsule -- this is okay! It is often easiest to start with a basic test and expand
 this file to test additional functionality once basic tests are working.</p>
@@ -4219,20 +4322,21 @@ this file to test additional functionality once basic tests are working.</p>
 <p><strong>Call the test from <code>main.rs</code>, and iterate on it until it works</strong></p>
 <p>Next, you should run your test by calling it from the <code>reset_handler()</code> in <code>main.rs</code>.
 In order to do so, you will also need it import it into the file by adding a line like this:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-#[allow(dead_code)]
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[allow(dead_code)]
 mod virtual_uart_test;
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>However, if your test is located inside a <code>test</code> module this is not needed -- your test will
 already be included.</p>
 <p>Typically, tests are called after completing setup of the board, immediately before
 the call to <code>load_processes()</code>:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-virtual_uart_rx_test::run_virtual_uart_receive(uart_mux);
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>virtual_uart_rx_test::run_virtual_uart_receive(uart_mux);
 debug!(&quot;Initialization complete. Entering main loop&quot;);
 
 extern &quot;C&quot; {
@@ -4246,7 +4350,8 @@ extern &quot;C&quot; {
 }
 kernel::procs::load_processes(
   // ...
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p>Observe your results, and tune or add tests as needed.</p>
 <p>Before you submit a PR including any kernel tests, however, please remove or comment out
 any lines of code that call these tests.</p>
@@ -4258,10 +4363,10 @@ any lines of code that call these tests.</p>
 run a test and what the expected output of a test is. This is best done using<br />
 document level coments (<code>//!</code>) at the top of the test file. The documentation
 for the virtual UART test follows:</p>
-<pre><pre class="playpen"><code class="language-rust">
-# #![allow(unused_variables)]
-#fn main() {
-//! Test reception on the virtualized UART by creating two readers that
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>//! Test reception on the virtualized UART by creating two readers that
 //! read in parallel. To add this test, include the line
 //! ```
 //!    virtual_uart_rx_test::run_virtual_uart_receive(uart_mux);
@@ -4287,11 +4392,12 @@ for the virtual UART test follows:</p>
 //! 61
 //! 61
 //! ```
-#}</code></pre></pre>
+<span class="boring">}
+</span></code></pre></pre>
 <p><strong>Checkpoint</strong>: You have documented your tests</p>
 </li>
 </ol>
-<h2><a class="header" href="#wrap-up-5" id="wrap-up-5">Wrap-Up</a></h2>
+<h2 id="wrap-up-5"><a class="header" href="#wrap-up-5">Wrap-Up</a></h2>
 <p>Congratulations! You have written a kernel test for Tock!
 We encourage you to submit a pull request to upstream this to the Tock
 repository.</p>
@@ -4318,22 +4424,15 @@ repository.</p>
         </div>
 
         
-        <!-- Livereload script (if served using the cli tool) -->
-        <script type="text/javascript">
-            var socket = new WebSocket("ws://localhost:3001");
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload(true); // force reload from server (not from cache)
-                }
-            };
 
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
         
 
+        
+
+        
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
         
 
         

@@ -1,7 +1,7 @@
-# Implementing a Syscall Interface for Userspace
+# Implementing a System Call Interface for Userspace
 
-This guide provides an overview and walkthrough on how to add a syscall
-interface for userspace applications in Tock. This syscall interface exposes
+This guide provides an overview and walkthrough on how to add a system call
+interface for userspace applications in Tock. The system call interface exposes
 some kernel functionality to applications. For example, this could be the
 ability to sample a new sensor, or use some service like doing AES encryption.
 
@@ -61,7 +61,7 @@ The steps from the overview are elaborated on here.
 
     The interface should include both actions (called "commands" in Tock) that
     the application can take (for example, "sample this sensor now"), as well as
-    events (called subscribe callbacks in Tock) that the kernel can trigger
+    events (called subscribe upcalls in Tock) that the kernel can trigger
     inside of an application (for example, when the sensed value is ready).
 
     The interface can also include memory sharing between the application and
@@ -78,22 +78,25 @@ The steps from the overview are elaborated on here.
     three main relevant syscall operations that applications can use when
     interfacing with the kernel:
 
-    1. `allow`: This lets an application share some of its memory with the
-       kernel.
+    1. `allow_readwrite`: This lets an application share some of its memory with the
+       kernel, which the kernel can read or write to.
 
-    2. `subscribe`: This provides a callback function pointer that the kernel
-       can use to trigger a callback in the application.
+    1. `allow_readonly`: This lets an application share some of its memory with the
+       kernel, which the kernel can only read.
 
-    3. `command`: This enables the application to direct the kernel to do some
+    2. `subscribe`: This provides a function pointer that the kernel
+       can use to invoke an upcall on the application.
+
+    3. `command`: This enables the application to direct the kernel to take some
        action.
 
-    All three also include a couple other parameters to differentiate different
+    All four also include a couple other parameters to differentiate different
     commands, subscriptions, or allows. Refer to the more detailed documentation
     on the Tock syscalls for more information.
 
     As the Tock kernel only supports these syscalls, each feature in the design
-    you created in the first step must be mapped to one or more of these
-    syscalls. To help, consider these hypothetical interfaces that
+    you created in the first step must be mapped to one or more of them.
+    To help, consider these hypothetical interfaces that
     an application might have for our water sensor:
 
     - _What is the maximum water level?_ This can be a simple command, where the
@@ -115,6 +118,12 @@ The steps from the overview are elaborated on here.
       level event occurs. Then the application will need to use a command to
       enable the high water level detection and to optionally set the threshold.
 
+	As you do this, remember that kernel operations, and the above system calls,
+	cannot execute for a long period of time. All of the four system calls are 
+	non-blocking. Long-running operations should involve an application starting
+	the operation with a command, then having the kernel signal completion with
+	an upcall.
+
     **Checkpoint**: You have defined how many allow, subscribe, and command
     syscalls you need, and what each will do.
 
@@ -135,7 +144,7 @@ The steps from the overview are elaborated on here.
 
     ```rust
     pub struct App {
-        callback: Option<Callback>,
+        callback: Callback,
         threshold: usize,
     }
     ```
@@ -176,52 +185,64 @@ The steps from the overview are elaborated on here.
 
     ```rust
     impl Driver for WS00123 {
-    	fn allow(
+    	fn allow_readwrite(
     	    &self,
     	    appid: AppId,
-    	    allow_num: usize,
-    	    slice: Option<AppSlice<Shared, u8>>,
-    	) -> ReturnCode { }
-
+    	    which, usize,
+    	    slice: ReadWriteAppSlice,
+    	) -> Result<ReadWriteAppSlice, (ReadWriteAppSlice, ErrorCode)> { }
+		
+        fn allow_readonly(
+            &self,
+            app: AppId,
+            which: usize,
+            slice: ReadOnlyAppSlice,
+        ) -> Result<ReadOnlyAppSlice, (ReadOnlyAppSlice, ErrorCode)> { }
+		
         fn subscribe(
             &self,
-            subscribe_num: usize,
-            callback: Option<Callback>,
-            _app_id: AppId,
-        ) -> ReturnCode { }
+            subscribe_identifier: usize,
+            callback: Callback,
+            app_id: AppId,
+        ) -> Result<Callback, (Callback, ErrorCode)> { }
 
-        fn command(&self,
-        	       command_num: usize,
-        	       data: usize,
-        	       data2: usize,
-        	       app: AppId,
-        ) -> ReturnCode { }
+        fn command(
+ 	        &self, 
+		    which: usize, 
+			r2: usize, 
+			r3: usize, 
+			caller_id: AppId) -> CommandReturn { }
     }
     ```
+
+    For details on exactly how these methods work and their return values, 
+	[TRD104]((https://github.com/tock/tock/blob/master/doc/reference/trd104-syscalls.md)
+	is their reference document.
 
     Note: there are default implementations for each of these, so in our water
     level sensor case we can simply omit the `allow` call.
 
     By Tock convention, every syscall interface must at least support the
-    command call with `command_num == 0`. This allows applications to check if
-    the syscall interface is supported on the current platform. If the command
-    returns `<0` then the syscall interface is not present. Many implementations
-    return `SUCCESS` (i.e. 0), however, some return other positive numbers, like
-    for example the number of LEDs present on the board. For our example, we use
+    command call with `which == 0`. This allows applications to check if
+    the syscall interface is supported on the current platform. The command must
+	return a `CommandReturn::success()`. If the command is not present, then the
+	kernel automatically has it return a failure with an error code of `ErrorCode::NOSUPPORT`.
+    For our example, we use
     the simple case:
 
     ```rust
     impl Driver for WS00123 {
-    	fn command(&self,
-        	       command_num: usize,
-        	       data: usize,
-        	       data2: usize,
-        	       app: AppId,
-        ) -> ReturnCode {
-    		match command_num {
-    			0 => ReturnCode::SUCCESS,
-    			_ => ReturnCode::ENOSUPPORT,
-    		}
+        fn command(
+            &self, 
+	        which: usize, 
+            r2: usize, 
+			r3: usize, 
+			caller_id: AppId) -> CommandReturn { 
+    			match command_num {
+    				0 => CommandReturn::success(),
+ 					_ => CommandReturn::failure(ErrorCode::NOSUPPORT)
+				}
+            }
         }
     }
     ```
@@ -241,19 +262,26 @@ The steps from the overview are elaborated on here.
         ///        and when any alerts are triggered.
         fn subscribe(
             &self,
-            subscribe_num: usize,
-            callback: Option<Callback>,
+            subscribe_identifier: usize,
+   			mut callback: Callback,
             app_id: AppId,
-        ) -> ReturnCode {
-            self.apps
+        ) -> Result<Callback, (Callback, ErrorCode)> {
+            let res = self.apps
                 .enter(app_id, |app, _| {
                     match subscribe_num {
-                        0 => app.callback = callback,
-                        _ => return ReturnCode::ENOSUPPORT,
-                    }
-                    ReturnCode::SUCCESS
-                })
-                .unwrap_or_else(|err| err.into())
+                        0 => {
+						    // Swap the old and new callback
+						    mem::swap(&mut app.callback, &mut callback);
+							Ok(())
+						},
+                        _ => Err(ErrorCode:NOSUPPORT)
+                }).map_err(ErrorCode::from); // Turn a grant error to an ErrorCode
+			// We always return a callback
+            if let Err(e) = res {
+			    Err((callback, e))
+		    } else {
+			    Ok(callback)
+    	 	}
         }
     }
     ```
@@ -281,31 +309,29 @@ The steps from the overview are elaborated on here.
     	/// - `1`: Start a water level measurement.
     	/// - `2`: Enable the water level detection alert. `data` is used as the
     	///        height to set as the the threshold for detection.
-    	fn command(&self,
-        	       command_num: usize,
-        	       data: usize,
-        	       data2: usize,
-        	       app: AppId,
-        ) -> ReturnCode {
-    		match command_num {
-    			0 => ReturnCode::SUCCESS,
-
+        fn command(
+            &self, 
+	        which: usize, 
+            r2: usize, 
+			r3: usize, 
+			caller_id: AppId) -> CommandReturn { 
+      	    match command_num {
+    			0 => CommandReturn::success(),
     			1 => self.start_measurement(app),
-
     			2 => {
     				// Save the threshold for this app.
     				self.apps
     				    .enter(app_id, |app, _| {
     				        app.threshold = data;
-    				        ReturnCode::SUCCESS
+    				        CommandReturn::success()
     				    })
     				    .map_or_else(
-    				    	|err| err.into(),
+    				    	|err| CommandReturn::failure(ErrorCode::from),
     				    	|ok| self.set_high_level_detection()
     				    )
-    			}
+    			},
 
-    			_ => ReturnCode::ENOSUPPORT,
+    			_ => CommandReturn::failure(ErrorCode::NOSUPPORT),
     		}
         }
     }
@@ -326,7 +352,7 @@ The steps from the overview are elaborated on here.
         	let measurement = <calculate water level based on returned I2C data>;
 
         	self.apps.enter(app_id, |app, _| {
-        	    app.callback.map(|mut cb| cb.schedule(0, measurement, 0));
+        	    app.callback.schedule(0, measurement, 0));
         	});
         }
     }
