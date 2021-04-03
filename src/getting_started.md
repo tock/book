@@ -43,7 +43,7 @@ environment and is better for long term use.
 
 If you're comfortable working inside a Debian virtual machine, you can download
 an image with all of the dependencies already installed
-[here](https://cesar.cs.princeton.edu/Tock.ova) or
+[here](https://praxis.princeton.edu/~alevy/Tock.ova) or
 [here](https://www.cs.virginia.edu/~bjc8c/archive/Tock.ova). Using `curl` to
 download the image is recommended, but your browser should be able to download
 it as well:
