@@ -256,7 +256,6 @@ the board. For example, to retrieve serial UART data from the board, run
 
     Listening for serial output.
     Initialization complete. Entering main loop
-    Hello World!
 
 You may also need to reset (by pressing the reset button on the board) the board
 to see the message. You may also not see any output if the Tock kernel has not
