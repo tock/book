@@ -95,7 +95,7 @@ operating system install, you will need the following software:
    enables you to compile apps written in C for RISC-V boards.
 
         # mac
-        $ brew install riscv-gnu-toolchain --with-multilib
+        $ brew tap riscv/riscv && brew install riscv-gnu-toolchain --with-multilib
 
 1. [tockloader](https://github.com/tock/tockloader). This is an all-in-one tool
    for programming boards and using Tock.
