@@ -95,7 +95,7 @@ operating system install, you will need the following software:
    enables you to compile apps written in C for RISC-V boards.
 
         # mac
-        $ brew install riscv-gnu-toolchain --with-multilib
+        $ brew tap riscv/riscv && brew install riscv-gnu-toolchain --with-multilib
 
 1. [tockloader](https://github.com/tock/tockloader). This is an all-in-one tool
    for programming boards and using Tock.
@@ -256,7 +256,6 @@ the board. For example, to retrieve serial UART data from the board, run
 
     Listening for serial output.
     Initialization complete. Entering main loop
-    Hello World!
 
 You may also need to reset (by pressing the reset button on the board) the board
 to see the message. You may also not see any output if the Tock kernel has not
