@@ -52,15 +52,10 @@ get a kernel installed, follow these steps.
 
 
 3. **Load the Tock Kernel**. The next step is to program the Tock kernel onto
-   your hardware. Generally, two options are supported for loading the kernel:
-   `make program` and `make flash`. You should likely try `make program` first.
-   Alternatively, the README file for the board should show which options are
-   available. To load the kernel, run:
+   your hardware. To load the kernel, run:
 
     ```bash
-    $ make program  # Load code via bootloader
-      -- or --      # Check the README in your board folder
-    $ make flash    # Load code via jtag
+    $ make install
     ```
 
     in the board directory. Now you have the kernel loaded onto the hardware.
