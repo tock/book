@@ -26,7 +26,7 @@ The high-level steps required are:
 1. Decide on the interface to expose to userspace.
 2. Map the interface to the existing syscalls in Tock.
 3. Create grant space for the application.
-4. Implement the `Driver` trait.
+4. Implement the `SyscallDriver` trait.
 5. Document the interface.
 6. Expose the interface to userspace.
 7. Implement the syscall library in userspace.
@@ -75,14 +75,14 @@ The steps from the overview are elaborated on here.
 
     With a sketch of the interface created, the next step is to map that
     interface to the specific syscalls that the Tock kernel supports. Tock has
-    three main relevant syscall operations that applications can use when
+    four main relevant syscall operations that applications can use when
     interfacing with the kernel:
 
-    1. `allow_readwrite`: This lets an application share some of its memory with the
-       kernel, which the kernel can read or write to.
+    1. `allow_readwrite`: This lets an application share some of its memory with
+       the kernel, which the kernel can read or write to.
 
-    1. `allow_readonly`: This lets an application share some of its memory with the
-       kernel, which the kernel can only read.
+    1. `allow_readonly`: This lets an application share some of its memory with
+       the kernel, which the kernel can only read.
 
     2. `subscribe`: This provides a function pointer that the kernel
        can use to invoke an upcall on the application.
@@ -103,14 +103,14 @@ The steps from the overview are elaborated on here.
       return value of the command is the maximum water level.
     - _What is the current water level?_ This will require two steps. First,
       there needs to be a subscribe call where the application can setup a
-      callback function. The kernel will call this when the water level value
+      upcall function. The kernel will call this when the water level value
       has been acquired. Second, there will need to be a command to instruct the
       kernel to take the water level reading.
     - _Take ten water level samples._ This will require three steps. First, the
-      application must use an allow syscall to share a buffer with the kernel
+      application must use a readwrite allow syscall to share a buffer with the kernel
       large enough to hold 10 water level readings. Then it must setup a
-      subscribe callback that the kernel will call when the 10 readings are
-      ready (note this callback function can be the same as in the single sample
+      subscribe upcall that the kernel will call when the 10 readings are
+      ready (note this upcall function can be the same as in the single sample
       case). Finally it will use a command to tell the kernel to start sampling.
     - _Notify me when the water level exceeds a threshold._ A likely way to
       implement this would be to first require a subscribe syscall for the
@@ -134,17 +134,25 @@ The steps from the overview are elaborated on here.
     kernel. The kernel uses these to store state on behalf of the process. To
     provide our syscall interface for the water level sensor, we need to setup a
     grant so that we can store state for all of the requests we may get from
-    processes that want to use the sensor. In particular, we will need to be
-    able to store the callback that a process registers with us.
+    processes that want to use the sensor.
 
     The first step to do this is to create a struct that contains fields for all
-    of the state we want to store for each process that uses our syscall interface. By convention in Tock, this struct is named `App`, but it could
-    have a different name. We will need to keep two values, the callback and the
-    high water alert threshold:
+    of the state we want to store for each process that uses our syscall
+    interface. By convention in Tock, this struct is named `App`, but it could
+    have a different name.
+
+    In our grant we need to store two things: the high water alert threshold and
+    the upcall function pointer the app provided us when it called subscribe.
+    We, however, only have to handle the threshold. As of Tock 2.0, the upcall
+    is stored internally in the kernel. All we have to do is tell the kernel how
+    many different upcall function pointers per app we need to store. In our
+    case we only need to store one. This is provided as a parameter to `Grant`.
+
+    We can now create an `App` struct which represents what will be stored in
+    our grant:
 
     ```rust
     pub struct App {
-        callback: Callback,
         threshold: usize,
     }
     ```
@@ -155,9 +163,13 @@ The steps from the overview are elaborated on here.
     ```rust
     pub struct WS00123 {
     	...
-        apps: Grant<App>,
+        apps: Grant<App, 1>,
     }
     ```
+
+    `Grant<App, 1>` tells the kernel that we want to store the App struct in the
+    grant, as well as one upcall function pointer.
+
 
     We will also need the grant region to be created by the board and passed in
     to us by adding it to the capsules `new()` function:
@@ -166,7 +178,7 @@ The steps from the overview are elaborated on here.
     impl WS00123 {
         pub fn new(
             ...
-            grant: Grant<App>,
+            grant: Grant<App, 1>,
         ) -> WS00123 {
             WS00123 {
                 ...,
@@ -178,13 +190,13 @@ The steps from the overview are elaborated on here.
 
     Now we have somewhere to store values on a per-process basis.
 
-4. **Implement the `Driver` trait.**
+4. **Implement the `SyscallDriver` trait.**
 
-    The `Driver` trait is how a capsule provides implementations for the various
-    syscalls an application might call. The basic framework looks like:
+    The `SyscallDriver` trait is how a capsule provides implementations for the
+    various syscalls an application might call. The basic framework looks like:
 
     ```rust
-    impl Driver for WS00123 {
+    impl SyscallDriver for WS00123 {
     	fn allow_readwrite(
     	    &self,
     	    appid: AppId,
@@ -198,13 +210,6 @@ The steps from the overview are elaborated on here.
             which: usize,
             slice: ReadOnlyAppSlice,
         ) -> Result<ReadOnlyAppSlice, (ReadOnlyAppSlice, ErrorCode)> { }
-		
-        fn subscribe(
-            &self,
-            subscribe_identifier: usize,
-            callback: Callback,
-            app_id: AppId,
-        ) -> Result<Callback, (Callback, ErrorCode)> { }
 
         fn command(
  	        &self, 
@@ -212,26 +217,31 @@ The steps from the overview are elaborated on here.
 			r2: usize, 
 			r3: usize, 
 			caller_id: AppId) -> CommandReturn { }
+
+        fn allocate_grant(
+            &self,
+            process_id: ProcessId) -> Result<(), crate::process::Error>;
     }
     ```
 
-    For details on exactly how these methods work and their return values, 
-	[TRD104]((https://github.com/tock/tock/blob/master/doc/reference/trd104-syscalls.md)
-	is their reference document.
+    For details on exactly how these methods work and their return values,
+    [TRD104]((https://github.com/tock/tock/blob/master/doc/reference/trd104-syscalls.md)
+    is their reference document. Notice that there is no `subscribe()` call, as
+    that is handled entirely in the core kernel.
 
     Note: there are default implementations for each of these, so in our water
-    level sensor case we can simply omit the `allow` call.
+    level sensor case we can simply omit the `allow_readwrite` and
+    `allow_readonly` calls.
 
     By Tock convention, every syscall interface must at least support the
-    command call with `which == 0`. This allows applications to check if
-    the syscall interface is supported on the current platform. The command must
-	return a `CommandReturn::success()`. If the command is not present, then the
-	kernel automatically has it return a failure with an error code of `ErrorCode::NOSUPPORT`.
-    For our example, we use
-    the simple case:
+    command call with `which == 0`. This allows applications to check if the
+    syscall interface is supported on the current platform. The command must
+    return a `CommandReturn::success()`. If the command is not present, then the
+    kernel automatically has it return a failure with an error code of
+    `ErrorCode::NOSUPPORT`. For our example, we use the simple case:
 
     ```rust
-    impl Driver for WS00123 {
+    impl SyscallDriver for WS00123 {
         fn command(
             &self, 
 	        which: usize, 
@@ -243,54 +253,23 @@ The steps from the overview are elaborated on here.
  					_ => CommandReturn::failure(ErrorCode::NOSUPPORT)
 				}
             }
-        }
     }
     ```
 
-    Now let's handle the subscribe call where the app can setup the callback we
-    should use. For this capsule, we will use a single callback for both when a
-    measurement is ready and for when a high water alert is triggered, but with
-    different arguments passed into the callback.
+    We also want to ensure that we implement the `allocate_grant()` call. This
+    allows the kernel to ask us to setup our grant region since we know what the
+    type `App` is and how large it is. We just need the standard implementation
+    that we can directly copy in.
 
     ```rust
-    impl Driver for WS00123 {
-        /// Setup callbacks.
-        ///
-        /// ### `subscribe_num`
-        ///
-        /// - `0`: Setup the main callback to be used when samples are ready
-        ///        and when any alerts are triggered.
-        fn subscribe(
+    impl SyscallDriver for WS00123 {
+        fn allocate_grant(
             &self,
-            subscribe_identifier: usize,
-   			mut callback: Callback,
-            app_id: AppId,
-        ) -> Result<Callback, (Callback, ErrorCode)> {
-            let res = self.apps
-                .enter(app_id, |app, _| {
-                    match subscribe_num {
-                        0 => {
-						    // Swap the old and new callback
-						    mem::swap(&mut app.callback, &mut callback);
-							Ok(())
-						},
-                        _ => Err(ErrorCode:NOSUPPORT)
-                }).map_err(ErrorCode::from); // Turn a grant error to an ErrorCode
-			// We always return a callback
-            if let Err(e) = res {
-			    Err((callback, e))
-		    } else {
-			    Ok(callback)
-    	 	}
+            process_id: ProcessId) -> Result<(), kernel::process::Error> {
+                self.apps.enter(processid, |_, _| {})
         }
     }
     ```
-
-    As you can see, we use the `enter()` function to "enter" the grant region of
-    the specific requesting app `app_id`. This performs checks like ensuring the
-    grant region exists and that the application is valid. If `enter()` succeeds
-    then we can update the `App` state like normal. Here we only need to save
-    the callback.
 
     Next we can implement more commands so that the application can direct our
     capsule as to what the application wants us to do. We need two commands, one
@@ -300,7 +279,7 @@ The steps from the overview are elaborated on here.
     quite exist, then they will need to be added as well.
 
     ```rust
-    impl Driver for WS00123 {
+    impl SyscallDriver for WS00123 {
     	/// Command interface.
     	///
     	/// ### `command_num`
@@ -337,12 +316,11 @@ The steps from the overview are elaborated on here.
     }
     ```
 
-    The last item that needs to be added is to actually use the callback when
-    the sensor has been sampled or the alert has been triggered. Actually
-    issuing the callback will need to be added to the existing implementation of
-    the capsule. As an example, if our water sensor was attached to the board
-    over I2C, then we might trigger the callback in response to a finished I2C
-    command:
+    The last item that needs to be added is to actually use the upcall when the
+    sensor has been sampled or the alert has been triggered. Actually issuing
+    the upcall will need to be added to the existing implementation of the
+    capsule. As an example, if our water sensor was attached to the board over
+    I2C, then we might trigger the upcall in response to a finished I2C command:
 
     ```rust
     impl i2c::I2CClient for WS00123 {
@@ -351,21 +329,24 @@ The steps from the overview are elaborated on here.
         	let app_id = <get saved appid for the app that issued the command>;
         	let measurement = <calculate water level based on returned I2C data>;
 
-        	self.apps.enter(app_id, |app, _| {
-        	    app.callback.schedule(0, measurement, 0));
+        	self.apps.enter(app_id, |app, upcalls| {
+        	    upcalls.schedule_upcall(0, (0, measurement, 0)).ok();
         	});
         }
     }
     ```
 
+    Note: the first argument to `schedule_upcall()` is the index of the upcall
+    to use. Since we only have one upcall we use `0`.
+
     There may be other cleanup code required to reset state or prepare the
     sensor for another sample by a different application, but these are the
     essential elements for implementing the syscall interface.
 
-    Finally, we need to assign our new `Driver` implementation a number so that
-    the kernel (and userspace apps) can differentiate this syscall interface
-    from all others that a board supports. By convention this is specified by
-    a global value at the top of the capsule file:
+    Finally, we need to assign our new `SyscallDriver` implementation a number
+    so that the kernel (and userspace apps) can differentiate this syscall
+    interface from all others that a board supports. By convention this is
+    specified by a global value at the top of the capsule file:
 
     ```rust
     pub const DRIVER_NUM: usize = 0x80000A;
@@ -445,14 +426,14 @@ The steps from the overview are elaborated on here.
 
       * ### Subscribe number: `0`
 
-        **Description**: Subscribe a callback for sensor readings and alerts.
+        **Description**: Subscribe an upcall for sensor readings and alerts.
 
-        **Callback signature**: The callback's first argument is `0` if this is
+        **Upcall signature**: The upcall's first argument is `0` if this is
         a measurement, and `1` if the callback is an alert. If it is a
         measurement the second value will be the water level.
 
         **Returns**: SUCCESS if the subscribe was successful or ENOMEM if the
-        driver failed to allocate memory to store the callback.
+        driver failed to allocate memory to store the upcall.
     ```
 
     This file should be named `<driver_num>_<sensor>.md`, or in this case:
@@ -463,14 +444,14 @@ The steps from the overview are elaborated on here.
 
     The last kernel implementation step is to let the main kernel know about
     this new syscall interface so that if an application tries to use it the
-    kernel knows which implementation of `Driver` to call. In each board's
-    `main.rs` file (e.g. `boards/hail/src/main.rs`) there is a implementation of
-    the `Platform` trait where the board can setup which syscall interfaces it
-    supports. To enable our water sensor interface we add a new entry to the
-    match statement there:
+    kernel knows which implementation of `SyscallDriver` to call. In each
+    board's `main.rs` file (e.g. `boards/hail/src/main.rs`) there is a
+    implementation of the `SyscallDriverLookup` trait where the board can setup
+    which syscall interfaces it supports. To enable our water sensor interface
+    we add a new entry to the match statement there:
 
     ```rust
-    impl Platform for Hail {
+    impl SyscallDriverLookup for Hail {
         fn with_driver<F, R>(&self, driver_num: usize, f: F) -> R
         where
             F: FnOnce(Option<&dyn kernel::Driver>) -> R,

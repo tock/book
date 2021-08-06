@@ -105,24 +105,10 @@ The steps from the overview are elaborated on here.
     creation process so that any substantial issues can be detected and
     corrected quickly.
 
-    While Tock does not have a full guide to writing a HIL (although perhaps
-    that could be created eventually), there are some guidelines that HILs
-    generally follow:
-
-    - Avoid `initialize()` or `start()` or `on()` functions in HIL interfaces.
-      While these types of methods are intuitive when implementing a HIL, they
-      are often not intuitive for users of that HIL. For example, when should
-      `initialize()` be called? Once when the board boots? Or before every use?
-      What if there are multiple users of the peripheral? In general, it is
-      better to require that the implementation track the state of the
-      underlying hardware and configure it as needed.
-    - Avoid using `'static` lifetimes in HILs. This limits flexibility, and Tock
-      prefers to use a generic `'a` lifetime instead. Also, unless there is a
-      clear reason not to, only a single lifetime should be used.
-    - Include the `set_client()` function in the HIL if needed. Not all HILs
-      require split-phase operation and need a client interface, but for those
-      that do the `set_client()` function should be included in the HIL. This
-      makes writing generic components for boards possible.
+    Tock has a [reference
+    guide](https://github.com/tock/tock/blob/master/doc/reference/trd-hil-design.md)
+    for dos and don'ts when creating a HIL. Following this guide can help avoid
+    many of the pitfalls that we have run into when creating HILs in the past.
 
     Tock only uses **non-blocking** interfaces in the kernel, and HILs should
     reflect that as well. Therefore, for any operation that will take more than
