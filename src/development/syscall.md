@@ -227,7 +227,9 @@ The steps from the overview are elaborated on here.
     For details on exactly how these methods work and their return values,
     [TRD104]((https://github.com/tock/tock/blob/master/doc/reference/trd104-syscalls.md)
     is their reference document. Notice that there is no `subscribe()` call, as
-    that is handled entirely in the core kernel.
+    that is handled entirely in the core kernel. However, the kernel will use the
+    upcall slots passed as the second parameter to `Grant<_, UPCALLS>` to
+    implement `subscribe()` on your behalf.
 
     Note: there are default implementations for each of these, so in our water
     level sensor case we can simply omit the `allow_readwrite` and
@@ -266,6 +268,7 @@ The steps from the overview are elaborated on here.
         fn allocate_grant(
             &self,
             process_id: ProcessId) -> Result<(), kernel::process::Error> {
+                // Allocation is performed implicitly when the grant region is entered.
                 self.apps.enter(processid, |_, _| {})
         }
     }
@@ -445,7 +448,7 @@ The steps from the overview are elaborated on here.
     The last kernel implementation step is to let the main kernel know about
     this new syscall interface so that if an application tries to use it the
     kernel knows which implementation of `SyscallDriver` to call. In each
-    board's `main.rs` file (e.g. `boards/hail/src/main.rs`) there is a
+    board's `main.rs` file (e.g. `boards/hail/src/main.rs`) there is an
     implementation of the `SyscallDriverLookup` trait where the board can setup
     which syscall interfaces it supports. To enable our water sensor interface
     we add a new entry to the match statement there:
