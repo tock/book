@@ -1,11 +1,11 @@
 # Prerequisites
 
-You should follow the [getting started guide](../getting_started.html) to get
-your development setup and ensure you can communicate with the hardware.
+You should follow the [getting started guide](getting_started.html) to get your
+development setup and ensure you can communicate with the hardware.
 
 ## Hardware
 
-![](../imgs/imix.svg)
+![](imgs/imix.svg)
 
 The Tock course is currently written for an imix hardware platform. To follow
 the directions directly, you will need an _imix_ hardware platform (pictured

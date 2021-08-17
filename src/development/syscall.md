@@ -222,7 +222,7 @@ The steps from the overview are elaborated on here.
    ```
 
    For details on exactly how these methods work and their return values,
-   [TRD104]((https://github.com/tock/tock/blob/master/doc/reference/trd104-syscalls.md)
+   [TRD104](https://github.com/tock/tock/blob/master/doc/reference/trd104-syscalls.md)
    is their reference document. Notice that there is no `subscribe()` call, as
    that is handled entirely in the core kernel. However, the kernel will use the
    upcall slots passed as the second parameter to `Grant<_, UPCALLS>` to

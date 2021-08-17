@@ -17,7 +17,7 @@ Tock applications you will likely want to start with an existing app in
 ## Setup
 
 You need to be able to compile and load the Tock kernel and Tock applications.
-See the [prerequisites guide](../prerequisites.md) on how to get setup.
+See the [getting started guide](../getting_started.html) on how to get setup.
 
 You also need [hardware](https://tockos.org/hardware) that supports Tock.
 
