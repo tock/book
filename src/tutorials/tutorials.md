@@ -1,5 +1,4 @@
-Tock Mini Tutorials
-===================
+# Tock Mini Tutorials
 
 These tutorials walk through how to use some various features of Tock. They are
 narrower in scope than the course, but try to explain in detail how various Tock
@@ -28,44 +27,43 @@ get a kernel installed, follow these steps.
 1. **Obtain the Tock Source**. You can clone a copy of the Tock repository to
    get the kernel source:
 
-    ```bash
-    $ git clone https://github.com/tock/tock
-    $ cd tock
-    ```
+   ```bash
+   $ git clone https://github.com/tock/tock
+   $ cd tock
+   ```
 
 2. **Compile Tock**. In the root of the Tock directory, compile the kernel for
    your hardware platform. You can find a list of boards by running `make list`.
    For example if your board is `imix` then:
 
-    ```bash
-    $ make list
-    $ cd boards/imix
-    $ make
-    ```
+   ```bash
+   $ make list
+   $ cd boards/imix
+   $ make
+   ```
 
-    If you have another board just replace "imix" with `<your-board>`
+   If you have another board just replace "imix" with `<your-board>`
 
-    This will create binaries of the Tock kernel. Tock is compiled with Cargo, a
-    package manager for Rust applications. The first time Tock is built all of
-    the crates must be compiled. On subsequent builds, crates that haven't
-    changed will not have to be rebuilt and the compilation will be faster.
-
+   This will create binaries of the Tock kernel. Tock is compiled with Cargo, a
+   package manager for Rust applications. The first time Tock is built all of
+   the crates must be compiled. On subsequent builds, crates that haven't
+   changed will not have to be rebuilt and the compilation will be faster.
 
 3. **Load the Tock Kernel**. The next step is to program the Tock kernel onto
    your hardware. To load the kernel, run:
 
-    ```bash
-    $ make install
-    ```
+   ```bash
+   $ make install
+   ```
 
-    in the board directory. Now you have the kernel loaded onto the hardware.
-    The kernel configures the hardware and provides drivers for many hardware
-    resources, but does not actually include any application logic. For that, we
-    need to load an application.
+   in the board directory. Now you have the kernel loaded onto the hardware. The
+   kernel configures the hardware and provides drivers for many hardware
+   resources, but does not actually include any application logic. For that, we
+   need to load an application.
 
-    Note, you only need to program the kernel once. Loading applications does
-    not alter the kernel, and applications can be re-programed without
-    re-programming the kernel.
+   Note, you only need to program the kernel once. Loading applications does not
+   alter the kernel, and applications can be re-programed without re-programming
+   the kernel.
 
 With the kernel setup, you are ready to try the mini tutorials.
 
@@ -81,10 +79,10 @@ With the kernel setup, you are ready to try the mini tutorials.
 
 ### Board compatiblity matrix
 
-| Tutorial #    | Supported boards                |
-|---------------|---------------------------------|
-| 1             | All                             |
-| 2             | All Cortex-M based boards       |
-| 3             | Hail and imix                   |
-| 4             | Hail and imix                   |
-| 5             | All that support IPC            |
+| Tutorial # | Supported boards          |
+| ---------- | ------------------------- |
+| 1          | All                       |
+| 2          | All Cortex-M based boards |
+| 3          | Hail and imix             |
+| 4          | Hail and imix             |
+| 5          | All that support IPC      |

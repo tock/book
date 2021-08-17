@@ -1,36 +1,33 @@
-Look! A Wild BLE Packet Appeared!
-=================================
+# Look! A Wild BLE Packet Appeared!
 
 > Note! This tutorial will only work on Hail and imix boards.
 
-This tutorial will walk you through getting an app running that scans
-for BLE advertisements. Most BLE devices typically broadcast advertisements
-periodically (usually once a second) to allow smartphones and other devices
-to discover them. The advertisements typically contain the BLE device's ID
-and name, as well as as which services the device provides, and sometimes
-raw data as well.
+This tutorial will walk you through getting an app running that scans for BLE
+advertisements. Most BLE devices typically broadcast advertisements periodically
+(usually once a second) to allow smartphones and other devices to discover them.
+The advertisements typically contain the BLE device's ID and name, as well as as
+which services the device provides, and sometimes raw data as well.
 
-To provide BLE connectivity, several Tock boards use the Nordic nRF51822
-as a BLE co-processor. In this configuration, the nRF51822 runs all of
-the BLE operations and exposes a command interface over a UART bus. Luckily for
-us, Nordic has defined and implemented the entire interface. Better yet, they
-made it interoperable with their nRF51 SDK. What this means is any BLE app
-that would run on the nRF51822 directly can be compiled to run on a different
-microcontroller, and any function calls that would have interacted with
-the BLE hardware are instead packaged and sent to the nRF51822 co-processor.
-Nordic calls this tool "BLE Serialization", and Tock has a port of the
-serialization libraries that Tock applications can use.
+To provide BLE connectivity, several Tock boards use the Nordic nRF51822 as a
+BLE co-processor. In this configuration, the nRF51822 runs all of the BLE
+operations and exposes a command interface over a UART bus. Luckily for us,
+Nordic has defined and implemented the entire interface. Better yet, they made
+it interoperable with their nRF51 SDK. What this means is any BLE app that would
+run on the nRF51822 directly can be compiled to run on a different
+microcontroller, and any function calls that would have interacted with the BLE
+hardware are instead packaged and sent to the nRF51822 co-processor. Nordic
+calls this tool "BLE Serialization", and Tock has a port of the serialization
+libraries that Tock applications can use.
 
 So, with that introduction, lets get going.
 
-1. **Initialize the BLE co-processor**. The first step a BLE serialization app
-   must do is initialize the BLE stack on the co-processor. This can be done
-   with Nordic's SDK, but to simplify things Tock supports the [Simple
-   BLE](https://github.com/lab11/nrf5x-base/tree/master/lib) library. The goal
-   of `simple_ble.c` is to wrap the details of the nRF5 SDK and the intricacies
-   of BLE in an easy-to-use library so you can get going with creating BLE
-   devices and not learning the entire spec.
-
+1.  **Initialize the BLE co-processor**. The first step a BLE serialization app
+    must do is initialize the BLE stack on the co-processor. This can be done
+    with Nordic's SDK, but to simplify things Tock supports the
+    [Simple BLE](https://github.com/lab11/nrf5x-base/tree/master/lib) library.
+    The goal of `simple_ble.c` is to wrap the details of the nRF5 SDK and the
+    intricacies of BLE in an easy-to-use library so you can get going with
+    creating BLE devices and not learning the entire spec.
 
     ```c
     #include <simple_ble.h>
@@ -55,8 +52,8 @@ So, with that introduction, lets get going.
     }
     ```
 
-2. **Scan for advertisements**. With `simple_ble` this is pretty
-   straightforward.
+2.  **Scan for advertisements**. With `simple_ble` this is pretty
+    straightforward.
 
     ```c
     int main () {
@@ -70,12 +67,12 @@ So, with that introduction, lets get going.
     }
     ```
 
-3. **Handle the advertisement received event**. Just as the main Tock
-   microcontroller can send commands to the nRF co-processor, the co-processor
-   can send events back. When these occur, a variety of callbacks are generated
-   in `simple_ble` and then passed to users of the library. In this case, we
-   only care about `ble_evt_adv_report()` which is called on each advertisement
-   reception.
+3.  **Handle the advertisement received event**. Just as the main Tock
+    microcontroller can send commands to the nRF co-processor, the co-processor
+    can send events back. When these occur, a variety of callbacks are generated
+    in `simple_ble` and then passed to users of the library. In this case, we
+    only care about `ble_evt_adv_report()` which is called on each advertisement
+    reception.
 
     ```c
     // Called when each advertisement is received.
@@ -85,11 +82,11 @@ So, with that introduction, lets get going.
     ```
 
     The `ble_evt_adv_report()` function is passed a pointer to a `ble_evt_t`
-    struct. This is a type from the Nordic nRF51 SDK, and more information
-    can be found in the SDK documentation.
+    struct. This is a type from the Nordic nRF51 SDK, and more information can
+    be found in the SDK documentation.
 
-4. **Display a message for each advertisement**. Once we have the advertisement
-   callback, we can use `printf()` like normal.
+4.  **Display a message for each advertisement**. Once we have the advertisement
+    callback, we can use `printf()` like normal.
 
     ```c
     #include <stdio.h>
@@ -111,16 +108,17 @@ So, with that introduction, lets get going.
     }
     ```
 
-5. **Handle some BLE annoyances**. The last step to getting a working app is to
-   handle some annoyances using BLE serialization with the `simple_ble` library.
-   Typically errors generated by the nRF51 SDK are severe and mean there is a
-   significant bug in the code. With serialization, however, messages between
-   the two processors can be corrupted or misframed, causing parsing errors. We
-   can ignore these errors safely and just drop the corrupted packet.
+5.  **Handle some BLE annoyances**. The last step to getting a working app is to
+    handle some annoyances using BLE serialization with the `simple_ble`
+    library. Typically errors generated by the nRF51 SDK are severe and mean
+    there is a significant bug in the code. With serialization, however,
+    messages between the two processors can be corrupted or misframed, causing
+    parsing errors. We can ignore these errors safely and just drop the
+    corrupted packet.
 
-    Additionally, the `simple_ble` library makes it easy to set the address
-    of a BLE device. However, this functionality only works when running
-    on an actual nRF51822. To disable this, we override the weakly defined
+    Additionally, the `simple_ble` library makes it easy to set the address of a
+    BLE device. However, this functionality only works when running on an actual
+    nRF51822. To disable this, we override the weakly defined
     `ble_address_set()` function with an empty function.
 
     ```c
@@ -128,19 +126,16 @@ So, with that introduction, lets get going.
     void ble_address_set () { }
     ```
 
-6. **Run the app and see the packets!** To try this tutorial application, you
-   can find it in the [tutorials app
-   folder](https://github.com/tock/libtock-c/tree/master/examples/tutorials/03_ble_scan).
+6.  **Run the app and see the packets!** To try this tutorial application, you
+    can find it in the
+    [tutorials app folder](https://github.com/tock/libtock-c/tree/master/examples/tutorials/03_ble_scan).
 
-    For any new applications, ensure that the following is in the makefile
-    so that the BLE serialization library is included.
+    For any new applications, ensure that the following is in the makefile so
+    that the BLE serialization library is included.
 
-        include $(TOCK_USERLAND_BASE_DIR)/libnrfserialization/Makefile.app
+         include $(TOCK_USERLAND_BASE_DIR)/libnrfserialization/Makefile.app
 
-
-
-Details
--------
+## Details
 
 This section contains a few notes about the specific versions of BLE
 serialization used.

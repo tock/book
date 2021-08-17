@@ -10,10 +10,10 @@ highlight specific features.
 ## Tock Course
 
 In this hands-on guide, we will look at some of the high-level services provided
-by Tock.  We will start with an understanding of the OS and its programming
-environment.  Then we'll look at how a process management application can help
+by Tock. We will start with an understanding of the OS and its programming
+environment. Then we'll look at how a process management application can help
 afford remote debugging, diagnosing and fixing a resource-intensive app over the
-network.  The last part of the tutorial is a bit more free-form, inviting
+network. The last part of the tutorial is a bit more free-form, inviting
 attendees to further explore the networking and application features of Tock or
 to dig into the kernel a bit and explore how to enhance and extend the kernel.
 

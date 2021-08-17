@@ -57,9 +57,8 @@ address a problem.
 Also, Tock prefers to only include code (or in this case HIL interface
 functions) that are actually in use by the Tock code base. This ensures that
 there is at least some method of using or testing various components of Tock.
-This also suggests that initial HIL development should only focus on an interface
-that is needed by the initial use case.
-
+This also suggests that initial HIL development should only focus on an
+interface that is needed by the initial use case.
 
 ## Overview
 
@@ -69,60 +68,59 @@ The high-level steps required are:
 2. Create the new HIL in the kernel crate.
 3. Ensure the HIL file includes sufficient documentation.
 
-
 ## Step-by-Step Guide
 
 The steps from the overview are elaborated on here.
 
 1. **Determine that a new HIL interface is needed.**
 
-    Tock includes a number of existing HIL interfaces, and modifying an existing
-    HIL is preferred to creating a new HIL that is similar to an existing
-    interface. Therefore, you should start by verifying an existing HIL does not
-    already meet your need or could be modified to meet your need.
+   Tock includes a number of existing HIL interfaces, and modifying an existing
+   HIL is preferred to creating a new HIL that is similar to an existing
+   interface. Therefore, you should start by verifying an existing HIL does not
+   already meet your need or could be modified to meet your need.
 
-    This may seem to be a straightforward step, but it can be complicated by
-    microcontrollers calling similar functionality by different names, and the
-    existing HIL using a standard name or a different name from another
-    microcontroller.
+   This may seem to be a straightforward step, but it can be complicated by
+   microcontrollers calling similar functionality by different names, and the
+   existing HIL using a standard name or a different name from another
+   microcontroller.
 
-    Also, you can reach out via the email list or slack if you have questions
-    about whether a new HIL is needed or an existing one should suffice.
+   Also, you can reach out via the email list or slack if you have questions
+   about whether a new HIL is needed or an existing one should suffice.
 
 2. **Create the new HIL in the kernel crate.**
 
-    Once you have determined a new HIL is required, you should create
-    the appropriate file in `kernel/src/hil`. Often the best way to start is
-    to copy an existing HIL that is similar in nature to the interface you are
-    trying to create.
+   Once you have determined a new HIL is required, you should create the
+   appropriate file in `kernel/src/hil`. Often the best way to start is to copy
+   an existing HIL that is similar in nature to the interface you are trying to
+   create.
 
-    As noted above, HILs evolve over time, and HILs will be periodically updated
-    as issues are discovered or best practices for HIL design are learned.
-    Unfortunately, this means that copying an existing HIL might lead to
-    "mistakes" that must be remedied before the new HIL can be merged.
+   As noted above, HILs evolve over time, and HILs will be periodically updated
+   as issues are discovered or best practices for HIL design are learned.
+   Unfortunately, this means that copying an existing HIL might lead to
+   "mistakes" that must be remedied before the new HIL can be merged.
 
-    Likely, it is helpful to open a pull request relatively early in the HIL
-    creation process so that any substantial issues can be detected and
-    corrected quickly.
+   Likely, it is helpful to open a pull request relatively early in the HIL
+   creation process so that any substantial issues can be detected and corrected
+   quickly.
 
-    Tock has a [reference
-    guide](https://github.com/tock/tock/blob/master/doc/reference/trd-hil-design.md)
-    for dos and don'ts when creating a HIL. Following this guide can help avoid
-    many of the pitfalls that we have run into when creating HILs in the past.
+   Tock has a
+   [reference guide](https://github.com/tock/tock/blob/master/doc/reference/trd-hil-design.md)
+   for dos and don'ts when creating a HIL. Following this guide can help avoid
+   many of the pitfalls that we have run into when creating HILs in the past.
 
-    Tock only uses **non-blocking** interfaces in the kernel, and HILs should
-    reflect that as well. Therefore, for any operation that will take more than
-    a couple cycles to complete, or would require waiting on a hardware flag,
-    a split interface design should be used with a `Client` trait that receives
-    a callback when the operation has completed.
+   Tock only uses **non-blocking** interfaces in the kernel, and HILs should
+   reflect that as well. Therefore, for any operation that will take more than a
+   couple cycles to complete, or would require waiting on a hardware flag, a
+   split interface design should be used with a `Client` trait that receives a
+   callback when the operation has completed.
 
 3. **Ensure the HIL file includes sufficient documentation.**
 
-    HIL files should be well commented with Rustdoc style (i.e. `///`) comments.
-    These comments are the main source of documentation for HILs.
+   HIL files should be well commented with Rustdoc style (i.e. `///`) comments.
+   These comments are the main source of documentation for HILs.
 
-    As HILs grow in complexity or stability, they will be documented separately
-    to fully explain their design and intended use cases.
+   As HILs grow in complexity or stability, they will be documented separately
+   to fully explain their design and intended use cases.
 
 ## Wrap-Up
 
