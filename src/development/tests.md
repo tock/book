@@ -6,7 +6,6 @@ in-kernel tests of that peripheral to test peripheral-specific functionality
 that will not be exposed via the HIL for that peripheral. This guide outlines
 the general steps for implementing kernel tests.
 
-
 ## Setup
 
 This guide assumes you have existing chip, board, or architecture specific code
@@ -31,7 +30,6 @@ The general steps you will follow are:
 6. Document the expected output from the test at the top of the test file
 
 This guide will walk through how to do each of these steps.
-
 
 ## Background
 
@@ -63,381 +61,379 @@ The steps from the overview are elaborated on here.
 
 1. **Determine the board(s) you want to run your test on.**
 
-    If you are testing chip or architecture specific functionality, you simply
-    need to choose a board that uses that chip or architecture. For board
-    specific functionality you of course need to choose that board. If you are
-    testing a virtualization capsule, then any board that implements the
-    underlying resource being virtualized is acceptable. Currently, most kernel
-    tests are implemented for the Imix platform, and can be found in
-    `boards/imix/src/tests/`
+   If you are testing chip or architecture specific functionality, you simply
+   need to choose a board that uses that chip or architecture. For board
+   specific functionality you of course need to choose that board. If you are
+   testing a virtualization capsule, then any board that implements the
+   underlying resource being virtualized is acceptable. Currently, most kernel
+   tests are implemented for the Imix platform, and can be found in
+   `boards/imix/src/tests/`
 
-    **Checkpoint**: You have identified the board you will implement your test
-    for.
-
+   **Checkpoint**: You have identified the board you will implement your test
+   for.
 
 2. **Add a test file in `boards/{board}/src/`**
 
-    To start implementing the test, you should create a new source file inside
-    the `boards/{board}/src` directory. For boards with lots of tests, like the
-    Imix board, there may be a `tests` subdirectory -- if so, the test should go
-    in `tests` instead, and be added to the `tests/mod.rs` file. The name of
-    this test file generally should indicate the functionality being tested.
+   To start implementing the test, you should create a new source file inside
+   the `boards/{board}/src` directory. For boards with lots of tests, like the
+   Imix board, there may be a `tests` subdirectory -- if so, the test should go
+   in `tests` instead, and be added to the `tests/mod.rs` file. The name of this
+   test file generally should indicate the functionality being tested.
 
-    > Note: If the board you select is one of the nrf52dk variants
-    > (nrf52840\_dongle, nrf52840dk, or nrf52dk), tests should be moved into the
-    > `nrf52dk_base/src/` folder, and called from `lib.rs`.
+   > Note: If the board you select is one of the nrf52dk variants
+   > (nrf52840_dongle, nrf52840dk, or nrf52dk), tests should be moved into the
+   > `nrf52dk_base/src/` folder, and called from `lib.rs`.
 
-    **Checkpoint**: You have chosen a board for your test and created a test
-    file.
-
+   **Checkpoint**: You have chosen a board for your test and created a test
+   file.
 
 3. **Determine where to write actual tests -- in the test file or a capsule
    test.**
 
-    Depending on what you are testing, it may be best practice to write a
-    capsule test that you call from the test file you created in the previous
-    step.
+   Depending on what you are testing, it may be best practice to write a capsule
+   test that you call from the test file you created in the previous step.
 
-    Writing a capsule test is best practice if your test meets the following
-    criteria:
+   Writing a capsule test is best practice if your test meets the following
+   criteria:
 
-    1. Test does not require `unsafe`
-    2. The test is for a peripheral available on multiple boards
-    3. A HIL or capsule exists for that peripheral, so it is accessible from the `capsules` crate
-    4. The test relies only on functionality exposed via the HIL or a capsule
-    5. You care about being able to call this test from multiple boards
+   1. Test does not require `unsafe`
+   2. The test is for a peripheral available on multiple boards
+   3. A HIL or capsule exists for that peripheral, so it is accessible from the
+      `capsules` crate
+   4. The test relies only on functionality exposed via the HIL or a capsule
+   5. You care about being able to call this test from multiple boards
 
-    Examples:
-    - UART Virtualization (all boards support UART, there is a HIL for UART
-      devices and a capsule for the `virtual_uart`)
-    - Alarm test (all boards will have some form of hardware alarm, there is an
-      Alarm HIL)
-    - Other examples: see `capsules/src/test`
+   Examples:
 
-    If your test meets the criteria for writing a capsule test, follow these steps:
+   - UART Virtualization (all boards support UART, there is a HIL for UART
+     devices and a capsule for the `virtual_uart`)
+   - Alarm test (all boards will have some form of hardware alarm, there is an
+     Alarm HIL)
+   - Other examples: see `capsules/src/test`
 
-    Add a file in `capsules/src/test/`, and then add the filename to
-    `capsules/src/mod.rs` like this:
+   If your test meets the criteria for writing a capsule test, follow these
+   steps:
 
-    ```rust
-    pub mod virtual_uart;
-    ```
+   Add a file in `capsules/src/test/`, and then add the filename to
+   `capsules/src/mod.rs` like this:
 
-    Next, create a test struct in this file that can be instantiated by any
-    board using this test capsule. This struct should implement a `new()`
-    function so it can be instantiated from the test file in `boards`, and a
-    `run()` function that will run the actual tests. An example for UART
-    follows:
+   ```rust
+   pub mod virtual_uart;
+   ```
 
-    ```rust
-    //! capsules/src/test/virtual_uart.rs
+   Next, create a test struct in this file that can be instantiated by any board
+   using this test capsule. This struct should implement a `new()` function so
+   it can be instantiated from the test file in `boards`, and a `run()` function
+   that will run the actual tests. An example for UART follows:
 
-    pub struct TestVirtualUartReceive {
-        device: &'static UartDevice<'static>,
-        buffer: TakeCell<'static, [u8]>,
-    }
+   ```rust
+   //! capsules/src/test/virtual_uart.rs
 
-    impl TestVirtualUartReceive {
-        pub fn new(device: &'static UartDevice<'static>, buffer: &'static mut [u8]) -> Self {
-            TestVirtualUartReceive {
-                device: device,
-                buffer: TakeCell::new(buffer),
-            }
-        }
+   pub struct TestVirtualUartReceive {
+       device: &'static UartDevice<'static>,
+       buffer: TakeCell<'static, [u8]>,
+   }
 
-        pub fn run(&self) {
-            // TODO: See Next Step
-        }
-    }
-    ```
+   impl TestVirtualUartReceive {
+       pub fn new(device: &'static UartDevice<'static>, buffer: &'static mut [u8]) -> Self {
+           TestVirtualUartReceive {
+               device: device,
+               buffer: TakeCell::new(buffer),
+           }
+       }
 
-    If your test does not meet the above requirements, you can simply implement
-    your tests in the file that you created in step 2. This can involve creating
-    a test structure with test methods. The UDP test file takes this approach,
-    by defining a number of self-contained tests. One such example follows:
+       pub fn run(&self) {
+           // TODO: See Next Step
+       }
+   }
+   ```
 
-    ```rust
-    //! boards/imix/src/test/udp_lowpan_test.rs
+   If your test does not meet the above requirements, you can simply implement
+   your tests in the file that you created in step 2. This can involve creating
+   a test structure with test methods. The UDP test file takes this approach, by
+   defining a number of self-contained tests. One such example follows:
 
-    pub struct LowpanTest {
-        port_table: &'static UdpPortManager,
-        // ...
-    }
+   ```rust
+   //! boards/imix/src/test/udp_lowpan_test.rs
 
-    impl LowpanTest {
+   pub struct LowpanTest {
+       port_table: &'static UdpPortManager,
+       // ...
+   }
 
-        // This test ensures that an app and capsule cant bind to the same port
-        // but can bind to different ports
-        fn bind_test(&self) {
-            let create_cap = create_capability!(NetworkCapabilityCreationCapability);
-            let net_cap = unsafe {
-                static_init!(
-                    NetworkCapability,
-                    NetworkCapability::new(AddrRange::Any, PortRange::Any, PortRange::Any, &create_cap)
-                )
-            };
-            let mut socket1 = self.port_table.create_socket().unwrap();
-            // Attempt to bind to a port that has already been bound by an app.
-            let result = self.port_table.bind(socket1, 1000, net_cap);
-            assert!(result.is_err());
-            socket1 = result.unwrap_err(); // Get the socket back
+   impl LowpanTest {
 
-            //now bind to an open port
-            let (_send_bind, _recv_bind) = self
-                .port_table
-                .bind(socket1, 1001, net_cap)
-                .expect("UDP Bind fail");
+       // This test ensures that an app and capsule cant bind to the same port
+       // but can bind to different ports
+       fn bind_test(&self) {
+           let create_cap = create_capability!(NetworkCapabilityCreationCapability);
+           let net_cap = unsafe {
+               static_init!(
+                   NetworkCapability,
+                   NetworkCapability::new(AddrRange::Any, PortRange::Any, PortRange::Any, &create_cap)
+               )
+           };
+           let mut socket1 = self.port_table.create_socket().unwrap();
+           // Attempt to bind to a port that has already been bound by an app.
+           let result = self.port_table.bind(socket1, 1000, net_cap);
+           assert!(result.is_err());
+           socket1 = result.unwrap_err(); // Get the socket back
 
-            debug!("bind_test passed");
-        }
-        // ...
-    }
-    ```
+           //now bind to an open port
+           let (_send_bind, _recv_bind) = self
+               .port_table
+               .bind(socket1, 1001, net_cap)
+               .expect("UDP Bind fail");
 
-    **Checkpoint**: There is a test capsule with `new()` and `run()`
-    implementations.
+           debug!("bind_test passed");
+       }
+       // ...
+   }
+   ```
 
+   **Checkpoint**: There is a test capsule with `new()` and `run()`
+   implementations.
 
 4. **Write your tests**
 
-    The first part of this step takes place in the test file you just created --
-    writing the actual tests. This part is highly dependent on the functionality
-    being verified. If you are writing your tests in test capsule, this should
-    all be  triggered from the `run()` function.
+   The first part of this step takes place in the test file you just created --
+   writing the actual tests. This part is highly dependent on the functionality
+   being verified. If you are writing your tests in test capsule, this should
+   all be triggered from the `run()` function.
 
-    Depending on the specifics of your test, you may need to implement
-    additional functions or traits in this file to make your test functional.
-    One example is implementing a client trait on the test struct so that the
-    test can receive the results of asynchronous operations. Our UART example
-    requires implementing the `uart::RecieveClient` on the test struct.
+   Depending on the specifics of your test, you may need to implement additional
+   functions or traits in this file to make your test functional. One example is
+   implementing a client trait on the test struct so that the test can receive
+   the results of asynchronous operations. Our UART example requires
+   implementing the `uart::RecieveClient` on the test struct.
 
-    ```rust
-    //! boards/imix/src/test/virtual_uart_rx_test.rs
+   ```rust
+   //! boards/imix/src/test/virtual_uart_rx_test.rs
 
-    impl TestVirtualUartReceive {
-        // ...
+   impl TestVirtualUartReceive {
+       // ...
 
-        pub fn run(&self) {
-            let buf = self.buffer.take().unwrap();
-            let len = buf.len();
-            debug!("Starting receive of length {}", len);
-            let (err, _opt) = self.device.receive_buffer(buf, len);
-            if err != ReturnCode::SUCCESS {
-                panic!(
-                    "Calling receive_buffer() in virtual_uart test failed: {:?}",
-                    err
-                );
-            }
-        }
-    }
+       pub fn run(&self) {
+           let buf = self.buffer.take().unwrap();
+           let len = buf.len();
+           debug!("Starting receive of length {}", len);
+           let (err, _opt) = self.device.receive_buffer(buf, len);
+           if err != ReturnCode::SUCCESS {
+               panic!(
+                   "Calling receive_buffer() in virtual_uart test failed: {:?}",
+                   err
+               );
+           }
+       }
+   }
 
-    impl uart::ReceiveClient for TestVirtualUartReceive {
-        fn received_buffer(
-            &self,
-            rx_buffer: &'static mut [u8],
-            rx_len: usize,
-            rcode: ReturnCode,
-            _error: uart::Error,
-        ) {
-            debug!("Virtual uart read complete: {:?}: ", rcode);
-            for i in 0..rx_len {
-                debug!("{:02x} ", rx_buffer[i]);
-            }
-            debug!("Starting receive of length {}", rx_len);
-            let (err, _opt) = self.device.receive_buffer(rx_buffer, rx_len);
-            if err != ReturnCode::SUCCESS {
-                panic!(
-                    "Calling receive_buffer() in virtual_uart test failed: {:?}",
-                    err
-                );
-            }
-        }
-    }
-    ```
+   impl uart::ReceiveClient for TestVirtualUartReceive {
+       fn received_buffer(
+           &self,
+           rx_buffer: &'static mut [u8],
+           rx_len: usize,
+           rcode: ReturnCode,
+           _error: uart::Error,
+       ) {
+           debug!("Virtual uart read complete: {:?}: ", rcode);
+           for i in 0..rx_len {
+               debug!("{:02x} ", rx_buffer[i]);
+           }
+           debug!("Starting receive of length {}", rx_len);
+           let (err, _opt) = self.device.receive_buffer(rx_buffer, rx_len);
+           if err != ReturnCode::SUCCESS {
+               panic!(
+                   "Calling receive_buffer() in virtual_uart test failed: {:?}",
+                   err
+               );
+           }
+       }
+   }
+   ```
 
-    > Note that the above test calls `panic!()` in the case of failure. This
-    > pattern, or the similar use of `assert!()` statements, is the preferred
-    > way to communicate test failures. If communicating errors in this way is
-    > not possible, tests can indicate success/failure by printing different
-    > results to the console in each case and asking users to verify the actual
-    > output matches the expected output.
+   > Note that the above test calls `panic!()` in the case of failure. This
+   > pattern, or the similar use of `assert!()` statements, is the preferred way
+   > to communicate test failures. If communicating errors in this way is not
+   > possible, tests can indicate success/failure by printing different results
+   > to the console in each case and asking users to verify the actual output
+   > matches the expected output.
 
-    The next step in this process is determining all of the parameters that need
-    to be passed to the test. It is preferred that all logically related tests
-    be called from a single `pub unsafe fn run(/* optional args */)` to maintain
-    convention. This ensures that all tests can be run by adding a single line
-    to `main.rs`. Many tests require a reference to an alarm in order to
-    separate tests in time, or a reference to a virtualization capsule that is
-    being tested. Notably, the `run()` function should initialize any components
-    itself that would not have already been created in `main.rs`. As an example,
-    the below function is a starting point for the `virtual_uart_receive` test
-    for Imix:
+   The next step in this process is determining all of the parameters that need
+   to be passed to the test. It is preferred that all logically related tests be
+   called from a single `pub unsafe fn run(/* optional args */)` to maintain
+   convention. This ensures that all tests can be run by adding a single line to
+   `main.rs`. Many tests require a reference to an alarm in order to separate
+   tests in time, or a reference to a virtualization capsule that is being
+   tested. Notably, the `run()` function should initialize any components itself
+   that would not have already been created in `main.rs`. As an example, the
+   below function is a starting point for the `virtual_uart_receive` test for
+   Imix:
 
-    ```rust
-    pub unsafe fn run_virtual_uart_receive(mux: &'static MuxUart<'static>) {
-        debug!("Starting virtual reads.");
-    }
-    ```
+   ```rust
+   pub unsafe fn run_virtual_uart_receive(mux: &'static MuxUart<'static>) {
+       debug!("Starting virtual reads.");
+   }
+   ```
 
-    Next, a test function should initialize any objects required to run tests.
-    This is best split out into subfunctions, like the following:
+   Next, a test function should initialize any objects required to run tests.
+   This is best split out into subfunctions, like the following:
 
-    ```rust
-    unsafe fn static_init_test_receive_small(
-        mux: &'static MuxUart<'static>,
-    ) -> &'static TestVirtualUartReceive {
-        static mut SMALL: [u8; 3] = [0; 3];
-        let device = static_init!(UartDevice<'static>, UartDevice::new(mux, true));
-        device.setup();
-        let test = static_init!(
-            TestVirtualUartReceive,
-            TestVirtualUartReceive::new(device, &mut SMALL)
-        );
-        device.set_receive_client(test);
-        test
-    }
-    ```
+   ```rust
+   unsafe fn static_init_test_receive_small(
+       mux: &'static MuxUart<'static>,
+   ) -> &'static TestVirtualUartReceive {
+       static mut SMALL: [u8; 3] = [0; 3];
+       let device = static_init!(UartDevice<'static>, UartDevice::new(mux, true));
+       device.setup();
+       let test = static_init!(
+           TestVirtualUartReceive,
+           TestVirtualUartReceive::new(device, &mut SMALL)
+       );
+       device.set_receive_client(test);
+       test
+   }
+   ```
 
-    This initializes an instance of the test capsule we constructed earlier.
-    Simpler tests (such as those not relying on capsule tests) might simply use
-    `static_init!()` to initialize normal capsules directly and test them. The
-    log test does this, for example:
+   This initializes an instance of the test capsule we constructed earlier.
+   Simpler tests (such as those not relying on capsule tests) might simply use
+   `static_init!()` to initialize normal capsules directly and test them. The
+   log test does this, for example:
 
-    ```rust
-    //! boards/imix/src/test/log_test.rs
+   ```rust
+   //! boards/imix/src/test/log_test.rs
 
-    pub unsafe fn run(
-        mux_alarm: &'static MuxAlarm<'static, Ast>,
-        deferred_caller: &'static DynamicDeferredCall,
-    ) {
-        // Set up flash controller.
-        flashcalw::FLASH_CONTROLLER.configure();
-        static mut PAGEBUFFER: flashcalw::Sam4lPage = flashcalw::Sam4lPage::new();
+   pub unsafe fn run(
+       mux_alarm: &'static MuxAlarm<'static, Ast>,
+       deferred_caller: &'static DynamicDeferredCall,
+   ) {
+       // Set up flash controller.
+       flashcalw::FLASH_CONTROLLER.configure();
+       static mut PAGEBUFFER: flashcalw::Sam4lPage = flashcalw::Sam4lPage::new();
 
-        // Create actual log storage abstraction on top of flash.
-        let log = static_init!(
-            Log,
-            log::Log::new(
-                &TEST_LOG,
-                &mut flashcalw::FLASH_CONTROLLER,
-                &mut PAGEBUFFER,
-                deferred_caller,
-                true
-            )
-        );
-        flash::HasClient::set_client(&flashcalw::FLASH_CONTROLLER, log);
-        log.initialize_callback_handle(
-            deferred_caller
-                .register(log)
-                .expect("no deferred call slot available for log storage"),
-        );
+       // Create actual log storage abstraction on top of flash.
+       let log = static_init!(
+           Log,
+           log::Log::new(
+               &TEST_LOG,
+               &mut flashcalw::FLASH_CONTROLLER,
+               &mut PAGEBUFFER,
+               deferred_caller,
+               true
+           )
+       );
+       flash::HasClient::set_client(&flashcalw::FLASH_CONTROLLER, log);
+       log.initialize_callback_handle(
+           deferred_caller
+               .register(log)
+               .expect("no deferred call slot available for log storage"),
+       );
 
-        // ...
-    }
-    ```
+       // ...
+   }
+   ```
 
-    Finally, your `run()` function should call the actual tests. This may
-    involve simply calling a `run()` function on a capsule test, or may involve
-    calling test functions written in the board specific test file. The virtual
-    UART test `run()` looks like this:
+   Finally, your `run()` function should call the actual tests. This may involve
+   simply calling a `run()` function on a capsule test, or may involve calling
+   test functions written in the board specific test file. The virtual UART test
+   `run()` looks like this:
 
-    ```rust
-    pub unsafe fn run_virtual_uart_receive(mux: &'static MuxUart<'static>) {
-        debug!("Starting virtual reads.");
-        let small = static_init_test_receive_small(mux);
-        let large = static_init_test_receive_large(mux);
-        small.run();
-        large.run();
-    }
-    ```
-    As you develop your kernel tests, you may not immediately know what
-    functions are required in your test capsule -- this is okay! It is often
-    easiest to start with a basic test and expand this file to test additional
-    functionality once basic tests are working.
+   ```rust
+   pub unsafe fn run_virtual_uart_receive(mux: &'static MuxUart<'static>) {
+       debug!("Starting virtual reads.");
+       let small = static_init_test_receive_small(mux);
+       let large = static_init_test_receive_large(mux);
+       small.run();
+       large.run();
+   }
+   ```
 
-    **Checkpoint**: Your tests are written, and can be called from a single
-    `run()` function.
+   As you develop your kernel tests, you may not immediately know what functions
+   are required in your test capsule -- this is okay! It is often easiest to
+   start with a basic test and expand this file to test additional functionality
+   once basic tests are working.
 
+   **Checkpoint**: Your tests are written, and can be called from a single
+   `run()` function.
 
 5. **Call the test from `main.rs`, and iterate on it until it works**
 
-    Next, you should run your test by calling it from the `reset_handler()` in
-    `main.rs`. In order to do so, you will also need it import it into the file
-    by adding a line like this:
+   Next, you should run your test by calling it from the `reset_handler()` in
+   `main.rs`. In order to do so, you will also need it import it into the file
+   by adding a line like this:
 
-    ```rust
-    #[allow(dead_code)]
-    mod virtual_uart_test;
-    ```
-    
-    However, if your test is located inside a `test` module this is not needed
-    -- your test will already be included.
+   ```rust
+   #[allow(dead_code)]
+   mod virtual_uart_test;
+   ```
 
-    Typically, tests are called after completing setup of the board, immediately
-    before the call to `load_processes()`:
+   However, if your test is located inside a `test` module this is not needed --
+   your test will already be included.
 
-    ```rust
-    virtual_uart_rx_test::run_virtual_uart_receive(uart_mux);
-    debug!("Initialization complete. Entering main loop");
+   Typically, tests are called after completing setup of the board, immediately
+   before the call to `load_processes()`:
 
-    extern "C" {
-        /// Beginning of the ROM region containing app images.
-        static _sapps: u8;
+   ```rust
+   virtual_uart_rx_test::run_virtual_uart_receive(uart_mux);
+   debug!("Initialization complete. Entering main loop");
 
-        /// End of the ROM region containing app images.
-        ///
-        /// This symbol is defined in the linker script.
-        static _eapps: u8;
-    }
-    kernel::procs::load_processes(
-      // ...
-    ```
+   extern "C" {
+       /// Beginning of the ROM region containing app images.
+       static _sapps: u8;
 
-    Observe your results, and tune or add tests as needed.
+       /// End of the ROM region containing app images.
+       ///
+       /// This symbol is defined in the linker script.
+       static _eapps: u8;
+   }
+   kernel::procs::load_processes(
+     // ...
+   ```
 
-    Before you submit a PR including any kernel tests, however, please remove or
-    comment out any lines of code that call these tests.
+   Observe your results, and tune or add tests as needed.
 
-    **Checkpoint**: You have a functional test that can be called in a single
-    line from `main.rs`
+   Before you submit a PR including any kernel tests, however, please remove or
+   comment out any lines of code that call these tests.
 
+   **Checkpoint**: You have a functional test that can be called in a single
+   line from `main.rs`
 
 6. **Document the expected output from the test at the top of the test file**
 
-    For tests that will be merged to upstream, it is good practice to document
-    how to run a test and what the expected output of a test is. This is best
-    done using\ document level comments (`//!`) at the top of the test file. The
-    documentation for the virtual UART test follows:
+   For tests that will be merged to upstream, it is good practice to document
+   how to run a test and what the expected output of a test is. This is best
+   done using\ document level comments (`//!`) at the top of the test file. The
+   documentation for the virtual UART test follows:
 
-    ```rust
-    //! Test reception on the virtualized UART by creating two readers that
-    //! read in parallel. To add this test, include the line
-    //! ```
-    //!    virtual_uart_rx_test::run_virtual_uart_receive(uart_mux);
-    //! ```
-    //! to the imix boot sequence, where `uart_mux` is a
-    //! `capsules::virtual_uart::MuxUart`.  There is a 3-byte and a 7-byte
-    //! read running in parallel. Test that they are both working by typing
-    //! and seeing that they both get all characters. If you repeatedly
-    //! type 'a', for example (0x61), you should see something like:
-    //! ```
-    //! Starting receive of length 3
-    //! Virtual uart read complete: CommandComplete:
-    //! 61
-    //! 61
-    //! 61
-    //! 61
-    //! 61
-    //! 61
-    //! 61
-    //! Starting receive of length 7
-    //! Virtual uart read complete: CommandComplete:
-    //! 61
-    //! 61
-    //! 61
-    //! ```
-    ```
-    **Checkpoint**: You have documented your tests
+   ````rust
+   //! Test reception on the virtualized UART by creating two readers that
+   //! read in parallel. To add this test, include the line
+   //! ```
+   //!    virtual_uart_rx_test::run_virtual_uart_receive(uart_mux);
+   //! ```
+   //! to the imix boot sequence, where `uart_mux` is a
+   //! `capsules::virtual_uart::MuxUart`.  There is a 3-byte and a 7-byte
+   //! read running in parallel. Test that they are both working by typing
+   //! and seeing that they both get all characters. If you repeatedly
+   //! type 'a', for example (0x61), you should see something like:
+   //! ```
+   //! Starting receive of length 3
+   //! Virtual uart read complete: CommandComplete:
+   //! 61
+   //! 61
+   //! 61
+   //! 61
+   //! 61
+   //! 61
+   //! 61
+   //! Starting receive of length 7
+   //! Virtual uart read complete: CommandComplete:
+   //! 61
+   //! 61
+   //! 61
+   //! ```
+   ````
+
+   **Checkpoint**: You have documented your tests
 
 ## Wrap-Up
 

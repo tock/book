@@ -1,9 +1,9 @@
 # Capsule
 
-The goal of this part of the course is to make you comfortable with the
-Tock kernel and writing code for it. By the end of this part, you'll have
-written a new capsule that reads a humidity sensor and outputs its readings
-over the serial port.
+The goal of this part of the course is to make you comfortable with the Tock
+kernel and writing code for it. By the end of this part, you'll have written a
+new capsule that reads a humidity sensor and outputs its readings over the
+serial port.
 
 During this you will:
 
@@ -14,25 +14,25 @@ During this you will:
 
 ## Read the Tock boot sequence (20m)
 
-Open `imix/src/main.rs` in your favorite editor. This file defines the
-imix platform: how it boots, what capsules it uses, and what system calls it
-supports for userland applications.
+Open `imix/src/main.rs` in your favorite editor. This file defines the imix
+platform: how it boots, what capsules it uses, and what system calls it supports
+for userland applications.
 
 ### How is everything organized?
 
-Find the declaration of `struct Imix` (it's pretty early in the file).
-This declares the structure representing the platform. It has many fields,
-all of which are capsules. These are the capsules that make up the imix
-platform. For the most part, these map directly to hardware peripherals,
-but there are exceptions such as `IPC` (inter-process communication).
+Find the declaration of `struct Imix` (it's pretty early in the file). This
+declares the structure representing the platform. It has many fields, all of
+which are capsules. These are the capsules that make up the imix platform. For
+the most part, these map directly to hardware peripherals, but there are
+exceptions such as `IPC` (inter-process communication).
 
 Recall the discussion about how everything in the kernel is statically
 allocated? We can see that here. Every field in `struct Imix` is a reference to
 an object with a static lifetime.
 
 The capsules themselves take a lifetime as a parameter, which is currently
-always `` `static``.  The implementations of these capsules, however, do not
-rely on this assumption.
+always `` `static``. The implementations of these capsules, however, do not rely
+on this assumption.
 
 The boot process is primarily the construction of this `Imix` structure. Once
 everything is set up, the board will pass the constructed `imix` to
@@ -40,14 +40,14 @@ everything is set up, the board will pass the constructed `imix` to
 
 ### How do things get started?
 
-The method `reset_handler` is invoked when the chip resets (i.e., boots).
-It's pretty long because imix has a lot of drivers that need to be created
-and initialized, and many of them depend on other, lower layer abstractions
-that need to be created and initialized as well.
+The method `reset_handler` is invoked when the chip resets (i.e., boots). It's
+pretty long because imix has a lot of drivers that need to be created and
+initialized, and many of them depend on other, lower layer abstractions that
+need to be created and initialized as well.
 
 Take a look at the first few lines of the `reset_handler`. The boot sequence
-initializes memory (copies initialized variables into RAM, clears the BSS),
-sets up the system clocks, and configures the GPIO pins.
+initializes memory (copies initialized variables into RAM, clears the BSS), sets
+up the system clocks, and configures the GPIO pins.
 
 ### How do capsules get created?
 
@@ -71,8 +71,8 @@ hil::uart::Receive::set_receive_client(&sam4l::usart::USART3, uart_mux);
 let console = ConsoleComponent::new(board_kernel, uart_mux).finalize();
 ```
 
-Eventually, once all of the capsules have been created, we will populate
-a imix structure with them:
+Eventually, once all of the capsules have been created, we will populate a imix
+structure with them:
 
 ```rust
 let imix = Imix {
@@ -81,62 +81,60 @@ let imix = Imix {
     ...
 ```
 
-The `static_init!` macro is simply an easy way to allocate a static
-variable with a call to `new`. The first parameter is the type, the second
-is the expression to produce an instance of the type. This call creates
-a `Console` that uses serial port 3 (`USART3`) at 115200 bits per second.
+The `static_init!` macro is simply an easy way to allocate a static variable
+with a call to `new`. The first parameter is the type, the second is the
+expression to produce an instance of the type. This call creates a `Console`
+that uses serial port 3 (`USART3`) at 115200 bits per second.
 
 > #### A brief aside on buffers:
 >
-> Notice that you have to pass a write buffer to the console for it to use:
-> this buffer has to have a `` `static`` lifetime. This is because low-level
-> hardware drivers, especially those that use DMA, require `` `static`` buffers.
-> Since Tock doesn't promise when a DMA operation will complete, and you
-> need to be able to promise that the buffer outlives the operation, the
-> one lifetime that is assured to be alive at the end of an operation is
-> `` `static``. So that other code which has buffers
-> without a `` `static`` lifetime, such as userspace processes, can use the
-> `Console`, it copies them into its own internal `` `static`` buffer before
-> passing it to the serial port. So the buffer passing architecture looks like
-> this:
+> Notice that you have to pass a write buffer to the console for it to use: this
+> buffer has to have a `` `static`` lifetime. This is because low-level hardware
+> drivers, especially those that use DMA, require `` `static`` buffers. Since
+> Tock doesn't promise when a DMA operation will complete, and you need to be
+> able to promise that the buffer outlives the operation, the one lifetime that
+> is assured to be alive at the end of an operation is `` `static``. So that
+> other code which has buffers without a `` `static`` lifetime, such as
+> userspace processes, can use the `Console`, it copies them into its own
+> internal `` `static`` buffer before passing it to the serial port. So the
+> buffer passing architecture looks like this:
 >
 > ![Console/UART buffer lifetimes](../imgs/console.svg)
 >
 > It's a little weird that Console's `new` method takes in a reference to
 > itself. This is an ergonomics tradeoff. The Console needs a mutable static
 > buffer to use internally, which the Console capsule declares. However writing
-> global statics is unsafe. To avoid the unsafe operation in the Console
-> capsule itself, we make it the responsibility of the instantiator to give the
-> Console a buffer to use, without burdening the instantiator with sizing the
-> buffer.
+> global statics is unsafe. To avoid the unsafe operation in the Console capsule
+> itself, we make it the responsibility of the instantiator to give the Console
+> a buffer to use, without burdening the instantiator with sizing the buffer.
 
 ### Let's make an imix!
 
-The code continues on, creating all of the other capsules that are needed
-by the imix platform. By the time we get down to around line 360, we've
-created all of the capsules we need, and it's time to create the actual
-imix platform structure (`let imix = Imix {...}`).
+The code continues on, creating all of the other capsules that are needed by the
+imix platform. By the time we get down to around line 360, we've created all of
+the capsules we need, and it's time to create the actual imix platform structure
+(`let imix = Imix {...}`).
 
 ### Capsule _initialization_
 
 Up to this point we have been creating numerous structures and setting some
 static configuration options and mappings, but nothing dynamic has occurred
 (said another way, all methods invoked by `static_init!` must be `const fn`,
-however Tock's `static_init!` macro predates stabilization of `const fn`'s.
-A future iteration could possibly leverage these and obviate the need for the
+however Tock's `static_init!` macro predates stabilization of `const fn`'s. A
+future iteration could possibly leverage these and obviate the need for the
 macro).
 
-Some capsules require _initialization_, some code that must be executed
-before they can be used. For example, a few lines after creating the imix
-struct, we initialize the console:
+Some capsules require _initialization_, some code that must be executed before
+they can be used. For example, a few lines after creating the imix struct, we
+initialize the console:
 
 ```rust
 imix.nrf51822.initialize();
 ```
 
 This method is responsible for actually writing the hardware registers that
-configure the associated UART peripheral for use as a text console
-(8 data bits, 1 stop bit, no parity bit, no hardware flow control).
+configure the associated UART peripheral for use as a text console (8 data bits,
+1 stop bit, no parity bit, no hardware flow control).
 
 ### Inter-capsule dependencies
 
@@ -177,9 +175,9 @@ Let's try it out really quick:
 Compile and flash the kernel (`make program`) then look at the output
 (`tockloader listen`).
 
-  - What happens if you put the `debug!` before `assign_console_driver`?
-  - What happens if you put `imix.console.initialize()` after
-    `assign_console_driver`?
+- What happens if you put the `debug!` before `assign_console_driver`?
+- What happens if you put `imix.console.initialize()` after
+  `assign_console_driver`?
 
 As you can see, sometimes there are dependencies between capsules, and board
 authors must take care during initialization to ensure correctness.
@@ -188,7 +186,6 @@ authors must take care during initialization to ensure correctness.
 > into a buffer and the console prints them via DMA as the UART peripheral is
 > available, interleaved with other console users (i.e. processes). You
 > shouldn't need to worry about the mechanics of this for now.
-
 
 ### Loading processes
 
@@ -218,16 +215,16 @@ run, and an IPC server instance to the main loop of the kernel:
 kernel::main(&imix, &mut chip, &mut PROCESSES, &imix.ipc);
 ```
 
-From here, Tock is initialized, the kernel event loop takes over, and the
-system enters steady state operation.
+From here, Tock is initialized, the kernel event loop takes over, and the system
+enters steady state operation.
 
 ### Create a "Hello World" capsule
 
 Now that you've seen how Tock initializes and uses capsules, you're going to
 write a new one. At the end of this section, your capsule will sample the
-humidity sensor once a second and print the results as serial output. But
-you'll start with something simpler: printing "Hello World" to the debug
-console once on boot.
+humidity sensor once a second and print the results as serial output. But you'll
+start with something simpler: printing "Hello World" to the debug console once
+on boot.
 
 The `imix` board configuration you've looked through has a capsule for the this
 tutorial already set up. The capsule is a separate Rust crate located in
@@ -262,14 +259,15 @@ similar for reading the accelerometer, so this is good practice.
 
 The Alarm HIL includes several traits, `Alarm`, `Client`, and `Frequency`, all
 in the `kernel::hil::time` module. You'll use the `set_alarm` and `now` methods
-from the `Alarm` trait to set an alarm for a particular value of the clock.
-Note that both methods accept arguments in the alarm's native clock frequency,
-which is available using the Alarm trait's associated `Frequency` type:
+from the `Alarm` trait to set an alarm for a particular value of the clock. Note
+that both methods accept arguments in the alarm's native clock frequency, which
+is available using the Alarm trait's associated `Frequency` type:
 
 ```rust
 // native clock frequency in Herz
 let frequency = <A::Frequency>::frequency();
 ```
+
 Your capsule already implements the `alarm::Client` trait so it can receive
 alarm events. The `alarm::Client` trait has a single method:
 
@@ -298,8 +296,8 @@ TOCK_DEBUG(0): /home/alevy/hack/helena/rustconf/tock/boards/imix/src/accelerate.
 ## Extend your capsule to sample the humidity once a second
 
 The steps for reading an accelerometer from your capsule are similar to using
-the alarm. You'll use a capsule that implements the humidity HIL, which
-includes the `HumidityDriver` and `HumidityClient` traits, both in
+the alarm. You'll use a capsule that implements the humidity HIL, which includes
+the `HumidityDriver` and `HumidityClient` traits, both in
 `kernel::hil::sensors`.
 
 The `HumidityDriver` trait includes the method `read_accelerometer` which
@@ -330,8 +328,8 @@ Humidity 2732
 
 ## Some further questions and directions to explore
 
-Your capsule used the si7021 and virtual alarm. Take a look at the
-code behind each of these services:
+Your capsule used the si7021 and virtual alarm. Take a look at the code behind
+each of these services:
 
 1. Is the humidity sensor on-chip or a separate chip connected over a bus?
 
@@ -347,4 +345,3 @@ If you have extra time, try writing a virtualization capsule for the `Humidity`
 HIL that will allow multiple clients to use it. This is a fairly open ended
 task, but you might find inspiration in the `virtua_alarm` and `virtual_i2c`
 capsules.
-

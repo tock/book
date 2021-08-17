@@ -26,8 +26,9 @@ $ cd tock
 $ git checkout release-1.4
 ```
 
-You should use the latest release. Check the [releases
-page](https://github.com/tock/tock/releases) for the name of the latest release.
+You should use the latest release. Check the
+[releases page](https://github.com/tock/tock/releases) for the name of the
+latest release.
 
 Now, you can compile the board-specific kernel in the Tock repository. For
 example, to compile the kernel for imix:
@@ -39,7 +40,6 @@ $ make
 
 All of the operations described in the course should work the same way on the
 main repository.
-
 
 ## Using the full selection of apps
 
@@ -61,4 +61,3 @@ $ tockloader install
 
 With the `libtock-c` repository you have access to the full suite of Tock apps,
 and additional libraries include BLE and Lua support.
-

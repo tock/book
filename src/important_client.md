@@ -1,5 +1,4 @@
-Keep the client happy
-=====================
+# Keep the client happy
 
 You, an engineer newly added to a top-secret project in your organization, have
 been directed to commission a new imix node for your most important client. The
@@ -59,10 +58,12 @@ Finished in 1.959 seconds
 ```
 
 ---
+
 > **Checkpoint**
 >
 > Make sure you have these apps installed correctly and `tockloader list`
 > produces similar output as shown here.
+
 ---
 
 Great! Now you check that the LED is blinking, and sure enough, no problems
@@ -73,11 +74,10 @@ Also, if you get this wrong, it's not going to look good as the new person on
 the team.
 
 Looking in the folders for the two applications, you notice a brief description
-of the apps, and a URL. Ok, maybe you can check if everything is working.
-After trying things for a little bit, everything seems to be in order. You
-tell the director the board is ready and head home a little early&mdash;you did
-just successfully complete your first project for a major client after all.
-
+of the apps, and a URL. Ok, maybe you can check if everything is working. After
+trying things for a little bit, everything seems to be in order. You tell the
+director the board is ready and head home a little early&mdash;you did just
+successfully complete your first project for a major client after all.
 
 ## Back at Work the Next Day
 
@@ -132,8 +132,8 @@ time to execute, and if they exceed that the kernel forces a context switch back
 to the kernel. If that is happening a lot, then the board is likely unable to go
 to sleep! That could explain why the battery is draining so fast!
 
-But which process is at fault? Perhaps we should try another command.
-Maybe `list`:
+But which process is at fault? Perhaps we should try another command. Maybe
+`list`:
 
 ```
  PID    Name                Quanta  Syscalls  Dropped Callbacks    State
@@ -142,15 +142,14 @@ Maybe `list`:
 ```
 
 Ok! Now we have the status of individual applications. And aha! We can clearly
-see the faulty application. From our testing we know that one app detects
-button presses and one app is transmitting sensor data. Let's see if we can
-disable the faulty app somehow and see which data packets we are still getting.
-Going back to the help command, the `stop` command seems promising:
+see the faulty application. From our testing we know that one app detects button
+presses and one app is transmitting sensor data. Let's see if we can disable the
+faulty app somehow and see which data packets we are still getting. Going back
+to the help command, the `stop` command seems promising:
 
 ```
 stop <app name>
 ```
-
 
 ## Time to Fix the App
 
@@ -178,4 +177,3 @@ enable interrupts and then sign up to listen to them.
 
 Once this energy-optimal patch is in place, it'll be time to kick off a
 triumphant e-mail to the director, and then off to celebrate!
-

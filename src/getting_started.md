@@ -5,11 +5,11 @@ This getting started guide covers how to get started using Tock.
 ## Hardware
 
 To really be able to use Tock and get a feel for the operating system, you will
-need a hardware platform that tock supports. The [TockOS
-Hardware](https://www.tockos.org/hardware/) includes a list of supported
-hardware boards. You can also view the [boards
-folder](https://github.com/tock/tock/tree/master/boards) to see what platforms
-are supported.
+need a hardware platform that tock supports. The
+[TockOS Hardware](https://www.tockos.org/hardware/) includes a list of supported
+hardware boards. You can also view the
+[boards folder](https://github.com/tock/tock/tree/master/boards) to see what
+platforms are supported.
 
 As of February 2021, this getting started guide is based around five hardware
 platforms. Steps for each of these platforms are explicitly described here.
@@ -53,8 +53,10 @@ it as well:
 With the virtual machine image downloaded, you can run it with VirtualBox or
 VMWare:
 
- * VirtualBox users: [File → Import Appliance...](https://docs.oracle.com/cd/E26217_01/E26796/html/qs-import-vm.html),
- * VMWare users: [File → Open...](https://pubs.vmware.com/workstation-9/index.jsp?topic=%2Fcom.vmware.ws.using.doc%2FGUID-DDCBE9C0-0EC9-4D09-8042-18436DA62F7A.html)
+- VirtualBox users:
+  [File → Import Appliance...](https://docs.oracle.com/cd/E26217_01/E26796/html/qs-import-vm.html),
+- VMWare users:
+  [File → Open...](https://pubs.vmware.com/workstation-9/index.jsp?topic=%2Fcom.vmware.ws.using.doc%2FGUID-DDCBE9C0-0EC9-4D09-8042-18436DA62F7A.html)
 
 The VM account is "tock" with password "tock". Feel free to customize it with
 whichever editors, window managers, etc. you like.
@@ -68,53 +70,52 @@ whichever editors, window managers, etc. you like.
 If you choose to install the development environment natively on an existing
 operating system install, you will need the following software:
 
-1. Command line utilities: `curl`, `make`, `git`, `python` (version 3) and `pip3`.
+1.  Command line utilities: `curl`, `make`, `git`, `python` (version 3) and
+    `pip3`.
 
-1. Clone the Tock kernel repository.
+1.  Clone the Tock kernel repository.
 
         $ git clone https://github.com/tock/tock
 
-1. [rustup](http://rustup.rs/). This tool helps manage installations of the
-   Rust compiler and related tools.
+1.  [rustup](http://rustup.rs/). This tool helps manage installations of the
+    Rust compiler and related tools.
 
-        $ curl https://sh.rustup.rs -sSf | sh
+         $ curl https://sh.rustup.rs -sSf | sh
 
-1. [arm-none-eabi
-   toolchain](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads)
-   (version >= 5.2). This enables you to compile apps written in C for Cortex-M
-   boards.
+1.  [arm-none-eabi toolchain](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads)
+    (version >= 5.2). This enables you to compile apps written in C for Cortex-M
+    boards.
 
-        # mac
-        $ brew tap ARMmbed/homebrew-formulae && brew update && brew install arm-none-eabi-gcc
+         # mac
+         $ brew tap ARMmbed/homebrew-formulae && brew update && brew install arm-none-eabi-gcc
 
-        # linux
-        $ sudo apt install gcc-arm-none-eabi
+         # linux
+         $ sudo apt install gcc-arm-none-eabi
 
-1. Optional. riscv64-unknown-elf toolchain for compiling C apps for RISC-V
-   platforms. Getting this toolchain varies platform-to-platform.
+1.  Optional. riscv64-unknown-elf toolchain for compiling C apps for RISC-V
+    platforms. Getting this toolchain varies platform-to-platform.
 
-        # mac
-        $ brew tap riscv/riscv && brew install riscv-gnu-toolchain --with-multilib
+         # mac
+         $ brew tap riscv/riscv && brew install riscv-gnu-toolchain --with-multilib
 
-        # linux
-        $ sudo apt install gcc-riscv64-unknown-elf
+         # linux
+         $ sudo apt install gcc-riscv64-unknown-elf
 
-1. [tockloader](https://github.com/tock/tockloader). This is an all-in-one tool
-   for programming boards and using Tock.
+1.  [tockloader](https://github.com/tock/tockloader). This is an all-in-one tool
+    for programming boards and using Tock.
 
-        $ pip3 install -U --user tockloader
+         $ pip3 install -U --user tockloader
 
     > Note: On MacOS, you may need to add `tockloader` to your path. If you
     > cannot run it after installation, run the following:
 
-        $ export PATH=$HOME/Library/Python/3.9/bin/:$PATH
+         $ export PATH=$HOME/Library/Python/3.9/bin/:$PATH
 
     > Similarly, on Linux distributions, this will typically install to
     > `$HOME/.local/bin`, and you may need to add that to your `$PATH` if not
     > already present:
 
-        $ PATH=$HOME/.local/bin:$PATH
-
+         $ PATH=$HOME/.local/bin:$PATH
 
 ### Testing You Can Compile the Kernel
 
@@ -203,9 +204,9 @@ This may require some setup, see the "one-time fixups" box.
 >
 >   Afterwards, detach and re-attach the board to reload the rule.
 >
-> - With a virtual machine, you might need to attach the USB device to the
->   VM. To do so, after plugging in the board, select in the VirtualBox/VMWare
->   menu bar:
+> - With a virtual machine, you might need to attach the USB device to the VM.
+>   To do so, after plugging in the board, select in the VirtualBox/VMWare menu
+>   bar:
 >
 >       Devices -> USB Devices -> [The name of your board]
 >
@@ -216,20 +217,19 @@ This may require some setup, see the "one-time fixups" box.
 >   also create a rule in the VM USB settings which will auto-attach the board
 >   to the VM.
 >
-> - With Windows Subsystem for Linux (WSL), the serial device parameters stored in
->   the FTDI chip do not seem to get passed to Ubuntu. Plus, WSL enumerates
+> - With Windows Subsystem for Linux (WSL), the serial device parameters stored
+>   in the FTDI chip do not seem to get passed to Ubuntu. Plus, WSL enumerates
 >   every possible serial device. Therefore, tockloader cannot automatically
 >   guess which serial port is the correct one, and there are a lot to choose
 >   from.
 >
 >   You will need to open Device Manager on Windows, and find which `COM` port
 >   the tock board is using. It will likely be called "USB Serial Port" and be
->   listed as an FTDI device. The COM number will match what is used in WSL.
->   For example, `COM9` is `/dev/ttyS9` on WSL.
+>   listed as an FTDI device. The COM number will match what is used in WSL. For
+>   example, `COM9` is `/dev/ttyS9` on WSL.
 >
->   To use tockloader you should be able to specify the port manually. For example:
->   `tockloader --port /dev/ttyS9 list`.
-
+>   To use tockloader you should be able to specify the port manually. For
+>   example: `tockloader --port /dev/ttyS9 list`.
 
 ### One Time Board Setup
 
@@ -238,13 +238,11 @@ section.
 
 If you have an **Arduino Nano 33 BLE** (sense or regular), you need to update
 the bootloader on the board to the Tock bootloader. Please follow the
-[bootloader update
-instructions](https://github.com/tock/tock/tree/master/boards/nano33ble#getting-started).
+[bootloader update instructions](https://github.com/tock/tock/tree/master/boards/nano33ble#getting-started).
 
 If you have a **Micro:bit v2** then you need to load the Tock booloader. Please
-follow the [bootloader installation
-instructions](https://github.com/tock/tock/tree/master/boards/microbit_v2).
-
+follow the
+[bootloader installation instructions](https://github.com/tock/tock/tree/master/boards/microbit_v2).
 
 ### Test The Board
 
@@ -280,7 +278,6 @@ you can ask on
 [Slack](https://join.slack.com/t/tockos/shared_invite/enQtNDE5ODQyNDU4NTE1LWVjNTgzMTMwYzA1NDI1MjExZjljMjFmOTMxMGIwOGJlMjk0ZTI4YzY0NTYzNWM0ZmJmZGFjYmY5MTJiMDBlOTk)
 if you need help.
 
-
 ### Flash the kernel
 
 Now that the board is connected and you have verified that the kernel compiles
@@ -295,7 +292,6 @@ kernel.
     $ make install
 
 You can also look at the board's README for more details.
-
 
 ### Install Some Applications
 
@@ -338,7 +334,6 @@ happen.
     Hello World!
     ␀
 
-
 #### Uninstalling and Installing More Apps
 
 Lets check what's on the board right now:
@@ -364,7 +359,6 @@ Lets check what's on the board right now:
 
 
     [INFO   ] Finished in 2.939 seconds
-
 
 As you can see, the apps are still installed on the board. We can remove apps
 with the following command:
@@ -397,14 +391,12 @@ once a second, and print the results.
     FXOS8700CQ: Y:               23
     FXOS8700CQ: Z:               987
 
-
-
 #### Compiling and Loading Applications
 
 There are many more example applications in the `libtock-c` repository that you
 can use. Let's try installing the ROT13 cipher pair. These two applications use
-inter-process communication (IPC) to implement a [ROT13
-cipher](https://en.wikipedia.org/wiki/ROT13).
+inter-process communication (IPC) to implement a
+[ROT13 cipher](https://en.wikipedia.org/wiki/ROT13).
 
 Start by uninstalling any applications:
 
@@ -464,16 +456,15 @@ The `--jlink` flag tells tockloader to use the JLink JTAG tool to communicate
 with the board (this mirrors using `make flash` above). Some boards support
 OpenOCD, in which case you would pass `--openocd` instead.
 
-To see a list of boards that tockloader supports, you can run `tockloader
-list-known-boards`. If you have an imix or Hail board, you should not need to
-specify the board.
+To see a list of boards that tockloader supports, you can run
+`tockloader list-known-boards`. If you have an imix or Hail board, you should
+not need to specify the board.
 
 > Note, a board listed in `tockloader list-known-boards` means there are default
 > settings hardcoded into tockloader's source on how to support those boards.
 > However, all of those settings can be passed in via command-line parameters
 > for boards that tockloader does not know about. See `tockloader --help` for
 > more information.
-
 
 ## Familiarize Yourself with `tockloader` Commands
 
@@ -487,7 +478,7 @@ board.
 ### `tockloader install`
 
 This is the main tockloader command, used to load Tock applications onto a
-board.  By default, `tockloader install` adds the new application, but does not
+board. By default, `tockloader install` adds the new application, but does not
 erase any others, replacing any already existing application with the same name.
 Use the `--no-replace` flag to install multiple copies of the same app. To
 install an app, either specify the `tab` file as an argument, or navigate to the
@@ -496,35 +487,41 @@ command:
 
     $ tockloader install
 
-> *Tip:* You can add the `--make` flag to have tockloader automatically
-> run make before installing, i.e. `tockloader install --make`
+> _Tip:_ You can add the `--make` flag to have tockloader automatically run make
+> before installing, i.e. `tockloader install --make`
 
-> *Tip:* You can add the `--erase` flag to have tockloader automatically
-> remove other applications when installing a new one.
+> _Tip:_ You can add the `--erase` flag to have tockloader automatically remove
+> other applications when installing a new one.
 
 ### `tockloader uninstall [application name(s)]`
+
 Removes one or more applications from the board by name.
 
 ### `tockloader erase-apps`
+
 Removes all applications from the board.
 
 ### `tockloader list`
+
 Prints basic information about the apps currently loaded onto the board.
 
 ### `tockloader info`
-Shows all properties of the board, including information about currently
-loaded applications, their sizes and versions, and any set attributes.
+
+Shows all properties of the board, including information about currently loaded
+applications, their sizes and versions, and any set attributes.
 
 ### `tockloader listen`
+
 This command prints output from Tock apps to the terminal. It listens via UART,
 and will print out anything written to stdout/stderr from a board.
 
-> *Tip:* As a long-running command, `listen` interacts with other tockloader
+> _Tip:_ As a long-running command, `listen` interacts with other tockloader
 > sessions. You can leave a terminal window open and listening. If another
 > tockloader process needs access to the board (e.g. to install an app update),
 > tockloader will automatically pause and resume listening.
 
 ### `tockloader flash`
+
 Loads binaries onto hardware platforms that are running a compatible bootloader.
 This is used by the Tock Make system when kernel binaries are programmed to the
 board with `make program`.
