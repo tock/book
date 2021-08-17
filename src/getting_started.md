@@ -5,7 +5,7 @@ This getting started guide covers how to get started using Tock.
 ## Hardware
 
 To really be able to use Tock and get a feel for the operating system, you will
-need a hardware platform that tock supports. The [TockOs
+need a hardware platform that tock supports. The [TockOS
 Hardware](https://www.tockos.org/hardware/) includes a list of supported
 hardware boards. You can also view the [boards
 folder](https://github.com/tock/tock/tree/master/boards) to see what platforms
@@ -57,7 +57,7 @@ VMWare:
  * VMWare users: [File → Open...](https://pubs.vmware.com/workstation-9/index.jsp?topic=%2Fcom.vmware.ws.using.doc%2FGUID-DDCBE9C0-0EC9-4D09-8042-18436DA62F7A.html)
 
 The VM account is "tock" with password "tock". Feel free to customize it with
-whichever editors, window managers, etc. you like before the training starts.
+whichever editors, window managers, etc. you like.
 
 > If the Host OS is Linux, you may need to add your user to the `vboxusers`
 > group on your machine in order to connect the hardware boards to the virtual
@@ -90,12 +90,14 @@ operating system install, you will need the following software:
         # linux
         $ sudo apt install gcc-arm-none-eabi
 
-1. [riscv64-unknown-elf toolchain](https://www.sifive.com/boards) (version >=
-   v2019.08.0). Scroll down to the "Prebuilt RISC‑V GCC Toolchain" section. This
-   enables you to compile apps written in C for RISC-V boards.
+1. Optional. riscv64-unknown-elf toolchain for compiling C apps for RISC-V
+   platforms. Getting this toolchain varies platform-to-platform.
 
         # mac
         $ brew tap riscv/riscv && brew install riscv-gnu-toolchain --with-multilib
+
+        # linux
+        $ sudo apt install gcc-riscv64-unknown-elf
 
 1. [tockloader](https://github.com/tock/tockloader). This is an all-in-one tool
    for programming boards and using Tock.
@@ -105,7 +107,7 @@ operating system install, you will need the following software:
     > Note: On MacOS, you may need to add `tockloader` to your path. If you
     > cannot run it after installation, run the following:
 
-        $ export PATH=$HOME/Library/Python/3.6/bin/:$PATH
+        $ export PATH=$HOME/Library/Python/3.9/bin/:$PATH
 
     > Similarly, on Linux distributions, this will typically install to
     > `$HOME/.local/bin`, and you may need to add that to your `$PATH` if not
@@ -287,28 +289,12 @@ Now that the board is connected and you have verified that the kernel compiles
     $ cd boards/<your board>
     $ make
 
-Generally boards are programmed with either `make program` or `make flash`. Try
-`make program` first:
+Boards provide the target `make install` as the recommended way to load the
+kernel.
 
-    $ make program
-
-If that is not available, you can use `make flash`:
-
-    $ make flash
+    $ make install
 
 You can also look at the board's README for more details.
-
-> #### Why both `make program` and `make flash`?
->
-> While these commands do the same thing, the way they go about it is very
-> different.
->
-> The `make program` version communicates with the board via a serial connection
-> and a bootloader running on the board. You may need to manually enter the
-> bootloader when using `make program`.
->
-> The `make flash` version uses a JTAG debugger to communicate with the chip and
-> flash the kernel binary directly to the chip.
 
 
 ### Install Some Applications
