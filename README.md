@@ -18,6 +18,13 @@ Manual steps:
 2. `mdbook build`
 
 
+### Formatting the book
+
+Manual steps:
+
+1. `npm i -g prettier@2.3.2`
+2. `prettier --write '**/*.md'`
+
 
 Deploying the Book
 ------------------
