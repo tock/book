@@ -102,7 +102,7 @@ The steps from the overview are elaborated on here.
     - _What is the maximum water level?_ This can be a simple command, where the
       return value of the command is the maximum water level.
     - _What is the current water level?_ This will require two steps. First,
-      there needs to be a subscribe call where the application can setup a
+      there needs to be a subscribe call where the application can setup an
       upcall function. The kernel will call this when the water level value
       has been acquired. Second, there will need to be a command to instruct the
       kernel to take the water level reading.
