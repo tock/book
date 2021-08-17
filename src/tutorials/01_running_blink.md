@@ -9,9 +9,9 @@ This guide will help you get the `blink` app running on top of Tock kernel.
     install any application in addition to whatever is already installed on the
     board.
 
-        ```bash
-        $ tockloader erase-apps
-        ```
+    ```bash
+    $ tockloader erase-apps
+    ```
 
 2.  **Install Blink**. Tock supports an "app store" of sorts. That is,
     tockloader can install apps from a remote repository, including Blink. To do
