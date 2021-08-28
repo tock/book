@@ -8,20 +8,12 @@ This should be generic and expanded as new courses and tutorials are added.
 
 ## Building the Book
 
-Manual steps:
+`make`
 
-1. `cargo install mdbook --version 0.4.7`
-2. `mdbook build`
-
-### Formatting the book
-
-Manual steps:
-
-1. `npm i -g prettier@2.3.2`
-2. `prettier --write --prose-wrap always '**/*.md'`
+This will auto-install some packages at requested versions if needed. If you do
+not want tools to auto-install, inspect the Makefile and install the requisite
+packages manually.
 
 ## Deploying the Book
 
 The book is auto-deployed by Netlify on pushes to the main branch.
-
-If you update mdbook version, you must also update `netlify.toml`.

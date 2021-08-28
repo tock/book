@@ -40,11 +40,11 @@ OK, lets get started.
    ```
 
 2. **Fill in the application with syscalls**. The standard
-   [Tock syscalls](../Syscalls.md) can be used to actually implement the sketch
-   we made above. We first use the `subscribe` syscall to inform the kernel
-   about the callback in our application. We then use the `command` syscall to
-   start the measurement. To wait, we use the `yield` call to wait for the
-   callback to actually fire. We do not need to use `allow` for this
+   [Tock syscalls](../development/syscall.md) can be used to actually implement
+   the sketch we made above. We first use the `subscribe` syscall to inform the
+   kernel about the callback in our application. We then use the `command`
+   syscall to start the measurement. To wait, we use the `yield` call to wait
+   for the callback to actually fire. We do not need to use `allow` for this
    application, and typically it is not required for reading sensors.
 
    For all syscalls that interact with drivers, the major number is set by the

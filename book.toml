@@ -1,5 +1,9 @@
 [book]
-authors = ["Amit Levy"]
+authors = ["Tock Project Developers <tock-dev@googlegroups.com>"]
 multilingual = false
 src = "src"
-title = "Tock Tutorial"
+title = "The Tock Book"
+
+[output.html]
+
+[output.linkcheck]

@@ -10,13 +10,13 @@ single-threaded processes that can be written in any language.
 
 ## Getting Started
 
-The book includes a [quick start guide](../getting_started.html).
+The book includes a [quick start guide](getting_started.html).
 
 ## Tock Workshop Courses
 
-For a more in-depth walkthough-style less, look [here](../course.html).
+For a more in-depth walkthough-style less, look [here](course.html).
 
 ## Development Guides
 
-The book also has [walkthoughs](../development/guides.html) on how to implement
+The book also has [walkthoughs](development/guides.html) on how to implement
 different features in Tock OS.
