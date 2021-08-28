@@ -1,6 +1,6 @@
 [build]
-  publish = "book/"
-  command = "env ; make"
+  publish = "book/html/"
+  command = "make"
   environment = { RUBY_VERSION = "2.7.2" }
 
 # n.b. We don't use ruby at all. Need to set version [temporarily?]
