@@ -15,6 +15,7 @@ Tock OS Course
       - [Application](./application.md)
       - [Important Client](./important_client.md)
       - [Capsule](./capsule.md)
+      - [Policies](./policies.md)
     - [Graduation](./graduation.md)
 
   - [Mini Tutorials](./tutorials/tutorials.md)
