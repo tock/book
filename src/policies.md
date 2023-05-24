@@ -119,9 +119,85 @@ whether the process was cryptographically signed using our RSA private key.
 
 
 
+### Custom Process Fault Policy
 
+A process fault policy decides what the kernel does with a process when it
+crashes (i.e. hardfaults). The policy is implemented as a Rust module that
+implements the following trait:
 
+```rust
+pub trait ProcessFaultPolicy {
+    /// `process` faulted, now decide what to do.
+    fn action(&self, process: &dyn Process) -> process::FaultAction;
+}
+```
 
+When a process faults, the kernel will call the `action()` function and then
+take the returned action on the faulted process. The available actions are:
+
+```rust
+pub enum FaultAction {
+    /// Generate a `panic!()` with debugging information.
+    Panic,
+    /// Attempt to restart the process.
+    Restart,
+    /// Stop the process.
+    Stop,
+}
+```
+
+Let's create a custom process fault policy that restarts signed processes up to
+a configurable maximum number of times, and immediately stops unsigned
+processes.
+
+We start by defining a `struct` for this policy:
+
+```rust
+pub struct RestartTrustedAppsFaultPolicy {
+	/// Number of times to restart trusted apps.
+    threshold: usize,
+}
+```
+
+We then create a constructor:
+
+```rust
+impl RestartTrustedAppsFaultPolicy {
+    pub const fn new(threshold: usize) -> RestartTrustedAppsFaultPolicy {
+        RestartTrustedAppsFaultPolicy { threshold }
+    }
+}
+```
+
+Now we can add a template implementation for the `ProcessFaultPolicy` trait:
+
+```rust
+impl ProcessFaultPolicy for RestartTrustedAppsFaultPolicy {
+    fn action(&self, process: &dyn Process) -> process::FaultAction {
+        process::FaultAction::Stop
+    }
+}
+```
+
+To determine if a process is trusted, we will use its `ShortID`. A `ShortID` is
+a type as follows:
+
+```rust
+pub enum ShortID {
+	/// No specific ID, just an abstract value we know is unique.
+    LocallyUnique,
+    /// Specific 32 bit ID number guaranteed to be unique.
+    Fixed(core::num::NonZeroU32),
+}
+```
+
+If the app has a short ID of `ShortID::LocallyUnique` then it is untrusted (i.e.
+the kernel could not validate its signature or it was not signed). If the app
+has a concrete number as its short ID (i.e. `ShortID::Fixed(u32)`), then we
+consider the app to be trusted.
+
+To determine how many times the process has already been restarted we can use
+`process.
 
 
 
