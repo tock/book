@@ -14,6 +14,7 @@ Tock OS Course
     - [Modules](./modules.md)
       - [Application](./application.md)
       - [Important Client](./important_client.md)
+      - [Kernel Boot](./boot.md)
       - [Capsule](./capsule.md)
       - [Policies](./policies.md)
     - [Graduation](./graduation.md)
