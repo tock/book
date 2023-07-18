@@ -115,7 +115,7 @@ pub enum ShortID {
 In this module, we are going to experiment with using the `KernelResources`
 trait to implement per-process restart policies. We will create our own
 `ProcessFaultPolicy` that implements different fault handling behavior based on
-whether the process was cryptographically signed using our RSA private key.
+whether the process included a hash in its credentials footer.
 
 
 
@@ -251,26 +251,19 @@ First we need to configure your kernel to use your new fault policy.
     );
     ```
 
-2. We need to add the policy to our board object by making sure the types match.
-   Edit the main board struct to the new policy:
+3. Now we need to configure the process loading mechanism to use this policy for
+   each app.
 
     ```rust
-    struct Platform {
-    	...
-        fault_policy: &'static trusted_fault_policy::RestartTrustedAppsFaultPolicy,
-    }
-    ```
-
-3. Now we need to configure the `KernelResources` struct to use the policy.
-
-    ```rust
-    impl KernelResources<...> for Platform {
-        ...
-        type ProcessFaultPolicy = trusted_fault_policy::RestartTrustedAppsFaultPolicy;
-        fn process_fault_policy(&self) -> &Self::ProcessFaultPolicy {
-            &self.fault_policy
-        }
-    }
+    kernel::process::load_processes(
+        board_kernel,
+        chip,
+        flash,
+        memory,
+        &mut PROCESSES,
+        fault_policy, // this is where we provide our chosen policy
+        &process_management_capability,
+    )
     ```
 
 4. Now we can compile the updated kernel and flash it to the board:
@@ -334,40 +327,22 @@ run it. Our policy is working! Next we have to verify signed apps so that we can
 restart trusted apps.
 
 
-## Trusting Apps
+## App Credentials
 
 With our custom fault policy, we can implement different responses based on
 whether an app is trusted or not. Now we need to configure the kernel to verify
-apps, and check if we trust them or not.
+apps, and check if we trust them or not. For this example we will use a simple
+credential: a sha256 hash. This credential is simple to create, and serves as a
+stand-in for more useful credentials such as cryptographic signatures.
 
 This will require a couple pieces:
 
-- We need to actually sign the apps with our private key and include the
-  signature when we load apps to the board so the kernel can check the
-  signature.
-- We need a mechanism in the kernel to check the signatures.
-- We need the kernel to know the matching public key to verify the signatures.
+- We need to actually include the hash in our app.
+- We need a mechanism in the kernel to check the hash exists and is valid.
 
 ### Signing Apps
 
-We can use Tockloader to sign a compiled app. But first, we need RSA keys to use
-for the signature. We can generate suitable keys with `openssl`:
-
-```
-$ openssl genrsa -aes128 -out tockkey.private.pem 2048
-$ openssl rsa -in tockkey.private.pem -outform der -out tockkey.private.der
-$ openssl rsa -in tockkey.private.pem -outform der -pubout -out tockkey.public.der
-```
-
-You should now have three key files (although we only need the `.der` files):
-
-- `tockkey.private.pem`
-- `tockkey.private.der`
-- `tockkey.public.der`
-
-Now, to add an RSA signature to an app, we first build the app and then add the
-`rsa2048` credential. It shouldn't matter which app you want to use, but for
-simplicity we'll use `blink` as an example.
+We can use Tockloader to add a hash to a compiled app.
 
 First, compile the app:
 
@@ -376,10 +351,10 @@ $ cd libtock-c/examples/blink
 $ make
 ```
 
-Now, add the credential:
+Now, add the hash credential:
 
 ```
-$ tockloader tbf credential add rsa2048 --private-key tockkey.private.der --public-key tockkey.public.der
+$ tockloader tbf credential add sha256
 ```
 
 It's fine to add to all architectures or you can specify which TBF to add it to.
@@ -408,51 +383,252 @@ TAB: blink
 
 cortex-m4:
   version               : 2
-  header_size           :         76         0x4c
-  total_size            :       8192       0x2000
-  checksum              :              0x6e3c4aff
+  header_size           :        104         0x68
+  total_size            :      16384       0x4000
+  checksum              :              0x722e64be
   flags                 :          1          0x1
     enabled             : Yes
     sticky              : No
   TLV: Main (1)                                   [0x10 ]
     init_fn_offset      :         41         0x29
     protected_size      :          0          0x0
-    minimum_ram_size    :       4604       0x11fc
+    minimum_ram_size    :       5068       0x13cc
   TLV: Program (9)                                [0x20 ]
     init_fn_offset      :         41         0x29
     protected_size      :          0          0x0
-    minimum_ram_size    :       4604       0x11fc
-    binary_end_offset   :       1780        0x6f4
+    minimum_ram_size    :       5068       0x13cc
+    binary_end_offset   :       8360       0x20a8
     app_version         :          0          0x0
   TLV: Package Name (3)                           [0x38 ]
-    package_name        : blink
-  TLV: Kernel Version (8)                         [0x44 ]
+    package_name        : kv_interactive
+  TLV: Kernel Version (8)                         [0x4c ]
     kernel_major        : 2
     kernel_minor        : 0
     kernel version      : ^2.0
+  TLV: Persistent ACL (7)                         [0x54 ]
+    Write ID            :          11          0xb
+    Read IDs (1)        : 11
+    Access IDs (1)      : 11
 
 TBF Footers
   Footer
-    footer_size         :       6412       0x190c
+    footer_size         :       8024       0x1f58
   Footer TLV: Credentials (128)
-    Type: RSA2048 (10)
-    Length: 256
+    Type: SHA256 (3) ✓ verified
+    Length: 32
   Footer TLV: Credentials (128)
     Type: Reserved (0)
-    Length: 6140
+    Length: 7976
 ```
 
-Note at the bottom, there is a `Footer TLV` with RSA2048 credentials! To verify
-they were added correctly, we can run `tockloader inspect-tab` with
-`--verify-credentials`:
+Note at the bottom, there is a `Footer TLV` with SHA256 credentials! Because
+tockloader was able to double-check the hash was correct there is `✓ verified`
+next to it.
+
+> **SUCCESS:** We now have an app with a hash credential!
+
+### Verifying Credentials in the Kernel
+
+To have the kernel check that our hash credential is present and valid, we need
+to add a credential checker before the kernel starts each process.
+
+In `main.rs`, we need to create the app checker. Tock includes a basic SHA256
+credential checker, so we can use that:
+
+```rust
+use capsules_extra::sha256::Sha256Software;
+use kernel::process_checker::basic::AppCheckerSha256;
+
+// Create the software-based SHA engine.
+let sha = static_init!(Sha256Software<'static>, Sha256Software::new());
+kernel::deferred_call::DeferredCallClient::register(sha);
+
+// Create the credential checker.
+static mut SHA256_CHECKER_BUF: [u8; 32] = [0; 32];
+let checker = static_init!(
+    AppCheckerSha256,
+    AppCheckerSha256::new(sha, &mut SHA256_CHECKER_BUF)
+);
+sha.set_client(checker);
+```
+
+Then we need to add this to our `Platform` struct:
+
+```rust
+struct Platform {
+    ...
+    credentials_checking_policy: &'static AppCheckerSha256,
+}
+```
+
+Add it when create the platform object:
+
+```rust
+let platform = Platform {
+    ...
+    credentials_checking_policy: checker,
+}
+```
+
+And configure our kernel to use it:
+
+```rust
+impl KernelResources for Platform {
+    ...
+    type CredentialsCheckingPolicy = AppCheckerSha256;
+    ...
+    fn credentials_checking_policy(&self) -> &'static Self::CredentialsCheckingPolicy {
+        self.credentials_checking_policy
+    }
+    ...
+}
+```
+
+Finally, we need to use the function that checks credentials when processes are
+loaded (not just loads and executes them unconditionally):
+
+```rust
+kernel::process::load_and_check_processes(
+        board_kernel,
+        &platform, // note this function requires providing the platform.
+        chip,
+        core::slice::from_raw_parts(
+            &_sapps as *const u8,
+            &_eapps as *const u8 as usize - &_sapps as *const u8 as usize,
+        ),
+        core::slice::from_raw_parts_mut(
+            &mut _sappmem as *mut u8,
+            &_eappmem as *const u8 as usize - &_sappmem as *const u8 as usize,
+        ),
+        &mut PROCESSES,
+        &FAULT_RESPONSE,
+        &process_management_capability,
+    )
+    .unwrap_or_else(|err| {
+        debug!("Error loading processes!");
+        debug!("{:?}", err);
+    });
+```
+
+(Instead of just `kernel::process::load_processes(...)`.)
+
+
+Compile and install the updated kernel.
+
+> **SUCCESS:** We now have a kernel that can check credentials!
+
+### Installing Apps and Verifying Credentials
+
+Now, our kernel will only run an app if it has a valid SHA256 credential. To
+verify this, recompile and install the blink app but do not add credentials:
 
 ```
-$ tockloader inspect-tab --verify-credentials tockkey.private.der
+cd libtock-c/examples/blink
+touch main.c
+make
+tockloader install --erase
 ```
 
-There will now be a `✓ verified` next to the RSA2048 credential showing that the
-stored credential matches what it should compute to.
+Now, if we list the processes on the board with the process console:
 
-> **SUCCESS:** We now have a signed app!
+```
+$ tockloader listen
+Initialization complete. Entering main loop
+NRF52 HW INFO: Variant: AAF0, Part: N52840, Package: QI, Ram: K256, Flash: K1024
+tock$ list
+ PID    Name                Quanta  Syscalls  Restarts  Grants  State
+ 0      blink                    0         0         0   0/16   CredentialsFailed
+tock$
+```
 
+You can see our app is in the state `CredentialsFailed` meaning it will not
+execute (and the LEDs are not blinking).
+
+To fix this, we can add the SHA256 credential.
+
+```
+cd libtock-c/examples/blink
+tockloader tbf credential add sha256
+tockloader install
+```
+
+Now when we list the processes, we see:
+
+```
+tock$ list
+ PID    ShortID    Name                Quanta  Syscalls  Restarts  Grants  State
+ 0      0x3be6efaa blink                    0       323         0   1/16   Yielded
+```
+
+And we can verify the app is both running and now has a specifically assigned
+short ID.
+
+### Implementing the Privileged Behavior
+
+The default operation is not quite what we want. We want all apps to run, but
+only credentialed apps to be restarted.
+
+First, we need to allow all apps to run, even if they don't pass the credential
+check. Doing that is actually quite simple. We just need to modify the
+credential checker we are using to not require credentials.
+
+In `tock/kernel/src/process_checker/basic.rs`, modify the
+`require_credentials()` function to not require credentials:
+
+```rust
+impl AppCredentialsChecker<'static> for AppCheckerSha256 {
+    fn require_credentials(&self) -> bool {
+        false // change from true to false
+    }
+    ...
+}
+```
+
+Then recompile and install. Now both processes should run:
+
+```
+tock$ list
+ PID    ShortID    Name                Quanta  Syscalls  Restarts  Grants  State
+ 0      0x3be6efaa blink                    0       193         0   1/16   Yielded
+ 1      Unique     c_hello                  0         8         0   1/16   Yielded
+```
+
+But note, only the credential app (blink) has a specific short ID.
+
+Second, we need to use the presence of a specific short ID in our fault policy
+to only restart credentials apps. We just need to check if the short ID is fixed
+or not:
+
+```rust
+impl ProcessFaultPolicy for RestartTrustedAppsFaultPolicy {
+    fn action(&self, process: &dyn Process) -> process::FaultAction {
+        let restart_count = process.get_restart_count();
+        let short_id = process.short_app_id();
+
+        // Check if the process is trusted based on whether it has a fixed short
+        // ID. If so, return the restart action if the restart count is below
+        // the threshold. Otherwise return stop.
+        match short_id {
+            kernel::process::ShortID::LocallyUnique => process::FaultAction::Stop,
+            kernel::process::ShortID::Fixed(_) => {
+                if restart_count < self.threshold {
+                    process::FaultAction::Restart
+                } else {
+                    process::FaultAction::Stop
+                }
+            }
+        }
+    }
+}
+```
+
+That's it! Now we have the full policy: we verify application credentials, and
+handle process faults accordingly.
+
+> ### Task
+>
+> Compile and install multiple applications, including the crash dummy app, and
+> verify that only credentialed apps are successfully restarted.
+
+> **SUCCESS:** We now have implemented an end-to-end security policy in Tock!
 
