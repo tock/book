@@ -17,6 +17,7 @@ Tock OS Course
       - [Kernel Boot](./boot.md)
       - [Capsule](./capsule.md)
       - [Policies](./policies.md)
+      - [TicKV](./tickv.md)
     - [Graduation](./graduation.md)
 
   - [Mini Tutorials](./tutorials/tutorials.md)
