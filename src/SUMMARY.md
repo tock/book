@@ -12,13 +12,14 @@ Tock OS Course
 
     - [Course Setup](./course_setup.md)
     - [Modules](./modules.md)
-      - [Application](./application.md)
-      - [Important Client](./important_client.md)
       - [Kernel Boot](./boot.md)
-      - [Capsule](./capsule.md)
       - [Policies](./policies.md)
       - [TicKV](./tickv.md)
+      - [Application](./application.md)
     - [Graduation](./graduation.md)
+    - [Deprecated](./deprecated.md)
+      - [Important Client](./important_client.md)
+      - [Capsule](./capsule.md)
 
   - [Mini Tutorials](./tutorials/tutorials.md)
     - [Blink an LED](./tutorials/01_running_blink.md)

@@ -26,7 +26,9 @@ debug!("Hello from the kernel!");
 $ cd [PATH_TO_BOOK]/imix
 $ make program
 $ tockloader listen
-No device name specified. Using default "tock"                                                                         Using "/dev/ttyUSB0 - Imix IoT Module - TockOS"
+No device name specified.
+Using default "tock"
+Using "/dev/ttyUSB0 - Imix IoT Module - TockOS"
 Listening for serial output.
 Hello from the kernel!
 ```
