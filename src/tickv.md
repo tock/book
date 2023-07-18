@@ -86,7 +86,6 @@ ID stored in the `Write ID` field, then it can access that key-value object. If
 a process has update permissions for the specific ID stored in the `Write ID`
 field, then it can change the value of that key-value object.
 
-
 ### Tock Key-Value APIs
 
 Tock supports two key-value orientated APIs: an upper and lower API. The lower
@@ -139,7 +138,6 @@ pub trait KVStore {
 As you can see, each of these APIs requires a `StoragePermissions` so the
 capsule can verify that the requestor has access to the given K-V object.
 
-
 ## Key-Value in Userspace
 
 Userspace applications have access to the K-V store via the `kv_driver.rs`
@@ -152,11 +150,11 @@ via headers in the TBF header for the application.
 Applications have three fields for permissions: a write ID, multiple read IDs,
 and multiple modify IDs.
 
-- `write_id: u32`: This u32 specifies the ID used when the application creates a new
-  K-V object. If this is 0, then the application does not have write access. (A
-  `write_id` of 0 is reserved for the kernel.)
-- `read_ids: [u32]`: These read IDs specify which k-v objects the application can
-  call `get()` on. If this is empty or does not include the application's
+- `write_id: u32`: This u32 specifies the ID used when the application creates a
+  new K-V object. If this is 0, then the application does not have write access.
+  (A `write_id` of 0 is reserved for the kernel.)
+- `read_ids: [u32]`: These read IDs specify which k-v objects the application
+  can call `get()` on. If this is empty or does not include the application's
   `write_id`, then the application will not be able to retrieve its own objects.
 - `modify_ids: [u32]`: These modify IDs specify which k-v objects the
   application can edit, either by replacing or deleting. Again, if this is empty
@@ -274,7 +272,6 @@ TicKV Object hash=0xf17b4d392287c6e6 version=1 flags=8 length=79 valid=True chec
 ```
 
 You can see all of the hashed keys and stored values, as well as their headers.
-
 
 ### Add a Key-Value Object
 

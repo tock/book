@@ -117,8 +117,6 @@ trait to implement per-process restart policies. We will create our own
 `ProcessFaultPolicy` that implements different fault handling behavior based on
 whether the process included a hash in its credentials footer.
 
-
-
 ### Custom Process Fault Policy
 
 A process fault policy decides what the kernel does with a process when it
@@ -244,34 +242,34 @@ First we need to configure your kernel to use your new fault policy.
 1. Find where your `fault_policy` was already defined. Update it to use your new
    policy:
 
-    ```rust
-    let fault_policy = static_init!(
-        trusted_fault_policy::RestartTrustedAppsFaultPolicy,
-        trusted_fault_policy::RestartTrustedAppsFaultPolicy::new(3)
-    );
-    ```
+   ```rust
+   let fault_policy = static_init!(
+       trusted_fault_policy::RestartTrustedAppsFaultPolicy,
+       trusted_fault_policy::RestartTrustedAppsFaultPolicy::new(3)
+   );
+   ```
 
-3. Now we need to configure the process loading mechanism to use this policy for
+2. Now we need to configure the process loading mechanism to use this policy for
    each app.
 
-    ```rust
-    kernel::process::load_processes(
-        board_kernel,
-        chip,
-        flash,
-        memory,
-        &mut PROCESSES,
-        fault_policy, // this is where we provide our chosen policy
-        &process_management_capability,
-    )
-    ```
+   ```rust
+   kernel::process::load_processes(
+       board_kernel,
+       chip,
+       flash,
+       memory,
+       &mut PROCESSES,
+       fault_policy, // this is where we provide our chosen policy
+       &process_management_capability,
+   )
+   ```
 
-4. Now we can compile the updated kernel and flash it to the board:
+3. Now we can compile the updated kernel and flash it to the board:
 
-    ```
-    # in your board directory:
-    make install
-    ```
+   ```
+   # in your board directory:
+   make install
+   ```
 
 Now we need an app to actually crash so we can observe its behavior. Tock has a
 test app called `crash_dummy` that causes a hardfault when a button is pressed.
@@ -279,16 +277,16 @@ Compile that and load it on to the board:
 
 1. Compile the app:
 
-    ```
-    cd libtock-c/examples/tests/crash_dummy
-    make
-    ```
+   ```
+   cd libtock-c/examples/tests/crash_dummy
+   make
+   ```
 
 2. Install it on the board:
 
-    ```
-    tockloader install
-    ```
+   ```
+   tockloader install
+   ```
 
 With the new kernel installed and the test app loaded, we can inspect the status
 of the board. Use tockloader to connect to the serial port:
@@ -325,7 +323,6 @@ tock$ list
 Now the process is in the `Faulted` state! This means the kernel will not try to
 run it. Our policy is working! Next we have to verify signed apps so that we can
 restart trusted apps.
-
 
 ## App Credentials
 
@@ -512,7 +509,6 @@ kernel::process::load_and_check_processes(
 
 (Instead of just `kernel::process::load_processes(...)`.)
 
-
 Compile and install the updated kernel.
 
 > **SUCCESS:** We now have a kernel that can check credentials!
@@ -631,4 +627,3 @@ handle process faults accordingly.
 > verify that only credentialed apps are successfully restarted.
 
 > **SUCCESS:** We now have implemented an end-to-end security policy in Tock!
-

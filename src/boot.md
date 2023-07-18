@@ -26,9 +26,9 @@ system calls it supports for userland applications.
 
 ### How is everything organized?
 
-Find the declaration of "platform" `struct`. This is typically called `struct
-Platform` or named based on the name of the board (it's pretty early in the
-file). This declares the structure representing the platform. It has many
+Find the declaration of "platform" `struct`. This is typically called
+`struct Platform` or named based on the name of the board (it's pretty early in
+the file). This declares the structure representing the platform. It has many
 fields, many of which are capsules that make up the board's platform. These
 fields are resources that the board needs to maintain a reference to for future
 use, for example for handling system calls or implementing kernel policies.
@@ -176,8 +176,8 @@ multiple boards and different microcontrollers. More detail
 
 The code continues on, creating all of the other capsules that are needed by the
 platform. Towards the end of `main()`, we've created all of the capsules we
-need, and it's time to create the actual platform structure (`let platform =
-Platform {...}`).
+need, and it's time to create the actual platform structure
+(`let platform = Platform {...}`).
 
 Boards must implement two traits to successfully run the Tock kernel:
 `SyscallDriverLookup` and `KernelResources`.
@@ -231,7 +231,6 @@ the core Tock kernel. Policies such as the syscall mapping described above,
 syscall filtering, and watchdog timers are configured through this trait. More
 information is contained in a separate course module.
 
-
 ### Loading processes
 
 Once the platform is all set up, the board is responsible for loading processes
@@ -281,7 +280,6 @@ iteratively parsing TBF entries and making `Process`es.
 > To create a capability, the calling code must be able to call `unsafe`, Code
 > (i.e. capsules) which cannot use `unsafe` therefore has no way to create a
 > capability and therefore cannot call the restricted function.
-
 
 ### Starting the kernel
 
