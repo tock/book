@@ -14,6 +14,7 @@ Tock OS Course
     - [Modules](./modules.md)
       - [USB Security Key](./key-overview.md)
         - [USB Keyboard](./key-usb-hid.md)
+        - [Kernel Access Control](./key-access.md)
       - [Kernel Boot](./boot.md)
       - [Policies](./policies.md)
       - [TicKV](./tickv.md)
