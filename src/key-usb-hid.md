@@ -42,6 +42,3 @@ Position your cursor somewhere benign, like a new terminal. Then press a button
 on the board.
 
 > **Checkpoint:** You should see a welcome message from your hardware!
-
-
-
