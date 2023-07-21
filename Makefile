@@ -9,12 +9,12 @@
 .PHONY: check_mdbook check_mdbook_linkcheck check_prettier
 .PHONY: install_mdbook install_mdbook_linkcheck install_prettier
 
-SHELL = /bin/bash
+SHELL = /usr/bin/env bash
 
 # Configuration
-MDBOOK_VERSION := 0.4.7
-MDBOOK_LINKCHECK_VERSION := 0.7.4
-PRETTIER_VERSION := 2.3.2
+MDBOOK_VERSION := 0.4.32
+MDBOOK_LINKCHECK_VERSION := 0.7.7
+PRETTIER_VERSION := 3.0.0
 
 # For CI, use local install; for normal users system install
 # (already in PATH) is fine
