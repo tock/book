@@ -291,16 +291,6 @@ tock$ list
 
 > **SUCCESS:** We now can determine if an app is credentialed or not!
 
-
-
-
-
-
-
-
-
-
-
 ## Step 2: Permitting Syscalls for only Credentialed Apps
 
 Our second step is to implement a policy that permits syscall access to the
@@ -327,7 +317,6 @@ pub trait SyscallFilter {
 
 We need to implement the single `filter_syscall()` function with out desired
 behavior.
-
 
 To do this, create a new file in the board's `src/` directory. Then insert the
 code below as a starting point:
@@ -378,9 +367,7 @@ impl KernelResources for Platform {
 Also you need to instantiate the `TrustedSyscallFilter` and add it to the
 `Platform` struct.
 
-
 > **SUCCESS:** We now have a custom syscall filter based on app credentials.
-
 
 ## Verifying HOTP Now Needs Credentials
 
@@ -388,8 +375,9 @@ Now you should be able to install your HOTP app to the board without adding the
 SHA256 credential and verify that it is no longer able to access the encryption
 capsule.
 
-If you use tockloader to add credentials (`tockloader tbf credential add sha256`)
-and then re-install your app it should run as expected
+If you use tockloader to add credentials
+(`tockloader tbf credential add sha256`) and then re-install your app it should
+run as expected
 
 > ### Wrap-up
 >
