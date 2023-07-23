@@ -32,7 +32,7 @@ concepts in Tock:
 - Tock's hardware-interface layers (HILs), which provide abstract interfaces for
   hardware or software implementations of algorithms, devices and protocols.
 
-## Capusles – Tock's Kernel Modules
+## Capsules – Tock's Kernel Modules
 
 Most of Tock's functionality is implemented in the form of capsules capsules –
 Tock's equivalent to kernel modules. Capsules are Rust modules located in crates
