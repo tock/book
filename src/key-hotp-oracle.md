@@ -498,7 +498,59 @@ build.
 
 ## Interacting with HILs
 
-**TODO!** (this should cover asynchronicity and buffer passing)
+**TODO: intro to HILs** (this should cover asynchronicity and buffer passing)
+
+While our underlying `AES128` implementation can only handle one request at a
+time, multiple processes may wish to use this driver. Thus our capsule
+implements a queueing system: even when another process is already using our
+capsule to decrypt some ciphertext, another process can still initate such a
+request. We remember these requests through the `request_pending` flag in our
+`ProcessState` grant, and we've already implemented the logic to set this flag!
+
+Now, to actually implement our asynchronous decryption operation, it is further
+important to keep track of which process' request we are currently working on.
+We add an additional state field to our `EncryptionOracleDriver` holding an
+[`OptionalCell`](https://docs.tockos.org/kernel/utilities/cells/struct.optionalcell):
+this is a container whose stored value can be modified even if we only hold an
+immutable Rust reference to it. The _optional_ indicates that it behaves similar
+to an `Option` – it can either hold a value, or be empty.
+
+```diff
+  use kernel::utilities::cells::OptionalCell;
+
+  pub struct EncryptionOracleDriver<'a, A: AES128<'a> + AES128Ctr> {
+      aes: &'a A,
+      process_grants: Grant<ProcessState, UpcallCount<0>, AllowRoCount<0>, AllowRwCount<0>>,
++     current_process: OptionalCell<ProcessId>,
+  }
+```
+
+In practice, we simply want to find the next process request to work on, and
+then store its ID in the field we just added. For this, we add a helper method
+to the `impl` of our `EncryptionOracleDriver`:
+
+```rust
+/// Return either the current process (in case of an ongoing operation), or
+/// a process which has a request pending (if there is some).
+///
+/// When returning a process which has a request pending, this method
+/// further marks this as the new current process.
+fn next_process(&self) -> Option<ProcessId> {
+    unimplemented!()
+}
+```
+
+> **EXERCISE:** Try to implement this method according to its specification. If
+> you're stuck, see whether the documentation of the
+> [`OptionalCell`](https://docs.tockos.org/kernel/utilities/cells/struct.optionalcell)
+> and [`Grant`](https://docs.tockos.org/kernel/grant/struct.grant) types help.
+> Hint: to do something with the `ProcessState` of all processes, you can use
+> the
+> [`iter` method on a `Grant`](https://docs.tockos.org/kernel/grant/struct.grant#method.iter):
+> the returned `Iter` type then has an `enter` method access the contents of an
+> invidiual process' grant.
+
+> **CHECKPOINT:** `encryption_oracle_chkpt3.rs`
 
 ## Final Steps
 
