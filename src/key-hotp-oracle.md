@@ -529,6 +529,10 @@ In practice, we simply want to find the next process request to work on, and
 then store its ID in the field we just added. For this, we add a helper method
 to the `impl` of our `EncryptionOracleDriver`:
 
+**TODO:** Change this to what is required in the WIP checkpoint 4. We change
+this to no longer set `current_process` and break its functionality up into two
+methods.
+
 ```rust
 /// Return either the current process (in case of an ongoing operation), or
 /// a process which has a request pending (if there is some).
