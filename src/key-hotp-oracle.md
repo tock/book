@@ -337,23 +337,94 @@ their system calls. The `capsules/core/src/driver.rs` module acts as a registry
 for driver numbers. For the purposes of this tutorial we'll use an unassigned
 driver number in the _misc_ range, `0x99999`.
 
+### Accepting an AES Engine in the Driver
+
+Before we start adding our driver to the board crate, we'll modify it slightly
+to acceppt an instance of an `AES128` cryptography engine. This is to avoid
+modifying our driver's instantiation later on. We provide the
+`encryption_oracle_chkpt2.rs` checkpoint which has these changes integrated,
+feel free to use this code. We make the following mechanical changes to our
+types and constructor – don't worry about them too much right now.
+
+First, we change our `EncryptionOracleDriver` struct to hold a reference to some
+generic type `A`, which must implement the `AES128` and the `AESCtr` traits:
+
+```diff
++ use kernel::hil::symmetric_encryption::{AES128Ctr, AES128};
+
+- pub struct EncryptionOracleDriver {
++ pub struct EncryptionOracleDriver<'a, A: AES128<'a> + AES128Ctr {
++     aes: &'a A,
+      apps: Grant<
+          App,
+          UpcallCount<0>,
+```
+
+Then, we change our constructor to accept this `aes` member as a new argument:
+
+```diff
+- impl EncryptionOracleDriver {
++ impl<'a, A: AES128<'a> + AES128Ctr> EncryptionOracleDriver<'a, A> {
+      /// Create a new instance of our encryption oracle userspace driver:
+      pub fn new(
++         aes: &'a A,
++         _source_buffer: &'static mut [u8],
++         _dest_buffer: &'static mut [u8],
+          apps: Grant<App, UpcallCount<0>, AllowRoCount<0>, AllowRwCount<0>>,
+      ) -> Self {
+          EncryptionOracleDriver {
+              apps: apps,
++             aes: aes,
+          }
+      }
+  }
+```
+
+And finally we update our implementation of `SyscallDriver` to match these new
+types:
+
+```diff
+- impl SyscallDriver for EncryptionOracleDriver {
++ impl<'a, A: AES128<'a> + AES128Ctr> SyscallDriver for EncryptionOracleDriver<'a, A> {
+      fn command(
+          &self,
+```
+
+Finally, make sure that your modified capsule still compiles.
+
+> **CHECKPOINT:** `encryption_oracle_chkpt2.rs`
+
+### Instantiating the System Call Driver
+
 Now, open the board's main file (`boards/nordic/nrf52840dk/src/main.rs`) and
 scroll down to the line that reads "_PLATFORM SETUP, SCHEDULER, AND START KERNEL
 LOOP_". We'll instantiate our encryption oracle driver right above that, with
 the following snippet:
 
 ```rust
+const CRYPT_SIZE: usize = 7 * kernel::hil::symmetric_encryption::AES128_BLOCK_SIZE;
+let aes_src_buffer = kernel::static_init!([u8; 16], [0; 16]);
+let aes_dst_buffer = kernel::static_init!([u8; CRYPT_SIZE], [0; CRYPT_SIZE]);
+
 let oracle = static_init!(
-    capsules_tutorials::encryption_oracle::EncryptionOracleDriver,
-    capsules_tutorials::encryption_oracle::EncryptionOracleDriver::new(
-	    // Magic incantation to create the `Grant` struct we use in our capsule
+    capsules_tutorials::encryption_oracle_chkpt2::EncryptionOracleDriver<
+        'static,
+        nrf52840::aes::AesECB<'static>,
+    >,
+    capsules_tutorials::encryption_oracle_chkpt2::EncryptionOracleDriver::new(
+        &base_peripherals.ecb,
+        aes_src_buffer,
+        aes_dst_buffer,
+		// Magic incantation to create our `Grant` struct:
         board_kernel.create_grant(
-		    // our driver number
-            0x99999,
+            0x99999, // our driver number
             &create_capability!(capabilities::MemoryAllocationCapability)
         ),
     ),
 );
+
+// Leave commented out for now:
+// kernel::hil::symmetric_encryption::AES128::set_client(&base_peripherals.ecb, oracle);
 ```
 
 Now that we instantiated our capsule, we need to wire it up to Tock's system
@@ -369,7 +440,10 @@ declaration:
   pub struct Platform {
       [...],
       systick: cortexm4::systick::SysTick,
-+     oracle: capsules_tutorial::encryption_oracle::EncryptionOracleDriver,
++     oracle: &'static capsules_tutorials::encryption_oracle::EncryptionOracleDriver<
++         'static,
++         nrf52840::aes::AesECB<'static>,
++     >,
   }
 ```
 
