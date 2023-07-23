@@ -16,7 +16,7 @@ Tock OS Course
         - [Setup](./key-setup.md)
         - [USB Keyboard](./key-usb-hid.md)
         - [HOTP Application](./key-hotp-application.md)
-        - [Encryption Oracle](./key-hotp-oracle.md)
+        - [Encryption Oracle Capsule](./key-hotp-oracle.md)
         - [Access Control](./key-hotp-access.md)
       - [Kernel Boot](./boot.md)
       - [Policies](./policies.md)
