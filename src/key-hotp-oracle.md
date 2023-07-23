@@ -9,8 +9,8 @@ However, storing such secrets in plaintext in ordinary flash is often not
 particularly secure. For instance, many microcontrollers offer debugging ports
 which can be used to gain read and write access to flash. Commonly, these ports
 can be restricted to disallow external flash access. However, this makes it
-harder to debug or update devices, and such protections [have been broken in the
-past](https://blog.includesecurity.com/2015/11/firmware-dumping-technique-for-an-arm-cortex-m0-soc/).
+harder to debug or update devices, and such protections
+[have been broken in the past](https://blog.includesecurity.com/2015/11/firmware-dumping-technique-for-an-arm-cortex-m0-soc/).
 
 To circumvent these issues, we will build an _encryption oracle_ capsule: this
 Tock kernel module will allow applications to request decryption of some
@@ -77,7 +77,7 @@ modules and crates, add it to `capsules/tutorials/src/lib.rs`:
 
 ```diff
 + TODO
- ```
+```
 
 The `capsules/tutorial` crate already contains checkpoints of the encryption
 oracle capsule we'll be writing here. Feel free to use them if you're stuck. We
@@ -91,31 +91,29 @@ checkpoints through messages like the following:
 > `capsules/extra`, depending on a variety of factors. For instance, capsules in
 > `core` have stricter requirements regarding their code quality and API
 > stability. Neither `core` nor the `extra` `extra` capsules crates allow for
-> external dependencies (outside of the Tock repository). [The document on
-> external
-> dependencies](https://github.com/tock/tock/blob/master/doc/ExternalDependencies.md)
+> external dependencies (outside of the Tock repository).
+> [The document on external dependencies](https://github.com/tock/tock/blob/master/doc/ExternalDependencies.md)
 > further explains these policies.
 
 ## Userspace Drivers
 
 Now that we have a basic capsule skeleton, we can think about how this code is
 going to interact with userspace applications. Not every capsule needs to offer
-a userspace API, and capsules which do are required to implement [the
-`SyscallDriver`
-trait](https://docs.tockos.org/kernel/syscall/trait.syscalldriver).
+a userspace API, and capsules which do are required to implement
+[the `SyscallDriver` trait](https://docs.tockos.org/kernel/syscall/trait.syscalldriver).
 
 Tock supports different types of application-issued systems calls, four of which
 are relevant to capsules:
 
 - _subscribe_: An application can issue a _subscribe_ system call to register
-  _upcalls_, which are functions being invoked in response to certain
-  events. These upcalls are similar in concept to UNIX signal handlers. A
-  driver can request an application-provided upcall to be invoked. Each system
-  call driver can provide multiple "subscribe slots", each of which the
-  application can register a upcall to.
+  _upcalls_, which are functions being invoked in response to certain events.
+  These upcalls are similar in concept to UNIX signal handlers. A driver can
+  request an application-provided upcall to be invoked. Each system call driver
+  can provide multiple "subscribe slots", each of which the application can
+  register a upcall to.
 
-- _read-only allow_: An application may expose some data for drivers to
-  read. Tock provides the _read-only allow_ system call for this purpose: an
+- _read-only allow_: An application may expose some data for drivers to read.
+  Tock provides the _read-only allow_ system call for this purpose: an
   application invokes this system call passing a buffer, the contents of which
   are then made accessible to the requested driver. Each driver can have
   multiple "allow slots", each of which the application can place a buffer in.
@@ -206,6 +204,7 @@ capsule.
 
 For this, we implement the following `SyscallDriver` trait for our
 `EncryptionOracleDriver` struct. This trait contains two important methods:
+
 - `command`: this method is called whenever an application issues a
   _command_-type system call towards this driver, and
 - `allocate_grant`: this is a method required by Tock to allocate some space in
@@ -238,6 +237,7 @@ impl SyscallDriver for EncryptionOracleDriver {
 
 The function signature of `command` tells us a lot about what we can do with
 this type of system call:
+
 - Applications can provide a `command_num`, which indicates what type of
   _command_ they are requesting to be handled by a driver, and
 - they can optionally pass up to two `usize` data arguments.
@@ -280,10 +280,10 @@ match command_num {
 }
 ```
 
-Okay, there's a lot to unpack here: first, we match on the passed
-`command_num`. By convention, command number `0` is reserved to check whether a
-driver is loaded on a kernel. If our code is executing, then this is the case,
-and we hence return `success`. For unknown commands, we must instead return a
+Okay, there's a lot to unpack here: first, we match on the passed `command_num`.
+By convention, command number `0` is reserved to check whether a driver is
+loaded on a kernel. If our code is executing, then this is the case, and we
+hence return `success`. For unknown commands, we must instead return a
 `NOSUPPORT` error.
 
 Command number `1` is assigned to start the decryption operation. To get a
