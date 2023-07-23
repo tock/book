@@ -168,29 +168,29 @@ your capsule:
 
 ```rust
 #[derive(Default)]
-pub struct App {
+pub struct ProcessState {
     request_pending: bool,
 }
 ```
 
 By implementing `Default`, grant types can be allocated and initialized on
 demand. We integrate this type into our `EncryptionOracleDriver` by adding a
-special `apps` variable of
+special `process_grants` variable of
 [type `Grant`](https://docs.tockos.org/kernel/grant/struct.grant). This `Grant`
-struct takes a generic type parameter `T` (which we set to our `App` struct
-above) next to some constants: as a driver's subscribe upcall and allow buffer
-slots also consume some memory, we store them in the process-specific grant as
-well. Thus, `UpcallCount`, `AllowRoCont`, and `AllowRwCount` indicate how many
-of these slots should be allocated respectively. For now we don't use any of
-these slots, so we set their counts to zero. Add the `apps` variable to your
-`EncryptionOracleDriver`:
+struct takes a generic type parameter `T` (which we set to our `ProcessState`
+struct above) next to some constants: as a driver's subscribe upcall and allow
+buffer slots also consume some memory, we store them in the process-specific
+grant as well. Thus, `UpcallCount`, `AllowRoCont`, and `AllowRwCount` indicate
+how many of these slots should be allocated respectively. For now we don't use
+any of these slots, so we set their counts to zero. Add the `process_grants`
+variable to your `EncryptionOracleDriver`:
 
 ```rust
 use kernel::grant::{Grant, UpcallCount, AllowRoCount, AllowRwCount};
 
 pub struct EncryptionOracleDriver {
-    apps: Grant<
-        App,
+    process_grants: Grant<
+        ProcessState,
         UpcallCount<0>,
         AllowRoCount<0>,
         AllowRwCount<0>,
@@ -239,7 +239,7 @@ impl SyscallDriver for EncryptionOracleDriver {
 
     // Required by Tock for grant memory allocation.
     fn allocate_grant(&self, processid: ProcessId) -> Result<(), kernel::process::Error> {
-        self.apps.enter(processid, |_, _| {})
+        self.process_grants.enter(processid, |_, _| {})
     }
 }
 ```
@@ -277,7 +277,7 @@ match command_num {
     // Request the decryption operation:
     1 => {
         self
-            .apps
+            .process_grants
             .enter(processid, |app, _kernel_data| {
 			    kernel::debug!("Received request from process {:?}", processid);
                 app.request_pending = true;
@@ -300,8 +300,8 @@ return a `NOSUPPORT` error.
 Command number `1` is assigned to start the decryption operation. To get a
 reference to our process-local state stored in its grant region, we can use the
 `enter` method: it takes a `ProcessId`, and in return will call a provided _Rust
-closure_ that provides us access to the process' own `App` instance. Because
-entering a grant can fail (for instance when the process does not have
+closure_ that provides us access to the process' own `ProcessState` instance.
+Because entering a grant can fail (for instance when the process does not have
 sufficient memory available), we handle any errors by converting them into a
 `CommandReturn`.
 
@@ -355,8 +355,8 @@ generic type `A`, which must implement the `AES128` and the `AESCtr` traits:
 - pub struct EncryptionOracleDriver {
 + pub struct EncryptionOracleDriver<'a, A: AES128<'a> + AES128Ctr {
 +     aes: &'a A,
-      apps: Grant<
-          App,
+      process_grants: Grant<
+          ProcessState,
           UpcallCount<0>,
 ```
 
@@ -370,10 +370,10 @@ Then, we change our constructor to accept this `aes` member as a new argument:
 +         aes: &'a A,
 +         _source_buffer: &'static mut [u8],
 +         _dest_buffer: &'static mut [u8],
-          apps: Grant<App, UpcallCount<0>, AllowRoCount<0>, AllowRwCount<0>>,
+          process_grants: Grant<ProcessState, UpcallCount<0>, AllowRoCount<0>, AllowRwCount<0>>,
       ) -> Self {
           EncryptionOracleDriver {
-              apps: apps,
+              process_grants: process_grants,
 +             aes: aes,
           }
       }
@@ -411,6 +411,7 @@ let oracle = static_init!(
         'static,
         nrf52840::aes::AesECB<'static>,
     >,
+    // Call our constructor:
     capsules_tutorials::encryption_oracle_chkpt2::EncryptionOracleDriver::new(
         &base_peripherals.ecb,
         aes_src_buffer,
