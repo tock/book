@@ -1,10 +1,6 @@
 # Security Key Application Access Control
 
-**TODO**
-Need to clean this up / rewrite for the tutorial
-
-
-
+**TODO** Need to clean this up / rewrite for the tutorial
 
 With security-focused and privileged system resources, a board may wish to
 restrict which applications can access which system call resources. In this
