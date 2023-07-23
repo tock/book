@@ -407,12 +407,12 @@ let aes_src_buffer = kernel::static_init!([u8; 16], [0; 16]);
 let aes_dst_buffer = kernel::static_init!([u8; CRYPT_SIZE], [0; CRYPT_SIZE]);
 
 let oracle = static_init!(
-    capsules_tutorials::encryption_oracle_chkpt2::EncryptionOracleDriver<
+    capsules_tutorials::encryption_oracle::EncryptionOracleDriver<
         'static,
         nrf52840::aes::AesECB<'static>,
     >,
     // Call our constructor:
-    capsules_tutorials::encryption_oracle_chkpt2::EncryptionOracleDriver::new(
+    capsules_tutorials::encryption_oracle::EncryptionOracleDriver::new(
         &base_peripherals.ecb,
         aes_src_buffer,
         aes_dst_buffer,
