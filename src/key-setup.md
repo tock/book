@@ -9,14 +9,13 @@ device.
 
 There are a couple of configurations on the nRF52840DK board that you should
 double-check. First, the "Power" switch on the top left should be set to "On".
-Secondly, the "nRF power source" switch in the top middle of the board should
-be set to "VDD". Finally, the "nRF ONLY | DEFAULT" switch on the bottom right
+Secondly, the "nRF power source" switch in the top middle of the board should be
+set to "VDD". Finally, the "nRF ONLY | DEFAULT" switch on the bottom right
 should be set to "DEFAULT".
 
-For now, you should plug one USB cable into the top of the board for
-programming (NOT into the "nRF USB" port on the side). We'll attach the other
-USB cable later.
-
+For now, you should plug one USB cable into the top of the board for programming
+(NOT into the "nRF USB" port on the side). We'll attach the other USB cable
+later.
 
 ## Software Setup
 
@@ -32,7 +31,6 @@ toolchain and the GCC embedded C toolchain. To upload code to the board you'll
 need Tockloader, a python tool created to interact with Tock boards. Finally,
 you'll want a couple of terminals and whatever code editor you prefer.
 
-
 ## Programming the Kernel
 
 For the first part of the tutorial, you'll need the Tock kernel loaded onto the
@@ -45,7 +43,8 @@ we'll use for the tutorial.
 `make`. After that has completed, use `make flash` to upload the kernel to your
 board.
 
-If everything worked properly, you should see a message that's something like this:
+If everything worked properly, you should see a message that's something like
+this:
 
 ```
 $ make flash
@@ -58,4 +57,3 @@ tockloader  flash --address 0x00000 --board nrf52dk --jlink /home/brghena/Dropbo
 [STATUS ] Flashing binary to board...
 [INFO   ] Finished in 9.444 seconds
 ```
-
