@@ -552,7 +552,7 @@ fn next_pending(&self) -> Option<ProcessId> {
 
 **TODO: Explain Tock's aysynchronous driver model**
 
-![An Illustration of Tock's Asynchronous Driver Model](../imgs/encryption_oracle_capsule.svg)
+![An Illustration of Tock's Asynchronous Driver Model](imgs/encryption_oracle_capsule.svg)
 
 ```rust
 use kernel::hil::symmetric_encryption::Client;
