@@ -498,7 +498,67 @@ build.
 
 ## Interacting with HILs
 
-**TODO: intro to HILs** (this should cover asynchronicity and buffer passing)
+The Tock operating system supports different hardware platforms, each featuring
+an individual set of integrated peripherals. At the same time, a driver such as
+our encryption oracle should be portable between different systems running Tock.
+To achieve this, Tock uses the concept of Hardware-Interface Layers (HILs), the
+design paradigms of which are described in
+[this document](https://github.com/tock/tock/blob/master/doc/reference/trd3-hil-design.md).
+HILs are organized as Rust modules, and can be found under the
+[`kernel/src/hil/`](https://github.com/tock/tock/tree/master/kernel/src/hil)
+directory. We will be working with the
+[`symmetric_encryption.rs` HIL](https://github.com/tock/tock/blob/master/kernel/src/hil/symmetric_encryption.rs).
+
+HILs capture another important concept of the Tock kernel: asynchronous
+operations. As mentioned above, Tock system calls must never block for extended
+periods of time, as kernel code is not preempted. Blocking in the kernel
+prevents other useful being done. Instead, long-running operations in the Tock
+kernel are implemented as asynchronous _two-phase_ operations: one function call
+on the underlying implementation (e.g., of our AES engine) starts an operation,
+and another function call (issued by the underlying implementation, hence named
+_callback_) informs the driver that the operation has completed. You can see
+this paradigm embedded in all of Tock's HILs, including the
+`symmetric_encryption` HIL: the [`crypt()` method] is specified to return
+immediately (and return a `Some(_)` in case of an error). When the requested
+operation is finished, the implementor of `AES128` will call the
+[`crypt_done()` callback](https://github.com/tock/tock/blob/75af40ea947dfab3c1db57a04ca6273fde895a3a/kernel/src/hil/symmetric_encryption.rs#L14),
+on the _client_ registered with
+[`set_client()`](https://github.com/tock/tock/blob/75af40ea947dfab3c1db57a04ca6273fde895a3a/kernel/src/hil/symmetric_encryption.rs#L31).
+
+The below figure illustates the way asynchronous operations are handled in Tock,
+using our encryption oracle capsule as an example. One further detail
+illustrated in this figure is the fact that providers of a given interface
+(e.g., `AES128`) may not always be able to perform a large user-space operation
+in a single call; this may be because of hardware-limitations, limited buffer
+allocations, or to avoid blocking the kernel for too long in
+software-implentations. In this case, a userspace-operation is broken up into
+multiple smaller operations on the underlying provider, and the next
+sub-operation is scheduled once a callback has been received:
+
+![An Illustration of Tock's Asynchronous Driver Model](imgs/encryption_oracle_capsule.svg)
+
+To allow our capsule to receive `crypt_done` callbacks, add the following trait
+implementation:
+
+```rust
+use kernel::hil::symmetric_encryption::Client;
+
+impl<'a, A: AES128<'a> + AES128Ctr> Client<'a> for EncryptionOracleDriver<'a, A> {
+    fn crypt_done(&'a self, mut source: Option<&'static mut [u8]>, destination: &'static mut [u8]) {
+	    unimplemented!()
+    }
+}
+```
+
+With this trait implemented, we can wire up the `oracle` driver instance to
+receive callbacks from the AES engine (`base_peripherals.ecb`) by uncommenting
+the following line in `boards/nordic/nrf52840dk/src/main.rs`:
+
+```diff
+- // Leave commented out for now:
+- // kernel::hil::symmetric_encryption::AES128::set_client(&base_peripherals.ecb, oracle);
++ kernel::hil::symmetric_encryption::AES128::set_client(&base_peripherals.ecb, oracle);
+```
 
 ### Multiplexing Between Processes
 
@@ -551,24 +611,6 @@ fn next_pending(&self) -> Option<ProcessId> {
 ### Handling Asynchronous Operations
 
 **TODO: Explain Tock's aysynchronous driver model**
-
-![An Illustration of Tock's Asynchronous Driver Model](imgs/encryption_oracle_capsule.svg)
-
-```rust
-use kernel::hil::symmetric_encryption::Client;
-
-impl<'a, A: AES128<'a> + AES128Ctr> Client<'a> for EncryptionOracleDriver<'a, A> {
-    fn crypt_done(&'a self, mut source: Option<&'static mut [u8]>, destination: &'static mut [u8]) {
-	    unimplemented!()
-    }
-}
-```
-
-```diff
-- // Leave commented out for now:
-- // kernel::hil::symmetric_encryption::AES128::set_client(&base_peripherals.ecb, oracle);
-+ kernel::hil::symmetric_encryption::AES128::set_client(&base_peripherals.ecb, oracle);
-```
 
 ```rust
 /// Ids for subscribe upcalls
