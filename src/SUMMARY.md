@@ -20,6 +20,7 @@ Tock OS Course
       - [Kernel Boot](./boot.md)
       - [Policies](./policies.md)
       - [TicKV](./tickv.md)
+      - [Signed Apps](./signed-apps.md)
       - [USB Keyboard](./usb-hid.md)
       - [Application](./application.md)
     - [Graduation](./graduation.md)
