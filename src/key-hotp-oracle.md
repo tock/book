@@ -500,6 +500,8 @@ build.
 
 **TODO: intro to HILs** (this should cover asynchronicity and buffer passing)
 
+### Multiplexing Between Processes
+
 While our underlying `AES128` implementation can only handle one request at a
 time, multiple processes may wish to use this driver. Thus our capsule
 implements a queueing system: even when another process is already using our
@@ -525,21 +527,12 @@ to an `Option` – it can either hold a value, or be empty.
   }
 ```
 
-In practice, we simply want to find the next process request to work on, and
-then store its ID in the field we just added. For this, we add a helper method
-to the `impl` of our `EncryptionOracleDriver`:
-
-**TODO:** Change this to what is required in the WIP checkpoint 4. We change
-this to no longer set `current_process` and break its functionality up into two
-methods.
+In practice, we simply want to find the next process request to work on. For
+this, we add a helper method to the `impl` of our `EncryptionOracleDriver`:
 
 ```rust
-/// Return either the current process (in case of an ongoing operation), or
-/// a process which has a request pending (if there is some).
-///
-/// When returning a process which has a request pending, this method
-/// further marks this as the new current process.
-fn next_process(&self) -> Option<ProcessId> {
+/// Return a `ProcessId` which has `request_pending` set, if there is some:
+fn next_pending(&self) -> Option<ProcessId> {
     unimplemented!()
 }
 ```
@@ -548,14 +541,167 @@ fn next_process(&self) -> Option<ProcessId> {
 > you're stuck, see whether the documentation of the
 > [`OptionalCell`](https://docs.tockos.org/kernel/utilities/cells/struct.optionalcell)
 > and [`Grant`](https://docs.tockos.org/kernel/grant/struct.grant) types help.
-> Hint: to do something with the `ProcessState` of all processes, you can use
-> the
+> Hint: to interact with the `ProcessState` of every processes, you can use the
 > [`iter` method on a `Grant`](https://docs.tockos.org/kernel/grant/struct.grant#method.iter):
 > the returned `Iter` type then has an `enter` method access the contents of an
 > invidiual process' grant.
 
 > **CHECKPOINT:** `encryption_oracle_chkpt3.rs`
 
-## Final Steps
+### Handling Asynchronous Operations
+
+**TODO: Explain Tock's aysynchronous driver model**
+
+![An Illustration of Tock's Asynchronous Driver Model](../imgs/encryption_oracle_capsule.svg)
+
+```rust
+use kernel::hil::symmetric_encryption::Client;
+
+impl<'a, A: AES128<'a> + AES128Ctr> Client<'a> for EncryptionOracleDriver<'a, A> {
+    fn crypt_done(&'a self, mut source: Option<&'static mut [u8]>, destination: &'static mut [u8]) {
+	    unimplemented!()
+    }
+}
+```
+
+```diff
+- // Leave commented out for now:
+- // kernel::hil::symmetric_encryption::AES128::set_client(&base_peripherals.ecb, oracle);
++ kernel::hil::symmetric_encryption::AES128::set_client(&base_peripherals.ecb, oracle);
+```
+
+```rust
+/// Ids for subscribe upcalls
+mod upcall {
+    pub const DONE: usize = 0;
+    /// The number of subscribe upcalls the kernel stores for this grant
+    pub const COUNT: u8 = 1;
+}
+
+/// Ids for read-only allow buffers
+mod ro_allow {
+    pub const IV: usize = 0;
+    pub const SOURCE: usize = 1;
+    /// The number of allow buffers the kernel stores for this grant
+    pub const COUNT: u8 = 2;
+}
+
+/// Ids for read-write allow buffers
+mod rw_allow {
+    pub const DEST: usize = 0;
+    /// The number of allow buffers the kernel stores for this grant
+    pub const COUNT: u8 = 1;
+}
+```
+
+```diff
+  pub struct EncryptionOracleDriver<'a, A: AES128<'a> + AES128Ctr> {
+      aes: &'a A,
+      process_grants: Grant<
+          ProcessState,
+-         UpcallCount<0>,
+-         AllowRoCount<0>,
+-         AllowRwCount<0>,
++         UpcallCount<{ upcall::COUNT }>,
++         AllowRoCount<{ ro_allow::COUNT }>,
++         AllowRwCount<{ rw_allow::COUNT }>,
+
+      >,
+```
+
+Update in constructor signature as well.
+
+```rust
+use core::cell::Cell;
+use kernel::utilities::cells::TakeCell;
+use kernel::processbuffer::ReadableProcessBuffer;
+use kernel::hil::symmetric_encryption::AES128_BLOCK_SIZE;
+
+/// The run method initiates a new decryption operation or
+/// continues an existing two-phase (asynchronous) decryption in
+/// the context of a process.
+///
+/// If the process-state `offset` is `0`, we will initialize the
+/// AES engine with an initialization vector (IV) provided by the
+/// application, and configure it to perform an AES128-CTR
+/// operation.
+///
+/// If the process-state `offset` is larger or equal to the
+/// process-provided source or destination buffer size, we return
+/// an error of `ErrorCode::NOMEM`. A caller can use this as a
+/// method to check whether the descryption operation has
+/// finished.
+fn run(&self, processid: ProcessId) -> Result<(), ErrorCode> {
+    // Copy in the provided code from `encryption_oracle_chkpt4.rs`
+    unimplemented!()
+}
+```
+
+```diff
+  pub struct EncryptionOracleDriver<'a, A: AES128<'a> + AES128Ctr> {
+      [...],
+	  current_process: OptionalCell<ProcessId>,
++     source_buffer: TakeCell<'static, [u8]>,
++     dest_buffer: TakeCell<'static, [u8]>,
++     crypt_len: Cell<usize>,
+  }
+```
+
+```diff
+  ) -> Self {
+      EncryptionOracleDriver {
+          process_grants: process_grants,
+          aes: aes,
+          current_process: OptionalCell::empty(),
++         source_buffer: TakeCell::new(source_buffer),
++         dest_buffer: TakeCell::new(dest_buffer),
++         crypt_len: Cell::new(0),
+      }
+  }
+```
+
+```rust
+/// Try to run another decryption operation.
+///
+/// If `self.current_current` process contains a `ProcessId`, this
+/// indicates that an operation is still in progress. In this
+/// case, do nothing.
+///
+/// If `self.current_process` is vacant, use your implementation
+/// of `next_pending` to find a process with an active request. If
+/// one is found, start a new decryption operation with the
+/// following call:
+///
+///    self.run(processid)
+///
+/// If this method returns an error, set this process'
+/// `request_pending` to false and return the error to the process
+/// in the registered upcall. Try this until an operation was
+/// started successfully, or no more processes have pending
+/// requests.
+fn run_next_pending(&self) {
+    unimplemented!()
+}
+```
+
+> **EXERCISE:** Implement the `run_next_pending` method according to its
+> specification.
+
+> **CHECKPOINT:** `encryption_oracle_chkpt4.rs`
+
+```rust
+use kernel::processbuffer::WriteableProcessBuffer;
+
+impl<'a, A: AES128<'a> + AES128Ctr> Client<'a> for EncryptionOracleDriver<'a, A> {
+    fn crypt_done(&'a self, mut source: Option<&'static mut [u8]>, destination: &'static mut [u8]) {
+	     // Copy in the provided code from `encryption_oracle_chkpt5.rs`
+         unimplemented!()
+    }
+}
+```
+
+> **CHECKPOINT:** `encryption_oracle_chkpt5.rs`
+
+## Testing our Encryption Oracle Capsule
 
 **TODO!**
