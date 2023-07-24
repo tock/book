@@ -518,9 +518,11 @@ on the underlying implementation (e.g., of our AES engine) starts an operation,
 and another function call (issued by the underlying implementation, hence named
 _callback_) informs the driver that the operation has completed. You can see
 this paradigm embedded in all of Tock's HILs, including the
-`symmetric_encryption` HIL: the [`crypt()` method] is specified to return
-immediately (and return a `Some(_)` in case of an error). When the requested
-operation is finished, the implementor of `AES128` will call the
+`symmetric_encryption` HIL: the
+[`crypt()` method](https://github.com/tock/tock/blob/75af40ea947dfab3c1db57a04ca6273fde895a3a/kernel/src/hil/symmetric_encryption.rs#L84)
+is specified to return immediately (and return a `Some(_)` in case of an error).
+When the requested operation is finished, the implementor of `AES128` will call
+the
 [`crypt_done()` callback](https://github.com/tock/tock/blob/75af40ea947dfab3c1db57a04ca6273fde895a3a/kernel/src/hil/symmetric_encryption.rs#L14),
 on the _client_ registered with
 [`set_client()`](https://github.com/tock/tock/blob/75af40ea947dfab3c1db57a04ca6273fde895a3a/kernel/src/hil/symmetric_encryption.rs#L31).
