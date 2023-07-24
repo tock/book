@@ -2,18 +2,19 @@
 # tool of install and run steps. It uses recursive
 # make rules to make maintenance easy.
 .NOTPARALLEL: all pretty
-.NOTPARALLEL: check_mdbook check_mdbook_linkcheck check_prettier
-.NOTPARALLEL: install_mdbook install_mdbook_linkcheck install_prettier
+.NOTPARALLEL: check_mdbook check_mdbook_linkcheck check_mdbook_pagetoc check_prettier
+.NOTPARALLEL: install_mdbook install_mdbook_linkcheck install_mdbook_pagetoc install_prettier
 
 .PHONY: all pretty
-.PHONY: check_mdbook check_mdbook_linkcheck check_prettier
-.PHONY: install_mdbook install_mdbook_linkcheck install_prettier
+.PHONY: check_mdbook check_mdbook_linkcheck check_mdbook_pagetoc check_prettier
+.PHONY: install_mdbook install_mdbook_linkcheck install_mdbook_pagetoc install_prettier
 
 SHELL = /bin/bash
 
 # Configuration
-MDBOOK_VERSION := 0.4.7
-MDBOOK_LINKCHECK_VERSION := 0.7.4
+MDBOOK_VERSION := 0.4.32
+MDBOOK_LINKCHECK_VERSION := 0.7.7
+MDBOOK_PAGETOC_VERSION := 0.1.7
 PRETTIER_VERSION := 2.3.2
 
 # For CI, use local install; for normal users system install
@@ -22,12 +23,14 @@ ifndef CI
 Q := @
 MDBOOK := mdbook
 MDBOOK_LINKCHECK := mdbook-linkcheck
+MDBOOK_PAGETOC := mdbook-pagetoc
 PRETTIER := prettier
 else
 $(info *** Running in CI environment ***)
 Q :=
 MDBOOK := mdbook
 MDBOOK_LINKCHECK := mdbook-linkcheck
+MDBOOK_PAGETOC := mdbook-pagetoc
 PRETTIER := prettier
 export TERM := dumb
 # Allow local installs
@@ -35,7 +38,7 @@ export PATH := $(PATH):$(CURDIR)
 endif
 
 # The only thing we really want to do is build
-all:	check_mdbook check_mdbook_linkcheck check_prettier
+all:	check_mdbook check_mdbook_linkcheck check_mdbook_pagetoc check_prettier
 	@echo $$(tput bold)All required tools installed with correct version.$$(tput sgr0)
 	$(Q)$(PRETTIER) --check --prose-wrap always '**/*.md' || (echo $$(tput bold)$$(tput setaf 1)Source formatting errors.; echo Run \"make pretty\" to fix automatically.; echo Warning: will overwrite files in-place.$$(tput sgr0); exit 1)
 	@echo $$(tput bold)Source file formatting correct.$$(tput sgr0)
@@ -59,20 +62,46 @@ check_mdbook:
 	$(Q)[[ $$($(MDBOOK) --version | cut -d'v' -f2) == '$(MDBOOK_VERSION)' ]] || $(MAKE) install_mdbook
 
 
+
 install_mdbook_linkcheck:
 ifndef CI
 	cargo install mdbook-linkcheck --version $(MDBOOK_LINKCHECK_VERSION)
 else
-	curl -L https://github.com/Michael-F-Bryan/mdbook-linkcheck/releases/download/v$(MDBOOK_LINKCHECK_VERSION)/mdbook-linkcheck.v$(MDBOOK_LINKCHECK_VERSION).x86_64-unknown-linux-gnu.zip -O
-	unzip -n mdbook-linkcheck.v$(MDBOOK_LINKCHECK_VERSION).x86_64-unknown-linux-gnu.zip
+	$(warning WTF $(MDBOOK_LINKCHECK_VERSION))
+	rm -f mdbook-linkcheck.x86_64-unknown-linux-gnu.zip
+	curl -L https://github.com/Michael-F-Bryan/mdbook-linkcheck/releases/download/v$(MDBOOK_LINKCHECK_VERSION)/mdbook-linkcheck.x86_64-unknown-linux-gnu.zip -O
+	unzip -n mdbook-linkcheck.x86_64-unknown-linux-gnu.zip
 	chmod +x mdbook-linkcheck
-	rm mdbook-linkcheck.v$(MDBOOK_LINKCHECK_VERSION).x86_64-unknown-linux-gnu.zip
+	rm mdbook-linkcheck.x86_64-unknown-linux-gnu.zip
 	$(Q)$(MDBOOK_LINKCHECK) --version
 endif
 
 check_mdbook_linkcheck:
 	$(Q)$(MDBOOK_LINKCHECK) --version || $(MAKE) install_mdbook_linkcheck
 	$(Q)[[ $$($(MDBOOK_LINKCHECK) --version | cut -d' ' -f2) == '$(MDBOOK_LINKCHECK_VERSION)' ]] || $(MAKE) install_mdbook_linkcheck
+
+
+
+# mdbook-pagetoc doesn't support the version flag
+PAGETOC_FILENAME := mdbook-pagetoc-v$(MDBOOK_PAGETOC_VERSION)-x86_64-unknown-linux-gnu.tar.gz
+install_mdbook_pagetoc:
+ifndef CI
+	cargo install mdbook-pagetoc --version $(MDBOOK_PAGETOC_VERSION)
+else
+	rm -f $(PAGETOC_FILENAME)
+	curl -L https://github.com/slowsage/mdbook-pagetoc/releases/download/v$(MDBOOK_PAGETOC_VERSION)/$(PAGETOC_FILENAME) -O
+	tar -xzf $(PAGETOC_FILENAME)
+	chmod +x mdbook-pagetoc
+	rm $(PAGETOC_FILENAME)
+	@#$(Q)$(MDBOOK_PAGETOC) --version
+endif
+
+# mdbook-pagetoc doesn't support the version flag
+check_mdbook_pagetoc:
+	$(Q)$(MDBOOK_PAGETOC) --help > /dev/null || $(MAKE) install_mdbook_pagetoc
+	@#$(Q)[[ $$($(MDBOOK_PAGETOC) --version | cut -d' ' -f2) == '$(MDBOOK_PAGETOC_VERSION)' ]] || $(MAKE) install_mdbook_pagetoc
+	@#$(Q)$(MDBOOK_PAGETOC) --version || $(MAKE) install_mdbook_pagetoc
+
 
 
 install_prettier:
