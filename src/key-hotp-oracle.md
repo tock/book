@@ -49,8 +49,8 @@ and API contracts.
 
 We start our encryption oracle driver by creating a new capsule called
 `encryption_oracle`. Create a file under
-`capsules/tutorials/src/encryption_oracle.rs` in the Tock kernel repository with
-the following contents:
+`capsules/extra/src/tutorials/encryption_oracle.rs` in the Tock kernel
+repository with the following contents:
 
 ```rust
 // Licensed under the Apache License, Version 2.0 or the MIT License.
@@ -73,7 +73,7 @@ impl EncryptionOracleDriver {
 
 We will be filling this module with more interesting contents soon. To make this
 capsule accessible to other Rust modules and crates, add it to
-`capsules/tutorials/src/lib.rs`:
+`capsules/extra/src/tutorials/mod.rs`:
 
 ```diff
   #[allow(dead_code)]
@@ -83,7 +83,7 @@ capsule accessible to other Rust modules and crates, add it to
 ```
 
 > **EXERCISE:** Make sure your new capsule compiles by running `cargo check` in
-> the `capsules/tutorials/` folder.
+> the `capsules/extra/` folder.
 
 The `capsules/tutorial` crate already contains checkpoints of the encryption
 oracle capsule we'll be writing here. Feel free to use them if you're stuck. We
@@ -204,7 +204,7 @@ pub struct EncryptionOracleDriver {
 > **EXERCISE:** The `Grant` struct will be provided as an argument to
 > constructor of the `EncryptionOracleDriver`. Extend `new` to accept it as an
 > argument. Afterwards, make sure your code compiles by running `cargo check` in
-> the `capsules/tutorials/` directory.
+> the `capsules/extra/` directory.
 
 ## Implementing a System Call
 
@@ -310,7 +310,7 @@ sufficient memory available), we handle any errors by converting them into a
 
 > **EXERCISE:** Make sure that your `EncryptionOracleDriver` implements the
 > `SyscallDriver` trait as shown above. Then, verify that your code compiles by
-> running `cargo check` in the `capsules/tutorials/` folder.
+> running `cargo check` in the `capsules/extra/` folder.
 
 > **CHECKPOINT:** `encryption_oracle_chkpt1.rs`
 
@@ -410,12 +410,12 @@ let aes_src_buffer = kernel::static_init!([u8; 16], [0; 16]);
 let aes_dst_buffer = kernel::static_init!([u8; CRYPT_SIZE], [0; CRYPT_SIZE]);
 
 let oracle = static_init!(
-    capsules_tutorials::encryption_oracle::EncryptionOracleDriver<
+    capsules_extra::tutorials::encryption_oracle::EncryptionOracleDriver<
         'static,
         nrf52840::aes::AesECB<'static>,
     >,
     // Call our constructor:
-    capsules_tutorials::encryption_oracle::EncryptionOracleDriver::new(
+    capsules_extra::tutorials::encryption_oracle::EncryptionOracleDriver::new(
         &base_peripherals.ecb,
         aes_src_buffer,
         aes_dst_buffer,
@@ -444,7 +444,7 @@ declaration:
   pub struct Platform {
       [...],
       systick: cortexm4::systick::SysTick,
-+     oracle: &'static capsules_tutorials::encryption_oracle::EncryptionOracleDriver<
++     oracle: &'static capsules_extra::tutorials::encryption_oracle::EncryptionOracleDriver<
 +         'static,
 +         nrf52840::aes::AesECB<'static>,
 +     >,
