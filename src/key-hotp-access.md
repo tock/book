@@ -1,7 +1,5 @@
 # Security Key Application Access Control
 
-**TODO** Need to clean this up / rewrite for the tutorial
-
 With security-focused and privileged system resources, a board may wish to
 restrict which applications can access which system call resources. In this
 module we will extend the Tock kernel to restrict access to the encryption
@@ -11,9 +9,11 @@ capsule to only trusted (credentialed) apps.
 
 We need two Tock mechanisms to implement this feature. First, we need a way to
 identify the trusted app that we will give access to the encryption engine. We
-will do this by adding credentials to the app's TBF and verifying those
-credentials when the application is loaded. This mechanism allows developers to
-sign apps, and then the kernel can verify those signatures.
+will do this by adding credentials to the app's
+[TBF (Tock Binary Format file)](https://github.com/tock/tock/blob/master/doc/TockBinaryFormat.md)
+and verifying those credentials when the application is loaded. This mechanism
+allows developers to sign apps, and then the kernel can verify those
+signatures.
 
 The second mechanism is way to permit syscall access to only specific
 applications. The Tock kernel already has a hook that runs on each syscall to
@@ -42,7 +42,8 @@ This will require a couple pieces:
 
 ### Signing Apps
 
-We can use Tockloader to add a hash to a compiled app.
+We can use Tockloader to add a hash to a compiled app. This will require
+Tockloader version 1.10.0 or newer.
 
 First, compile the app:
 
@@ -100,7 +101,7 @@ cortex-m4:
     binary_end_offset   :       8360       0x20a8
     app_version         :          0          0x0
   TLV: Package Name (3)                           [0x38 ]
-    package_name        : kv_interactive
+    package_name        : blink
   TLV: Kernel Version (8)                         [0x4c ]
     kernel_major        : 2
     kernel_minor        : 0
@@ -132,36 +133,44 @@ next to it.
 To have the kernel check that our hash credential is present and valid, we need
 to add a credential checker before the kernel starts each process.
 
-In `main.rs`, we need to create the app checker. Tock includes a basic SHA256
-credential checker, so we can use that:
+To create the app checker, we'll edit the board's `main.rs` file in the kernel.
+Tock includes a basic SHA256 credential checker, so we can use that. The
+following code should be added to the `main.rs` file somewhere before the
+platform setup occurs (probably right after the encryption oracle capsule from
+the last module!).
 
 ```rust
-use capsules_extra::sha256::Sha256Software;
-use kernel::process_checker::basic::AppCheckerSha256;
+//--------------------------------------------------------------------------
+// CREDENTIALS CHECKING POLICY
+//--------------------------------------------------------------------------
 
 // Create the software-based SHA engine.
-let sha = static_init!(Sha256Software<'static>, Sha256Software::new());
+let sha = static_init!(capsules_extra::sha256::Sha256Software<'static>,
+                       capsules_extra::sha256::Sha256Software::new());
 kernel::deferred_call::DeferredCallClient::register(sha);
 
 // Create the credential checker.
 static mut SHA256_CHECKER_BUF: [u8; 32] = [0; 32];
 let checker = static_init!(
-    AppCheckerSha256,
-    AppCheckerSha256::new(sha, &mut SHA256_CHECKER_BUF)
-);
-sha.set_client(checker);
+    kernel::process_checker::basic::AppCheckerSha256,
+    kernel::process_checker::basic::AppCheckerSha256::new(sha, &mut SHA256_CHECKER_BUF)
+    );
+kernel::hil::digest::Digest::set_client(sha, checker);
 ```
 
-Then we need to add this to our `Platform` struct:
+That code creates a `checker` object. We now need to modify the board so it
+hangs on to that `checker` struct. To do so, we need to add this to our
+`Platform` struct type definition near the top of the file:
 
 ```rust
 struct Platform {
     ...
-    credentials_checking_policy: &'static AppCheckerSha256,
+    credentials_checking_policy: &'static kernel::process_checker::basic::AppCheckerSha256,
 }
 ```
 
-Add it when create the platform object:
+Then when we create the platform object near the end of `main()`, we can add
+our `checker`:
 
 ```rust
 let platform = Platform {
@@ -170,12 +179,14 @@ let platform = Platform {
 }
 ```
 
-And configure our kernel to use it:
+And we need the platform to provide access to that checker when requested by
+the kernel for credentials-checking purposes. This goes in the
+`KernelResources` implementation for the `Platform` type:
 
 ```rust
 impl KernelResources for Platform {
     ...
-    type CredentialsCheckingPolicy = AppCheckerSha256;
+    type CredentialsCheckingPolicy = kernel::process_checker::basic::AppCheckerSha256;
     ...
     fn credentials_checking_policy(&self) -> &'static Self::CredentialsCheckingPolicy {
         self.credentials_checking_policy
@@ -185,7 +196,8 @@ impl KernelResources for Platform {
 ```
 
 Finally, we need to use the function that checks credentials when processes are
-loaded (not just loads and executes them unconditionally):
+loaded (not just loads and executes them unconditionally). This should go at the end
+of `main()`, replacing the existing call to `kernel::process::load_processes`:
 
 ```rust
 kernel::process::load_and_check_processes(
@@ -210,8 +222,6 @@ kernel::process::load_and_check_processes(
     });
 ```
 
-(Instead of just `kernel::process::load_processes(...)`.)
-
 Compile and install the updated kernel.
 
 > **SUCCESS:** We now have a kernel that can check credentials!
@@ -227,6 +237,8 @@ touch main.c
 make
 tockloader install --erase
 ```
+
+> **TODO** FIGURE OUT PROCESS CONSOLE ON TUTORIAL BOARD ISSUE!!
 
 Now, if we list the processes on the board with the process console:
 
