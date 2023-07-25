@@ -753,16 +753,21 @@ method called `run_next_pending`.
 ///
 /// If `self.current_process` is vacant, use your implementation
 /// of `next_pending` to find a process with an active request. If
-/// one is found, start a new decryption operation with the
-/// following call:
+/// one is found, remove its `request_pending` indication and start
+//  a new decryption operation with the following call:
 ///
 ///    self.run(processid)
 ///
-/// If this method returns an error, set this process'
-/// `request_pending` to false and return the error to the process
-/// in the registered upcall. Try this until an operation was
-/// started successfully, or no more processes have pending
-/// requests.
+/// If this method returns an error, return the error to the
+/// process in the registered upcall. Try this until either an
+/// operation was started successfully, or no more processes have
+/// pending requests.
+///
+/// Beware: you will need to enter a process' grant both to set the
+/// `request_pending = false` and to (potentially) schedule an error
+/// upcall. `self.run()` will itself also enter the grant region.
+/// However, *Tock's grants are non-reentrant*. This means that trying
+/// to enter a grant while it is already entered will fail!
 fn run_next_pending(&self) {
     unimplemented!()
 }
@@ -783,6 +788,38 @@ fn run_next_pending(&self) {
 > can convert an `ErrorCode` into a `usize` with the following method:
 >
 >     kernel::errorcode::into_statuscode(<error code>)
+
+`run_next_pending` should be invoked whenever we receive a new encryption /
+decryption request from a process, so add it to the `command()` method
+implementation:
+
+```diff
+  // Request the decryption operation:
+- 1 => self
+-     .process_grants
+-     .enter(processid, |grant, _kernel_data| {
+-         grant.request_pending = true;
+-         CommandReturn::success()
+-     })
+-     .unwrap_or_else(|err| err.into()),
++ 1 => {
++     let res = self
++         .process_grants
++         .enter(processid, |grant, _kernel_data| {
++             grant.request_pending = true;
++             CommandReturn::success()
++         })
++         .unwrap_or_else(|err| err.into());
++
++     self.run_next_pending();
++
++     res
++ }
+```
+
+We store `res` temporarily, as Tock's grant regions are non-reentrant: we can't
+invoke `run_next_pending` (which will attempt to enter grant regions), while
+we're in a grant already.
 
 > **CHECKPOINT:** `encryption_oracle_chkpt4.rs`
 
