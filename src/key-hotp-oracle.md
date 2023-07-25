@@ -610,18 +610,18 @@ fn next_pending(&self) -> Option<ProcessId> {
 
 > **CHECKPOINT:** `encryption_oracle_chkpt3.rs`
 
-### Handling Asynchronous Operations
+### Interacting with Process Buffers and Scheduling Upcalls
 
-**TODO: Explain Tock's aysynchronous driver model**
+For our encryption oracle, it is important to allow users provide buffers
+containing the encryption _initialization vector_ (to prevent an attacker from
+inferring relationships between messages encrypted with the same key), and the
+plaintext or ciphertext to encrypt and decrypt respectively. Furthermore,
+userspace must provide a _mutable_ buffer for our capsule to write the
+operation's output to. These buffers are placed into read-only and read-write
+allow slots by applications accordingly. We allocate fixed IDs for those
+buffers:
 
 ```rust
-/// Ids for subscribe upcalls
-mod upcall {
-    pub const DONE: usize = 0;
-    /// The number of subscribe upcalls the kernel stores for this grant
-    pub const COUNT: u8 = 1;
-}
-
 /// Ids for read-only allow buffers
 mod ro_allow {
     pub const IV: usize = 0;
@@ -638,6 +638,21 @@ mod rw_allow {
 }
 ```
 
+To deliver upcalls to the application, we further allocate an allow-slot for the
+`DONE` callback:
+
+```rust
+/// Ids for subscribe upcalls
+mod upcall {
+    pub const DONE: usize = 0;
+    /// The number of subscribe upcalls the kernel stores for this grant
+    pub const COUNT: u8 = 1;
+}
+```
+
+Now, we need to update our `Grant` type to actually reserve these new allow and
+subscribe slots:
+
 ```diff
   pub struct EncryptionOracleDriver<'a, A: AES128<'a> + AES128Ctr> {
       aes: &'a A,
@@ -653,7 +668,49 @@ mod rw_allow {
       >,
 ```
 
-Update in constructor signature as well.
+Update this type signature in your constructor as well.
+
+While Tock applications can expose certain sections of their memory as buffers
+to the kernel, access to the buffers is limited while their grant region is
+_entered_ (implemented through a Rust closure). Unfortunately, this implies that
+asynchronous operations cannot keep a hold of these buffers and use them while
+other code (or potentially the application itself) is executing.
+
+For this reason, Tock uses _static mutable slices_ (`&'static mut [u8]`) in
+HILs. These Rust types have the distinct advantage that they can be passed
+around the kernel as "persistent references": when borrowing a `'static`
+reference into another `'static` reference, the original reference becomes
+inaccessible. Tock features a special container to hold such mutable references,
+called `TakeCell`. We add such a container for each of our source and
+destination buffers:
+
+```diff
+  pub struct EncryptionOracleDriver<'a, A: AES128<'a> + AES128Ctr> {
+      [...],
+	  current_process: OptionalCell<ProcessId>,
++     source_buffer: TakeCell<'static, [u8]>,
++     dest_buffer: TakeCell<'static, [u8]>,
++     crypt_len: Cell<usize>,
+  }
+```
+
+```diff
+  ) -> Self {
+      EncryptionOracleDriver {
+          process_grants: process_grants,
+          aes: aes,
+          current_process: OptionalCell::empty(),
++         source_buffer: TakeCell::new(source_buffer),
++         dest_buffer: TakeCell::new(dest_buffer),
++         crypt_len: Cell::new(0),
+      }
+  }
+```
+
+Now we have all pieces in place to actually drive the AES implementation. As
+this is a rather lengthy implementation containing a lot of specifics relating
+to the `AES128` trait, this logic is provided to you in the form of a single
+`run()` method. Fill in this implementation from `encryption_oracle_chkpt4.rs`:
 
 ```rust
 use core::cell::Cell;
@@ -681,28 +738,11 @@ fn run(&self, processid: ProcessId) -> Result<(), ErrorCode> {
 }
 ```
 
-```diff
-  pub struct EncryptionOracleDriver<'a, A: AES128<'a> + AES128Ctr> {
-      [...],
-	  current_process: OptionalCell<ProcessId>,
-+     source_buffer: TakeCell<'static, [u8]>,
-+     dest_buffer: TakeCell<'static, [u8]>,
-+     crypt_len: Cell<usize>,
-  }
-```
-
-```diff
-  ) -> Self {
-      EncryptionOracleDriver {
-          process_grants: process_grants,
-          aes: aes,
-          current_process: OptionalCell::empty(),
-+         source_buffer: TakeCell::new(source_buffer),
-+         dest_buffer: TakeCell::new(dest_buffer),
-+         crypt_len: Cell::new(0),
-      }
-  }
-```
+A core part still missing is actually invoking this `run()` method, namely for
+each process that has its `request_pending` flag set. As we need to do this each
+time an application requests an operation, as well as each time we finish an
+operation (to work on the next enqueued) one, this is implemented in a helper
+method called `run_next_pending`.
 
 ```rust
 /// Try to run another decryption operation.
@@ -729,9 +769,38 @@ fn run_next_pending(&self) {
 ```
 
 > **EXERCISE:** Implement the `run_next_pending` method according to its
-> specification.
+> specification. To schedule a process upcall, you can use the second argument
+> passed into the
+> [`grant.enter()` method](https://docs.tockos.org/kernel/grant/struct.grant#method.enter)
+> (`kernel_data`):
+>
+>     kernel_data.schedule_upcall(
+>         <upcall slot>,
+>         (<arg0>, <arg1>, <arg2>)
+>     )
+>
+> By convention, errors are reported in the first upcall argument (`arg0`). You
+> can convert an `ErrorCode` into a `usize` with the following method:
+>
+>     kernel::errorcode::into_statuscode(<error code>)
 
 > **CHECKPOINT:** `encryption_oracle_chkpt4.rs`
+
+Now, to complete our encryption oracle capsule, we need to implement the
+`crypt_done()` callback. This callback performs the following actions:
+
+- copies the in-kernel destination buffer (`&'static mut [u8]`) as passed to
+  `crypt()` into the process' destination buffer through its grant, and
+- attempts to invoke another encryption / decryption round by calling `run()`.
+  - If calling `run()` succeeds, another `crypt_done()` callback will be
+    scheduled in the future.
+  - If calling `run()` fails with an error of `ErrorCode::NOMEM`, this indicates
+    that the current operation has been completed. Invoke the process' upcall to
+    signal this event, and use our `run_next_pending()` method to schedule the
+    next operation.
+
+Similar to the `run()` method, we provide this snippet to you in
+`encryption_oracle_chkpt5.rs`:
 
 ```rust
 use kernel::processbuffer::WriteableProcessBuffer;
@@ -745,6 +814,11 @@ impl<'a, A: AES128<'a> + AES128Ctr> Client<'a> for EncryptionOracleDriver<'a, A>
 ```
 
 > **CHECKPOINT:** `encryption_oracle_chkpt5.rs`
+
+Congratulations! You have written your first Tock capsule and userspace driver,
+and interfaced with Tock's asynchronous HILs. Your capsule should be ready to go
+now, go ahead and integrate it into your HOTP application! Don't forget to
+recompile your kernel such that it integrates the latest changes.
 
 ## Testing our Encryption Oracle Capsule
 
