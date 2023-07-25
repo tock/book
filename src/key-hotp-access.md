@@ -9,11 +9,10 @@ capsule to only trusted (credentialed) apps.
 
 We need two Tock mechanisms to implement this feature. First, we need a way to
 identify the trusted app that we will give access to the encryption engine. We
-will do this by adding credentials to the app's
-[TBF (Tock Binary Format file)](https://github.com/tock/tock/blob/master/doc/TockBinaryFormat.md)
-and verifying those credentials when the application is loaded. This mechanism
-allows developers to sign apps, and then the kernel can verify those
-signatures.
+will do this by adding credentials to the app's [TBF (Tock Binary Format
+file)](https://github.com/tock/tock/blob/master/doc/TockBinaryFormat.md) and
+verifying those credentials when the application is loaded. This mechanism
+allows developers to sign apps, and then the kernel can verify those signatures.
 
 The second mechanism is way to permit syscall access to only specific
 applications. The Tock kernel already has a hook that runs on each syscall to
@@ -240,17 +239,28 @@ tockloader install --erase
 
 > **TODO** FIGURE OUT PROCESS CONSOLE ON TUTORIAL BOARD ISSUE!!
 
-Now, if we list the processes on the board with the process console:
+Now, if we list the processes on the board with the process console. Note we
+need to run the `console-start` command to active the tock process console.
 
 ```
 $ tockloader listen
 Initialization complete. Entering main loop
 NRF52 HW INFO: Variant: AAF0, Part: N52840, Package: QI, Ram: K256, Flash: K1024
+console-start
+tock$
+```
+
+Now we can list the processes:
+
+```
 tock$ list
  PID    Name                Quanta  Syscalls  Restarts  Grants  State
  0      blink                    0         0         0   0/16   CredentialsFailed
 tock$
 ```
+
+> Tip: You can re-disable the process console by using the `console-stop`
+> command.
 
 You can see our app is in the state `CredentialsFailed` meaning it will not
 execute (and the LEDs are not blinking).
