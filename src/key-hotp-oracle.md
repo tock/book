@@ -338,7 +338,12 @@ and thus will be working in the `boards/nordic/nrf52840dk/` directory.
 Applications interact with our driver by passing a "driver number" alongside
 their system calls. The `capsules/core/src/driver.rs` module acts as a registry
 for driver numbers. For the purposes of this tutorial we'll use an unassigned
-driver number in the _misc_ range, `0x99999`.
+driver number in the _misc_ range, `0x99999`, and add a constant to capsule
+accordingly:
+
+```rust
+pub const DRIVER_NUM: usize = 0x99999;
+```
 
 ### Accepting an AES Engine in the Driver
 
@@ -421,7 +426,7 @@ let oracle = static_init!(
         aes_dst_buffer,
 		// Magic incantation to create our `Grant` struct:
         board_kernel.create_grant(
-            0x99999, // our driver number
+            capsules_extra::tutorials::encryption_oracle::DRIVER_NUM, // our driver number
             &create_capability!(capabilities::MemoryAllocationCapability)
         ),
     ),
@@ -476,7 +481,7 @@ trait implementation:
               capsules_core::console::DRIVER_NUM => f(Some(self.console)),
               [...],
               capsules_extra::app_flash_driver::DRIVER_NUM => f(Some(self.app_flash)),
-+             0x99999 => f(Some(self.oracle)),
++             capsules_extra::tutorials::encryption_oracle::DRIVER_NUM => f(Some(self.oracle)),
               _ => f(None),
           }
       }
