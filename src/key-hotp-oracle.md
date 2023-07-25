@@ -888,6 +888,13 @@ and interfaced with Tock's asynchronous HILs. Your capsule should be ready to go
 now, go ahead and integrate it into your HOTP application! Don't forget to
 recompile your kernel such that it integrates the latest changes.
 
-## Testing our Encryption Oracle Capsule
+## Integrating the Encryption Oracle Capsule into your `libtock-c` App
 
-**TODO!**
+The encryption oracle capsule is compatible with the `oracle.c` and `oracle.h`
+implementation in the `libtock-c` part of the tutorial, under
+`examples/tutorials/hotp/hotp_oracle_complete/`.
+
+You can try to integrate this with your application by using the interfaces
+provided in `oracle.h`. The `main.c` file in this repository contains an example
+of how these interfaces can be integrated into a fully-featured HOTP
+application.
