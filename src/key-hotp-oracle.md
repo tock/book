@@ -565,6 +565,11 @@ the following line in `boards/nordic/nrf52840dk/src/main.rs`:
 + kernel::hil::symmetric_encryption::AES128::set_client(&base_peripherals.ecb, oracle);
 ```
 
+If this is missing, our capsule will not be able to receive feedback from the
+AES hardware that an operation has finished, and it will thus refuse to start
+any new operation. This is an easy mistake to make – you should check whether
+all callbacks are set up correctly when the kernel is in such a _stuck_ state.
+
 ### Multiplexing Between Processes
 
 While our underlying `AES128` implementation can only handle one request at a
@@ -589,6 +594,23 @@ to an `Option` – it can either hold a value, or be empty.
       aes: &'a A,
       process_grants: Grant<ProcessState, UpcallCount<0>, AllowRoCount<0>, AllowRwCount<0>>,
 +     current_process: OptionalCell<ProcessId>,
+  }
+```
+
+We need to add it to the constructor as well:
+
+```diff
+  pub fn new(
+      aes: &'a A,
+      _source_buffer: &'static mut [u8],
+      _dest_buffer: &'static mut [u8],
+      process_grants: Grant<ProcessState, UpcallCount<0>, AllowRoCount<0>, AllowRwCount<0>>,
+  ) -> Self {
+      EncryptionOracleDriver {
+          process_grants,
+          aes,
++         current_process: OptionalCell::empty(),
+      }
   }
 ```
 
