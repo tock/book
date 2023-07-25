@@ -26,6 +26,6 @@ nonvolatile key-value storage.
 
 This module is broken into three stages:
 
-1. [Creating an HOTP userspace application](./key-hotp-application).
-2. [Creating an in-kernel encryption oracle](./key-hotp-oracle).
-3. [Enforcing access control restrictions to the oracle](./key-hotp-access).
+1. [Creating an HOTP userspace application](./key-hotp-application.md).
+2. [Creating an in-kernel encryption oracle](./key-hotp-oracle.md).
+3. [Enforcing access control restrictions to the oracle](./key-hotp-access.md).
