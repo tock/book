@@ -21,3 +21,11 @@ The main logic of the key will be implemented as a userspace program. That
 userspace app will use the kernel to decrypt the shared key for each domain,
 send the HMAC output as a USB keyboard device, and store each encrypted key in a
 nonvolatile key-value storage.
+
+## Stages
+
+This module is broken into three stages:
+
+1. [Creating an HOTP userspace application](./key-hotp-application).
+2. [Creating an in-kernel encryption oracle](./key-hotp-oracle).
+3. [Enforcing access control restrictions to the oracle](./key-hotp-access).
