@@ -9,9 +9,9 @@ capsule to only trusted (credentialed) apps.
 
 We need two Tock mechanisms to implement this feature. First, we need a way to
 identify the trusted app that we will give access to the encryption engine. We
-will do this by adding credentials to the app's [TBF (Tock Binary Format
-file)](https://github.com/tock/tock/blob/master/doc/TockBinaryFormat.md) and
-verifying those credentials when the application is loaded. This mechanism
+will do this by adding credentials to the app's
+[TBF (Tock Binary Format file)](https://github.com/tock/tock/blob/master/doc/TockBinaryFormat.md)
+and verifying those credentials when the application is loaded. This mechanism
 allows developers to sign apps, and then the kernel can verify those signatures.
 
 The second mechanism is way to permit syscall access to only specific
@@ -168,8 +168,8 @@ struct Platform {
 }
 ```
 
-Then when we create the platform object near the end of `main()`, we can add
-our `checker`:
+Then when we create the platform object near the end of `main()`, we can add our
+`checker`:
 
 ```rust
 let platform = Platform {
@@ -178,9 +178,9 @@ let platform = Platform {
 }
 ```
 
-And we need the platform to provide access to that checker when requested by
-the kernel for credentials-checking purposes. This goes in the
-`KernelResources` implementation for the `Platform` type:
+And we need the platform to provide access to that checker when requested by the
+kernel for credentials-checking purposes. This goes in the `KernelResources`
+implementation for the `Platform` type:
 
 ```rust
 impl KernelResources for Platform {
@@ -195,8 +195,9 @@ impl KernelResources for Platform {
 ```
 
 Finally, we need to use the function that checks credentials when processes are
-loaded (not just loads and executes them unconditionally). This should go at the end
-of `main()`, replacing the existing call to `kernel::process::load_processes`:
+loaded (not just loads and executes them unconditionally). This should go at the
+end of `main()`, replacing the existing call to
+`kernel::process::load_processes`:
 
 ```rust
 kernel::process::load_and_check_processes(

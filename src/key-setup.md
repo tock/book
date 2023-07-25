@@ -37,9 +37,9 @@ For the first part of the tutorial, you'll need the Tock kernel loaded onto the
 nRF52840DK. We'll use a special version of the board that includes some code
 we'll use for the tutorial which is located in `boards/nordic/nrf52840dk_demo`.
 
-`cd` into the `nrf52840dk_demo` directory, then to compile the kernel, you can just type
-`make`. After that has completed, use `make flash` to upload the kernel to your
-board.
+`cd` into the `nrf52840dk_demo` directory, then to compile the kernel, you can
+just type `make`. After that has completed, use `make flash` to upload the
+kernel to your board.
 
 If everything worked properly, you should see a message that's something like
 this:
