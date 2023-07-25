@@ -475,7 +475,7 @@ trait implementation:
           match driver_num {
               capsules_core::console::DRIVER_NUM => f(Some(self.console)),
               [...],
-              KEYBOARD_HID => f(Some(self.keyboard_hid_driver)),
+              capsules_extra::app_flash_driver::DRIVER_NUM => f(Some(self.app_flash)),
 +             0x99999 => f(Some(self.oracle)),
               _ => f(None),
           }
