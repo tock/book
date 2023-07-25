@@ -225,7 +225,7 @@ For this, we implement the following `SyscallDriver` trait for our
   not important right now.
 
 ```rust
-use kernel::ProcessId;
+use kernel::{ErrorCode, ProcessId};
 use kernel::syscall::{SyscallDriver, CommandReturn};
 
 impl SyscallDriver for EncryptionOracleDriver {
@@ -458,7 +458,7 @@ instantiation:
   let platform = Platform {
       [...],
       systick: cortexm4::systick::SysTick::new_with_calibration(64000000),
-+     oracle: oracle,
++     oracle,
   };
 ```
 
@@ -688,6 +688,9 @@ called `TakeCell`. We add such a container for each of our source and
 destination buffers:
 
 ```diff
+  use core::cell::Cell;
+  use kernel::utilities::cells::TakeCell;
+
   pub struct EncryptionOracleDriver<'a, A: AES128<'a> + AES128Ctr> {
       [...],
 	  current_process: OptionalCell<ProcessId>,
@@ -716,8 +719,6 @@ to the `AES128` trait, this logic is provided to you in the form of a single
 `run()` method. Fill in this implementation from `encryption_oracle_chkpt4.rs`:
 
 ```rust
-use core::cell::Cell;
-use kernel::utilities::cells::TakeCell;
 use kernel::processbuffer::ReadableProcessBuffer;
 use kernel::hil::symmetric_encryption::AES128_BLOCK_SIZE;
 
