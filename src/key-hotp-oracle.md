@@ -356,7 +356,7 @@ generic type `A`, which must implement the `AES128` and the `AESCtr` traits:
 + use kernel::hil::symmetric_encryption::{AES128Ctr, AES128};
 
 - pub struct EncryptionOracleDriver {
-+ pub struct EncryptionOracleDriver<'a, A: AES128<'a> + AES128Ctr {
++ pub struct EncryptionOracleDriver<'a, A: AES128<'a> + AES128Ctr> {
 +     aes: &'a A,
       process_grants: Grant<
           ProcessState,
