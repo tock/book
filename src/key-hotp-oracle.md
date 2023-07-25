@@ -76,7 +76,10 @@ capsule accessible to other Rust modules and crates, add it to
 `capsules/tutorials/src/lib.rs`:
 
 ```diff
-+ TODO
+  #[allow(dead_code)]
+  pub mod encryption_oracle_chkpt5;
+
++ pub mod encryption_oracle;
 ```
 
 > **EXERCISE:** Make sure your new capsule compiles by running `cargo check` in
