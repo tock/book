@@ -238,8 +238,6 @@ make
 tockloader install --erase
 ```
 
-> **TODO** FIGURE OUT PROCESS CONSOLE ON TUTORIAL BOARD ISSUE!!
-
 Now, if we list the processes on the board with the process console. Note we
 need to run the `console-start` command to active the tock process console.
 
