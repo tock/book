@@ -1,21 +1,100 @@
 # Implementing a USB Keyboard Device
 
-Our first task is to setup our kernel so that it is recognized as a USB keyboard
-device.
+The Tock kernel supports implementing a USB device and we can setup our kernel
+so that it is recognized as a USB keyboard device.
+
+You need to have a board with a suitable USB header. Boards that support this
+module:
+
+- imix
+- nRF52840dk
 
 ## Configuring the Kernel
 
 We need to setup our kernel to include USB support, and particularly the USB HID
-(keyboard) profile.
+(keyboard) profile. This requires modifying the board.rs.
 
-To do that, uncomment the USB code in `boards/nordic/nrf52840dk/src/main.rs`.
+You first need to create three strings that will represent this device to the
+USB host.
 
-**MORE HERE**
+```rust
+// Create the strings we include in the USB descriptor.
+let strings = static_init!(
+    [&str; 3],
+    [
+        "Nordic Semiconductor", // Manufacturer
+        "nRF52840dk - TockOS",  // Product
+        "serial0001",           // Serial number
+    ]
+);
+```
 
-Compile the kernel and load it on to your board.
+Then we need to create the keyboard USB capsule in the board:
+
+```rust
+let (keyboard_hid, keyboard_hid_driver) = components::keyboard_hid::KeyboardHidComponent::new(
+    board_kernel,
+    capsules_core::driver::KeyboardHid,
+    &nrf52840_peripherals.usbd,
+    0x1915, // Nordic Semiconductor
+    0x503a,
+    strings,
+)
+.finalize(components::keyboard_hid_component_static!(
+    nrf52840::usbd::Usbd
+));
+```
+
+Towards the end of the main.rs, you need to enable the USB HID driver:
 
 ```
-cd tock/boards/nordic/nrf52840dk
+keyboard_hid.enable();
+keyboard_hid.attach();
+```
+
+Finally, we need to add the driver to the `Platform` struct:
+
+```rust
+pub struct Platform {
+	...
+	keyboard_hid_driver: &'static capsules_extra::usb_hid_driver::UsbHidDriver<
+        'static,
+        capsules_extra::usb::keyboard_hid::KeyboardHid<'static, nrf52840::usbd::Usbd<'static>>,
+    >,
+    ...
+}
+
+let platform = Platform {
+    ...
+    keyboard_hid_driver,
+    ...
+};
+```
+
+and map syscalls from userspace to our kernel driver:
+
+```rust
+// Keyboard HID Driver Num:
+const KEYBOARD_HID_DRIVER_NUM: usize = capsules_core::driver::NUM::KeyboardHid as usize;
+
+impl SyscallDriverLookup for Platform {
+    fn with_driver<F, R>(&self, driver_num: usize, f: F) -> R
+    where
+        F: FnOnce(Option<&dyn kernel::syscall::SyscallDriver>) -> R,
+    {
+        match driver_num {
+        	...
+            KEYBOARD_HID_DRIVER_NUM => f(Some(self.keyboard_hid_driver)),
+            ...
+        }
+    }
+}
+```
+
+Now you should be able to compile the kernel and load it on to your board.
+
+```
+cd tock/boards/...
 make install
 ```
 
