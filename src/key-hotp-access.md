@@ -341,19 +341,23 @@ pub trait SyscallFilter {
 We need to implement the single `filter_syscall()` function with out desired
 behavior.
 
-To do this, create a new file in the board's `src/` directory. Then insert the
-code below as a starting point:
+To do this, create a new file called `syscall_filter.rs` in the board's `src/`
+directory. Then insert the code below as a starting point:
 
 ```rust
-use kernel::platform::platform::SyscallFilter;
+use kernel::errorcode;
+use kernel::platform::SyscallFilter;
 use kernel::process;
-use kernel::process::Process;
+use kernel::syscall;
 
 pub struct TrustedSyscallFilter {}
 
 impl SyscallFilter for TrustedSyscallFilter {
-    fn filter_syscall(&self, process: &dyn process::Process, syscall: &syscall::Syscall)
-        -> Result<(), errorcode::ErrorCode> {
+    fn filter_syscall(
+        &self,
+        process: &dyn process::Process,
+        syscall: &syscall::Syscall,
+    ) -> Result<(), errorcode::ErrorCode> {
 
         // To determine if the process has credentials we can use the
         // `process.get_credentials()` function.
@@ -362,7 +366,6 @@ impl SyscallFilter for TrustedSyscallFilter {
         // is not XXXXXX, then return `Ok(())` to permit the call. Otherwise, if
         // the process is not credentialed, return `Err(ErrorCode::NOSUPPORT)`. If
         // the process is credentialed return `Ok(())`.
-
     }
 }
 ```
@@ -370,7 +373,11 @@ impl SyscallFilter for TrustedSyscallFilter {
 Documentation for the `Syscall` type is
 [here](https://docs.tockos.org/kernel/syscall/enum.syscall).
 
-Save this file and include it from the board's main.rs.
+Save this file and include it from the board's main.rs:
+
+```rust
+mod syscall_filter
+```
 
 Now to put our new policy into effect we need to use it when we configure the
 kernel via the `KernelResources` trait.
@@ -378,17 +385,42 @@ kernel via the `KernelResources` trait.
 ```rust
 impl KernelResources for Platform {
     ...
-    type SyscallFilter = TrustedSyscallFilter;
+    type SyscallFilter = syscall_filter::TrustedSyscallFilter;
     ...
     fn syscall_filter(&self) -> &'static Self::SyscallFilter {
-        self.syscall_filter
+        self.sysfilter
     }
     ...
 }
 ```
 
-Also you need to instantiate the `TrustedSyscallFilter` and add it to the
-`Platform` struct.
+Also you need to instantiate the `TrustedSyscallFilter`:
+
+```rust
+let sysfilter = static_init!(
+    syscall_filter::TrustedSyscallFilter,
+    syscall_filter::TrustedSyscallFilter {}
+);
+```
+
+and add it to the `Platform` struct:
+
+```rust
+struct Platform {
+    ...
+    sysfilter: &'static syscall_filter::TrustedSyscallFilter,
+}
+```
+
+Then when we create the platform object near the end of `main()`, we can add our
+`checker`:
+
+```rust
+let platform = Platform {
+    ...
+    sysfilter,
+}
+```
 
 > **SUCCESS:** We now have a custom syscall filter based on app credentials.
 
