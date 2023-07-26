@@ -63,8 +63,8 @@ kernel.
 
 If you are following along with the provided VM, do not forget to pass your
 board's USB interface(s) to the VM. In VirtualBox, this should work by selecting
-"Devices > USB" and then enabling the respective device (for example "SEGGER
-J-Link [0001]").
+"Devices > USB" and then enabling the respective device (for example
+`SEGGER J-Link [0001]`).
 
 ### Nordic nRF52840DK
 
