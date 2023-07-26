@@ -1,0 +1,126 @@
+#cloud-config
+
+# This is a modified version of [1], which installs automatically installs a
+# Ubuntu server, converts it into a Ubuntu Desktop installation, and performs
+# some further modifications to prepare it for the final provisioning stage
+# in Packer. It already includes some packages which are going to be needed
+# by the Tock provisioning script.
+#
+# [1]: https://github.com/canonical/autoinstall-desktop/blob/600a9ec2b9ef53a6945f11e227bbb680810ef6e3/autoinstall.yaml
+
+autoinstall:
+  # version is an Autoinstall required field.
+  version: 1
+
+  # The live-server ISO does not contain some of the required packages,
+  # such as ubuntu-desktop or the hwe kernel (or most of their depdendencies).
+  # The system being installed will need some sort of apt access. If you're
+  # behind a proxy, set that here:
+  #
+  # proxy: http://192.168.0.1:3142
+
+  # Add the ubuntu-desktop packages, along some other required or useful
+  # utilities:
+  packages:
+    - ubuntu-desktop
+    - ca-certificates
+    - cloud-guest-utils
+    - cloud-init
+    - curl
+    - e2fsprogs
+    - iproute2
+    - openssh-server
+    - perl
+    - python3
+    - python3-pip
+    - rsync
+    - sudo
+    - git
+    - vim
+    - htop
+    - nload
+    - tmux
+
+  # This adds the default snaps found on a 22.04 Ubuntu Desktop system.
+  # Any desired additional snaps may also be listed here.
+  snaps:
+    - name: firefox
+    - name: gnome-3-38-2004
+    - name: gtk-common-themes
+    - name: snap-store
+    - name: snapd-desktop-integration
+
+  # Create a Tock user. It is given password-less sudo below:
+  identity:
+    realname: 'Tock Developer'
+    username: tock
+    # Password is 'tock'
+    password: '$6$nRD/3FTV3bz/J8jV$.PSxDdqbuwNIyDZcSSXVy/q4/Pe.M4ehABFrf/smpPKKlinEgi7WyI1Vp6IJz7O2ZGkXovwdF3uODLfrUacvx1'
+    hostname: tockvm
+
+  # Install an OpenSSH server and ensure password-based login is enabled:
+  ssh:
+    install-server: yes
+    authorized-keys: []
+    allow-pw: yes
+
+  # Subiquity will, by default, configure a partition layout using LVM.
+  # The 'direct' layout method shown here will produce a non-LVM result.
+  storage:
+    layout:
+      name: direct
+
+  # Ubuntu Desktop uses the hwe flavor kernel by default.
+  early-commands:
+    - echo 'linux-generic-hwe-22.04' > /run/kernel-meta-package
+
+  late-commands:
+    # Enable the boot splash
+    - >-
+      curtin in-target --
+      sed -i /etc/default/grub -e
+      's/GRUB_CMDLINE_LINUX_DEFAULT=".*/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"/'
+    - curtin in-target -- update-grub
+
+    # Let NetworkManager handle network
+    - rm /target/etc/netplan/00-installer-config*yaml
+    - >-
+      printf "network:\n  version: 2\n  renderer: NetworkManager"
+      > /target/etc/netplan/01-network-manager-all.yaml
+
+    # Remove default filesystem and related tools not used with the suggested
+    # 'direct' storage layout.  These may yet be required if different
+    # partitioning schemes are used.
+    - >-
+      curtin in-target -- apt-get remove -y
+      btrfs-progs cryptsetup* lvm2 xfsprogs
+
+    # Remove other packages present by default in Ubuntu Server but not
+    # normally present in Ubuntu Desktop.
+    - >-
+      curtin in-target -- apt-get remove -y
+      ubuntu-server ubuntu-server-minimal byobu dmeventd finalrd kpartx
+      mdadm ncurses-term needrestart open-iscsi sg3-utils ssh-import-id
+      sssd thin-provisioning-tools sosreport open-vm-tools
+      motd-news-config lxd-agent-loader landscape-common
+
+    # Keep cloud-init, as it performs some of the installation on first boot.
+    - curtin in-target -- apt-get install -y cloud-init
+
+    # Finally, remove things only installed as dependencies of other things
+    # we have already removed.
+    - curtin in-target -- apt-get autoremove -y
+
+    # Enable password-less sudo for the tock user:
+    - "curtin in-target -- /bin/bash -c '\
+        mkdir -p /etc/sudoers.d; \
+	chmod 0755 /etc/sudoers.d; \
+	echo \"tock ALL=(ALL) NOPASSWD: ALL\" > /etc/sudoers.d/tock; \
+	chmod 0440 /etc/sudoers.d/tock; \
+	chown -Rf root:root /etc/sudoers.d; \
+	systemctl disable apt-daily.service; \
+	systemctl disable apt-daily.timer; \
+	systemctl disable apt-daily-upgrade.service; \
+	systemctl disable apt-daily-upgrade.timer; \
+	exit 0\
+      '"

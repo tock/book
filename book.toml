@@ -10,3 +10,4 @@ additional-css = ["theme/pagetoc.css", "theme/pagetoc-tock.css"]
 additional-js  = ["theme/pagetoc.js"]
 
 [output.linkcheck]
+optional = true
