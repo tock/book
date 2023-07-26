@@ -428,11 +428,21 @@ let platform = Platform {
 
 Now you should be able to install your HOTP app to the board without adding the
 SHA256 credential and verify that it is no longer able to access the encryption
-capsule.
+capsule. You should see output like this:
+
+```
+$ tockloader listen
+Tock HOTP App Started. Usage:
+* Press a button to get the next HOTP code for that slot.
+* Hold a button to enter a new HOTP secret for that slot.
+Flash read
+Initialized state
+ERROR cannot encrypt key
+```
 
 If you use tockloader to add credentials
 (`tockloader tbf credential add sha256`) and then re-install your app it should
-run as expected
+run as expected.
 
 > ### Wrap-up
 >
