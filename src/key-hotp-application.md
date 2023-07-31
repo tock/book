@@ -119,8 +119,10 @@ HOTP key.
   already works and you won't have to modify it.
 
 > **Checkpoint**: You should be able to run the application and have it output
-
-    HOTP codes over USB to your computer when Button 1 is pressed.
+>
+> ```
+> HOTP codes over USB to your computer when Button 1 is pressed.
+> ```
 
 ## Milestone One: Configuring Secrets
 
