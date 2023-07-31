@@ -49,8 +49,12 @@ later.
 
 ## Stages
 
-This module is broken into three stages:
+This module is broken into four stages:
 
-1. [Creating an HOTP userspace application](./key-hotp-application.md).
-2. [Creating an in-kernel encryption oracle](./key-hotp-oracle.md).
-3. [Enforcing access control restrictions to the oracle](./key-hotp-access.md).
+1. Configuring the kernel to provide necessary syscall drivers:
+   1. [USB Keyboard Device](./usb-hid.md).
+   2. [HMAC](./key-hotp-hmac.md)
+   3. [App State](./key-hotp-appstate.md)
+2. [Creating an HOTP userspace application](./key-hotp-application.md).
+3. [Creating an in-kernel encryption oracle](./key-hotp-oracle.md).
+4. [Enforcing access control restrictions to the oracle](./key-hotp-access.md).

@@ -2,7 +2,7 @@
 
 With security-focused and privileged system resources, a board may wish to
 restrict which applications can access which system call resources. In this
-module we will extend the Tock kernel to restrict access to the encryption
+stage we will extend the Tock kernel to restrict access to the encryption
 capsule to only trusted (credentialed) apps.
 
 ## Background

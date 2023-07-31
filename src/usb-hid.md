@@ -1,18 +1,15 @@
 # Implementing a USB Keyboard Device
 
 The Tock kernel supports implementing a USB device and we can setup our kernel
-so that it is recognized as a USB keyboard device.
-
-You need to have a board with a suitable USB header. Boards that support this
-module:
-
-- imix
-- nRF52840dk
+so that it is recognized as a USB keyboard device. This is necessary to enable
+the HOTP key to send the generated key to the computer when logging in.
 
 ## Configuring the Kernel
 
 We need to setup our kernel to include USB support, and particularly the USB HID
-(keyboard) profile. This requires modifying the board.rs.
+(keyboard) profile. This requires modifying the boards `main.rs` file. You
+should add the following setup near the end of main.rs, just before the creating
+the `Platform` struct.
 
 You first need to create three strings that will represent this device to the
 USB host.
@@ -29,12 +26,14 @@ let strings = static_init!(
 );
 ```
 
-Then we need to create the keyboard USB capsule in the board:
+Then we need to create the keyboard USB capsule in the board. This example works
+for the nRF52840dk. You will need to modify the types if you are using a
+different microcontroller.
 
 ```rust
 let (keyboard_hid, keyboard_hid_driver) = components::keyboard_hid::KeyboardHidComponent::new(
     board_kernel,
-    capsules_core::driver::KeyboardHid,
+    capsules_core::driver::NUM::KeyboardHid as usize,
     &nrf52840_peripherals.usbd,
     0x1915, // Nordic Semiconductor
     0x503a,
@@ -47,7 +46,7 @@ let (keyboard_hid, keyboard_hid_driver) = components::keyboard_hid::KeyboardHidC
 
 Towards the end of the main.rs, you need to enable the USB HID driver:
 
-```
+```rust
 keyboard_hid.enable();
 keyboard_hid.attach();
 ```
@@ -58,9 +57,9 @@ Finally, we need to add the driver to the `Platform` struct:
 pub struct Platform {
 	...
 	keyboard_hid_driver: &'static capsules_extra::usb_hid_driver::UsbHidDriver<
-        'static,
-        capsules_extra::usb::keyboard_hid::KeyboardHid<'static, nrf52840::usbd::Usbd<'static>>,
-    >,
+	    'static,
+	    capsules_extra::usb::keyboard_hid::KeyboardHid<'static, nrf52840::usbd::Usbd<'static>>,
+	>,
     ...
 }
 
