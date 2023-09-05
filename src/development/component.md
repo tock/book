@@ -130,7 +130,7 @@ The steps from the overview are elaborated on here.
    }
    ```
 
-   We need to define that statically allocated types we need, and what this
+   We need to define what statically allocated types we need, and what this
    method will produce:
 
    ```rust
@@ -179,9 +179,9 @@ The steps from the overview are elaborated on here.
    }
    ```
 
-   We initialize the memory for the static buffer, created the grant for the
-   syscall driver to use, provided the driver with the alarm resource, and
-   passing in the delay value to use. Lastly, we return a reference to the
+   We initialize the memory for the static buffer, create the grant for the
+   syscall driver to use, provide the driver with the alarm resource, and
+   pass in the delay value to use. Lastly, we return a reference to the
    actual notifier driver object.
 
 ## Summary
@@ -275,6 +275,6 @@ let notifier = components::notifier::NotifierDriverComponent::new(
 
 ## Wrap-Up
 
-Congratulations! You have create a component to easily create a resource in the
+Congratulations! You have created a component to easily create a resource in the
 Tock kernel! We encourage you to submit a pull request to upstream this to the
 Tock repository.
