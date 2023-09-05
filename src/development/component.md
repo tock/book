@@ -39,9 +39,10 @@ The steps from the overview are elaborated on here.
 1. **Define the static memory required for all objects used.**
 
    All objects in the kernel are statically allocated, so we need to statically
-   allocate memory for the objects to live in. Due to [constraints](https://github.com/tock/tock/blob/b41ecd33a361d90820df1e290086d1b22e192e54/kernel/src/utilities/static_init.rs#L56-L80) on the macros
-   Tock provides for statically allocating memory, we must contain all calls to
-   allocate this memory within another macro.
+   allocate memory for the objects to live in. Due to
+   [constraints](https://github.com/tock/tock/blob/b41ecd33a361d90820df1e290086d1b22e192e54/kernel/src/utilities/static_init.rs#L56-L80)
+   on the macros Tock provides for statically allocating memory, we must contain
+   all calls to allocate this memory within another macro.
 
    Create a file in `boards/components/src` to hold the component.
 
@@ -179,9 +180,9 @@ The steps from the overview are elaborated on here.
    ```
 
    We initialize the memory for the static buffer, create the grant for the
-   syscall driver to use, provide the driver with the alarm resource, and
-   pass in the delay value to use. Lastly, we return a reference to the
-   actual notifier driver object.
+   syscall driver to use, provide the driver with the alarm resource, and pass
+   in the delay value to use. Lastly, we return a reference to the actual
+   notifier driver object.
 
 ## Summary
 
