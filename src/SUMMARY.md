@@ -42,3 +42,4 @@ Tock OS Course
   - [HIL](./development/hil.md)
   - [Virtualizers](./development/virtual.md)
   - [Kernel Tests](./development/tests.md)
+  - [Component](./development/component.md)
