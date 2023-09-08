@@ -87,7 +87,7 @@ operating system install, you will need the following software:
     boards.
 
          # mac
-         $ brew tap ARMmbed/homebrew-formulae && brew update && brew install arm-none-eabi-gcc
+         $ brew tap ARMmbed/homebrew-formulae && brew update && brew install ARMmbed/homebrew-formulae/arm-none-eabi-gcc
 
          # linux
          $ sudo apt install gcc-arm-none-eabi
