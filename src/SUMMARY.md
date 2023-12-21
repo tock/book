@@ -43,3 +43,7 @@ Tock OS Course
   - [Virtualizers](./development/virtual.md)
   - [Kernel Tests](./development/tests.md)
   - [Component](./development/component.md)
+
+- [Kernel Documentation](./doc/index.md)
+
+  - [Memory Layout](./doc/memory_layout.md)
