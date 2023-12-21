@@ -109,7 +109,7 @@ pub trait KV {
     fn update(&self, key: [u8], value: [u8]) -> Result<(), ([u8], [u8], ErrorCode)>;
 
     /// Remove a key-value object from the store.
-    fn update(&self, key: [u8]) -> Result<(), ([u8], ErrorCode)>;
+    fn delete(&self, key: [u8]) -> Result<(), ([u8], ErrorCode)>;
 }
 ```
 
@@ -133,7 +133,7 @@ pub trait KVPermissions {
     fn update(&self, key: [u8], value: [u8], permissions: Perm) -> Result<(), ([u8], [u8], ErrorCode)>;
 
     /// Remove a key-value object from the store.
-    fn update(&self, key: [u8], permissions: Perm) -> Result<(), ([u8], ErrorCode)>;
+    fn delete(&self, key: [u8], permissions: Perm) -> Result<(), ([u8], ErrorCode)>;
 }
 ```
 
