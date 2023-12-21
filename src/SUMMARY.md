@@ -48,5 +48,6 @@ Tock OS Course
 
   - [Implementation](./doc/implementation.md)
     - [Compilation](./doc/compilation.md)
+    - [Kernel Configuration](./doc/configuration.md)
     - [Memory Layout](./doc/memory_layout.md)
     - [Tock Binary Format](./doc/tock_binary_format.md)
