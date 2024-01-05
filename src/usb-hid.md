@@ -12,13 +12,13 @@ steps will guide you through adding the USB HID device as a new resource
 provided by the Tock kernel on your hardware board. You will also expose this
 resource to userspace via the syscall interface.
 
-You should add the following setup near the end of main.rs, just before the
-creating the `Platform` struct.
-
 ### 1. USB Strings
 
 You first need to create three strings that will represent this device to the
 USB host.
+
+You should add the following setup near the end of main.rs, just before the
+creating the `Platform` struct.
 
 ```rust
 // Create the strings we include in the USB descriptor.
@@ -32,9 +32,9 @@ let strings = static_init!(
 );
 ```
 
-### 2. Include USB HID Capsule
+### 2. Include USB HID Capsule Type
 
-Then we need to instantiate the keyboard USB capsule in the board. This capsule
+Now we need to instantiate the keyboard USB capsule in the board. This capsule
 provides the USB Keyboard HID stack needed to interface with the USB hardware
 and provide an interface to communicate as a HID device.
 
@@ -42,24 +42,55 @@ In general, adding a capsule to a Tock kernel can be somewhat cumbersome. To
 simplify this, we use what we call a "component" to bundle all of the setup. We
 can use the pre-made `KeyboardHidComponent` component.
 
-This example works for the nRF52840dk. You will need to modify the types if you
-are using a different microcontroller.
+First we define a type for the capsule, which is board-specific as it refers to
+the specific microcontroller on the board. This type can become unwieldy and
+redundant, so specifying a type makes adding the same capsule and component to
+multiple boards more consistent.
+
+Near the top of the main.rs file, include the correct definitions based on your
+board. In particular, the `UsbHw` definition must match the type of the USB
+hardware driver for your specific microcontroller.
 
 ```rust
+// USB Keyboard HID - for nRF52840dk
+type UsbHw = nrf52840::usbd::Usbd<'static>; // For any nRF52840 board.
+type KeyboardHidDriver = components::keyboard_hid::KeyboardHidComponentType<UsbHw>;
+
+// ------------------------------
+
+// USB Keyboard HID - for imix
+type UsbHw = sam4l::usbc::Usbc<'static>; // For any SAM4L board.
+type KeyboardHidDriver = components::keyboard_hid::KeyboardHidComponentType<UsbHw>;
+```
+
+### 3. Include USB HID Capsule Component
+
+Once we have the type we can include the actual component. This should go below
+the `strings` object declared before.
+
+Again the `usb_device` variable must match for your specific board. Choose the
+type correctly from the examples in the code snippet.
+
+```rust
+// For nRF52840dk
+let usb_device = &nrf52840_peripherals.usbd;
+
+// For imix
+let usb_device = &peripherals.usbc;
+
+// Generic HID Keyboard component usage
 let (keyboard_hid, keyboard_hid_driver) = components::keyboard_hid::KeyboardHidComponent::new(
     board_kernel,
     capsules_core::driver::NUM::KeyboardHid as usize,
-    &nrf52840_peripherals.usbd,
+    usb_device,
     0x1915, // Nordic Semiconductor
     0x503a,
     strings,
 )
-.finalize(components::keyboard_hid_component_static!(
-    nrf52840::usbd::Usbd
-));
+.finalize(components::keyboard_hid_component_static!(UsbHw));
 ```
 
-### 3. Activate USB HID Support
+### 4. Activate USB HID Support
 
 Towards the end of the main.rs, you need to enable the USB HID driver:
 
@@ -68,7 +99,7 @@ keyboard_hid.enable();
 keyboard_hid.attach();
 ```
 
-### 4. Expose USB HID to Userspace
+### 5. Expose USB HID to Userspace
 
 Finally, we need to make sure that userspace applications can use the USB HID
 interface.
@@ -79,10 +110,7 @@ driver to the `Platform` struct:
 ```rust
 pub struct Platform {
 	...
-	keyboard_hid_driver: &'static capsules_extra::usb_hid_driver::UsbHidDriver<
-	    'static,
-	    capsules_extra::usb::keyboard_hid::KeyboardHid<'static, nrf52840::usbd::Usbd<'static>>,
-	>,
+	keyboard_hid_driver: &'static KeyboardHidDriver,
     ...
 }
 ```
@@ -110,7 +138,7 @@ impl SyscallDriverLookup for Platform {
         F: FnOnce(Option<&dyn kernel::syscall::SyscallDriver>) -> R,
     {
         match driver_num {
-        	...
+            ...
             KEYBOARD_HID_DRIVER_NUM => f(Some(self.keyboard_hid_driver)),
             ...
         }
