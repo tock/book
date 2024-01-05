@@ -4,6 +4,25 @@ The Tock kernel supports implementing a USB device and we can setup our kernel
 so that it is recognized as a USB keyboard device. This is necessary to enable
 the HOTP key to send the generated key to the computer when logging in.
 
+## Background
+
+This module configures your hardware board to be a USB HID device. From
+[Wikipedia](https://en.wikipedia.org/wiki/USB_human_interface_device_class):
+
+> The USB human interface device class (USB HID class) is a part of the USB
+> specification for computer peripherals: it specifies a device class (a type of
+> computer hardware) for human interface devices such as keyboards, mice, game
+> controllers and alphanumeric display devices.
+>
+> The USB HID class describes devices used with nearly every modern computer.
+> Many predefined functions exist in the USB HID class. These functions allow
+> hardware manufacturers to design a product to USB HID class specifications and
+> expect it to work with any software that also meets these specifications.
+
+Enabling USB HID will allow your board to operate as a normal keyboard. As far
+as your computer is concerned, you plugged in a USB keyboard. This means your
+board and microcontroller can "type" to your computer.
+
 ## Configuring the Kernel
 
 We need to setup our kernel to include USB support, and particularly the USB HID
