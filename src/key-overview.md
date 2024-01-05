@@ -47,6 +47,30 @@ For now, you should plug one USB cable into the top of the board for programming
 (NOT into the "nRF USB" port on the side). We'll attach the other USB cable
 later.
 
+## Organization and Getting Oriented to Tock
+
+This module will refer to various Tock components. This section briefly
+describes the general structure of Tock you will need to be somewhat familiar
+with to follow the module.
+
+Using Tock consists of two main building blocks:
+
+1. The Tock kernel, which runs as the operating system on the board. This is
+   compiled from the [Tock repository](https://github.com/tock/tock).
+2. Userspace applications, which run as processes and are compiled and loaded
+   separately from the kernel.
+
+The Tock kernel is compiled specifically for a particular hardware device,
+termed a "board". The location of the top-level file for the kernel on a
+specific board is in the Tock repository, under `/tock/boards/<board name>`. Any
+time you need to compile the kernel or edit the board file, you will go to that
+folder. You also install the kernel on the hardware board from that directory.
+
+Userspace applications are stored in a separate repository, either
+[libtock-c](https://github.com/tock/libtock-c) or
+[libtock-rs](https://github.com/tock/libtock-rs) (for C and Rust applications,
+respectively). Those applications are compiled within those repositories.
+
 ## Stages
 
 This module is broken into four stages:
