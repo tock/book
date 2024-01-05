@@ -34,8 +34,28 @@ SHA256 hash algorithm. That means the resulting HMAC will be 32 bytes long.
 
 ## Configuring the Kernel
 
-First we need to use components to instantiate a software implementation of
-SHA256 and HMAC-SHA256. Add this to your main.rs file.
+### 1. Define Types for HMAC
+
+For convenience we declare the component types at the top of main.rs for the
+HMAC capsules.
+
+As we are using a software implementation of the SHA-256 algorithm, we do not
+need to customize any types for our specific microcontroller.
+
+Include this near the top of main.rs (above the Platform struct):
+
+```rust
+// HMAC
+type HmacSha256Software = components::hmac::HmacSha256SoftwareComponentType<
+    capsules_extra::sha256::Sha256Software<'static>,
+>;
+type HmacDriver = components::hmac::HmacComponentType<HmacSha256Software, 32>;
+```
+
+### 2. Instantiate the Components
+
+Next we need to use components to instantiate a software implementation of
+SHA256 and HMAC-SHA256. Add this towards the bottom of your main.rs file.
 
 ```rust
 //--------------------------------------------------------------------------
@@ -54,25 +74,17 @@ let hmac = components::hmac::HmacComponent::new(
     capsules_extra::hmac::DRIVER_NUM,
     hmac_sha256_sw,
 )
-.finalize(components::hmac_component_static!(
-    capsules_extra::hmac_sha256::HmacSha256Software<capsules_extra::sha256::Sha256Software>,
-    32
-));
+.finalize(components::hmac_component_static!(HmacSha256Software, 32));
 ```
 
-Then add these capsules to the `Platform` struct:
+### 3. Expose HMAC to Userspace
+
+Next add these capsules to the `Platform` struct:
 
 ```rust
 pub struct Platform {
 	...
-	hmac: &'static capsules_extra::hmac::HmacDriver<
-	    'static,
-	    capsules_extra::hmac_sha256::HmacSha256Software<
-	        'static,
-	        capsules_extra::sha256::Sha256Software<'static>,
-	    >,
-	    32,
-	>,
+	hmac: &'static HmacDriver,
     ...
 }
 
