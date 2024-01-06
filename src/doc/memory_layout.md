@@ -85,6 +85,7 @@ others. The structure of its flash and RAM is as follows.
 | 0x600-0x9FF     | 1024           | Attributes | Up to 16 key-value pairs of attributes that describe the board and the software running on it.   |
 | 0xA00-0xFFFF    | 61.5k          | Bootloader | The software bootloader provides non-JTAG methods of programming the kernel and applications.    |
 | 0x10000-0x3FFFF | 128k           | Kernel     | Flash space for the kernel.                                                                      |
+| 0x3FFxx-0x3FFFF | variable       | Attributes | Kernel attributes that describe various properties of the kernel.                                |
 | 0x40000-0x7FFFF | 320k           | Apps       | Flash space for applications.                                                                    |
 
 #### RAM
