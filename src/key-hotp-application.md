@@ -1,122 +1,139 @@
-# HOTP Application
+# HOTP Userspace Application
 
-The motivating example for this entire tutorial is the creation of a USB
-security key: a USB device that can be connected to your computer and
-authenticate you to some service. One open standard for implementing such keys
-is
+As a reminder, this module guides you through creating a USB security key: a USB
+device that can be connected to your computer and authenticate you to some
+service.
+
+At this point, we have configured the Tock kernel to provide the baseline
+resources necessary to implement the USB security key and use it with real
+services. However, we still need to actually implement the security key's
+operational logic. This submodule will guide you through creating a userspace
+application that follows the HOTP protocol.
+
+## Background
+
+### HOTP USB Security Keys
+
+One open standard for implementing USB security keys is
 [HMAC-based One-Time Password (HOTP)](https://en.wikipedia.org/wiki/HMAC-based_one-time_password).
 It generates the 6 to 8 digit numeric codes which are used as a second-factor
 for some websites.
 
-The crypto for implementing HOTP has already been created (HMAC and SHA256), so
-you certainly don't have to be an expert in cryptography to make this
-application work. We have actually implemented the software for generating HOTP
-codes as well. Instead, you will focus on improving that code as a demonstration
-of Tock and its features.
+These security keys typically do not just calculate HOTP codes, but can also
+enter them to your computer automatically. We will also enable that
+functionality by having our devices function as a USB HID keyboard device as
+well. This means that when plugged in through the proper USB port, it appears as
+an additional keyboard to your computer and is capable of entering text.
 
-On the application side, we'll start with a basic HOTP application which has a
-pre-compiled HOTP secret key. Milestone one will be improving that application
-to take user input to reconfigure the HOTP secret. Milestone two will be adding
-the ability to persistently store the HOTP information so it is remembered
-across resets and power cycles. Finally, milestone three will be adding the
-ability to handle multiple HOTP secrets simultaneously.
+### Applications in Tock
 
-The application doesn't just calculate HOTP codes, it implements a USB HID
-device as well. This means that when plugged in through the proper USB port, it
-appears as an additional keyboard to your computer and is capable of entering
-text.
+Tock applications look much closer to applications on traditional OSes than to
+normal embedded software. They are compiled separately from the kernel and
+loaded separately onto the hardware. They can be started or stopped individually
+and can be removed from the hardware individually. Importantly for later in this
+tutorial, the kernel decides which applications to run and what permissions they
+should be given.
+
+Applications make requests to the OS kernel through system calls. Applications
+instruct the kernel using "command" system calls, and the kernel notifies
+applications with "upcalls". Importantly, upcalls never interrupt a running
+application. The application must `yield` to receive upcalls (i.e. callbacks).
+
+The userspace library ("libtock") wraps system calls in easier to use functions.
+Often the library functions include the call to `yield` and expose a synchronous
+driver interface. Application code can also call `yield` directly as we will do
+in this module.
+
+## Submodule Overview
+
+This stage builds up to a full-featured HOTP key application. We'll start with a
+basic HOTP application which has a pre-compiled HOTP secret key. Then, each
+milestone will add additional functionality:
+
+1. Milestone one adds user input to reconfigure the HOTP secret.
+2. Milestone two adds persistent storage for the HOTP information so it is
+   remembered across resets and power cycles.
+3. Milestone three adds support for multiple HOTP secrets simultaneously.
 
 We have provided starter code as well as completed code for each of the
 milestones. If you're facing some bugs which are limiting your progress, you can
 reference or even wholesale copy a milestone in order to advance to the next
 parts of the tutorial.
 
-## Applications in Tock
+## Setup
 
-A few quick details on applications in Tock.
+There are two steps to check before you begin:
 
-Applications in Tock look much closer to applications on traditional OSes than
-to normal embedded software. They are compiled separately from the kernel and
-loaded separately onto the hardware. They can be started or stopped individually
-and can be removed from the hardware individually. Importantly for later in this
-tutorial, the kernel is really in full control here and can decide which
-applications to run and what permissions they should be given.
+1. Make sure you have compiled and installed the Tock kernel with the USB HID,
+   HMAC, and KV drivers on to your board.
+2. Make sure you have no testing apps installed. To remove all apps:
 
-Applications make requests from the OS kernel through system calls, but for the
-purposes of this part of the tutorial, those system calls are wrapped in calls
-to driver libraries. The most important aspect though is that results from
-system calls never interrupt a running application. The application must `yield`
-to receive callbacks. Again, this is frequently hidden within synchronous
-drivers, but our application code will have a `yield` in the main loop as well,
-where it waits for button presses.
-
-The tool for interacting with Tock applications is called `Tockloader`. It is a
-python package capable of loading applications onto a board, inspecting
-applications on a board, modifying application binaries before they are loaded
-on a board, and opening a console to communicate with running applications.
-We'll reference various `Tockloader` commands which you'll run throughout the
-tutorial.
+   ```
+   tockloader erase-apps
+   ```
 
 ## Starter Code
 
-We'll start by playing around with the starter code which implements a basic
-HOTP key.
+We'll start with the starter code which implements a basic HOTP key.
 
-- Within the `libtock-c` checkout, navigate to
-  `libtock-c/examples/tutorials/hotp/hotp_starter/`.
+1. Within `libtock-c`, navigate to
+   `libtock-c/examples/tutorials/hotp/hotp_starter/`.
 
-  This contains the starter code for the HOTP application. It has a hardcoded
-  HOTP secret and generates an HOTP code from it each time the Button 1 on the
-  board is pressed.
+   This contains the starter code for the HOTP application. It has a hardcoded
+   HOTP secret and generates an HOTP code from it each time the Button 1 on the
+   board is pressed.
 
-- To compile the application and load it onto your board, run `make flash` in
-  the terminal (running just `make` will compile but not upload).
+2. Compile the application and load it onto your board. In the app directory,
+   run:
 
-  - You likely want to remove other applications that are running on your board
-    if there are any. You can see which applications are installed with
-    `tockloader list` and you can remove an app with `tockloader uninstall` (it
-    will let you choose which app(s) to remove). Bonus information: `make flash`
-    is just a shortcut for `make && tockloader install`.
+   ```
+   make
+   tockloader install
+   ```
 
-- To see console output from the application, run `tockloader listen` in a
-  separate terminal.
+3. To see console output from the application, run `tockloader listen` in a
+   separate terminal.
 
-> **TIP:** You can leave the console running, even when compiling and uploading
-> new applications. It's worth opening a second terminal and leaving
-> `tockloader listen` always running.
+   > **TIP:** You can leave the console running, even when compiling and
+   > uploading new applications. It's worth opening a second terminal and
+   > leaving `tockloader listen` always running.
 
-- Since this application creates a USB HID device to enter HOTP codes, you'll
-  need a second USB cable which will connect directly to the microcontroller.
-  Plug it into the port on the left-hand side of the nRF52840DK labeled "nRF
-  USB".
+4. Since this application creates a USB HID device to enter HOTP codes, you'll
+   need a second USB cable which will connect directly to the microcontroller.
+   If you are using the nRF52840dk, plug the USB cable into the port on the
+   left-hand side of the nRF52840DK labeled "nRF USB".
 
-  - After attaching the USB cable, you should restart the application by hitting
-    the reset button the nRF52840DK labeled "IF BOOT/RESET".
+   After attaching the USB cable, you should restart the application by hitting
+   the reset button (on the nRF52840DK it is labeled "IF BOOT/RESET").
 
-- To generate an HOTP code, press "Button 1" on the nRF5240DK. You should see a
-  message printed to console output that says
-  `Counter: 0. Typed "750359" on the USB HID the keyboard`.
+5. To generate an HOTP code, press the first button ("Button 1" on the
+   nRF5240DK). You should see a message printed to console output that says
+   `Counter: 0. Typed "750359" on the USB HID the keyboard`.
 
-  The HOTP code will also be written out over the USB HID device. The six-digit
-  number should appear wherever your cursor is.
+   The HOTP code will also be written out over the USB HID device. The six-digit
+   number should appear wherever your cursor is.
 
-- You can verify the HOTP values with
-  [https://www.verifyr.com/en/otp/check#hotp](https://www.verifyr.com/en/otp/check#hotp)
+6. Verify the HOTP values with
+   [https://www.verifyr.com/en/otp/check#hotp](https://www.verifyr.com/en/otp/check#hotp).
+   Go to section "#2 Generate HOTP Code". Once there, enter:
 
-  Go to section "#2 Generate HOTP Code". Enter "test" as the HOTP Code to auth,
-  the current counter value from console as the Counter, "sha256" as the
-  Algorithm, and 6 as the Digits. Click "Generate" and you'll see a six-digit
-  HOTP code that should match the output of the Tock HOTP app.
+   - "test" as the HOTP Code to auth
+   - The current counter value from console as the Counter
+   - "sha256" as the Algorithm
+   - 6 as the Digits
 
-- The source code for this application is in the file `main.c`.
+   Click "Generate" and you'll see a six-digit HOTP code that should match the
+   output of the Tock HOTP app.
 
-  This is roughly 300 lines of code and includes Button handling, HMAC use and
-  the HOTP state machine. Execution starts at the `main()` function at the
-  bottom of the file.
+The source code for this application is in the file `main.c`.
 
-- Play around with the app and take a look through the code to make sure it
-  makes sense. Don't worry too much about the HOTP next code generation, as it
-  already works and you won't have to modify it.
+This is roughly 300 lines of code and includes Button handling, HMAC use and the
+HOTP state machine. Execution starts at the `main()` function at the bottom of
+the file.
+
+Play around with the app and take a look through the code to make sure it makes
+sense. Don't worry too much about the HOTP next code generation, as it already
+works and you won't have to modify it.
 
 > **Checkpoint**: You should be able to run the application and have it output
 > HOTP codes over USB to your computer when Button 1 is pressed.
@@ -125,124 +142,99 @@ HOTP key.
 
 The first milestone is to modify the HOTP application to allow the user to set a
 secret, rather than having a pre-compiled default secret. Completed code is
-available in `hotp_milestone_one/` in case you run into issues.
+available in the `hotp_milestone_one/` folder in case you run into issues.
 
-- First, modify the code in main() to detect when a user wants to change the
-  HOTP secret rather than get the next code.
+1. Modify the code in `main()` to detect when a user wants to change the HOTP
+   secret rather than get the next code.
 
-  The simplest way to do this is to sense how long the button is held for. You
-  can delay a short period, roughly 500 ms would work well, and then read the
-  button again and check if it's still being pressed. You can wait synchronously
-  with the
-  [`delay_ms()` function](https://github.com/tock/libtock-c/blob/master/libtock/timer.h)
-  and you can read a button with the
-  [`button_read()` function](https://github.com/tock/libtock-c/blob/master/libtock/button.h).
+   The simplest way to do this is to sense how long the button is held for. You
+   can delay a short period, roughly 500 ms would work well, and then read the
+   button again and check if it's still being pressed. You can wait
+   synchronously with the
+   [`delay_ms()` function](https://github.com/tock/libtock-c/blob/master/libtock/timer.h)
+   and you can read a button with the
+   [`button_read()` function](https://github.com/tock/libtock-c/blob/master/libtock/button.h).
 
-  - Note that buttons are indexed from 0 in Tock. So "Button 1" on the hardware
-    is button number 0 in the application code. All four of the buttons on the
-    nRF52840DK are accessible, although the `initialize_buttons()` helper
-    function in main.c only initializes interrupts for button number 0. (You can
-    change this if you want!)
+   - Note that buttons are indexed from 0 in Tock. So "Button 1" on the hardware
+     is button number 0 in the application code. All four of the buttons on the
+     nRF52840DK are accessible, although the `initialize_buttons()` helper
+     function in main.c only initializes interrupts for button number 0. (You
+     can change this if you want!)
 
-  - An alternative design would be to use different buttons for different
-    purposes. We'll focus on the first method, but feel free to implement this
-    however you think would work best.
+   - An alternative design would be to use different buttons for different
+     purposes. We'll focus on the first method, but feel free to implement this
+     however you think would work best.
 
-- For now, just print out a message when you detect the user's intent. Be sure
-  to compile and upload your modified application to test it.
+2. For now, just print out a message when you detect the user's intent. Be sure
+   to compile and upload your modified application to test it.
 
-- Next, create a new helper function to allow for programming new secrets. This
-  function will have three parts:
+3. Next, create a new helper function to allow for programming new secrets. This
+   function will have three parts:
 
-  1. The function should print a message about wanting input from the user.
+   1. The function should print a message about wanting input from the user.
 
-     - Let them know that they've entered this mode and that they should type a
-       new HOTP secret.
+      - Let them know that they've entered this mode and that they should type a
+        new HOTP secret.
 
-  2. The function should read input from the user to get the base32-encoded
-     secret.
+   2. The function should read input from the user to get the base32-encoded
+      secret.
 
-     - You'll want to use the
-       [Console functions `getch()` and `putnstr()`](https://github.com/tock/libtock-c/blob/master/libtock/console.h).
-       `getch()` can read characters of user input while `putnstr()` can be used
-       to echo each character the user types. Make a loop that reads the
-       characters into a buffer.
+      - You'll want to use the
+        [Console functions `getch()` and `putnstr()`](https://github.com/tock/libtock-c/blob/master/libtock/console.h).
+        `getch()` can read characters of user input while `putnstr()` can be
+        used to echo each character the user types. Make a loop that reads the
+        characters into a buffer.
 
-     - Since the secret is in base32, special characters are not valid. The
-       easiest way to handle this is to check the input character with
-       [`isalnum()`](https://cplusplus.com/reference/cctype/isalnum/) and ignore
-       it if it isn't alphanumeric.
+      - Since the secret is in base32, special characters are not valid. The
+        easiest way to handle this is to check the input character with
+        [`isalnum()`](https://cplusplus.com/reference/cctype/isalnum/) and
+        ignore it if it isn't alphanumeric.
 
-     - When the user hits the enter key, a `\n` character will be received. This
-       can be used to break from the loop.
+      - When the user hits the enter key, a `\n` character will be received.
+        This can be used to break from the loop.
 
-  3. The function should decode the secret and save it in the `hotp-key`.
+   3. The function should decode the secret and save it in the `hotp-key`.
 
-     - Use the `program_default_secret()` implementation for guidance here. The
-       `default_secret` takes the place of the string you read from the user,
-       but otherwise the steps are the same.
+      - Use the `program_default_secret()` implementation for guidance here. The
+        `default_secret` takes the place of the string you read from the user,
+        but otherwise the steps are the same.
 
-- Connect the two pieces of code you created to allow the user to enter a new
-  key. Then upload your code to test it!
+4. Connect the two pieces of code you created to allow the user to enter a new
+   key. Then upload your code to test it!
 
-  - You can test that the new secret works with
-    [https://www.verifyr.com/en/otp/check#hotp](https://www.verifyr.com/en/otp/check#hotp)
-    as described previously.
+   - You can test that the new secret works with
+     [https://www.verifyr.com/en/otp/check#hotp](https://www.verifyr.com/en/otp/check#hotp)
+     as described previously.
 
 > **Checkpoint**: Your HOTP application should now take in user-entered secrets
 > and generate HOTP codes for them based on button presses.
 
 ## Milestone Two: Persistent Secrets
 
-The second milestone is to save the HOTP struct in persistent Flash rather than
+The second milestone is to save the HOTP struct in persistent flash rather than
 in volatile memory. After doing so, the secret and current counter values will
-persist after resets and power outages. We'll do the saving to flash with the
-App State driver, which allows an application to save some information to its
-own Flash region in memory. Completed code is available in `hotp_milestone_two/`
-in case you run into issues.
+persist after resets and when the USB device is unplugged. We'll do the saving
+to flash with the Key-Value driver, which allows an application to save
+information as key-value pairs. Completed code is available in
+`hotp_milestone_two/` in case you run into issues.
 
-- First, understand how the App State driver works by playing with some example
-  code. The App State test application is available in
-  [`libtock-c/examples/tests/app_state/main.c`](https://github.com/tock/libtock-c/blob/master/examples/tests/app_state/main.c)
+1. In the HOTP application code we will store the persistent key data as the
+   "value" in a key-value pair.
 
-  - Compile it and load it onto your board to try it out.
+   Start by writing a function which saves the `hotp_key_t` object to a specific
+   key (perhaps "hotp"). Use the `kv_set_sync()` function.
 
-  - If you want to uninstall the HOTP application from the board, you can do so
-    with `tockloader uninstall`. When you're done, you can use that same command
-    to remove this application.
+2. Now write a matching function which reads the same key to load the key data
+   from persistent storage. Use the `kv_get_sync()` function.
 
-- Next, we'll go back to the HOTP application code and add our own App State
-  implementation.
+3. Make sure to update the key-value pair whenever part of the HOTP key is
+   modified, i.e. when programming a new secret or updating the counter.
 
-  Start by creating a new struct that holds both a `magic` field and the HOTP
-  key struct.
+4. Upload your code to test it. You should be able to keep the same secret and
+   counter value on resets and also on power cycles.
 
-  - The value in the `magic` field can be any unique number that is unlikely to
-    occur by accident. A 32-bit value (that is neither all zeros nor all ones)
-    of your choosing is sufficient.
-
-- Create an App State initialization function that can be called from the start
-  of `main()` which will load the struct from Flash if it exists, or initialize
-  it and store it if it doesn't.
-
-  - Be sure to call the initialization function _after_ the one-second delay at
-    the start of `main()` so that it doesn't attempt to modify Flash during
-    resets while uploading code.
-
-- Update code throughout your application to use the HOTP key inside of the App
-  State struct.
-
-  You'll also need to synchronize the App State whenever part of the HOTP key is
-  modified: when programming a new secret or updating the counter.
-
-- Upload your code to test it. You should be able to keep the same secret and
-  counter value on resets and also on power cycles.
-
-  - There is an on/off switch on the top left of the nRF52840DK you can use for
-    power cycling.
-
-  - Note that uploading a modified version of the application _will_ overwrite
-    the App State and lose the existing values inside of it.
+- There is an on/off switch on the top left of the nRF52840DK you can use for
+  power cycling.
 
 > **Checkpoint:** Your application should now both allow for the configuring of
 > HOTP secrets and the HOTP secret and counter should be persistent across
@@ -268,8 +260,8 @@ you run into issues.
     press. You'll also need to enable interrupts for all of the buttons instead
     of just Button 1.
 
-  - Make the HOTP key in the App State struct into an array with up to four
-    slots.
+  - Make the HOTP key into an array with up to four slots. Choose different key
+    names for storage.
 
   - Having multiple key slots allows for different numbers of digits for the
     HOTP code on different slots, which you could experiment with.
