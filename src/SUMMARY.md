@@ -50,6 +50,7 @@ Tock OS Course
   - [Overview](./doc/overview.md)
   - [Design](./doc/design.md)
   - [Soundness](./doc/soundness.md)
+  - [Lifetimes](./doc/lifetimes.md)
   - [Implementation](./doc/implementation.md)
     - [Compilation](./doc/compilation.md)
     - [Kernel Configuration](./doc/configuration.md)
