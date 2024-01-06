@@ -49,6 +49,7 @@ Tock OS Course
   - [Implementation](./doc/implementation.md)
     - [Compilation](./doc/compilation.md)
     - [Kernel Configuration](./doc/configuration.md)
+    - [Kernel Attributes](./doc/kernel_attributes.md)
     - [Memory Layout](./doc/memory_layout.md)
     - [Processes](./doc/processes.md)
     - [Tock Binary Format](./doc/tock_binary_format.md)
