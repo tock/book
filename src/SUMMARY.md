@@ -47,6 +47,7 @@ Tock OS Course
 
 - [Kernel Documentation](./doc/index.md)
 
+  - [Overview](./doc/overview.md)
   - [Implementation](./doc/implementation.md)
     - [Compilation](./doc/compilation.md)
     - [Kernel Configuration](./doc/configuration.md)
