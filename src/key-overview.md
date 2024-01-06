@@ -78,7 +78,7 @@ This module is broken into four stages:
 1. Configuring the kernel to provide necessary syscall drivers:
    1. [USB Keyboard Device](./usb-hid.md).
    2. [HMAC](./key-hotp-hmac.md)
-   3. [App State](./key-hotp-appstate.md)
+   3. [Key-Value](./key-hotp-kv.md)
 2. [Creating an HOTP userspace application](./key-hotp-application.md).
 3. [Creating an in-kernel encryption oracle](./key-hotp-oracle.md).
 4. [Enforcing access control restrictions to the oracle](./key-hotp-access.md).

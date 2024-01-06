@@ -13,7 +13,7 @@ Tock OS Course
   - [USB Security Key](./key-overview.md)
     - [Kernel: USB Keyboard](./usb-hid.md)
     - [Kernel: HMAC](./key-hotp-hmac.md)
-    - [Kernel: App State](./key-hotp-appstate.md)
+    - [Kernel: Key-Value](./key-hotp-kv.md)
     - [HOTP Application](./key-hotp-application.md)
     - [Encryption Oracle Capsule](./key-hotp-oracle.md)
     - [Access Control](./key-hotp-access.md)
