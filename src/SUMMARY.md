@@ -17,6 +17,7 @@ Tock OS Course
     - [HOTP Application](./key-hotp-application.md)
     - [Encryption Oracle Capsule](./key-hotp-oracle.md)
     - [Access Control](./key-hotp-access.md)
+    - [Security Key Demo](./key-hotp-demo.md)
   - [Kernel Boot](./boot.md)
   - [Policies](./policies.md)
   - [TicKV](./tickv.md)
