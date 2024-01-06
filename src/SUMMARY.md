@@ -43,6 +43,7 @@ Tock OS Course
   - [Virtualizers](./development/virtual.md)
   - [Kernel Tests](./development/tests.md)
   - [Component](./development/component.md)
+  - [Optimize Code Size](./development/code_size.md)
 
 - [Kernel Documentation](./doc/index.md)
 
