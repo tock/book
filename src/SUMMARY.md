@@ -23,6 +23,23 @@
     - [Important Client](./course/deprecated/important_client.md)
     - [Capsule](./course/deprecated/capsule.md)
 
+  - [USB Security Key](./key-overview.md)
+    - [Kernel: USB Keyboard](./usb-hid.md)
+    - [Kernel: HMAC](./key-hotp-hmac.md)
+    - [Kernel: App State](./key-hotp-appstate.md)
+    - [HOTP Application](./key-hotp-application.md)
+    - [Encryption Oracle Capsule](./key-hotp-oracle.md)
+    - [Access Control](./key-hotp-access.md)
+  - [Thread Smart Sensor](./sensor-overview.md)
+    - [Environmental App](./application.md)
+  - [Kernel Boot](./boot.md)
+  - [Policies](./policies.md)
+  - [TicKV](./tickv.md)
+  - [Graduation](./graduation.md)
+  - [Deprecated](./deprecated.md)
+    - [Important Client](./important_client.md)
+    - [Capsule](./capsule.md)
+
 - [Mini Tutorials](./tutorials/tutorials.md)
 
   - [Blink an LED](./tutorials/01_running_blink.md)
