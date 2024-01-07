@@ -45,6 +45,7 @@ Tock OS Course
   - [Component](./development/component.md)
   - [Optimize Code Size](./development/code_size.md)
   - [Porting Tock](./development/porting.md)
+  - [Porting From 1.x to 2.x](./development/porting_v1-v2.md)
 
 - [Kernel Documentation](./doc/index.md)
 
