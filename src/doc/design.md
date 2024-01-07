@@ -308,7 +308,7 @@ function. However, this muddles the use of unsafe, and makes it difficult to
 understand if code potentially violates safety or is a restricted API.
 
 Instead, Tock uses
-[capabilities](Soundness.md#capabilities-restricting-access-to-certain-functions-and-operations)
+[capabilities](soundness.md#capabilities-restricting-access-to-certain-functions-and-operations)
 to restrict access to important APIs. As such, any public APIs inside the kernel
 that should be very restricted in what other code can use them should require a
 specific capability in their function signatures. This prevents code that has
