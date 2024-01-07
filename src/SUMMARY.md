@@ -60,5 +60,6 @@ Tock OS Course
     - [Memory Layout](./doc/memory_layout.md)
     - [Mutable References](./doc/mutable_references.md)
     - [Processes](./doc/processes.md)
+    - [Startup](./doc/startup.md)
     - [Tock Binary Format](./doc/tock_binary_format.md)
   - [Process Console](./doc/pconsole.md)
