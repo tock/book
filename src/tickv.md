@@ -88,61 +88,64 @@ field, then it can change the value of that key-value object.
 
 ### Tock Key-Value APIs
 
-Tock supports two key-value orientated APIs: an upper and lower API. The lower
-API expects hashed keys and is designed with flash as the underlying storage in
-mind. The upper API is a more traditional K-V interface.
+Tock supports two key-value orientated APIs: one that uses key-value objects
+directly and one that requires permissions.
 
-The lower interface looks like this. Note, this version is simplified for
+The base interface looks like this. Note, this version is simplified for
 illustration, the actual version is complete Rust.
 
 ```rust
-pub trait KVSystem {
-    /// The type of the hashed key. For example `[u8; 8]`.
-    type K: KeyType;
-
-    /// Create the hashed key.
-    fn generate_key(&self, unhashed_key: [u8], key: K) -> Result<(), (K, buffer,ErrorCode)>;
-
-    /// Add a K-V object to the store. Error on collision.
-    fn append_key(&self, key: K, value: [u8]) -> Result<(), (K, buffer, ErrorCode)>;
-
+pub trait KV {
     /// Retrieve a value from the store.
-    fn get_value(&self, key: K, value: [u8]) -> Result<(), (K, buffer, ErrorCode)>;
+    fn get(&self, key: [u8], value: [u8]) -> Result<(), ([u8], [u8], ErrorCode)>;
 
-    /// Mark a K-V object as deleted.
-    fn invalidate_key(&self, key: K) -> Result<(), (K, ErrorCode)>;
+    /// Insert a key-value object into the store. Overwrite if needed.
+    fn set(&self, key: [u8], value: [u8]) -> Result<(), ([u8], [u8], ErrorCode)>;
 
-    /// Cleanup the store.
-    fn garbage_collect(&self) -> Result<(), ErrorCode>;
+    /// Insert a key-value object into the store if it doesn't exist.
+    fn add(&self, key: [u8], value: [u8]) -> Result<(), ([u8], [u8], ErrorCode)>;
+
+    /// Modify a key-value object into the store if it already exists.
+    fn update(&self, key: [u8], value: [u8]) -> Result<(), ([u8], [u8], ErrorCode)>;
+
+    /// Remove a key-value object from the store.
+    fn delete(&self, key: [u8]) -> Result<(), ([u8], ErrorCode)>;
 }
 ```
 
-(You can find the full definition in `tock/kernel/src/hil/kv_system.rs`.)
+(You can find the full definition in `tock/kernel/src/hil/kv.rs`.)
 
-In terms of TicKV, the `KVSystem` interface only uses the TicKV header. The Tock
-header is only used in the upper level API.
+To enable access control, we layer an additional KV interface on top of the `KV`
+interface.
 
 ```rust
-pub trait KVStore {
-    /// Get key-value object.
-    pub fn get(&self, key: [u8], value: [u8], perms: StoragePermissions) -> Result<(), (buffer, buffer, ErrorCode)>;
+pub trait KVPermissions {
+    /// Retrieve a value from the store.
+    fn get(&self, key: [u8], value: [u8], permissions: Perm) -> Result<(), ([u8], [u8], ErrorCode)>;
 
-    /// Set or update a key-value object.
-    pub fn set(&self, key: [u8], value: [u8], perms: StoragePermissions) -> Result<(), (buffer, buffer, ErrorCode)>;
+    /// Insert a key-value object into the store. Overwrite if needed.
+    fn set(&self, key: [u8], value: [u8], permissions: Perm) -> Result<(), ([u8], [u8], ErrorCode)>;
 
-    /// Delete a key-value object.
-    pub fn delete(&self, key: [u8], perms: StoragePermissions) -> Result<(), (buffer, ErrorCode)>;
+    /// Insert a key-value object into the store if it doesn't exist.
+    fn add(&self, key: [u8], value: [u8], permissions: Perm) -> Result<(), ([u8], [u8], ErrorCode)>;
+
+    /// Modify a key-value object into the store if it already exists.
+    fn update(&self, key: [u8], value: [u8], permissions: Perm) -> Result<(), ([u8], [u8], ErrorCode)>;
+
+    /// Remove a key-value object from the store.
+    fn delete(&self, key: [u8], permissions: Perm) -> Result<(), ([u8], ErrorCode)>;
 }
 ```
 
-As you can see, each of these APIs requires a `StoragePermissions` so the
-capsule can verify that the requestor has access to the given K-V object.
+As you can see, each of these APIs requires a permission so the capsule can
+verify that the requestor has access to the given K-V object. We use the TicKV
+on Tock storage format to store permissions to verify later queries.
 
 ## Key-Value in Userspace
 
 Userspace applications have access to the K-V store via the `kv_driver.rs`
 capsule. This capsule provides an interface for applications to use the upper
-layer get-set-delete API.
+layer get-set-add-update-delete API.
 
 However, applications need permission to use persistent storage. This is granted
 via headers in the TBF header for the application.
