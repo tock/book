@@ -44,6 +44,7 @@ Tock OS Course
   - [Kernel Tests](./development/tests.md)
   - [Component](./development/component.md)
   - [Optimize Code Size](./development/code_size.md)
+  - [Porting Tock](./development/porting.md)
 
 - [Kernel Documentation](./doc/index.md)
 
