@@ -63,3 +63,4 @@ Tock OS Course
     - [Startup](./doc/startup.md)
     - [Tock Binary Format](./doc/tock_binary_format.md)
   - [Process Console](./doc/pconsole.md)
+  - [Bluetooth Low Energy (BLE)](./doc/ble.md)
