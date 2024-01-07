@@ -32,6 +32,7 @@
     - [Access Control](./key-hotp-access.md)
   - [Thread Smart Sensor](./sensor-overview.md)
     - [Environmental App](./application.md)
+    - [Thread Device](./thread-device.md)
   - [Kernel Boot](./boot.md)
   - [Policies](./policies.md)
   - [TicKV](./tickv.md)
