@@ -61,3 +61,4 @@ Tock OS Course
     - [Mutable References](./doc/mutable_references.md)
     - [Processes](./doc/processes.md)
     - [Tock Binary Format](./doc/tock_binary_format.md)
+  - [Process Console](./doc/pconsole.md)
