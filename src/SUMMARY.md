@@ -56,5 +56,6 @@ Tock OS Course
     - [Kernel Configuration](./doc/configuration.md)
     - [Kernel Attributes](./doc/kernel_attributes.md)
     - [Memory Layout](./doc/memory_layout.md)
+    - [Mutable References](./doc/mutable_references.md)
     - [Processes](./doc/processes.md)
     - [Tock Binary Format](./doc/tock_binary_format.md)
