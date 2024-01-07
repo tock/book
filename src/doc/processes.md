@@ -161,7 +161,10 @@ following signature:
 void _start(void* text_start, void* mem_start, void* memory_len, void* app_heap_break);
 ```
 
-## Process Memory
+## Process RAM and Flash Memory
+
+The actual process binary and TBF header are stored in nonvolatile flash. This
+flash region is fixed when the application is installed.
 
 When a process is loaded by the kernel, the process is assigned a fixed,
 contiguous region of memory in RAM. This is the entire amount of memory the
@@ -169,6 +172,11 @@ process can use during its entire lifetime. This region includes the typical
 memory regions for a process (i.e. stack, data, and heap), but also includes the
 kernel's grant region for the process and the
 [process control block](https://en.wikipedia.org/wiki/Process_control_block).
+
+Process RAM is memory space divided between all running apps. The figure below
+shows the memory space of a process.
+
+![Process' RAM](../imgs/processram.png)
 
 The Tock kernel tries to impart no requirements on how a process uses its own
 accessible memory. As such, a process starts in a very minimal environment, with
@@ -199,15 +207,46 @@ RV32I platforms this is the PMP (or ePMP).
 
 Before doing a context switch to a process the kernel configures the memory
 protection unit for that process. Only the memory regions assigned to the
-process are set as accessible. For the process's RAM region, the kernel
-maintains a brk pointer and only gives the process access to its memory region
-below that brk pointer. Processes can use the memop syscall to increase the brk
-pointer.
+process are set as accessible.
+
+#### Flash Isolation
+
+Processes cannot access arbitrary addresses in flash, including bootloader and
+kernel code. They are also prohibited from reading or writing the nonvolatile
+regions of other processes.
+
+Processes do have access to their own memory in flash. Certain regions,
+including their Tock Binary Format (TBF) header and a protected region after the
+header, are read-only, as the kernel must be able to ensure the integrity of the
+header. In particular, the kernel needs to know the total size of the app to
+find the next app in flash. The kernel may also wish to store nonvolatile
+information about the app (e.g. how many times it has entered a failure state)
+that the app should not be able to alter.
+
+The remainder of the app, and in particular the actual code of the app, is
+considered to be owned by the app. The app can read the flash to execute its own
+code. If the MCU uses flash for its nonvolatile memory the app can not likely
+directly modify its own flash region, as flash typically requires some hardware
+peripheral interaction to erase or write flash. In this case, the app would
+require kernel support to modify its flash region.
+
+#### RAM Isolation
+
+For the process's RAM region, the kernel maintains a brk pointer and gives the
+process full access to only its memory region below that brk pointer. Processes
+can use the `Memop` syscall to increase the brk pointer. `Memop` syscalls can
+also be used by the process to inform the kernel of where it has placed its
+stack and heap, but these are entirely used for debugging. The kernel does not
+need to know how the process has organized its memory for normal operation.
 
 All kernel-owned data on behalf of a process (i.e. grant and PCB) is stored at
 the top (i.e. highest addresses) of the process's memory region. Processes are
 never given any access to this memory, even though it is within the process's
 allocated memory region.
+
+Processes can choose to explicitly share portions of their RAM with the kernel
+through the use of `Allow` syscalls. This gives capsules read/write access to
+the process's memory for use with a specific capsule operation.
 
 ## Debugging
 
