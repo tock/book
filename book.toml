@@ -13,3 +13,5 @@ additional-js  = ["theme/pagetoc.js"]
 
 [output.linkcheck]
 optional = true
+
+[preprocessor.webinclude]
