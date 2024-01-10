@@ -109,15 +109,7 @@ check_mdbook_pagetoc:
 # mdbook-chapter-list doesn't support the version flag
 CHAPTERLIST_FILENAME := mdbook-chapter-list-v$(MDBOOK_CHAPTERLIST_VERSION)-x86_64-unknown-linux-gnu.tar.gz
 install_mdbook_chapterlist:
-ifndef CI
 	cargo install mdbook-chapter-list --version $(MDBOOK_CHAPTERLIST_VERSION)
-else
-	rm -f $(CHAPTERLIST_FILENAME)
-	curl -L https://github.com/bradjc/mdbook-chapter-list/releases/download/v$(MDBOOK_CHAPTERLIST_VERSION)/$(CHAPTERLIST_FILENAME) -O
-	tar -xzf $(CHAPTERLIST_FILENAME)
-	chmod +x mdbook-chapter-list
-	rm $(CHAPTERLIST_FILENAME)
-endif
 
 # mdbook-chapter-list doesn't support the version flag
 check_mdbook_chapterlist:
