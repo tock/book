@@ -71,3 +71,23 @@
     - [Process Console](./doc/pconsole.md)
     - [Networking Stack](./doc/networking_stack.md)
     - [Bluetooth Low Energy (BLE)](./doc/ble.md)
+
+- [Tock Reference Documents](./trd/index.md)
+
+  - [TRD1: TRDs](./trd/trd1-trds.md)
+  - [TRD3: HIL Design](./trd/trd3-hil-design.md)
+  - [TRD4: Legal](./trd/trd4-legal.md)
+  - [TRD102: ADC](./trd/trd102-adc.md)
+  - [TRD103: GPIO](./trd/trd103-gpio.md)
+  - [TRD104: Syscalls](./trd/trd104-syscalls.md)
+  - [TRD105: Time](./trd/trd105-time.md)
+  - [TRD106: Completion Codes](./trd/trd106-completion-codes.md)
+
+  - [Drafts](./trd/incomplete.md)
+    - [TRD AppID](./trd/trd-appid.md)
+    - [TRD Digest](./trd/trd-digest.md)
+    - [TRD Public/Private Keys](./trd/trd-public-private-keys.md)
+    - [TRD Radio](./trd/trd-radio.md)
+    - [TRD SPI](./trd/trd-spi.md)
+    - [TRD UART](./trd/trd-uart.md)
+    - [TRD Userspace Read Allow](./trd/trd-userspace-readable-allow-syscalls.md)
