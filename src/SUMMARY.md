@@ -62,6 +62,7 @@ Tock OS Course
     - [Mutable References](./doc/mutable_references.md)
     - [Processes](./doc/processes.md)
     - [Startup](./doc/startup.md)
+    - [Syscalls](./doc/syscalls.md)
     - [Tock Binary Format](./doc/tock_binary_format.md)
   - [Module Documentation](./doc/modules.md)
     - [Process Console](./doc/pconsole.md)
