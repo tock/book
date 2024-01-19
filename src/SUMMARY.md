@@ -4,9 +4,7 @@ Tock OS Course
 
 [Introduction](./introduction.md)
 
-- [Hands-on Guides](./guides.md)
-
-  - [Getting Started](./getting_started.md)
+[Getting Started](./getting_started.md)
 
 - [Tock Course](./course.md)
 
