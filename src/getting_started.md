@@ -80,42 +80,33 @@ operating system install, you will need the following software:
 1.  [rustup](http://rustup.rs/). This tool helps manage installations of the
     Rust compiler and related tools.
 
-         $ curl https://sh.rustup.rs -sSf | sh
+        $ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 1.  [arm-none-eabi toolchain](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads)
-    (version >= 5.2). This enables you to compile apps written in C for Cortex-M
-    boards.
+    and riscv64-unknown-elf toolchains. This enables you to compile apps written
+    in C.
 
-         # mac
-         $ brew tap ARMmbed/homebrew-formulae && brew update && brew install ARMmbed/homebrew-formulae/arm-none-eabi-gcc
+        # mac
+        $ brew install arm-none-eabi-gcc riscv64-elf-gcc
 
-         # linux
-         $ sudo apt install gcc-arm-none-eabi
-
-1.  Optional. riscv64-unknown-elf toolchain for compiling C apps for RISC-V
-    platforms. Getting this toolchain varies platform-to-platform.
-
-         # mac
-         $ brew tap riscv/riscv && brew install riscv-gnu-toolchain --with-multilib
-
-         # linux
-         $ sudo apt install gcc-riscv64-unknown-elf
+        # linux
+        $ sudo apt install gcc-arm-none-eabi gcc-riscv64-unknown-elf
 
 1.  [tockloader](https://github.com/tock/tockloader). This is an all-in-one tool
     for programming boards and using Tock.
 
-         $ pip3 install -U --user tockloader
+        $ pip3 install -U --user tockloader
 
     > Note: On MacOS, you may need to add `tockloader` to your path. If you
     > cannot run it after installation, run the following:
 
-         $ export PATH=$HOME/Library/Python/3.9/bin/:$PATH
+        $ export PATH=$HOME/Library/Python/3.9/bin/:$PATH
 
     > Similarly, on Linux distributions, this will typically install to
     > `$HOME/.local/bin`, and you may need to add that to your `$PATH` if not
     > already present:
 
-         $ PATH=$HOME/.local/bin:$PATH
+        $ PATH=$HOME/.local/bin:$PATH
 
 ### Testing You Can Compile the Kernel
 
