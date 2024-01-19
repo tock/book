@@ -1,7 +1,5 @@
 # Summary
 
-Tock OS Course
-
 [Introduction](./introduction.md)
 
 [Getting Started](./getting_started.md)
