@@ -50,7 +50,7 @@ later.
 ## Organization and Getting Oriented to Tock
 
 This module will refer to various Tock components. This section briefly
-describes the general structure of Tock you will need to be somewhat familiar
+describes the general structure of Tock that you will need to be somewhat familiar
 with to follow the module.
 
 Using Tock consists of two main building blocks:
