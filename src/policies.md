@@ -117,7 +117,7 @@ trait to implement per-process restart policies. We will create our own
 `ProcessFaultPolicy` that implements different fault handling behavior based on
 whether the process included a hash in its credentials footer.
 
-### Custom Process Fault Policy
+## Custom Process Fault Policy
 
 A process fault policy decides what the kernel does with a process when it
 crashes (i.e. hardfaults). The policy is implemented as a Rust module that
@@ -143,6 +143,8 @@ pub enum FaultAction {
     Stop,
 }
 ```
+
+### Creating Our Process Fault Policy
 
 Let's create a custom process fault policy that restarts signed processes up to
 a configurable maximum number of times, and immediately stops unsigned
@@ -559,10 +561,10 @@ tock$ list
 And we can verify the app is both running and now has a specifically assigned
 short ID.
 
-### Implementing the Privileged Behavior
+## Implementing a Per-App Fault Policy
 
-The default operation is not quite what we want. We want all apps to run, but
-only credentialed apps to be restarted.
+The default operation of the Sha256 checker is not quite what we want. We want
+all apps to run, but only credentialed apps to be restarted.
 
 First, we need to allow all apps to run, even if they don't pass the credential
 check. Doing that is actually quite simple. We just need to modify the
@@ -618,8 +620,8 @@ impl ProcessFaultPolicy for RestartTrustedAppsFaultPolicy {
 }
 ```
 
-That's it! Now we have the full policy: we verify application credentials, and
-handle process faults accordingly.
+Now we have the full policy: we verify application credentials, and handle
+process faults accordingly.
 
 > ### Task
 >
@@ -627,3 +629,261 @@ handle process faults accordingly.
 > verify that only credentialed apps are successfully restarted.
 
 > **SUCCESS:** We now have implemented an end-to-end security policy in Tock!
+
+## Implementing a Syscall Filter
+
+Another policy the kernel can enforce is limits on which system call a process
+can call. To enable this, a board can configure the kernel with an object that
+implements `SyscallFilter` which will be called on each system call a process
+calls.
+
+The `SyscallFilter` trait looks like the following:
+
+```rust
+trait SyscallFilter {
+    /// Called on each system call to determine if it should be allowed or not.
+    fn filter_syscall(
+        &self, process: &dyn process::Process, syscall: &syscall::Syscall
+    ) -> Result<(), errorcode::ErrorCode>;
+}
+```
+
+The `filter_syscall()` returns `Ok()` if the system call is allowed, and `Err()`
+with an `ErrorCode` if not.
+
+### Syscall Filtering With TBF Headers
+
+One method for filtering system calls is to use TBF headers which restrict the
+capabilities of a process. These headers are included with the process and
+specify which commands are permitted for each system call driver number.
+
+The format of the permissions in the TBF header is as follows:
+
+```rust
+struct TbfHeaderDriverPermission {
+    driver_number: u32,
+    offset: u32,
+    allowed_commands: u64,
+}
+```
+
+Each driver number to be allowed is given its own `TbfHeaderDriverPermission`
+entry and `allowed_commands` is a bitmask of which command numbers are
+permitted.
+
+#### Enable the Filter in the Kernel
+
+To enable the kernel to filter using this header, we can use the
+`kernel::platform::TbfHeaderFilterDefaultAllow` struct to implement
+`SyscallFilter`. We must configure our kernel to use this like this:
+
+Create the filter object:
+
+```rust
+let tbf_header_filter = static_init!(
+    kernel::platform::TbfHeaderFilterDefaultAllow,
+    kernel::platform::TbfHeaderFilterDefaultAllow {}
+);
+```
+
+Add it to our `Platform` struct:
+
+```rust
+struct Platform {
+    ...
+    syscall_filter: &'static kernel::platform::TbfHeaderFilterDefaultAllow,
+}
+```
+
+Add it when we create the platform object:
+
+```rust
+let platform = Platform {
+    ...
+    syscall_filter: tbf_header_filter,
+}
+```
+
+And configure our kernel to use it:
+
+```rust
+impl KernelResources for Platform {
+    ...
+    type SyscallFilter = kernel::platform::TbfHeaderFilterDefaultAllow;
+    ...
+    fn syscall_filter(&self) -> &'static Self::SyscallFilter {
+        self.syscall_filter
+    }
+    ...
+}
+```
+
+Now compile and flash the kernel.
+
+#### Run an App with Syscall Permissions
+
+Now to test our filter we will experiment with the blink app. First, install the
+normal blink app:
+
+```
+cd libtock-c/examples/blink
+make
+tockloader install --erase
+```
+
+As expected, you should see the LEDs blinking.
+
+Now, add a TBF header permission for the LED driver. We can do this with
+tockloader. We will grant the app permission to call the LED command 0 (check if
+the LED driver is installed) but nothing else. To do this, run:
+
+```
+tockloader tbf tlv add permissions 0x00002 0
+```
+
+The arguments are:
+
+- `0x00002`: Driver number. In this case, 0x2 is the LED driver number.
+- `0`: Allow command number. We are permitting command number 0.
+
+Now install the blink app with the modified TBF header:
+
+```
+tockloader install
+```
+
+You will notice the LEDs no longer blink. This is because the kernel is denying
+the actual LED toggle command for the blink app.
+
+If you use the process console, you can see the blink app is still active and
+calling system calls:
+
+```
+tock$ list
+ PID    ShortID    Name                Quanta  Syscalls  Restarts  Grants  State
+ 0      Unique     blink                11071   2413394         0   1/16   Running
+```
+
+So it is running, it's just that its main kernel resource is being denied.
+
+> **SUCCESS:** We can now compile and modify apps to restrict their system call
+> usage.
+
+### Syscall Filtering with Short IDs
+
+Another method for filtering system calls is to implement a custom policy using
+the `SyscallFilter` trait. In this example, we will implement a filter which
+only allows one app to use the console.
+
+First, we can implement our system call filter by creating a new implementation
+of the `SyscallFilter` trait. This can be added directly in the `main.rs` file:
+
+```rust
+struct FilterConsole {}
+
+impl kernel::platform::SyscallFilter for FilterConsole {
+    fn filter_syscall(
+        &self,
+        process: &dyn process::Process,
+        syscall: &syscall::Syscall
+    ) -> Result<(), errorcode::ErrorCode> {
+        match syscall {
+            // We will just focus on command
+            syscall::Syscall::Command {
+                driver_number,
+                subdriver_number,
+                arg0: _,
+                arg1: _,
+            } => Ok(()),
+
+            _ => Ok(()),
+        }
+    }
+}
+```
+
+Now, we can check if the command is for the console, and only permit that
+command if the process's `ShortID` is a known value (in this case 1).
+
+```rust
+struct FilterConsole {}
+
+impl kernel::platform::SyscallFilter for FilterConsole {
+    fn filter_syscall(
+        &self,
+        process: &dyn process::Process,
+        syscall: &syscall::Syscall
+    ) -> Result<(), errorcode::ErrorCode> {
+        match syscall {
+            // We will just focus on command
+            syscall::Syscall::Command {
+                driver_number,
+                subdriver_number,
+                arg0: _,
+                arg1: _,
+            } => {
+                match driver_number {
+                    capsules_core::console::DRIVER_NUM => {
+                        match process.get_short_id() {
+                            kernel::process:ShortID::Fixed(1) => Ok(()),
+                            _ => Err(ErrorCode::NODEVICE)
+                        }
+                    }
+                    _ => Ok(())
+                }
+            },
+
+            _ => Ok(()),
+        }
+    }
+}
+```
+
+Now we can put our custom filter into effect:
+
+```rust
+let console_filter = static_init!(
+    FilterConsole,
+    FilterConsole {}
+);
+```
+
+Add it to our `Platform` struct:
+
+```rust
+struct Platform {
+    ...
+    syscall_filter: &'static FilterConsole,
+}
+```
+
+Add it when we create the platform object:
+
+```rust
+let platform = Platform {
+    ...
+    syscall_filter: console_filter,
+}
+```
+
+And configure our kernel to use it:
+
+```rust
+impl KernelResources for Platform {
+    ...
+    type SyscallFilter = FilterConsole;
+    ...
+    fn syscall_filter(&self) -> &'static Self::SyscallFilter {
+        self.syscall_filter
+    }
+    ...
+}
+```
+
+Now compile and flash the kernel.
+
+To test this, install two apps: `c_hello` and `tests/hello_loop`. You should see
+that only `c_hello` works because the hello_loop app does not have access to the
+console.
+
+> **SUCCESS:** You can now implement your own system call filtering policies!
