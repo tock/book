@@ -30,7 +30,8 @@ an additional keyboard to your computer and is capable of entering text.
 Tock applications look much closer to applications on traditional OSes than to
 normal embedded software. They are compiled separately from the kernel and
 loaded separately onto the hardware. They can be started or stopped individually
-and can be removed from the hardware individually. Moreover, the kernel decides which applications to run and what permissions they should be given.
+and can be removed from the hardware individually. Moreover, the kernel decides
+which applications to run and what permissions they should be given.
 
 Applications make requests to the OS kernel through system calls. Applications
 instruct the kernel using "command" system calls, and the kernel notifies
