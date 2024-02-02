@@ -2,12 +2,13 @@
 
 Our HOTP security key works by storing a number of secrets on the device, and
 using these secrets together with some _moving factor_ (e.g., a counter value or
-the current time) in an HMAC operation. This implies that our device needs some
-way to store these secrets, for instance in its internal flash.
+the current time) in an HMAC operation. To be useful, our device needs some way
+to store these secrets, for instance in its internal flash.
 
-However, storing such secrets in plaintext in ordinary flash is not particularly
-secure. For instance, many microcontrollers offer debug ports which can be used
-to gain read and write access to flash. Even if these ports can be locked down,
+However, storing such secrets in plaintext as we did in the previous submodule
+is not particularly secure. For instance, many microcontrollers offer debug
+ports which can be used to gain read and write access to flash. Even if these
+ports can be locked down,
 [such protection mechanisms have been broken in the past](https://blog.includesecurity.com/2015/11/firmware-dumping-technique-for-an-arm-cortex-m0-soc/).
 Apart from that, disallowing external flash access makes debugging and updating
 our device much more difficult.
@@ -32,7 +33,9 @@ some important concepts in Tock:
 - Tock's hardware-interface layers (HILs), which provide abstract interfaces for
   hardware or software implementations of algorithms, devices and protocols.
 
-## Capsules – Tock's Kernel Modules
+## Background
+
+### Capsules – Tock's Kernel Modules
 
 Most of Tock's functionality is implemented in the form of capsules – Tock's
 equivalent to kernel modules. Capsules are Rust modules contained in Rust crates
@@ -47,6 +50,19 @@ _correctness_ – meaning that they must not block the kernel execution for long
 periods of time, and should behave correctly according to their specifications
 and API contracts.
 
+### Capsule Directory in the Tock Repository
+
+While a single "capsule" is generally self-contained in a Rust _module_ (`.rs`
+file), these modules are again grouped into Rust crates such as `capsules/core`
+and `capsules/extra`, depending on certain policies. For instance, capsules in
+`core` have stricter requirements regarding their code quality and API
+stability. Neither `core` nor the `extra` `extra` capsules crates allow for
+external dependencies (outside of the Tock repository).
+[The document on external dependencies](https://github.com/tock/tock/blob/master/doc/ExternalDependencies.md)
+further explains these policies.
+
+## Developing the Encryption Oracle
+
 We start our encryption oracle driver by creating a new capsule called
 `encryption_oracle`. Create a file under
 `capsules/extra/src/tutorials/encryption_oracle.rs` in the Tock kernel
@@ -55,7 +71,7 @@ repository with the following contents:
 ```rust
 // Licensed under the Apache License, Version 2.0 or the MIT License.
 // SPDX-License-Identifier: Apache-2.0 OR MIT
-// Copyright Tock Contributors 2022.
+// Copyright Tock Contributors 2024.
 
 pub static KEY: &'static [u8; kernel::hil::symmetric_encryption::AES128_KEY_SIZE] =
     b"InsecureAESKey12";
@@ -71,8 +87,9 @@ impl EncryptionOracleDriver {
 
 ```
 
-We will be filling this module with more interesting contents soon. To make this
-capsule accessible to other Rust modules and crates, add it to
+This is the basic skeleton for a Tock capsule.
+
+To make this capsule accessible to other Rust modules and crates, add it to
 `capsules/extra/src/tutorials/mod.rs`:
 
 ```diff
@@ -92,16 +109,7 @@ checkpoints through blocks such as the following:
 
 > **CHECKPOINT:** `encryption_oracle_chkpt0.rs`
 
-> **BACKGROUND:** While a single "capsule" is generally self-contained in a Rust
-> _module_ (`.rs` file), these modules are again grouped into Rust crates such
-> as `capsules/core` and `capsules/extra`, depending on certain policies. For
-> instance, capsules in `core` have stricter requirements regarding their code
-> quality and API stability. Neither `core` nor the `extra` `extra` capsules
-> crates allow for external dependencies (outside of the Tock repository).
-> [The document on external dependencies](https://github.com/tock/tock/blob/master/doc/ExternalDependencies.md)
-> further explains these policies.
-
-## Userspace Drivers
+### Userspace Drivers
 
 Now that we have a basic capsule skeleton, we can think about how this code is
 going to interact with userspace applications. Not every capsule needs to offer
@@ -111,63 +119,41 @@ a userspace API, but those that do must implement
 Tock supports different types of application-issued systems calls, four of which
 are relevant to userspace drivers:
 
-- _subscribe_: An application can issue a _subscribe_ system call to register
-  _upcalls_, which are functions being invoked in response to certain events.
-  These upcalls are similar in concept to UNIX signal handlers. A driver can
-  request an application-provided upcall to be invoked. Every system call driver
-  can provide multiple "subscribe slots", each of which the application can
-  register a upcall to.
+- _subscribe_: Allows an application to register _upcalls_, which are functions
+  being invoked in response to certain events.
 
-- _read-only allow_: An application may expose some data for drivers to read.
-  Tock provides the _read-only allow_ system call for this purpose: an
-  application invokes this system call passing a buffer, the contents of which
-  are then made accessible to the requested driver. Every driver can have
-  multiple "allow slots", each of which the application can place a buffer in.
+- _read-only allow_: Allows an application to share a buffer with a kernel
+  module. The kernel only has read access to the buffer.
 
-- _read-write allow_: Works similarly to read-only allow, but enables drivers to
-  also mutate the application-provided buffer.
+- _read-write allow_: Same as the read-only allow, but kernel modules can also
+  mutate the application-provided buffer.
 
-- _command_: Applications can use _command_-type system calls to signal
-  arbitrary events or send requests to the userspace driver. A common use-case
-  for command-style systems calls is, for instance, to request that a driver
-  start some long-running operation.
+- _command_: Allows applications to signal arbitrary events or send requests to
+  the kernel module.
 
 All Tock system calls are synchronous, which means that they should immediately
-return to the application. In fact, _subscribe_ and _allow_-type system calls
-are transparently handled by the kernel, as we will see below. Capsules must not
-implement long-running operations by blocking on a command system call, as this
-prevents other applications or kernel routines from running – kernel code is
-never preempted.
+return to the application. Capsules must not implement long-running operations
+by blocking on a command system call.
 
-## Application Grants
+More information can be found in the
+[syscalls documentation](https://github.com/tock/tock/blob/master/doc/Syscalls.md#overview-of-system-calls-in-tock).
+
+### Application Grants
 
 Now there's just one key part missing to understanding Tock's system calls: how
-drivers store application-specific data. Tock differs significantly from other
-operating systems in this regard, which typically simply allocate some memory on
-demand through a _heap allocator_.
+kernel modules store application-specific data. To avoid using a standard heap,
+which could be exhausted and leave the kernel in an unrecoverable state, Tock
+uses _grants_. Grants are essentially regions of the application's allocated
+memory space that the kernel uses to store state on behalf of the process. This
+is distinct from an allow as the application never has access to grant data.
+More information can be found in the
+[grants documentation](https://github.com/tock/tock/blob/master/doc/Design.md#grants).
 
-However, on resource constraint platforms such as microcontrollers, allocating
-from a pool of (limited) memory can inevitably become a prominent source of
-resource exhaustion errors: once there's no more memory available, Tock wouldn't
-be able to service new allocation requests, without revoking some prior
-allocations. This is especially bad when this memory pool is shared between
-kernel resources belonging to multiple processes, as then one process could
-potentially starve another.
-
-To avoid these issues, Tock uses _grants_. A grant is a memory allocation
-belonging to a process, and is located within a process-assigned memory
-allocation, but reserved for use by the kernel. Whenever a kernel component must
-keep track of some process-related information, it can use a grant to hold this
-information. By allocating memory from a process-specific memory region it is
-impossible for one process to starve another's memory allocations, independent
-of whether those allocations are in the process itself or in the kernel. As a
-consequence, Tock can avoid implementing a kernel heap allocator entirely.
-
-Ultimately, our encryption oracle driver will need to keep track of some
-per-process state. Thus we extend the above driver with a Rust struct to be
-stored within a grant, called `App`. For now, we just keep track of whether a
-process has requested a decryption operation. Add the following code snippet to
-your capsule:
+Our encryption oracle driver will need to keep track of some per-process state.
+Thus we extend the above driver with a Rust struct to be stored within a grant,
+called `ProcessState`. For now, we just keep track of whether a process has
+requested a decryption operation. Add the following code snippet to your
+capsule:
 
 ```rust
 #[derive(Default)]
@@ -206,11 +192,11 @@ pub struct EncryptionOracleDriver {
 > argument. Afterwards, make sure your code compiles by running `cargo check` in
 > the `capsules/extra/` directory.
 
-## Implementing a System Call
+### Implementing a System Call
 
-Now that we know about grants we can start to implement a proper system call. We
-start with the basics and implement a simple _command_-type system call: upon
-request by the application, the Tock kernel will call a method in our capsule.
+Next we can start to implement a proper system call. We start with the basics
+and implement a simple _command_-type system call: upon request by the
+application, the Tock kernel will call a method in our capsule.
 
 For this, we implement the following `SyscallDriver` trait for our
 `EncryptionOracleDriver` struct. This trait contains two important methods:
@@ -314,45 +300,17 @@ sufficient memory available), we handle any errors by converting them into a
 
 > **CHECKPOINT:** `encryption_oracle_chkpt1.rs`
 
-Congratulations, you have implemented your first Tock system call! Next, we will
-look into how to to integrate this driver into a kernel build.
+Congratulations, you have implemented your first Tock system call! Next we will
+add a resource to the kernel module.
 
-## Adding a Capsule to a Tock Kernel
+### Including an AES Engine in the Driver
 
-To actually make our driver available in a given build of the kernel, we need to
-add it to a _board crate_. Board crates tie the kernel, a given _chip_, and a
-set of drivers together to create a binary build of the Tock operating system,
-which can then be loaded into a physical board. For the purposes of this
-section, we assume to be targeting the Nordic Semiconductor nRF52840DK board,
-and thus will be working in the `boards/nordic/nrf52840dk/` directory.
+Our encryption oracle will encrypt the HOTP keys before we store them to flash.
+Therefore it needs access to an encryption engine. We will use AES.
 
-> **EXERCISE:** Enter the `boards/nordic/nrf52840dk/` directory and compile a
-> kernel by typing `make`. A successful build should end with a message that
-> looks like the following:
->
->         Finished release [optimized + debuginfo] target(s) in 20.34s
->        text    data     bss     dec     hex filename
->      176132       4   33284  209420   3320c /home/tock/tock/target/thumbv7em-none-eabi/release/nrf52840dk
->     [Hash ommitted]  /home/tock/tock/target/thumbv7em-none-eabi/release/nrf52840dk.bin
-
-Applications interact with our driver by passing a "driver number" alongside
-their system calls. The `capsules/core/src/driver.rs` module acts as a registry
-for driver numbers. For the purposes of this tutorial we'll use an unassigned
-driver number in the _misc_ range, `0x99999`, and add a constant to capsule
-accordingly:
-
-```rust
-pub const DRIVER_NUM: usize = 0x99999;
-```
-
-### Accepting an AES Engine in the Driver
-
-Before we start adding our driver to the board crate, we'll modify it slightly
-to acceppt an instance of an `AES128` cryptography engine. This is to avoid
-modifying our driver's instantiation later on. We provide the
-`encryption_oracle_chkpt2.rs` checkpoint which has these changes integrated,
-feel free to use this code. We make the following mechanical changes to our
-types and constructor – don't worry about them too much right now.
+We provide the `encryption_oracle_chkpt2.rs` checkpoint which has these changes
+integrated, feel free to use this code. We make the following mechanical changes
+to our types and constructor – don't worry about them too much right now.
 
 First, we change our `EncryptionOracleDriver` struct to hold a reference to some
 generic type `A`, which must implement the `AES128` and the `AESCtr` traits:
@@ -398,16 +356,35 @@ types:
           &self,
 ```
 
-Finally, make sure that your modified capsule still compiles.
+Make sure that your modified capsule still compiles. We will actual use the AES
+engine later. Next, we will look into how to to integrate this driver into a
+kernel build.
 
 > **CHECKPOINT:** `encryption_oracle_chkpt2.rs`
 
+### Adding a Capsule to a Tock Kernel
+
+To actually make our driver available in a given build of the kernel, we need to
+assign it a number and add it to our board's main.rs.
+
+#### Specifying the Driver Number
+
+Applications interact with our driver by passing a "driver number" alongside
+their system calls. The `capsules/core/src/driver.rs` module acts as a registry
+for driver numbers. For the purposes of this tutorial we'll use an unassigned
+driver number in the _misc_ range, `0x99999`, and add a constant to capsule
+accordingly:
+
+```rust
+pub const DRIVER_NUM: usize = 0x99999;
+```
+
 ### Instantiating the System Call Driver
 
-Now, open the board's main file (`boards/nordic/nrf52840dk/src/main.rs`) and
-scroll down to the line that reads "_PLATFORM SETUP, SCHEDULER, AND START KERNEL
-LOOP_". We'll instantiate our encryption oracle driver right above that, with
-the following snippet:
+Now, open the board's main file (for example
+`boards/nordic/nrf52840dk/src/main.rs`) and scroll down to the line that reads
+"_PLATFORM SETUP, SCHEDULER, AND START KERNEL LOOP_". We'll instantiate our
+encryption oracle driver right above that, with the following snippet:
 
 ```rust
 const CRYPT_SIZE: usize = 7 * kernel::hil::symmetric_encryption::AES128_BLOCK_SIZE;
@@ -435,6 +412,10 @@ let oracle = static_init!(
 // Leave commented out for now:
 // kernel::hil::symmetric_encryption::AES128::set_client(&base_peripherals.ecb, oracle);
 ```
+
+If you are using a microcontroller other than the nRF52840, you will need to
+modify the types slightly and provide the correct reference to the AES hardware
+engine.
 
 Now that we instantiated our capsule, we need to wire it up to Tock's system
 call handling facilities. This involves two steps: first, we need to store our
@@ -504,29 +485,25 @@ build.
 > Upon receiving this system call, the capsule should print the "Received
 > request from process" message.
 
-## Interacting with HILs
+### Interacting with HILs
 
-The Tock operating system supports different hardware platforms, each featuring
-an individual set of integrated peripherals. At the same time, a driver such as
-our encryption oracle should be portable between different systems running Tock.
-To achieve this, Tock uses the concept of Hardware-Interface Layers (HILs), the
-design paradigms of which are described in
-[this document](https://github.com/tock/tock/blob/master/doc/reference/trd3-hil-design.md).
-HILs are organized as Rust modules, and can be found under the
+The Tock operating system supports multiple hardware platforms, each with
+different implementations and hardware peripherals. To provide consistent
+intefaces to kernel modules, Tock uses Hardware-Interface Layers (HILs). HILs
+can be found under the
 [`kernel/src/hil/`](https://github.com/tock/tock/tree/master/kernel/src/hil)
 directory. We will be working with the
 [`symmetric_encryption.rs` HIL](https://github.com/tock/tock/blob/master/kernel/src/hil/symmetric_encryption.rs).
+You can read more about the design paradigms of HILs in
+[this document](https://github.com/tock/tock/blob/master/doc/reference/trd3-hil-design.md).
 
 HILs capture another important concept of the Tock kernel: asynchronous
-operations. As mentioned above, Tock system calls must never block for extended
-periods of time, as kernel code is not preempted. Blocking in the kernel
-prevents other useful being done. Instead, long-running operations in the Tock
-kernel are implemented as asynchronous _two-phase_ operations: one function call
-on the underlying implementation (e.g., of our AES engine) starts an operation,
-and another function call (issued by the underlying implementation, hence named
-_callback_) informs the driver that the operation has completed. You can see
-this paradigm embedded in all of Tock's HILs, including the
-`symmetric_encryption` HIL: the
+operations. Operations in the Tock kernel are implemented as asynchronous
+_two-phase_ operations: one function call on the underlying implementation
+(e.g., of our AES engine) starts an operation, and another function call (issued
+by the underlying implementation) informs the driver that the operation has
+completed. You can see this paradigm embedded in all of Tock's HILs, including
+the `symmetric_encryption` HIL: the
 [`crypt()` method](https://github.com/tock/tock/blob/75af40ea947dfab3c1db57a04ca6273fde895a3a/kernel/src/hil/symmetric_encryption.rs#L84)
 is specified to return immediately (and return a `Some(_)` in case of an error).
 When the requested operation is finished, the implementor of `AES128` will call
@@ -535,13 +512,13 @@ the
 on the _client_ registered with
 [`set_client()`](https://github.com/tock/tock/blob/75af40ea947dfab3c1db57a04ca6273fde895a3a/kernel/src/hil/symmetric_encryption.rs#L31).
 
-The below figure illustates the way asynchronous operations are handled in Tock,
-using our encryption oracle capsule as an example. One further detail
+The below figure illustrates the way asynchronous operations are handled in
+Tock, using our encryption oracle capsule as an example. One further detail
 illustrated in this figure is the fact that providers of a given interface
 (e.g., `AES128`) may not always be able to perform a large user-space operation
 in a single call; this may be because of hardware-limitations, limited buffer
 allocations, or to avoid blocking the kernel for too long in
-software-implentations. In this case, a userspace-operation is broken up into
+software-implementations. In this case, a userspace-operation is broken up into
 multiple smaller operations on the underlying provider, and the next
 sub-operation is scheduled once a callback has been received:
 
@@ -562,7 +539,7 @@ impl<'a, A: AES128<'a> + AES128Ctr> Client<'a> for EncryptionOracleDriver<'a, A>
 
 With this trait implemented, we can wire up the `oracle` driver instance to
 receive callbacks from the AES engine (`base_peripherals.ecb`) by uncommenting
-the following line in `boards/nordic/nrf52840dk/src/main.rs`:
+the following line in `main.rs`:
 
 ```diff
 - // Leave commented out for now:
@@ -575,16 +552,15 @@ AES hardware that an operation has finished, and it will thus refuse to start
 any new operation. This is an easy mistake to make – you should check whether
 all callbacks are set up correctly when the kernel is in such a _stuck_ state.
 
-### Multiplexing Between Processes
+#### Multiplexing Between Processes
 
 While our underlying `AES128` implementation can only handle one request at a
 time, multiple processes may wish to use this driver. Thus our capsule
-implements a queueing system: even when another process is already using our
-capsule to decrypt some ciphertext, another process can still initate such a
-request. We remember these requests through the `request_pending` flag in our
-`ProcessState` grant, and we've already implemented the logic to set this flag!
+implements a queueing system: if our capsule is busy, another process can still
+mark a request which will set the `request_pending` flag in our `ProcessState`
+grant. Even better, we've already implemented the logic to set this flag!
 
-Now, to actually implement our asynchronous decryption operation, it is further
+Now, to actually implement our asynchronous decryption operation, it is
 important to keep track of which process' request we are currently working on.
 We add an additional state field to our `EncryptionOracleDriver` holding an
 [`OptionalCell`](https://docs.tockos.org/kernel/utilities/cells/struct.optionalcell):
@@ -636,13 +612,13 @@ fn next_pending(&self) -> Option<ProcessId> {
 > Hint: to interact with the `ProcessState` of every processes, you can use the
 > [`iter` method on a `Grant`](https://docs.tockos.org/kernel/grant/struct.grant#method.iter):
 > the returned `Iter` type then has an `enter` method access the contents of an
-> invidiual process' grant.
+> individual process' grant.
 
 > **CHECKPOINT:** `encryption_oracle_chkpt3.rs`
 
-### Interacting with Process Buffers and Scheduling Upcalls
+#### Interacting with Process Buffers and Scheduling Upcalls
 
-For our encryption oracle, it is important to allow users provide buffers
+For our encryption oracle, it is important to allow users to provide buffers
 containing the encryption _initialization vector_ (to prevent an attacker from
 inferring relationships between messages encrypted with the same key), and the
 plaintext or ciphertext to encrypt and decrypt respectively. Furthermore,
