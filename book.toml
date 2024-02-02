@@ -9,5 +9,7 @@ title = "The Tock Book"
 additional-css = ["theme/pagetoc.css", "theme/pagetoc-tock.css"]
 additional-js  = ["theme/pagetoc.js"]
 
+[preprocessor.chapter-list]
+
 [output.linkcheck]
 optional = true

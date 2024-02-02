@@ -15,6 +15,7 @@ SHELL = /usr/bin/env bash
 MDBOOK_VERSION := 0.4.32
 MDBOOK_LINKCHECK_VERSION := 0.7.7
 MDBOOK_PAGETOC_VERSION := 0.1.7
+MDBOOK_CHAPTERLIST_VERSION := 0.1.0
 PRETTIER_VERSION := 3.0.0
 
 # For CI, use local install; for normal users system install
@@ -24,6 +25,7 @@ Q := @
 MDBOOK := mdbook
 MDBOOK_LINKCHECK := mdbook-linkcheck
 MDBOOK_PAGETOC := mdbook-pagetoc
+MDBOOK_CHAPTERLIST := mdbook-chapter-list
 PRETTIER := prettier
 else
 $(info *** Running in CI environment ***)
@@ -31,6 +33,7 @@ Q :=
 MDBOOK := mdbook
 MDBOOK_LINKCHECK := mdbook-linkcheck
 MDBOOK_PAGETOC := mdbook-pagetoc
+MDBOOK_CHAPTERLIST := mdbook-chapter-list
 PRETTIER := prettier
 export TERM := dumb
 # Allow local installs
@@ -38,7 +41,7 @@ export PATH := $(PATH):$(CURDIR)
 endif
 
 # The only thing we really want to do is build
-all:	check_mdbook check_mdbook_linkcheck check_mdbook_pagetoc check_prettier
+all:	check_mdbook check_mdbook_linkcheck check_mdbook_pagetoc check_mdbook_chapterlist check_prettier
 	@echo $$(tput bold)All required tools installed with correct version.$$(tput sgr0)
 	$(Q)$(PRETTIER) --check --prose-wrap always '**/*.md' || (echo $$(tput bold)$$(tput setaf 1)Source formatting errors.; echo Run \"make pretty\" to fix automatically.; echo Warning: will overwrite files in-place.$$(tput sgr0); exit 1)
 	@echo $$(tput bold)Source file formatting correct.$$(tput sgr0)
@@ -101,6 +104,16 @@ check_mdbook_pagetoc:
 	$(Q)$(MDBOOK_PAGETOC) --help > /dev/null || $(MAKE) install_mdbook_pagetoc
 	@#$(Q)[[ $$($(MDBOOK_PAGETOC) --version | cut -d' ' -f2) == '$(MDBOOK_PAGETOC_VERSION)' ]] || $(MAKE) install_mdbook_pagetoc
 	@#$(Q)$(MDBOOK_PAGETOC) --version || $(MAKE) install_mdbook_pagetoc
+
+
+# mdbook-chapter-list doesn't support the version flag
+CHAPTERLIST_FILENAME := mdbook-chapter-list-v$(MDBOOK_CHAPTERLIST_VERSION)-x86_64-unknown-linux-gnu.tar.gz
+install_mdbook_chapterlist:
+	cargo install mdbook-chapter-list --version $(MDBOOK_CHAPTERLIST_VERSION)
+
+# mdbook-chapter-list doesn't support the version flag
+check_mdbook_chapterlist:
+	$(Q)$(MDBOOK_CHAPTERLIST) --help > /dev/null || $(MAKE) install_mdbook_chapterlist
 
 
 
