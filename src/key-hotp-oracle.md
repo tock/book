@@ -490,7 +490,7 @@ build.
 The Tock operating system supports multiple hardware platforms, each with
 different implementations and hardware peripherals. To provide consistent
 intefaces to kernel modules, Tock uses Hardware-Interface Layers (HILs). HILs
-are can be found under the
+can be found under the
 [`kernel/src/hil/`](https://github.com/tock/tock/tree/master/kernel/src/hil)
 directory. We will be working with the
 [`symmetric_encryption.rs` HIL](https://github.com/tock/tock/blob/master/kernel/src/hil/symmetric_encryption.rs).
