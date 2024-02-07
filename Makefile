@@ -2,12 +2,12 @@
 # tool of install and run steps. It uses recursive
 # make rules to make maintenance easy.
 .NOTPARALLEL: all pretty
-.NOTPARALLEL: check_mdbook check_mdbook_linkcheck check_mdbook_pagetoc check_prettier check_mdbook_webinclude
-.NOTPARALLEL: install_mdbook install_mdbook_linkcheck install_mdbook_pagetoc install_prettier install_mdbook_webinclude
+.NOTPARALLEL: check_mdbook check_mdbook_linkcheck check_mdbook_pagetoc check_prettier check_mdbook_webinclude check_mdbook_chapterlist
+.NOTPARALLEL: install_mdbook install_mdbook_linkcheck install_mdbook_pagetoc install_prettier install_mdbook_webinclude install_mdbook_chapterlist
 
 .PHONY: all pretty
-.PHONY: check_mdbook check_mdbook_linkcheck check_mdbook_pagetoc check_prettier check_mdbook_webinclude
-.PHONY: install_mdbook install_mdbook_linkcheck install_mdbook_pagetoc install_prettier check_mdbook_webinclude
+.PHONY: check_mdbook check_mdbook_linkcheck check_mdbook_pagetoc check_prettier check_mdbook_webinclude check_mdbook_chapterlist
+.PHONY: install_mdbook install_mdbook_linkcheck install_mdbook_pagetoc install_prettier check_mdbook_webinclude install_mdbook_chapterlist
 
 SHELL = /usr/bin/env bash
 
@@ -42,7 +42,7 @@ export PATH := $(PATH):$(CURDIR)
 endif
 
 # The only thing we really want to do is build
-all:	check_mdbook check_mdbook_linkcheck check_mdbook_webinclude check_mdbook_pagetoc check_prettier
+all:	check_mdbook check_mdbook_linkcheck check_mdbook_webinclude check_mdbook_pagetoc check_prettier check_mdbook_chapterlist
 	@echo $$(tput bold)All required tools installed with correct version.$$(tput sgr0)
 	$(Q)$(PRETTIER) --check --prose-wrap always '**/*.md' || (echo $$(tput bold)$$(tput setaf 1)Source formatting errors.; echo Run \"make pretty\" to fix automatically.; echo Warning: will overwrite files in-place.$$(tput sgr0); exit 1)
 	@echo $$(tput bold)Source file formatting correct.$$(tput sgr0)
