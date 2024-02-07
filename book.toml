@@ -13,3 +13,6 @@ additional-js  = ["theme/pagetoc.js"]
 
 [output.linkcheck]
 optional = true
+exclude = [ '.*trd.*', 'TockBinaryFormat', '.*spdx.*', '.*CommandZeroSemantics.*' ]
+
+[preprocessor.webinclude]
