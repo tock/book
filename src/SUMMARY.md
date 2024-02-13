@@ -14,6 +14,7 @@
     - [Encryption Oracle Capsule](./key-hotp-oracle.md)
     - [Access Control](./key-hotp-access.md)
     - [Security Key Demo](./key-hotp-demo.md)
+  - [Soil Moisture Sensor](./soil-moisture.md)
   - [Kernel Boot](./boot.md)
   - [Policies](./policies.md)
   - [TicKV](./tickv.md)
