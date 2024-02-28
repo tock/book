@@ -31,6 +31,7 @@ The high-level steps required are:
 2. Create a struct that holds all of the resources and configuration necessary
    for the capsules.
 3. Implement `finalize()` to initialize memory and perform setup.
+4. Define a helper type for using components in boards.
 
 ## Step-by-Step Guide
 
@@ -116,8 +117,8 @@ The steps from the overview are elaborated on here.
 
 3. **Implement `finalize()` to initialize memory and perform setup.**
 
-   The last step is to implement the `Component` trait and the `finalize()`
-   method to actually setup the capsule.
+   The last major step is to implement the `Component` trait and the
+   `finalize()` method to actually setup the capsule.
 
    The general format looks like:
 
@@ -184,6 +185,20 @@ The steps from the overview are elaborated on here.
    in the delay value to use. Lastly, we return a reference to the actual
    notifier driver object.
 
+4. **Define a helper type for using components in boards.**
+
+   Finally, we define a helper type which simplifies using components in boards'
+   main.rs files.
+
+   This type is named to match the component struct and matches the output type
+   of the component. In our case this looks like:
+
+   ```rust
+   pub struct NotifierDriverType<A> = capsules_extra::notifier::NotifierDriver<'static, A>;
+   ```
+
+   This should be placed right above the component struct definition.
+
 ## Summary
 
 Our full component looks like:
@@ -208,6 +223,8 @@ macro_rules! notifier_driver_component_static {
         (notifier_buffer, notifier_driver)
     };};
 }
+
+pub struct NotifierDriverType<A> = capsules_extra::notifier::NotifierDriver<'static, A>;
 
 pub struct NotifierDriverComponent<A: 'static + time::Alarm<'static>> {
     board_kernel: &'static kernel::Kernel,
@@ -264,6 +281,8 @@ impl<A: 'static + time::Alarm<'static>> Component for AlarmDriverComponent<A> {
 In a board's main.rs file to use the component:
 
 ```rust
+type NotifierDriver = components::notifier::NotifierDriverType<nrf52840::rtc::Rtc>;
+
 let notifier = components::notifier::NotifierDriverComponent::new(
     board_kernel,
     capsules_core::notifier::DRIVER_NUM,

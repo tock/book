@@ -141,6 +141,51 @@ As you can see, each of these APIs requires a permission so the capsule can
 verify that the requestor has access to the given K-V object. We use the TicKV
 on Tock storage format to store permissions to verify later queries.
 
+## Key-Value Stack in Tock
+
+The KV stack is structured as the following:
+
+```
++============================================================+
+||                        Userspace                         ||
++============================================================+
+
+----------------------Syscall Interface-----------------------
+
++------------------------------------------------------------+
+|  KV Driver                         (capsules/kv_driver.rs) |
++------------------------------------------------------------+
+
+  hil::kv::KVPermissions
+
++------------------------------------------------------------+
+| Virtualizer                       (capsules/virtual_kv.rs) |
++------------------------------------------------------------+
+
+  hil::kv::KVPermissions
+
++------------------------------------------------------------+
+|  K-V store Permissions  (capsules/kv_store_permissions.rs) |
++------------------------------------------------------------+
+
+  hil::kv::KV
+
++------------------------------------------------------------+
+|  TickVKVStore                 (capsules/tickv_kv_store.rs) |
++------------------------------------------------------------+
+
+  capsules::tickv::KVSystem
+
++------------------------------------------------------------+
+|  TicKV                                 (capsules/tickv.rs) |
++------------------------------------------------------------+
+     |             |
+ hil::flash        |
+             +-----------------+
+             | libraries/tickv |
+             +-----------------+
+```
+
 ## Key-Value in Userspace
 
 Userspace applications have access to the K-V store via the `kv_driver.rs`

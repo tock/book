@@ -1,9 +1,10 @@
 # Security Key Application Access Control
 
-With security-focused and privileged system resources, a board may wish to
-restrict which applications can access which system call resources. In this
-stage we will extend the Tock kernel to restrict access to the encryption
-capsule to only trusted (credentialed) apps.
+At this point we have a fully-featured HOTP USB security key implementation.
+However, the kernel APIs that enable this are exposed to any application running
+on the system. In this submodule, we will use additional features of the Tock
+kernel to restrict access to the encryption capsule to only trusted
+(credentialed) apps.
 
 ## Background
 
@@ -335,7 +336,6 @@ pub trait SyscallFilter {
         Ok(())
     }
 }
-
 ```
 
 We need to implement the single `filter_syscall()` function with out desired
