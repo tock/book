@@ -259,7 +259,11 @@ implementations.
            }
            debug!("Starting receive of length {}", rx_len);
            let (err, _opt) = self.device.receive_buffer(rx_buffer, rx_len);
-           if err != ReturnCode::SUCCESS {
+           if err == ReturnCode::SUCCESS {
+               self.client.map(|client| {
+                   client.done(Ok(()));
+               });
+           } else {
                debug!(
                    "Calling receive_buffer() in virtual_uart test failed: {:?}",
                    err
