@@ -23,7 +23,7 @@ that you wish to test from within the kernel.
 The general steps you will follow are:
 
 1. Determine the board(s) you want to run your tests on
-2. Add a test file in `boards/{board}/src/`
+2. Add a test file in `boards/{board}/src/tests/`
 3. Determine where to write actual tests -- in the test file or a capsule test
 4. Write your tests
 5. Call the test from `main.rs`
@@ -72,13 +72,12 @@ The steps from the overview are elaborated on here.
    **Checkpoint**: You have identified the board you will implement your test
    for.
 
-2. **Add a test file in `boards/{board}/src/`**
+2. **Add a test file in `boards/{board}/src/tests/`**
 
    To start implementing the test, you should create a new source file inside
-   the `boards/{board}/src` directory. For boards with lots of tests, like the
-   Imix board, there may be a `tests` subdirectory -- if so, the test should go
-   in `tests` instead, and be added to the `tests/mod.rs` file. The name of this
-   test file generally should indicate the functionality being tested.
+   the `boards/{board}/src/tests` directory and add the file to the
+   `tests/mod.rs` file. The name of this test file generally should indicate the
+   functionality being tested.
 
    > Note: If the board you select is one of the nrf52dk variants
    > (nrf52840_dongle, nrf52840dk, or nrf52dk), tests should be moved into the
@@ -109,13 +108,13 @@ The steps from the overview are elaborated on here.
      devices and a capsule for the `virtual_uart`)
    - Alarm test (all boards will have some form of hardware alarm, there is an
      Alarm HIL)
-   - Other examples: see `capsules/src/test`
+   - Other examples: see `capsules/core/src/test`
 
    If your test meets the criteria for writing a capsule test, follow these
    steps:
 
-   Add a file in `capsules/src/test/`, and then add the filename to
-   `capsules/src/mod.rs` like this:
+   Add a file in `capsules/extra/src/test/`, and then add the filename to
+   `capsules/extra/src/mod.rs` like this:
 
    ```rust
    pub mod virtual_uart;
@@ -124,7 +123,10 @@ The steps from the overview are elaborated on here.
    Next, create a test struct in this file that can be instantiated by any board
    using this test capsule. This struct should implement a `new()` function so
    it can be instantiated from the test file in `boards`, and a `run()` function
-   that will run the actual tests. An example for UART follows:
+   that will run the actual tests. The test should implement `CapsuleTest` and
+   hold a `CapsuleTestClient` to notify when the test has finished.
+
+   An example for UART follows:
 
    ```rust
    //! capsules/src/test/virtual_uart.rs
@@ -132,6 +134,7 @@ The steps from the overview are elaborated on here.
    pub struct TestVirtualUartReceive {
        device: &'static UartDevice<'static>,
        buffer: TakeCell<'static, [u8]>,
+       client: OptionalCell<&'static dyn CapsuleTestClient>,
    }
 
    impl TestVirtualUartReceive {
@@ -139,6 +142,7 @@ The steps from the overview are elaborated on here.
            TestVirtualUartReceive {
                device: device,
                buffer: TakeCell::new(buffer),
+               client: OptionalCell::empty(),
            }
        }
 
@@ -146,53 +150,59 @@ The steps from the overview are elaborated on here.
            // TODO: See Next Step
        }
    }
-   ```
 
-   If your test does not meet the above requirements, you can simply implement
-   your tests in the file that you created in step 2. This can involve creating
-   a test structure with test methods. The UDP test file takes this approach, by
-   defining a number of self-contained tests. One such example follows:
-
-   ```rust
-   //! boards/imix/src/test/udp_lowpan_test.rs
-
-   pub struct LowpanTest {
-       port_table: &'static UdpPortManager,
-       // ...
-   }
-
-   impl LowpanTest {
-
-       // This test ensures that an app and capsule cant bind to the same port
-       // but can bind to different ports
-       fn bind_test(&self) {
-           let create_cap = create_capability!(NetworkCapabilityCreationCapability);
-           let net_cap = unsafe {
-               static_init!(
-                   NetworkCapability,
-                   NetworkCapability::new(AddrRange::Any, PortRange::Any, PortRange::Any, &create_cap)
-               )
-           };
-           let mut socket1 = self.port_table.create_socket().unwrap();
-           // Attempt to bind to a port that has already been bound by an app.
-           let result = self.port_table.bind(socket1, 1000, net_cap);
-           assert!(result.is_err());
-           socket1 = result.unwrap_err(); // Get the socket back
-
-           //now bind to an open port
-           let (_send_bind, _recv_bind) = self
-               .port_table
-               .bind(socket1, 1001, net_cap)
-               .expect("UDP Bind fail");
-
-           debug!("bind_test passed");
+   impl CapsuleTest for TestVirtualUartReceive {
+       fn set_client(&self, client: &'static dyn CapsuleTestClient) {
+           self.client.set(client);
        }
-       // ...
    }
    ```
 
-   **Checkpoint**: There is a test capsule with `new()` and `run()`
-   implementations.
+If your test does not meet the above requirements, you can simply implement your
+tests in the file that you created in step 2. This can involve creating a test
+structure with test methods. The UDP test file takes this approach, by defining
+a number of self-contained tests. One such example follows:
+
+```rust
+//! boards/imix/src/test/udp_lowpan_test.rs
+
+pub struct LowpanTest {
+    port_table: &'static UdpPortManager,
+    // ...
+}
+
+impl LowpanTest {
+
+    // This test ensures that an app and capsule cant bind to the same port
+    // but can bind to different ports
+    fn bind_test(&self) {
+        let create_cap = create_capability!(NetworkCapabilityCreationCapability);
+        let net_cap = unsafe {
+            static_init!(
+                NetworkCapability,
+                NetworkCapability::new(AddrRange::Any, PortRange::Any, PortRange::Any, &create_cap)
+            )
+        };
+        let mut socket1 = self.port_table.create_socket().unwrap();
+        // Attempt to bind to a port that has already been bound by an app.
+        let result = self.port_table.bind(socket1, 1000, net_cap);
+        assert!(result.is_err());
+        socket1 = result.unwrap_err(); // Get the socket back
+
+        //now bind to an open port
+        let (_send_bind, _recv_bind) = self
+            .port_table
+            .bind(socket1, 1001, net_cap)
+            .expect("UDP Bind fail");
+
+        debug!("bind_test passed");
+    }
+    // ...
+}
+```
+
+**Checkpoint**: There is a test capsule with `new()` and `run()`
+implementations.
 
 4. **Write your tests**
 
@@ -207,6 +217,11 @@ The steps from the overview are elaborated on here.
    the results of asynchronous operations. Our UART example requires
    implementing the `uart::RecieveClient` on the test struct.
 
+   When finished, the test should call the `CapsuleTestClient` with the result
+   (pass/fail) of the test. If the test succeed, the callback should be passed
+   `Ok(())`. If the test failed, the callback should be called with
+   `Err(CapsuleTestError)`.
+
    ```rust
    //! boards/imix/src/test/virtual_uart_rx_test.rs
 
@@ -219,10 +234,13 @@ The steps from the overview are elaborated on here.
            debug!("Starting receive of length {}", len);
            let (err, _opt) = self.device.receive_buffer(buf, len);
            if err != ReturnCode::SUCCESS {
-               panic!(
+               debug!(
                    "Calling receive_buffer() in virtual_uart test failed: {:?}",
                    err
                );
+               self.client.map(|client| {
+                   client.done(Err(CapsuleTestError::ErrorCode(ErrorCode::FAIL)));
+               });
            }
        }
    }
@@ -241,22 +259,22 @@ The steps from the overview are elaborated on here.
            }
            debug!("Starting receive of length {}", rx_len);
            let (err, _opt) = self.device.receive_buffer(rx_buffer, rx_len);
-           if err != ReturnCode::SUCCESS {
-               panic!(
+           if err == ReturnCode::SUCCESS {
+               self.client.map(|client| {
+                   client.done(Ok(()));
+               });
+           } else {
+               debug!(
                    "Calling receive_buffer() in virtual_uart test failed: {:?}",
                    err
                );
+               self.client.map(|client| {
+                   client.done(Err(CapsuleTestError::ErrorCode(ErrorCode::FAIL)));
+               });
            }
        }
    }
    ```
-
-   > Note that the above test calls `panic!()` in the case of failure. This
-   > pattern, or the similar use of `assert!()` statements, is the preferred way
-   > to communicate test failures. If communicating errors in this way is not
-   > possible, tests can indicate success/failure by printing different results
-   > to the console in each case and asking users to verify the actual output
-   > matches the expected output.
 
    The next step in this process is determining all of the parameters that need
    to be passed to the test. It is preferred that all logically related tests be
