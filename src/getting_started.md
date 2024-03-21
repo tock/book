@@ -73,6 +73,9 @@ operating system install, you will need the following software:
 1.  Command line utilities: `curl`, `make`, `git`, `python` (version 3) and
     `pip3`.
 
+        # Ubuntu
+        $ sudo apt install git wget zip curl python3 python3-pip python3-venv
+
 1.  Clone the Tock kernel repository.
 
         $ git clone https://github.com/tock/tock
@@ -95,18 +98,32 @@ operating system install, you will need the following software:
 1.  [tockloader](https://github.com/tock/tockloader). This is an all-in-one tool
     for programming boards and using Tock.
 
-        $ pip3 install -U --user tockloader
+        $ pipx install tockloader
 
-    > Note: On MacOS, you may need to add `tockloader` to your path. If you
-    > cannot run it after installation, run the following:
+    > Note: You may need to add `tockloader` to your path. If you cannot run it
+    > after installation, run the following:
 
-        $ export PATH=$HOME/Library/Python/3.9/bin/:$PATH
+        $ pipx ensurepath
 
-    > Similarly, on Linux distributions, this will typically install to
-    > `$HOME/.local/bin`, and you may need to add that to your `$PATH` if not
-    > already present:
+1.  Tools to flash code onto your board. The most common tools are JLinkExe and
+    OpenOCD. You can check the
+    [boards README](https://github.com/tock/tock/blob/master/boards/README.md)
+    and look in the "Interface" column for which option is best for your board.
+    If the interface says "Bootloader" you do not need to install either of
+    these tools. Tockloader will work by itself.
 
-        $ PATH=$HOME/.local/bin:$PATH
+    - `JLink` is available
+      [from the Segger website](https://www.segger.com/downloads/jlink). You
+      want to install the "J-Link Software and Documentation Pack". There are
+      various packages available depending on operating system.
+
+    - OpenOCD is available through package managers.
+
+            # mac
+            $ brew install open-ocd
+
+            # linux
+            $ sudo apt install openocd
 
 ### Testing You Can Compile the Kernel
 
