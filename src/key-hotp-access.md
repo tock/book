@@ -141,86 +141,86 @@ the last module!).
 
 ```rust
 //--------------------------------------------------------------------------
-// CREDENTIALS CHECKING POLICY
+// Credential Checking
 //--------------------------------------------------------------------------
 
 // Create the software-based SHA engine.
-let sha = static_init!(capsules_extra::sha256::Sha256Software<'static>,
-                       capsules_extra::sha256::Sha256Software::new());
-kernel::deferred_call::DeferredCallClient::register(sha);
+let sha = components::sha::ShaSoftware256Component::new()
+    .finalize(components::sha_software_256_component_static!());
 
 // Create the credential checker.
-static mut SHA256_CHECKER_BUF: [u8; 32] = [0; 32];
-let checker = static_init!(
-    kernel::process_checker::basic::AppCheckerSha256,
-    kernel::process_checker::basic::AppCheckerSha256::new(sha, &mut SHA256_CHECKER_BUF)
-    );
-kernel::hil::digest::Digest::set_client(sha, checker);
+let checking_policy = components::appid::checker_sha::AppCheckerSha256Component::new(sha)
+    .finalize(components::app_checker_sha256_component_static!());
+
+// Create the AppID assigner.
+let assigner = components::appid::assigner_name::AppIdAssignerNamesComponent::new()
+    .finalize(components::appid_assigner_names_component_static!());
+
+// Create the process checking machine.
+let checker = components::appid::checker::ProcessCheckerMachineComponent::new(checking_policy)
+    .finalize(components::process_checker_machine_component_static!());
 ```
 
-That code creates a `checker` object. We now need to modify the board so it
-hangs on to that `checker` struct. To do so, we need to add this to our
-`Platform` struct type definition near the top of the file:
+That code creates a `checker` object that will verify the SHA256 credential is
+correct. It also creates an `assigner` object that will assign application
+identifiers to processes.
 
-```rust
-struct Platform {
-    ...
-    credentials_checking_policy: &'static kernel::process_checker::basic::AppCheckerSha256,
-}
-```
-
-Then when we create the platform object near the end of `main()`, we can add our
-`checker`:
-
-```rust
-let platform = Platform {
-    ...
-    credentials_checking_policy: checker,
-}
-```
-
-And we need the platform to provide access to that checker when requested by the
-kernel for credentials-checking purposes. This goes in the `KernelResources`
-implementation for the `Platform` type:
-
-```rust
-impl KernelResources for Platform {
-    ...
-    type CredentialsCheckingPolicy = kernel::process_checker::basic::AppCheckerSha256;
-    ...
-    fn credentials_checking_policy(&self) -> &'static Self::CredentialsCheckingPolicy {
-        self.credentials_checking_policy
-    }
-    ...
-}
-```
-
-Finally, we need to use the function that checks credentials when processes are
-loaded (not just loads and executes them unconditionally). This should go at the
-end of `main()`, replacing the existing call to
+From here, we need to use the function that checks credentials when processes
+are loaded (not just loads and executes them unconditionally). This should go at
+the end of `main()`, replacing the existing call to
 `kernel::process::load_processes`:
 
 ```rust
-kernel::process::load_and_check_processes(
+// These symbols are defined in the linker script.
+extern "C" {
+    /// Beginning of the ROM region containing app images.
+    static _sapps: u8;
+    /// End of the ROM region containing app images.
+    static _eapps: u8;
+    /// Beginning of the RAM region for app memory.
+    static mut _sappmem: u8;
+    /// End of the RAM region for app memory.
+    static _eappmem: u8;
+}
+
+let process_binary_array = static_init!(
+    [Option<kernel::process::ProcessBinary>; NUM_PROCS],
+    [None, None, None, None, None, None, None, None]
+);
+
+let loader = static_init!(
+    kernel::process::SequentialProcessLoaderMachine<
+        nrf52840::chip::NRF52<Nrf52840DefaultPeripherals>,
+    >,
+    kernel::process::SequentialProcessLoaderMachine::new(
+        checker,
+        &mut PROCESSES,
+        process_binary_array,
         board_kernel,
-        &platform, // note this function requires providing the platform.
         chip,
         core::slice::from_raw_parts(
-            &_sapps as *const u8,
-            &_eapps as *const u8 as usize - &_sapps as *const u8 as usize,
+            core::ptr::addr_of!(_sapps),
+            core::ptr::addr_of!(_eapps) as usize - core::ptr::addr_of!(_sapps) as usize,
         ),
         core::slice::from_raw_parts_mut(
-            &mut _sappmem as *mut u8,
-            &_eappmem as *const u8 as usize - &_sappmem as *const u8 as usize,
+            core::ptr::addr_of_mut!(_sappmem),
+            core::ptr::addr_of!(_eappmem) as usize - core::ptr::addr_of!(_sappmem) as usize,
         ),
-        &mut PROCESSES,
         &FAULT_RESPONSE,
-        &process_management_capability,
+        assigner,
+        &process_management_capability
     )
-    .unwrap_or_else(|err| {
-        debug!("Error loading processes!");
-        debug!("{:?}", err);
-    });
+);
+
+checker.set_client(loader);
+```
+
+Then finally right before the call to the `kernel_loop()`, make sure the process
+loader starts:
+
+```rust
+loader.register();
+loader.start();
 ```
 
 Compile and install the updated kernel.
