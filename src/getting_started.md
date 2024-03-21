@@ -269,6 +269,40 @@ You may also need to reset (by pressing the reset button on the board) the board
 to see the message. You may also not see any output if the Tock kernel has not
 been flashed yet.
 
+In case you have multiple serial devices attached to your computer, you may need
+to select the appropriate J-Link device:
+
+    $ tockloader listen
+    [INFO   ] No device name specified. Using default name "tock".
+    [INFO   ] No serial port with device name "tock" found.
+    [INFO   ] Found 2 serial ports.
+    Multiple serial port options found. Which would you like to use?
+    [0]     /dev/ttyACM1 - J-Link - CDC
+    [1]     /dev/ttyACM0 - L830-EB - Fibocom L830-EB
+
+    Which option? [0] 0
+    [INFO   ] Using "/dev/ttyACM1 - J-Link - CDC".
+    [INFO   ] Listening for serial output.
+    Initialization complete. Entering main loop
+    NRF52 HW INFO: Variant: AAC0, Part: N52840, Package: QI, Ram: K256, Flash: K1024
+    tock$
+
+In case you don't see any text printed after "Listening for serial output", try
+hitting `[ENTER]` a few times. You should be greeted with a `tock$` shell
+prompt. You can use the `reset` command to restart your nRF chip and see the
+above greeting.
+
+In case you want to use a different serial console monitor, you may need to
+identify the serial console device created for your board. On Linux, you can
+identify the J-Link debugger's serial port by running:
+
+    $ dmesg -Hw | grep tty
+    < ... some output ... >
+    < plug in the nRF52840DKs front USB (not "nRF USB") >
+    [  +0.003233] cdc_acm 1-3:1.0: ttyACM1: USB ACM device
+
+In this case, the serial console can be accessed as `/dev/ttyACM1`.
+
 You can also see if any applications are installed with `tockloader list`:
 
     $ tockloader list
