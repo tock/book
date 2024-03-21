@@ -9,7 +9,8 @@ key using Tock.
 
 To fully follow this guide you will need a hardware board that supports a
 peripheral USB port (i.e. where the microcontroller has USB hardware support).
-We recommend using the nRF52840dk.
+We recommend using the
+[nRF52840dk](https://www.nordicsemi.com/Products/Development-hardware/nRF52840-DK).
 
 Compatible boards:
 
