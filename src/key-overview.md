@@ -3,7 +3,7 @@
 This module and submodules will walk you through how to create a USB security
 key using Tock.
 
-![Security Key](imgs/usbkey.jpg)
+![Security Key](imgs/usbkey.jpg "USB Key Example" =x200)
 
 ## Hardware Notes
 
