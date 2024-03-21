@@ -16,3 +16,5 @@ optional = true
 exclude = [ '.*trd.*', 'TockBinaryFormat', '.*spdx.*', '.*CommandZeroSemantics.*' ]
 
 [preprocessor.webinclude]
+
+[preprocessor.image-size]

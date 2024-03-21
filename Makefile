@@ -3,7 +3,7 @@
 # make rules to make maintenance easy.
 .NOTPARALLEL: all pretty
 .NOTPARALLEL: check_mdbook check_mdbook_linkcheck check_mdbook_pagetoc check_prettier check_mdbook_webinclude check_mdbook_chapterlist
-.NOTPARALLEL: install_mdbook install_mdbook_linkcheck install_mdbook_pagetoc install_prettier install_mdbook_webinclude install_mdbook_chapterlist
+.NOTPARALLEL: install_mdbook install_mdbook_linkcheck install_mdbook_pagetoc install_prettier install_mdbook_webinclude install_mdbook_imagesize install_mdbook_chapterlist
 
 .PHONY: all pretty
 .PHONY: check_mdbook check_mdbook_linkcheck check_mdbook_pagetoc check_prettier check_mdbook_webinclude check_mdbook_chapterlist
@@ -17,6 +17,7 @@ MDBOOK_WEBINCLUDE_VERSION := 0.1.0
 MDBOOK_LINKCHECK_VERSION := 0.7.7
 MDBOOK_PAGETOC_VERSION := 0.1.7
 MDBOOK_CHAPTERLIST_VERSION := 0.1.0
+MDBOOK_IMAGESIZE_VERSION := 0.1.0
 PRETTIER_VERSION := 3.0.0
 
 # For CI, use local install; for normal users system install
@@ -42,7 +43,7 @@ export PATH := $(PATH):$(CURDIR)
 endif
 
 # The only thing we really want to do is build
-all:	check_mdbook check_mdbook_linkcheck check_mdbook_webinclude check_mdbook_pagetoc check_prettier check_mdbook_chapterlist
+all:	check_mdbook check_mdbook_linkcheck check_mdbook_webinclude check_mdbook_imagesize check_mdbook_pagetoc check_prettier check_mdbook_chapterlist
 	@echo $$(tput bold)All required tools installed with correct version.$$(tput sgr0)
 	$(Q)$(PRETTIER) --check --prose-wrap always '**/*.md' || (echo $$(tput bold)$$(tput setaf 1)Source formatting errors.; echo Run \"make pretty\" to fix automatically.; echo Warning: will overwrite files in-place.$$(tput sgr0); exit 1)
 	@echo $$(tput bold)Source file formatting correct.$$(tput sgr0)
@@ -91,6 +92,13 @@ install_mdbook_webinclude:
 
 check_mdbook_webinclude:
 	$(Q)mdbook-webinclude --help > /dev/null || $(MAKE) install_mdbook_webinclude
+
+
+install_mdbook_imagesize:
+	cargo install mdbook-image-size --version $(MDBOOK_IMAGESIZE_VERSION)
+
+check_mdbook_imagesize:
+	$(Q)mdbook-image-size --help > /dev/null || $(MAKE) install_mdbook_imagesize
 
 
 
