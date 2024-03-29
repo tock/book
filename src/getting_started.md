@@ -33,7 +33,7 @@ be aware of.
 ## Host Machine Setup
 
 You can either download a [virtual machine](#virtual-machine) with the
-development environment pre-installed, or, if you have a Linux or OS X
+development environment pre-installed, or, if you have a Linux or MacOS
 workstation, you may install the development environment
 [natively](#native-installation). Using a virtual machine is quicker and easier
 to set up, while installing natively will yield the most comfortable development
@@ -89,10 +89,10 @@ operating system install, you will need the following software:
     and riscv64-unknown-elf toolchains. This enables you to compile apps written
     in C.
 
-        # mac
+        # MacOS
         $ brew install arm-none-eabi-gcc riscv64-elf-gcc
 
-        # linux
+        # Ubuntu
         $ sudo apt install gcc-arm-none-eabi gcc-riscv64-unknown-elf
 
 1.  [tockloader](https://github.com/tock/tockloader). This is an all-in-one tool
@@ -119,10 +119,10 @@ operating system install, you will need the following software:
 
     - OpenOCD is available through package managers.
 
-            # mac
+            # MacOS
             $ brew install open-ocd
 
-            # linux
+            # Ubuntu
             $ sudo apt install openocd
 
 ### Testing You Can Compile the Kernel
@@ -188,8 +188,8 @@ cable, but your board may be different.
 > Some example boards:
 >
 > - imix: Use the port labeled `DEBUG`.
-> - nRF52 development boards: Use the port of the left, on the skinny side of
->   the board.
+> - nRF52 development boards: Use the port on the skinny side of the board (do
+>   NOT use the port labeled "nRF USB").
 
 The board should appear as a regular serial device (e.g.
 `/dev/tty.usbserial-c098e5130006` on my Mac or `/dev/ttyUSB0` on my Linux box).
