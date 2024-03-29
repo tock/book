@@ -33,7 +33,7 @@ be aware of.
 ## Host Machine Setup
 
 You can either download a [virtual machine](#virtual-machine) with the
-development environment pre-installed, or, if you have a Linux or OS X
+development environment pre-installed, or, if you have a Linux or MacOS
 workstation, you may install the development environment
 [natively](#native-installation). Using a virtual machine is quicker and easier
 to set up, while installing natively will yield the most comfortable development
@@ -73,6 +73,9 @@ operating system install, you will need the following software:
 1.  Command line utilities: `curl`, `make`, `git`, `python` (version 3) and
     `pip3`.
 
+        # Ubuntu
+        $ sudo apt install git wget zip curl python3 python3-pip python3-venv
+
 1.  Clone the Tock kernel repository.
 
         $ git clone https://github.com/tock/tock
@@ -86,27 +89,41 @@ operating system install, you will need the following software:
     and riscv64-unknown-elf toolchains. This enables you to compile apps written
     in C.
 
-        # mac
+        # MacOS
         $ brew install arm-none-eabi-gcc riscv64-elf-gcc
 
-        # linux
+        # Ubuntu
         $ sudo apt install gcc-arm-none-eabi gcc-riscv64-unknown-elf
 
 1.  [tockloader](https://github.com/tock/tockloader). This is an all-in-one tool
     for programming boards and using Tock.
 
-        $ pip3 install -U --user tockloader
+        $ pipx install tockloader
 
-    > Note: On MacOS, you may need to add `tockloader` to your path. If you
-    > cannot run it after installation, run the following:
+    > Note: You may need to add `tockloader` to your path. If you cannot run it
+    > after installation, run the following:
 
-        $ export PATH=$HOME/Library/Python/3.9/bin/:$PATH
+        $ pipx ensurepath
 
-    > Similarly, on Linux distributions, this will typically install to
-    > `$HOME/.local/bin`, and you may need to add that to your `$PATH` if not
-    > already present:
+1.  Tools to flash code onto your board. The most common tools are JLinkExe and
+    OpenOCD. You can check the
+    [boards README](https://github.com/tock/tock/blob/master/boards/README.md)
+    and look in the "Interface" column for which option is best for your board.
+    If the interface says "Bootloader" you do not need to install either of
+    these tools. Tockloader will work by itself.
 
-        $ PATH=$HOME/.local/bin:$PATH
+    - `JLink` is available
+      [from the Segger website](https://www.segger.com/downloads/jlink). You
+      want to install the "J-Link Software and Documentation Pack". There are
+      various packages available depending on operating system.
+
+    - OpenOCD is available through package managers.
+
+            # MacOS
+            $ brew install open-ocd
+
+            # Ubuntu
+            $ sudo apt install openocd
 
 ### Testing You Can Compile the Kernel
 
@@ -171,8 +188,8 @@ cable, but your board may be different.
 > Some example boards:
 >
 > - imix: Use the port labeled `DEBUG`.
-> - nRF52 development boards: Use the port of the left, on the skinny side of
->   the board.
+> - nRF52 development boards: Use the port on the skinny side of the board (do
+>   NOT use the port labeled "nRF USB").
 
 The board should appear as a regular serial device (e.g.
 `/dev/tty.usbserial-c098e5130006` on my Mac or `/dev/ttyUSB0` on my Linux box).
@@ -251,6 +268,40 @@ the board. For example, to retrieve serial UART data from the board, run
 You may also need to reset (by pressing the reset button on the board) the board
 to see the message. You may also not see any output if the Tock kernel has not
 been flashed yet.
+
+In case you have multiple serial devices attached to your computer, you may need
+to select the appropriate J-Link device:
+
+    $ tockloader listen
+    [INFO   ] No device name specified. Using default name "tock".
+    [INFO   ] No serial port with device name "tock" found.
+    [INFO   ] Found 2 serial ports.
+    Multiple serial port options found. Which would you like to use?
+    [0]     /dev/ttyACM1 - J-Link - CDC
+    [1]     /dev/ttyACM0 - L830-EB - Fibocom L830-EB
+
+    Which option? [0] 0
+    [INFO   ] Using "/dev/ttyACM1 - J-Link - CDC".
+    [INFO   ] Listening for serial output.
+    Initialization complete. Entering main loop
+    NRF52 HW INFO: Variant: AAC0, Part: N52840, Package: QI, Ram: K256, Flash: K1024
+    tock$
+
+In case you don't see any text printed after "Listening for serial output", try
+hitting `[ENTER]` a few times. You should be greeted with a `tock$` shell
+prompt. You can use the `reset` command to restart your nRF chip and see the
+above greeting.
+
+In case you want to use a different serial console monitor, you may need to
+identify the serial console device created for your board. On Linux, you can
+identify the J-Link debugger's serial port by running:
+
+    $ dmesg -Hw | grep tty
+    < ... some output ... >
+    < plug in the nRF52840DKs front USB (not "nRF USB") >
+    [  +0.003233] cdc_acm 1-3:1.0: ttyACM1: USB ACM device
+
+In this case, the serial console can be accessed as `/dev/ttyACM1`.
 
 You can also see if any applications are installed with `tockloader list`:
 
