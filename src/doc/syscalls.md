@@ -185,7 +185,7 @@ three ways.
 ## System Call Implementations
 
 All system calls are implemented via context switches. A couple values are
-passed along with the context switch to indicate the type and manor of the
+passed along with the context switch to indicate the type and manner of the
 syscall. A process invokes a system call by triggering context switch via a
 software interrupt that transitions the microcontroller to supervisor/kernel
 mode. The exact mechanism for this is architecture-specific. [TRD104][TRD104]
