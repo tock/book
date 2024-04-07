@@ -244,8 +244,8 @@ Steps to connect to nRF52840DK with WSL:
    `usbipd attach --wsl -b <busid>` on powershell/cmd (When attaching a device
    for the first time, it has to be done with admin previliges).
 
-10. To check if the attach worked, run `lsusb` on WSL. If the whole process
-    worked, the device should be listed and JLink should be able to find it.
+10. To check if the attach worked, run `lsusb` on WSL. If it worked, the device
+    should be listed as `SEGGER JLink`.
 
 11. The kernel can now be flashed with `make install` and other tockloader
     commands should work.
@@ -255,7 +255,6 @@ Steps to connect to nRF52840DK with WSL:
 > - Make sure your firewall is not blocking port 3240 as USBIP uses that port to
 >   interface windows and WSL. (Windows defender is usually the culprit if you
 >   don't have a third party firewall).
-
 > - Add an inbound rule to Windows defender/ your third party firewall allowing
 >   USBIP to use port 3240 if you see a port blocked error.
 
