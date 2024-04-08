@@ -199,11 +199,14 @@ This may require some setup, see the "one-time fixups" box.
 
 Programming JLink devices with Tock in WSL:
 
-Trying to program an nRF52840DK with WSL can be a little tricky because WSL2
-abstracts away low level access for USB devices. WSL1 is unable to find JLink
-devices even if you have JLink installed because of the USB abstraction. To get
-around this, we use USBIP - a tool that connects the USB device over a TCP
-tunnel. This guide might apply for any device programmed via JLink.
+Trying to program an nRF52840DK with WSL can be a little tricky because WSL
+abstracts away low level access for USB devices. WSL1 does not offer access to
+physical hardware, just an environment to use linux on microsoft. WSL2 on the
+other hand is unable to find JLink devices even if you have JLink installed
+because of the USB abstraction. To get around this limitation, we use USBIP - a
+tool that connects the USB device over a TCP tunnel.
+
+This guide might apply for any device programmed via JLink.
 
 Steps to connect to nRF52840DK with WSL:
 
@@ -227,7 +230,7 @@ Steps to connect to nRF52840DK with WSL:
 
 5. On the windows platform, make sure WSL is set to version 2. Check the WSL
    version with `wsl -l -v`. If it is version 1, change it to WSL2 with
-   `wsl --set-version Ubuntu-22.04 2`.
+   `wsl --set-version Ubuntu-22.04 2` (USBIP works with WSL2).
 
 6. Install USBIP from
    [here](https://github.com/dorssel/usbipd-win/releases/tag/v4.1.0). Version
@@ -252,6 +255,8 @@ Steps to connect to nRF52840DK with WSL:
 
 > #### Note:
 >
+> - A machine with an x64 processor is required. (x86 and Arm64 are currently
+>   not supported with USBIP).
 > - Make sure your firewall is not blocking port 3240 as USBIP uses that port to
 >   interface windows and WSL. (Windows defender is usually the culprit if you
 >   don't have a third party firewall).
