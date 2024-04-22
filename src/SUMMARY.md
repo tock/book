@@ -57,6 +57,7 @@
   - [Deprecated](./course/deprecated/deprecated.md)
     - [Important Client](./course/deprecated/important_client.md)
     - [Capsule](./course/deprecated/capsule.md)
+
 - [Mini Tutorials](./tutorials/tutorials.md)
 
   - [Blink an LED](./tutorials/01_running_blink.md)
