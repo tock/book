@@ -12,8 +12,8 @@ applications.
 
 ## Setup and Preparation
 
-You should follow the [getting started guide](getting_started.html) to get your
-development setup and ensure you can communicate with the hardware.
+You should follow the [getting started guide](../getting_started.html) to get
+your development setup and ensure you can communicate with the hardware.
 
 ### Compile the Kernel
 

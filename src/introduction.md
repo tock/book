@@ -14,7 +14,7 @@ The book includes a [quick start guide](getting_started.html).
 
 ## Tock Workshop Courses
 
-For a more in-depth walkthough-style less, look [here](course.html).
+For a more in-depth walkthough-style less, look [here](course/course.html).
 
 ## Development Guides
 
