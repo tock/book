@@ -93,7 +93,7 @@ fn callback(&self, humidity: usize);
 Implement logic to initiate a accelerometer reading every second and report the
 results.
 
-![Structure of `rustconf` capsule](imgs/rustconf.svg)
+![Structure of `rustconf` capsule](../../imgs/rustconf.svg)
 
 Compile and program your kernel:
 

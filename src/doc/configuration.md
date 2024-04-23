@@ -8,8 +8,9 @@ adapted to each use case. In general, there are three variants of kernel
 configuration that Tock supports:
 
 1. Per-board customization of kernel components. For example, choosing the
-   scheduling algorithm the kernel uses. The [policies guide](../policies.md)
-   goes into more depth on this configuration variant.
+   scheduling algorithm the kernel uses. The
+   [policies guide](../course/policies.md) goes into more depth on this
+   configuration variant.
 2. Crate-level composition of kernel code. Building a functional kernel consists
    of using several crates, and choosing specific crates can configure the
    kernel for a specific board or use case.

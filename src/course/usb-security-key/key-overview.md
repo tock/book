@@ -3,7 +3,7 @@
 This module and submodules will walk you through how to create a USB security
 key using Tock.
 
-![Security Key](imgs/usbkey.jpg)
+![Security Key](../../imgs/usbkey.jpg)
 
 ## Hardware Notes
 
@@ -32,7 +32,7 @@ nonvolatile key-value storage.
 
 ## nRF52840dk Hardware Setup
 
-![nRF52840dk](imgs/nrf52840dk.jpg)
+![nRF52840dk](../../imgs/nrf52840dk.jpg)
 
 If you are using the nRF52840dk, there are a couple of configurations on the
 nRF52840DK board that you should double-check:

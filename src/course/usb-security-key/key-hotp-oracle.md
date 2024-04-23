@@ -522,7 +522,7 @@ software-implementations. In this case, a userspace-operation is broken up into
 multiple smaller operations on the underlying provider, and the next
 sub-operation is scheduled once a callback has been received:
 
-![An Illustration of Tock's Asynchronous Driver Model](imgs/encryption_oracle_capsule.svg)
+![An Illustration of Tock's Asynchronous Driver Model](../../imgs/encryption_oracle_capsule.svg)
 
 To allow our capsule to receive `crypt_done` callbacks, add the following trait
 implementation:
