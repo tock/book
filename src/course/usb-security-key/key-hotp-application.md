@@ -39,9 +39,9 @@ applications with "upcalls". Importantly, upcalls never interrupt a running
 application. The application must `yield` to receive upcalls (i.e. callbacks).
 
 The userspace library ("libtock") wraps system calls in easier to use functions.
-Often the library functions include the call to `yield` and expose a synchronous
-driver interface. Application code can also call `yield` directly as we will do
-in this module.
+The libtock library is completely asynchronous. Synchronous APIs to the system
+calls are in "libtock-sync". These functions include the call to `yield` and
+expose a synchronous driver interface. Application code can use either.
 
 ## Submodule Overview
 
@@ -150,9 +150,9 @@ available in the `hotp_milestone_one/` folder in case you run into issues.
    can delay a short period, roughly 500 ms would work well, and then read the
    button again and check if it's still being pressed. You can wait
    synchronously with the
-   [`delay_ms()` function](https://github.com/tock/libtock-c/blob/master/libtock/timer.h)
+   [`libtocksync_alarm_delay_ms()` function](https://github.com/tock/libtock-c/blob/master/libtock-sync/services/alarm.h)
    and you can read a button with the
-   [`button_read()` function](https://github.com/tock/libtock-c/blob/master/libtock/button.h).
+   [`libtock_button_read()` function](https://github.com/tock/libtock-c/blob/master/libtock/interface/button.h).
 
    - Note that buttons are indexed from 0 in Tock. So "Button 1" on the hardware
      is button number 0 in the application code. All four of the buttons on the
@@ -179,18 +179,18 @@ available in the `hotp_milestone_one/` folder in case you run into issues.
       secret.
 
       - You'll want to use the
-        [Console functions `getch()` and `putnstr()`](https://github.com/tock/libtock-c/blob/master/libtock/console.h).
-        `getch()` can read characters of user input while `putnstr()` can be
-        used to echo each character the user types. Make a loop that reads the
-        characters into a buffer.
+        [Console functions `libtocksync_console_write()` and `libtocksync_console_read()`](https://github.com/tock/libtock-c/blob/master/libtock-sync/interface/console.h).
+        `libtocksync_console_read()` can read characters of user input while
+        `libtocksync_console_write()` can be used to echo each character the
+        user types. Make a loop that reads the characters into a buffer.
 
       - Since the secret is in base32, special characters are not valid. The
         easiest way to handle this is to check the input character with
         [`isalnum()`](https://cplusplus.com/reference/cctype/isalnum/) and
         ignore it if it isn't alphanumeric.
 
-      - When the user hits the enter key, a `\n` character will be received.
-        This can be used to break from the loop.
+      - When the user hits the enter key, a `\n` or `\r` character will be
+        received. This can be used to break from the loop.
 
    3. The function should decode the secret and save it in the `hotp-key`.
 
@@ -221,15 +221,24 @@ information as key-value pairs. Completed code is available in
    "value" in a key-value pair.
 
    Start by writing a function which saves the `hotp_key_t` object to a specific
-   key (perhaps "hotp"). Use the `kv_set_sync()` function.
+   key (perhaps "hotp"). Use the `libtocksync_kv_set()` function.
 
 2. Now write a matching function which reads the same key to load the key data
-   from persistent storage. Use the `kv_get_sync()` function.
+   from persistent storage. Use the `libtocksync_kv_get()` function.
 
 3. Make sure to update the key-value pair whenever part of the HOTP key is
    modified, i.e. when programming a new secret or updating the counter.
 
-4. Upload your code to test it. You should be able to keep the same secret and
+4. Make sure your app has permissions to use storage in the kernel. The app
+   needs a TBF header to grant it permission. You can have the app automatically
+   include this when compiling by adding these flags to the app Makefile:
+
+   ```
+   # Make sure we have storage permissions.
+   ELF2TAB_ARGS += --write_id 0x4016 --read_ids 0x4016 --access_ids 0x4016
+   ```
+
+5. Upload your code to test it. You should be able to keep the same secret and
    counter value on resets and also on power cycles.
 
 - There is an on/off switch on the top left of the nRF52840DK you can use for
