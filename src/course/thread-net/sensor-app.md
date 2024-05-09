@@ -347,6 +347,14 @@ basis of our *control application*.
 > TODO OUTPUT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 > ```
 
+Take a moment to look at the `03_controller_screen/main.c`
+implementation. It implements the IPC client logic by defining a
+`sensor_callback`, quite similar to the service callback we defined
+above. This callback is fired whenever the service notifies the
+client. This app also defines some logic to handle button presses and
+change a "set-point temperature", which it displays on the
+console. This part will be relevant in the next stage of the tutorial.
+
 This concludes the first stage of this tutorial. In the next step, we
 will extend the controller application to utilize a more involved
 peripheral: an attached OLED screen. This screen, alongside the four
