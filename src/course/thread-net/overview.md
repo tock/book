@@ -109,9 +109,9 @@ required for it.
    This demonstrates how you can flash a Tock kernel and applications onto your
    development board, and introduces some key Tock concepts.
 
-2. [We continue by extending this application](sensor-ipc) into an "IPC
-   services". This will make the current temperature accessible to other
-   applications that request it.
+2. We continue by extending this application into an "IPC
+   services". This will make the current temperature accessible to
+   other applications that request it.
 
    Our *controller application* will use the information provided through this
    interface. We also create the scaffolding required for the controller app.

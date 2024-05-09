@@ -50,7 +50,7 @@ correct. Select 115200 baud, 1 stop bit, no partity, no flow
 control. The following command should also do the trick:
 
 ```
-tockloader listen
+$ tockloader listen
 ```
 
 By default, a Tock board without any applications will respond with a
@@ -70,7 +70,7 @@ instead of `ttyACM1`). If that does not work, simply try the available
 ports:
 
 ```
-> tockloader listen
+$ tockloader listen
 [INFO   ] No device name specified. Using default name "tock".
 [INFO   ] No serial port with device name "tock" found.
 [INFO   ] Found 2 serial ports.
@@ -214,5 +214,143 @@ tock$
 TODO output !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ```
 
-> **CHECKPOINT:** `00_sensor_ipc`
+> **CHECKPOINT:** `01_sensor_ipc`
 
+## Implementing an IPC Service
+
+In our next step, we want to extend this application into an IPC
+service, such that we can provide the most recent temperature reading
+to other applications as well.
+
+Because we do not want to make a system call every time we get such an
+IPC request, we instead change the main function to run a loop and
+query the temperature periodically, such as once every 250
+milliseconds. For this, we can use the `delay_ms` function:
+
+```c
+int main(void) {
+  // Perform initialization, declare variables
+
+  for (;;) {
+    // Read temperature into global variable
+
+    // Wait for 250ms
+    delay_ms(250);
+  }
+
+  return 0;
+}
+```
+
+It is worth noting at this point that the `delay_ms` function does not
+perform busy-waiting. It instead blocks this application from
+executing for some time, and unblocks it by notifying it after 250
+ms. This notification comes in the form of a *callback*. A callback is
+a kernel-scheduled task in the userspace application that can run at
+specific, pre-determined points in the application: so-called
+*yield-points*. In contrast to, e.g., signal handlers on Linux, an
+application will not receive a callback between any arbitrary
+instructions. `delay_ms` is such a yield-point and allows any number
+of callbacks to be invoked until the 250ms wait-time has expired. When
+an application has no work to be done, the kernel is free to schedule
+other applications or place the chip into a low-power state.
+
+In the above example, `delay_ms` internally configures an appropriate
+handler for the callback that is invoked when its wait-time has
+expired. However, other types of events require a developer to write
+and register a callback manually -- for instance, for IPC service
+requests. We do so by invoking the `ipc_register_service_callback`,
+defined in `ipc.h`:
+
+```c
+// Registers a service callback for this process.
+//
+// Service callbacks are called in response to `notify`s from clients and take
+// the following arguments in order:
+//
+//   pkg_name  - the package name of this service
+//   callback  - the address callback function to execute when clients notify
+//   void* ud  - `userdata`. data passed to callback function
+int ipc_register_service_callback(const char *pkg_name,
+                                  subscribe_upcall callback, void *ud);
+```
+
+In the above, `ipc_register_service_callback` takes a "package name"
+under which the IPC service will be reachable by clients. When a
+client sends an IPC request to a service, the provided `callback` will
+be invoked in the service application. This callback is invoked with
+some parameters provided by the IPC client, and is passed the `ud`
+pointer provided in the call to `ipc_register_service_callback`. This
+callback has a function signature as follows:
+
+```c
+static void sensor_ipc_callback(int pid, int len, void *buf, void *ud) {
+  // Callback handler code
+}
+```
+
+Here, `pid` is an identifier that can be used to send a notification
+back to the requesting client, using the following call:
+
+```c
+ipc_notify_client(pid);
+```
+
+IPC clients and services communicate through memory sharing. In
+particular, an IPC client can share a region of its own memory with
+the IPC service, provided some constraints on buffer size and
+alignment. This shared buffer is then provided to the IPC service
+callback through the `len` and `buf` parameters.
+
+
+> **EXERCISE:** Implement an IPC service callback for your sensor
+> application that writes the current temperature value into the
+> provided buffer.
+>
+> You should write the temperature value into a global variable in the
+> `main` loop, and read this variable in the callback handler. You may
+> use something along the lines of:
+>
+> ```
+> memcpy((uint8_t*) buf, (uint8_t*) current_temperature, sizeof(current_temperature)
+> ```
+>
+> After copying the value, notify the calling client using the
+> `ipc_notify_client` call.
+>
+> Install the application.
+
+> **CHECKPOINT:** `02_sensor_final`
+
+## Testing your IPC Service
+
+To test whether this IPC service works we also need an appropriate IPC
+client. For this, we provide a client application that also forms the
+basis of our *control application*.
+
+> **CHECKPOINT:** `03_controller_screen`
+
+> **EXERCISE:** Install the provided `03_controller_screen`
+> application next to the sensor IPC service. A `tockloader list`
+> command should show both applications as being installed:
+>
+> ```
+> TODO! OUTPUT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+> ```
+> When both applications are flashed onto a Tock board, the provided
+> `03_controller_screen` application should indicate that it is making
+> repeated IPC calls to the sensor and retrieving a temperature value,
+> which can look like this:
+>
+> ```
+> $ tockloader listen
+> TODO OUTPUT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+> ```
+
+This concludes the first stage of this tutorial. In the next step, we
+will extend the controller application to utilize a more involved
+peripheral: an attached OLED screen. This screen, alongside the four
+buttons present on the nRF52840DK development board will serve as the
+user interface for our HVAC control system.
+
+[Continue here.](comms-app)
