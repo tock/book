@@ -76,3 +76,127 @@ applications or resetting your board.
 
 ## Displaying the Current Temperature
 
+A first step to building our HVAC control user interface, we want the
+screen to display the current temperature. For this, we consult the
+the sensor application, which exposes this data via IPC.
+
+The controller should regularly sample data from the sensor
+application. A naive way to implement this is shown in the pseudo-code
+example below:
+
+```
+void ipc_callback(int temperature) {
+  // Print temperature onto screen.
+}
+
+int main(void) {
+  for (;;) {
+    // Issue IPC request...
+
+	// Wait for 250ms between requests:
+	delay_ms(250);
+}
+```
+
+This architecture has a few issues though. For instance, during the
+call to `delay_ms`, the application is effectively prevented from
+doing other useful work. While `delay_ms` does not spin and allows the
+kernel, other applications or even callbacks into the same application
+to work, it does block the application's main loop.
+
+Another issue with this design is that the `ipc_callback` function
+performs complex application code which may, in turn, wait on some
+asynchronous events (callbacks) by inserting a yield point. This means
+that during the execution of the `ipc_callback`, other callbacks --
+including `ipc_callback` itself -- may be scheduled again. Consider
+the following example:
+
+```
+void ipc_callback() {
+  // The call to yield allows other callbacks to be scheduled,
+  // including `ipc_callback` itself!
+  yield();
+}
+
+void main() {
+  send_ipc_request();
+
+  // This call allows the initial `ipc_callback` to be scheduled:
+  yield();
+}
+```
+
+While Tock applications are single-threaded and this type of
+reentrancy is less dangerous than, e.g., UNIX signal handlers, it can
+still cause issues. For instance, when a function called from within a
+callback `yield`s internally, it can unexpectedly be run _within_ the
+execution of the function. This can in turn break the function's
+semantics. Thus, it is good practice to restrict callback handler code
+to only non-blocking operations.
+
+As such, we instead architect our controller and sensor application
+interactions using two callbacks and an asynchronous timer. It will
+work as follows:
+
+1. The `main` function will request the `sensor` app to provide a
+   temperature reading, and thus issue an IPC callback.
+2. The IPC client callback will save the temperature value, and
+   request a timer callback in 250 ms.
+3. The timer callback will request an IPC service call from the sensor
+   app, going back to step 2.
+
+As such, this loop does not execute any blocking / `yield`ing
+operations in any callback. It also moves all timing / scheduling
+logic out of the applications main loop, which can instead look like
+this:
+
+```
+int main(void) {
+  // Send initial IPC request
+
+  // Yield in a loop, allowing callbacks to be run:
+  for (;;) {
+    yield();
+  }
+}
+```
+
+The final piece of the puzzle is to run blocking code in response to
+these callbacks, but outside of the callback handlers themselves. For
+this, Tock provides the `yield_for` function: it `yield`s the
+application, _until_ a certain condition is met. For instance, the
+controller application sets the `callback_event` boolean variable to
+`true` every time a callback is run. When we want to wait on this
+event in our main function, we can use the following logic:
+
+```
+// Shared variable to signal whether a callback has fired:
+bool callback_event = false;
+
+void ipc_callback() {
+  // Indicate that a callback has fired:
+  callback_event = true;
+}
+
+int main(void) {
+  // Send initial IPC request
+
+  // Yield in a loop, allowing callbacks to be run:
+  for (;;) {
+    // Wait for callback_event to be true:
+    yield_for(&callback_event);
+	// Reset callback_event to false for the next iteration:
+	callback_event = false;
+
+	// This code is executed whenever one or more callbacks have
+	// fired. It can be long running and yield and will not be
+	// re-entered:
+	// ...
+  }
+}
+```
+
+> **EXERCISE:** The `03_controller_screen` checkpoint already contains
+> the logic outlined above. Extend the main function to, in response
+> to a callback, write the current temperature on a screen. You might
+> find it useful to split this code out into a different function.
