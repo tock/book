@@ -92,7 +92,7 @@ kernel. For instance, `reset` will completely reset your chip,
 re-printing the above greeting. Use `help` to obtain a list of
 commands.
 
-> **Checkpoint:** You can interact with the process console.
+> **CHECKPOINT:** You can interact with the process console.
 
 ## Compiling and Installing an Application
 
