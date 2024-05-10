@@ -1,10 +1,12 @@
 # Writing a Temperature-Sensor App on Tock
 
 In this stage, we write a simple application that will ask the Tock
-kernel for our chip's current temperature, and then print it out on
-the serial console. This demonstrates how you can compile and flash
-the Tock kernel, a `libtock-c` application, alongside some important
-Tock concepts.
+kernel for our chip's current temperature and then print this value to
+the serial console. By the end of this submodule, you will know how to:
+  1. Compile and flash the Tock kernel.
+  2. Compile and flash a `libtock-c` application.
+  3. Interact with the tock process console.
+  3. Interact with Tock syscalls, callbacks, and Inter-Process Communication.
 
 ## Compiling and Installing the Kernel
 
@@ -363,4 +365,4 @@ peripheral: an attached OLED screen. This screen, alongside the four
 buttons present on the nRF52840DK development board will serve as the
 user interface for our HVAC control system.
 
-[Continue here.](comms-app)
+[Continue here.](comms-app.md)

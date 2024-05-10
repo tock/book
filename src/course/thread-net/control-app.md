@@ -76,7 +76,7 @@ applications or resetting your board.
 
 ## Displaying the Current Temperature
 
-A first step to building our HVAC control user interface, we want the
+As a first step to building our HVAC control user interface, we want the
 screen to display the current temperature. For this, we consult the
 the sensor application, which exposes this data via IPC.
 
@@ -129,10 +129,10 @@ void main() {
 While Tock applications are single-threaded and this type of
 reentrancy is less dangerous than, e.g., UNIX signal handlers, it can
 still cause issues. For instance, when a function called from within a
-callback `yield`s internally, it can unexpectedly be run _within_ the
+callback performs a `yield` internally, it can unexpectedly be run _within_ the
 execution of the function. This can in turn break the function's
 semantics. Thus, it is good practice to restrict callback handler code
-to only non-blocking operations.
+to only non-blocking operations. 
 
 As such, we instead architect our controller and sensor application
 interactions using two callbacks and an asynchronous timer. It will
@@ -210,4 +210,4 @@ communication and integration at this point:
 
 > **CHECKPOINT:** `04_controller_thread`
 
-We [continue here](comms-app).
+We [continue here](comms-app.md).

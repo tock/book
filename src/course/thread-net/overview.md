@@ -33,12 +33,14 @@ office environment. Each employee will have access to their own HVAC control
 unit, connected to the central HVAC system through a Thread network. As the
 temperature set point can be a contencious subject, we allow each employee to
 enter their desired temperature. In turn, their control unit will display the
-average temperature set across all controls, in addition to the current
+average temperature set across all controllers, in addition to the current
 temperature at the control unit. We use Tock's OpenThread-based communications
 stack and it's ability to run multiple concurrent applications to build this
 control unit (*mote*).
 
-We divide the mote's functionality up into three separate applications:
+![thread_net_figure](../../imgs/thread_net_tutorial_figure.png)
+
+We divide the mote's functionality into three separate applications:
 - The *control application* is responsible for interacting with the user. It
   drives the connected screen to display the current temperature and the local
   and global-average set points.
@@ -49,7 +51,7 @@ We divide the mote's functionality up into three separate applications:
 
 By decoupling the *sensor* and *communication* applications, the Tock kernel
 ensures that the mote can remain responsive even in the case of failures in
-either application. In this tutorial we demonstratate this by injecting bug into
+either application. In this tutorial we demonstratate this by injecting a bug into
 the communication application and deliberately faulting it with a malicious
 packet.
 
@@ -103,7 +105,7 @@ skip ahead. Each stage contains information on how to obtain all checkpoint-code
 required for it.
 
 1. [*Sensor Application*](sensor-app.md): We start by creating a simple application
-   that reads the `nRF52840DK`s temperature sensor and prints the current
+   that reads the `nRF52840DK` internal temperature sensor and prints the current
    temperature onto the console.
 
    This demonstrates how you can flash a Tock kernel and applications onto your
