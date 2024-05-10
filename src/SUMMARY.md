@@ -27,6 +27,7 @@
     - [Communications App](./course/thread-net/comms-app.md)
     - [Robustness](./course/thread-net/robustness.md)
   - [Soil Moisture Sensor](./soil-moisture.md)
+    - [Kernel Sensor Setup](./course/soil-moisture/kernel-sensing.md)
     - [Userland Applications](./course/soil-moisture/apps.md)
   - [Kernel Boot](./course/boot.md)
   - [Policies](./course/policies.md)
