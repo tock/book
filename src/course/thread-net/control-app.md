@@ -201,4 +201,13 @@ int main(void) {
 > to a callback, write the current temperature on a screen. You might
 > find it useful to split this code out into a different function.
 
+Finally, we will wire up this application to the OpenThread network to
+send the current temperature setpoint to all other control units, and
+retrieve an average value back. We provide some useful scaffolding for
+this in the next checkpoint, so it is advisable to either switch to
+that, or copy the commented out function signatures for OpenThread
+communication and integration at this point:
+
 > **CHECKPOINT:** `04_controller_thread`
+
+We [continue here](comms-app).

@@ -19,7 +19,7 @@ You can compile this configuration board by entering into its
 respective directory and typing `make`:
 
 ```
-$ cd tock/configurations/nrf52840dk/nrf52840dk-thread-tutorial
+$ cd tock/tutorials/nrf52840dk-thread-tutorial
 $ make
 TODO EXPECTED OUTPUT HERE
 ```
@@ -225,7 +225,8 @@ to other applications as well.
 Because we do not want to make a system call every time we get such an
 IPC request, we instead change the main function to run a loop and
 query the temperature periodically, such as once every 250
-milliseconds. For this, we can use the `delay_ms` function:
+milliseconds. For this, we can use the `libtocksync_alarm_delay_ms`
+function:
 
 ```c
 int main(void) {
@@ -235,32 +236,33 @@ int main(void) {
     // Read temperature into global variable
 
     // Wait for 250ms
-    delay_ms(250);
+    libtocksync_alarm_delay_ms(250);
   }
 
   return 0;
 }
 ```
 
-It is worth noting at this point that the `delay_ms` function does not
-perform busy-waiting. It instead blocks this application from
-executing for some time, and unblocks it by notifying it after 250
-ms. This notification comes in the form of a *callback*. A callback is
-a kernel-scheduled task in the userspace application that can run at
-specific, pre-determined points in the application: so-called
-*yield-points*. In contrast to, e.g., signal handlers on Linux, an
-application will not receive a callback between any arbitrary
-instructions. `delay_ms` is such a yield-point and allows any number
-of callbacks to be invoked until the 250ms wait-time has expired. When
-an application has no work to be done, the kernel is free to schedule
-other applications or place the chip into a low-power state.
+It is worth noting at this point that the `libtocksync_alarm_delay_ms`
+function does not perform busy-waiting. It instead blocks this
+application from executing for some time, and unblocks it by notifying
+it after 250 ms. This notification comes in the form of a
+*callback*. A callback is a kernel-scheduled task in the userspace
+application that can run at specific, pre-determined points in the
+application: so-called *yield-points*. In contrast to, e.g., signal
+handlers on Linux, an application will not receive a callback between
+any arbitrary instructions. `libtocksync_alarm_delay_ms` is such a
+yield-point and allows any number of callbacks to be invoked until the
+250ms wait-time has expired. When an application has no work to be
+done, the kernel is free to schedule other applications or place the
+chip into a low-power state.
 
-In the above example, `delay_ms` internally configures an appropriate
-handler for the callback that is invoked when its wait-time has
-expired. However, other types of events require a developer to write
-and register a callback manually -- for instance, for IPC service
-requests. We do so by invoking the `ipc_register_service_callback`,
-defined in `ipc.h`:
+In the above example, `libtocksync_alarm_delay_ms` internally
+configures an appropriate handler for the callback that is invoked
+when its wait-time has expired. However, other types of events require
+a developer to write and register a callback manually -- for instance,
+for IPC service requests. We do so by invoking the
+`ipc_register_service_callback`, defined in `ipc.h`:
 
 ```c
 // Registers a service callback for this process.
