@@ -102,7 +102,7 @@ We divide this tutorial into four stages, with checkpoints that you can use to
 skip ahead. Each stage contains information on how to obtain all checkpoint-code
 required for it.
 
-1. [*Sensor Application*](sensor-app): We start by creating a simple application
+1. [*Sensor Application*](sensor-app.md): We start by creating a simple application
    that reads the `nRF52840DK`s temperature sensor and prints the current
    temperature onto the console.
 
@@ -110,17 +110,17 @@ required for it.
    development board, and introduces some key Tock concepts.
 
 2. We continue by extending this application into an "IPC
-   services". This will make the current temperature accessible to
+   service". This will make the current temperature accessible to
    other applications that request it.
 
    Our *controller application* will use the information provided through this
    interface. We also create the scaffolding required for the controller app.
 
-3. [Following this, we develop the *communication application*](comms-app). This
+3. [Following this, we develop the *communication application*](comms-app.md). This
    application will let our mote join the Thread network and exchange messages.
 
-4. [Finally, our *control application*](control-app) ties the prior two apps
+4. [Finally, our *control application*](control-app.md) ties the prior two apps
    together. It builds a user interface that we display on the attached screen
    and will continue to work even if the communication app faults.
 
-Sound good? Let's [get started].
+Sound good? Let's [get started](sensor-app.md).
