@@ -23,7 +23,13 @@ directory and typing `make`:
 ```
 $ cd tock/tutorials/nrf52840dk-thread-tutorial
 $ make
-TODO EXPECTED OUTPUT HERE
+   [...]
+   Compiling nrf52_components v0.1.0 (/home/leons/proj/tock/kernel/boards/nordic/nrf52_components)
+   Compiling nrf52840dk v0.1.0 (/home/leons/proj/tock/kernel/boards/nordic/nrf52840dk)
+    Finished `release` profile [optimized + debuginfo] target(s) in 11.09s
+   text    data     bss     dec     hex filename
+ 233474      36   41448  274958   4320e tock/target/thumbv7em-none-eabi/release/nrf52840dk-thread-tutorial
+cb0df7abb1...d47b383aaf  tock/target/thumbv7em-none-eabi/release/nrf52840dk-thread-tutorial.bin
 ```
 
 To flash the kernel onto your nRF52840DK development board, make sure that you
@@ -31,7 +37,10 @@ use the debug USB port (top-side, not "nRF USB"). Then type
 
 ```
 $ make install
-TODO EXPECTED OUTPUT HERE
+tockloader  flash --address 0x00000 --board nrf52dk --jlink tock/kernel/target/thumbv7em-none-eabi/release/nrf52840dk-thread-tutorial.bin
+[INFO   ] Using settings from KNOWN_BOARDS["nrf52dk"]
+[STATUS ] Flashing binary to board...
+[INFO   ] Finished in 9.901 seconds
 ```
 
 If these commands fail, ensure that you have all of `rustup`, `tockloader`, and
@@ -40,7 +49,17 @@ integrated J-Link debug probe by running:
 
 ```
 $ JLinkExe
-TODO EXPECTED OUTPUT HERE!
+SEGGER J-Link Commander V7.94a (Compiled Dec  6 2023 16:07:30)
+DLL version V7.94a, compiled Dec  6 2023 16:07:07
+
+Connecting to J-Link via USB...O.K.
+Firmware: J-Link OB-SAM3U128-V2-NordicSemi compiled Oct 30 2023 12:12:17
+Hardware version: V1.00
+J-Link uptime (since boot): 0d 00h 39m 40s
+S/N: 683487279
+License(s): RDI, FlashBP, FlashDL, JFlash, GDB
+USB speed mode: High speed (480 MBit/s)
+VTref=3.300V
 ```
 
 ## Connecting to the Tock Kernel
@@ -84,7 +103,6 @@ Which option? [0] 1
 Initialization complete. Entering main loop
 NRF52 HW INFO: Variant: AAC0, Part: N52840, Package: QI, Ram: K256, Flash: K1024
 tock$
-
 ```
 
 The small shell above is called the "process console". It allows you to start
@@ -109,7 +127,7 @@ $ cd libtock-c/examples/tutorials/thread_network
 $ ls
 00_sensor_hello
 01_sensor_ipc
-[...] TODO update directory listing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+[...]
 ```
 
 These applications represent checkpoints for different milestones of this
@@ -125,7 +143,7 @@ following command:
 
 ```
 $ cd 00_sensor_hello
-$ make -j4 install
+$ make -j install
 [...]
 Application size report for arch family cortex-m:
 Application size report for arch family rv32i:
@@ -151,8 +169,8 @@ using `tockloader listen`. Upon reset, the board should now greet you:
 $ tockloader listen
 Initialization complete. Entering main loop
 NRF52 HW INFO: Variant: AAC0, Part: N52840, Package: QI, Ram: K256, Flash: K1024
-tock$
-TODO 00_sensor_hello_message!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+Hello World!
+tock$=
 ```
 
 Congratulations, you have successfully installed and run your first Tock
@@ -178,15 +196,23 @@ provides some system call wrappers that our application can use. These are
 defined in the `libtock` folder of the `libtock-c repository`. For this
 particular application, we are mainly interested in talking to Tock's sensor
 driver subsystem. For this, `libtock-c/libtock/temperature.h` provides
-convenient userspace wrapper functions, such as `temperature_read_sync`:
+convenient userspace wrapper functions, such as `libtocksync_temperature_read`:
 
 ```c
-/** Initiate a synchronous ambient temperature measurement:
- *
- * temperature  - pointer/address where the result of the temperature
- *                reading should be stored
- */
-int temperature_read_sync(int *temperature);
+#include <libtock-sync/sensors/temperature.h>
+
+// Read the temperature sensor synchronously.
+//
+// ## Arguments
+//
+// - `temperature`: Set to the temperature value in hundredths of degrees
+//   centigrade.
+//
+// ## Return Value
+//
+// A returncode indicating whether the temperature read was completed
+// successfully.
+returncode_t libtocksync_temperature_read(int* temperature);
 ```
 
 For now, let's focus on using the API to make a system call to read the
@@ -203,8 +229,8 @@ following:
 $ tockloader listen
 Initialization complete. Entering main loop
 NRF52 HW INFO: Variant: AAC0, Part: N52840, Package: QI, Ram: K256, Flash: K1024
+Hello World, the temperature is: 2600
 tock$
-TODO output !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ```
 
 > **CHECKPOINT:** `01_sensor_ipc`
