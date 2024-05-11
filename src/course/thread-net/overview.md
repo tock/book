@@ -8,11 +8,12 @@ temperature sensor network mote that communicates over a Thread network.
 ## Hardware Notes
 
 This tutorial requires a Tock-supported board that has an IEEE
-802.15.4-compatible radio and supports Thread. While any such board
-should work, we recommend the nRF52840DK and assume this board is used
-throughout this tutorial.
+802.15.4-compatible radio and supports Thread. While any such board should work,
+we recommend the nRF52840DK and assume this board is used throughout this
+tutorial.
 
 Compatible boards:
+
 - All Tock-supported boards with an `nRF52840` chip, such as:
   - [Nordic Semiconductor nRF54840DK](https://github.com/tock/tock/tree/master/boards/nordic/nrf52840dk)
   - [Nordic Semiconductor nRF54840 Dongle](https://github.com/tock/tock/tree/master/boards/nordic/nrf52840_dongle)
@@ -36,25 +37,26 @@ enter their desired temperature. In turn, their control unit will display the
 average temperature set across all controllers, in addition to the current
 temperature at the control unit. We use Tock's OpenThread-based communications
 stack and it's ability to run multiple concurrent applications to build this
-control unit (*mote*).
+control unit (_mote_).
 
 ![thread_net_figure](../../imgs/thread_net_tutorial_figure.png)
 
 We divide the mote's functionality into three separate applications:
-- The *control application* is responsible for interacting with the user. It
+
+- The _control application_ is responsible for interacting with the user. It
   drives the connected screen to display the current temperature and the local
   and global-average set points.
-- The *sensor application* gathers readings from the `nRF52840`s internal
+- The _sensor application_ gathers readings from the `nRF52840`s internal
   temperature sensor and exposes them to the control application.
-- Last but not least, the *communication application* is responsible for
+- Last but not least, the _communication application_ is responsible for
   exchanging data with other participants using the Thread network.
 
 ![thread_net_tutorial_apps](../../imgs/thread_net_tutorial_apps.svg)
 
-By decoupling the *sensor* and *communication* applications, the Tock kernel
+By decoupling the _sensor_ and _communication_ applications, the Tock kernel
 ensures that the mote can remain responsive even in the case of failures in
-either application. In this tutorial we demonstratate this by injecting a bug into
-the communication application and deliberately faulting it with a malicious
+either application. In this tutorial we demonstratate this by injecting a bug
+into the communication application and deliberately faulting it with a malicious
 packet.
 
 ## nRF52840dk Hardware Setup
@@ -62,6 +64,7 @@ packet.
 ![nRF52840dk](../../imgs/nrf52840dk.jpg)
 
 Make sure the switches and jumpers are properly configured on your board:
+
 1. The "Power" switch on the top left should be set to "On".
 2. The "nRF power source" switch in the top middle of the board should be set to
    "VDD".
@@ -93,6 +96,7 @@ folder. You also install the kernel on the hardware board from that directory.
 While the Tock kernel is written entirely in Rust, it supports userspace
 applications written in multiple languages. In particular, we provide two
 userspace libraries for application development in C and Rust respectively:
+
 - `libtock-c` for C applications (https://github.com/tock/libtock-c)
 - `libtock-rs` for Rust applications (https://github.com/tock/libtock-rs)
 
@@ -106,24 +110,25 @@ We divide this tutorial into four stages, with checkpoints that you can use to
 skip ahead. Each stage contains information on how to obtain all checkpoint-code
 required for it.
 
-1. [*Sensor Application*](sensor-app.md): We start by creating a simple application
-   that reads the `nRF52840DK` internal temperature sensor and prints the current
-   temperature onto the console.
+1. [_Sensor Application_](sensor-app.md): We start by creating a simple
+   application that reads the `nRF52840DK` internal temperature sensor and
+   prints the current temperature onto the console.
 
    This demonstrates how you can flash a Tock kernel and applications onto your
    development board, and introduces some key Tock concepts.
 
-2. We continue by extending this application into an "IPC
-   service". This will make the current temperature accessible to
-   other applications that request it.
+2. We continue by extending this application into an "IPC service". This will
+   make the current temperature accessible to other applications that request
+   it.
 
-   Our *controller application* will use the information provided through this
+   Our _controller application_ will use the information provided through this
    interface. We also create the scaffolding required for the controller app.
 
-3. [Following this, we develop the *communication application*](comms-app.md). This
-   application will let our mote join the Thread network and exchange messages.
+3. [Following this, we develop the _communication application_](comms-app.md).
+   This application will let our mote join the Thread network and exchange
+   messages.
 
-4. [Finally, our *control application*](control-app.md) ties the prior two apps
+4. [Finally, our _control application_](control-app.md) ties the prior two apps
    together. It builds a user interface that we display on the attached screen
    and will continue to work even if the communication app faults.
 
