@@ -49,6 +49,8 @@ We divide the mote's functionality into three separate applications:
 - Last but not least, the *communication application* is responsible for
   exchanging data with other participants using the Thread network.
 
+![thread_net_tutorial_apps](../../imgs/thread_net_tutorial_apps.svg)
+
 By decoupling the *sensor* and *communication* applications, the Tock kernel
 ensures that the mote can remain responsive even in the case of failures in
 either application. In this tutorial we demonstratate this by injecting a bug into
