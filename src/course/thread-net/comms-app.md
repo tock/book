@@ -11,13 +11,13 @@
 
 # Wireless Networking
 
+We have created a device cable of sensing temperature, accepting user input, and
+displaying data. We now set out to utilize Tock's network capabilities to
+connect our temperature controller to a central node.
+
 ## Background
 
-### IEEE 802154
-
-At this stage, we have created a device cable of sensing temperature, accepting
-user input, and displaying data. We now set out to utilize Tock's network
-capabilities to connect our temperature controller to a central node.
+### IEEE 802.15.4
 
 To facilitate wireless communication, Tock provides an IEEE 802.15.4 network
 stack. IEEE 802.15.4 (hence forth abbreviated 15.4) is a physical (PHY) and
@@ -32,7 +32,6 @@ include:
 - Zigbee
 - 6LoWPAN
 - ISA100.11a
-- others?
 
 Tock exposes to userspace 15.4 functionality through a series of command
 syscalls. Within the kernel, a 15.4 capsule and 15.4 radio driver serve to
@@ -94,27 +93,31 @@ possesses the entire set of OpenThread APIs.
 
 ### Libopenthread
 
-We assume that one nrf52840dk device is flashed using the provided hex (TODO we
-need instructions for this setup).
+We assume that a single nRF52840DK board is used as a Thread router that also
+performs certain business logic (such as averaging temperature setponts). In a
+hosted tutorial setting you will likely be provided with such a board; we do
+provide instructions for this [here](./router-setup.md).
 
-We now begin implementing an OpenThread app using `libopenthread`. This is not
-Tock specific and uses the OpenThread API calls.
+We now begin implementing an OpenThread app using `libopenthread`. Because Tock
+is able to run arbitrary code in userspace, we can make use of this existing
+library and tie it into the Tock ecosystem. As such, this part of our
+application works quite similar compared to other platforms.
 
-Although commissioned joining is a more secure authentication method, for
-simplicity, we provide a hardcoded network key. The major steps to join a Thread
-network include:
+For the purposes of this tutorial, we provide a hardcoded network key
+(_commissioned joining_ would be a more secure authentication method). The major
+steps to join a Thread network include:
 
 1. Initializing the IP interface (`ifconfig up`)
 2. Creating a dataset (`dataset init new`)
-3. Adding the network key, panid, channel to the dataset
-4. Commit active dataset ('dataset commit active')
+3. Adding the network key, _panid_, and channel to the dataset
+4. Committing the active dataset ('dataset commit active')
 5. Begin thread network attachment (`thread start`)
 
-To send and receive UDP packets, we must also correctly configure UDP. We have
-provided a mostly implemented OpenThread app that completes these
-initializations (CHECKPOINT??).
+To send and receive UDP packets, we must also correctly configure UDP. Because
+of these steps are mostly OpenThread specific, we provide an application that
+performs the vast majority of these steps.
 
-> **EXERCISE:** Build and flash the openthread app as done with prior apps
+> **EXERCISE:** Build and flash the openthread app, located under
 > `examples/tutorials/thread_net/openthread_app`. If you forget how to do this,
 > refer to the earlier submodule describing how to build and flash the sensor
 > app (TODO ADD LINK).

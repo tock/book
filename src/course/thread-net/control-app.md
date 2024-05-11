@@ -47,6 +47,9 @@ application:
 #include <u8g2.h>
 #include <u8g2-tock.h>
 
+// Global reference to the u8g2 context:
+u8g2_t u8g2;
+
 int main(void) {
   // Required initialization code:
   u8g2_tock_init(&u8g2);
@@ -65,11 +68,11 @@ readouts on the serial console. However, it should also clear the screen and you
 may see repeatedly flicker when installing applications or resetting your board.
 
 > **EXERCISE:** Extend the above app to print a simple message on the screen.
-> You can use the `u8g2_SetColor(&u8g2, 1);` method to draw in either the `0` or
-> `1` color (i.e., foreground or background).
+> You can use the `u8g2_SetDrawColor(&u8g2, 1);` method to draw in either the
+> `0` or `1` color (i.e., foreground or background).
 > `u8g2_DrawStr(&u8g2, $XCOORD, $YCOORD, $YOUR_STRING);` can be used to print a
 > string to the display. Make sure you update the display contents with a final
-> call to `u8g2_SendBuffer`.
+> call to `u8g2_SendBuffer(&u8g2);`.
 
 ## Displaying the Current Temperature
 
@@ -90,7 +93,7 @@ int main(void) {
     // Issue IPC request...
 
 	// Wait for 250ms between requests:
-	delay_ms(250);
+	libtocksync_alarm_delay_ms(250);
 }
 ```
 
@@ -190,8 +193,9 @@ int main(void) {
 
 > **EXERCISE:** The `03_controller_screen` checkpoint already contains the logic
 > outlined above. Extend the main function to, in response to a callback, write
-> the current temperature on a screen. You might find it useful to split this
-> code out into a different function.
+> the current temperature on a screen. You can do this by extending the
+> `update_screen` function. You might find it useful to split this code out into
+> a different function.
 
 Finally, we will wire up this application to the OpenThread network to send the
 current temperature setpoint to all other control units, and retrieve an average
