@@ -247,6 +247,8 @@ temperature periodically, such as once every 250 milliseconds. For this, we can
 use the `libtocksync_alarm_delay_ms` function:
 
 ```c
+#include <libtock-sync/services/alarm.h>
+
 int main(void) {
   // Perform initialization, declare variables
 
@@ -280,6 +282,8 @@ register a callback manually -- for instance, for IPC service requests. We do so
 by invoking the `ipc_register_service_callback`, defined in `ipc.h`:
 
 ```c
+#include <libtock/kernel/ipc.h>
+
 // Registers a service callback for this process.
 //
 // Service callbacks are called in response to `notify`s from clients and take
@@ -293,15 +297,17 @@ int ipc_register_service_callback(const char *pkg_name,
 ```
 
 In the above, `ipc_register_service_callback` takes a "package name" under which
-the IPC service will be reachable by clients. When a client sends an IPC request
-to a service, the provided `callback` will be invoked in the service
-application. This callback is invoked with some parameters provided by the IPC
-client, and is passed the `ud` pointer provided in the call to
+the IPC service will be reachable by clients. By convention this should be the
+same name that the application uses -- in our example, it should be
+`org.tockos.thread-tutorial.sensor` as defined in the `Makefile`. When a client
+sends an IPC request to a service, the provided `callback` will be invoked in
+the service application. This callback is invoked with some parameters provided
+by the IPC client, and is passed the `ud` pointer provided in the call to
 `ipc_register_service_callback`. This callback has a function signature as
 follows:
 
 ```c
-static void sensor_ipc_callback(int pid, int len, void *buf, void *ud) {
+static void sensor_ipc_callback(int pid, int len, int buf, void *ud) {
   // Callback handler code
 }
 ```
@@ -316,7 +322,8 @@ ipc_notify_client(pid);
 IPC clients and services communicate through memory sharing. In particular, an
 IPC client can share a region of its own memory with the IPC service, provided
 some constraints on buffer size and alignment. This shared buffer is then
-provided to the IPC service callback through the `len` and `buf` parameters.
+provided to the IPC service callback through the `len` and `buf` parameters,
+where `buf` should be cast to the appropriate pointer type.
 
 > **EXERCISE:** Implement an IPC service callback for your sensor application
 > that writes the current temperature value into the provided buffer.
@@ -326,7 +333,7 @@ provided to the IPC service callback through the `len` and `buf` parameters.
 > along the lines of:
 >
 > ```
-> memcpy((uint8_t*) buf, (uint8_t*) current_temperature, sizeof(current_temperature)
+> memcpy((uint8_t*) buf, (uint8_t*) &current_temperature, sizeof(current_temperature))
 > ```
 >
 > After copying the value, notify the calling client using the
@@ -349,17 +356,47 @@ _control application_.
 > applications as being installed:
 >
 > ```
-> TODO! OUTPUT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+> $ tockloader list
+> [INFO   ] Using jlink channel to communicate with the board.
+> [INFO   ] Using settings from KNOWN_BOARDS["nrf52dk"]
+> ┌──────────────────────────────────────────────────┐
+> │ App 0                                            |
+> └──────────────────────────────────────────────────┘
+>   Name:                  org.tockos.thread-tutorial.controller
+>   Version:               0
+>   Enabled:               True
+>   Sticky:                False
+>   Total Size in Flash:   16384 bytes
+>
+>
+> ┌──────────────────────────────────────────────────┐
+> │ App 1                                            |
+> └──────────────────────────────────────────────────┘
+>   Name:                  org.tockos.thread-tutorial.sensor
+>   Version:               0
+>   Enabled:               True
+>   Sticky:                False
+>   Total Size in Flash:   8192 bytes
+>
+> [INFO   ] Finished in 4.381 seconds
 > ```
 >
 > When both applications are flashed onto a Tock board, the provided
 > `03_controller_screen` application should indicate that it is making repeated
 > IPC calls to the sensor and retrieving a temperature value, which can look
-> like this:
+> like the following. You can also trigger these prints by pressing button 1 or
+> 2 on the board.
 >
 > ```
 > $ tockloader listen
-> TODO OUTPUT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+> NRF52 HW INFO: Variant: AAC0, Part: N52840, Package: QI, Ram: K256, Flash: K1024
+> [controller] Discovered sensor service: 1
+> [controller] TODO: update screen! Measured temperature: 2500
+> tock$ [controller] TODO: update screen! Measured temperature: 2600
+> [controller] TODO: update screen! Measured temperature: 2700
+> [controller] TODO: update screen! Measured temperature: 2600
+> [controller] TODO: update screen! Measured temperature: 2500
+> [controller] TODO: update screen! Measured temperature: 2500
 > ```
 
 Take a moment to look at the `03_controller_screen/main.c` implementation. It
@@ -375,4 +412,4 @@ attached OLED screen. This screen, alongside the four buttons present on the
 nRF52840DK development board will serve as the user interface for our HVAC
 control system.
 
-[Continue here.](comms-app.md)
+[Continue here.](control-app.md)
