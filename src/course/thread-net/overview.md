@@ -104,6 +104,14 @@ We will use `libtock-c` in this tutorial. Its example-applications are located
 in the [`/examples`](https://github.com/tock/libtock-c/tree/master/examples)
 directory of the `libtock-c` repository.
 
+## Thread Router
+
+For this tutorial, we assume that one nRF52840DK is dedicated to be a Thread
+router board. As a participant in a hosted tutorial, you will likely not need to
+set this up yourself. However, we do
+[provide a pre-built image and some instructions](router-setup.md) for how to
+set up this router as well.
+
 ## Stages
 
 We divide this tutorial into four stages, with checkpoints that you can use to
