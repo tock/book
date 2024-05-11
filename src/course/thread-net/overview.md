@@ -109,7 +109,7 @@ directory of the `libtock-c` repository.
 For this tutorial, we assume that one nRF52840DK is dedicated to be a Thread
 router board. As a participant in a hosted tutorial, you will likely not need to
 set this up yourself. However, we do
-[provide a pre-built image and some instructions](router-setup.md) for how to
+[provide a pre-built image and some instructions](./router-setup.md) for how to
 set up this router as well.
 
 ## Stages

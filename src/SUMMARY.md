@@ -15,6 +15,7 @@
     - [Access Control](./course/usb-security-key/key-hotp-access.md)
     - [Security Key Demo](./course/usb-security-key/key-hotp-demo.md)
   - [Thread Temperature Sensor](./course/thread-net/overview.md)
+    - [Router Setup](./course/thread-net/router-setup.md)
     - [Sensor App](./course/thread-net/sensor-app.md)
     - [Control App](./course/thread-net/control-app.md)
     - [Communications App](./course/thread-net/comms-app.md)
