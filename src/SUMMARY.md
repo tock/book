@@ -18,6 +18,7 @@
     - [Sensor App](./course/thread-net/sensor-app.md)
     - [Control App](./course/thread-net/control-app.md)
     - [Communications App](./course/thread-net/comms-app.md)
+    - [Robustness](./course/thread-net/robustness.md)
   - [Kernel Boot](./course/boot.md)
   - [Policies](./course/policies.md)
   - [TicKV](./course/tickv.md)
