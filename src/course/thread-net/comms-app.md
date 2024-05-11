@@ -14,7 +14,7 @@
 
 ### IEEE 802154
 At this stage, we have created a device cable of sensing temperature, accepting user input, 
-and displaying data. We now set out to utilize Tock's network capabilites to connect
+and displaying data. We now set out to utilize Tock's network capabilities to connect
 our temperature controller to a central node.
 
 To facilitate wireless communication, Tock provides an IEEE 802.15.4 network stack. 
@@ -42,7 +42,7 @@ radio supported by Tock.
 mesh networking protocol built using a 15.4, 6LoWPAN, UDP network stack. Notably, each 
 Thread node possess a globally addressable IPv6 address given Thread's adoption of 
 6LoWPAN (an IPv6 compression scheme). Although we will not exhaustively describe Thread
-here, we will provide a brief overview and pointers to more indepth resources that
+here, we will provide a brief overview and pointers to more in-depth resources that
 further describe Thread. 
 
 Thread devices fit into two broadly generalized device types: routers and children. Routers

@@ -71,7 +71,7 @@ applications or resetting your board.
 > screen. You can use the `u8g2_SetColor(&u8g2, 1);` method to draw in
 > either the `0` or `1` color (i.e., foreground or background).
 > `u8g2_DrawStr(&u8g2, $XCOORD, $YCOORD, $YOUR_STRING);` can be used
-> to print a string to the display. Make sure you update the dislay
+> to print a string to the display. Make sure you update the display
 > contents with a final call to `u8g2_SendBuffer`.
 
 ## Displaying the Current Temperature
