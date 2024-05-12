@@ -3,6 +3,7 @@
 [Introduction](./introduction.md)
 
 - [Getting Started](./getting_started.md)
+
   - [Quickstart](./setup/quickstart.md)
   - [Hardware Setup](./setup/hardware.md)
   - [Building the Kernel](./setup/kernel.md)

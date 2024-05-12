@@ -47,8 +47,6 @@ $ tockloader --help
 If either of these steps fail, please double check that you followed the
 environment setup instructions above.
 
-
-
 ## Flash the kernel
 
 Now that the board is connected and you have verified that the kernel compiles

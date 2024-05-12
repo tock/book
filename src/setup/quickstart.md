@@ -5,9 +5,8 @@ a local development environment.
 
 ## Option 1: Run a Virtual Machine
 
-You can download
-a virtual machine image with all of the dependencies already installed
-[here](https://praxis.princeton.edu/~alevy/Tock.ova) or
+You can download a virtual machine image with all of the dependencies already
+installed [here](https://praxis.princeton.edu/~alevy/Tock.ova) or
 [here](https://www.cs.virginia.edu/~bjc8c/archive/Tock.ova). Using `curl` to
 download the image is recommended, but your browser should be able to download
 it as well:
@@ -70,10 +69,10 @@ Install the following:
 
         $ pipx ensurepath
 
-1.  `JLinkExe` to load code onto your board. `JLink` is available [from the
-    Segger website](https://www.segger.com/downloads/jlink). You want to install
-    the "J-Link Software and Documentation Pack". There are various packages
-    available depending on operating system.
+1.  `JLinkExe` to load code onto your board. `JLink` is available
+    [from the Segger website](https://www.segger.com/downloads/jlink). You want
+    to install the "J-Link Software and Documentation Pack". There are various
+    packages available depending on operating system.
 
 1.  OpenOCD. Another tool to load code. You can install through package
     managers.

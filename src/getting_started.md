@@ -30,9 +30,9 @@ development and new boards are added rapidly. You should definitely consult the
 board-specific README to see if there are any board-specific details you should
 be aware of.
 
-When you are ready to use your board, see the [hardware setup
-guide](./setup/hardware.md) for information on any needed setup to get the board
-working with your machine.
+When you are ready to use your board, see the
+[hardware setup guide](./setup/hardware.md) for information on any needed setup
+to get the board working with your machine.
 
 ## Software
 
