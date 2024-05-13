@@ -2,7 +2,13 @@
 
 [Introduction](./introduction.md)
 
-[Getting Started](./getting_started.md)
+- [Getting Started](./getting_started.md)
+
+  - [Quickstart](./setup/quickstart.md)
+  - [Hardware Setup](./setup/hardware.md)
+  - [Building the Kernel](./setup/kernel.md)
+  - [Installing Applications](./setup/apps.md)
+  - [Tockloader](./setup/tockloader.md)
 
 - [Tock Course](./course/course.md)
 
