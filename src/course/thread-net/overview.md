@@ -3,8 +3,6 @@
 This module and submodules will walk you through how to create a Tock
 temperature sensor network mote that communicates over a Thread network.
 
-**ADD IMAGE**
-
 ## Hardware Notes
 
 This tutorial requires a Tock-supported board that has an IEEE
