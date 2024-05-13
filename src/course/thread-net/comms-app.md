@@ -1,7 +1,7 @@
 # Wireless Networking
 
-We have created a device capable of sensing temperature, accepting user input, and
-displaying data. We now set out to utilize Tock's network capabilities to
+We have created a device capable of sensing temperature, accepting user input,
+and displaying data. We now set out to utilize Tock's network capabilities to
 connect our temperature controller to a central node.
 
 ## Background
@@ -83,9 +83,9 @@ possesses the entire set of OpenThread APIs.
 ### Libopenthread
 
 We assume that a single nRF52840DK board is used as a Thread router that also
-performs certain logic (such as averaging temperature setponts). In a
-hosted tutorial setting you will likely be provided with such a board; we do
-provide instructions for this [here](./router-setup.md).
+performs certain logic (such as averaging temperature setponts). In a hosted
+tutorial setting you will likely be provided with such a board; we do provide
+instructions for this [here](./router-setup.md).
 
 We now begin implementing an OpenThread app using `libopenthread`. Because Tock
 is able to run arbitrary code in userspace, we can make use of this existing
@@ -106,16 +106,16 @@ To send and receive UDP packets, we must also correctly configure UDP. Because
 of these steps are mostly OpenThread specific, we provide an application that
 performs the vast majority of these steps.
 
+> **CHECKPOINT:** `06_openthread`
+
 > **EXERCISE:** Build and flash the openthread app, located under
-> `examples/tutorials/thread_net/openthread_app`. If you forget how to do this,
-> refer to the earlier submodule describing how to build and flash the sensor
-> app (TODO ADD LINK).
+> `examples/tutorials/thread_network/06_openthread`.
 
 Upon successfully flashing the app, launch `tockloader listen`. Once in the
 tockloader console reset the board using:
 
 ```
-$tock reset
+tock$ reset
 ```
 
 If you have successfully compiled and flashed the app, you will see:
@@ -130,11 +130,23 @@ Successfully attached to Thread network as a child.
 > **TROUBLESHOOTING**
 >
 > 1. _Thread output not printed to the console_.
+>
 >    - Run `tockloader list`
->    - You should see (TODO ADD).
+>    - You should see:
+>
+>      ```
+>      tock$ list
+>       PID    ShortID    Name                Quanta  Syscalls  Restarts  Grants  State
+>       0      Unique     org.tockos.thread-tutorial.openthread   125      1586         0   6/18   Running
+>       1      Unique     thread_controller        2       187         0   5/18   Yielded
+>       2      Unique     org.tockos.thread-tutorial.sensor     0       132         0   3/18   Yielded
+>      ```
+>
 >    - If you do not see this, you have not successfully flashed the app.
+>
 > 2. _Thread output does not say succesfully joined_.
->    - First confirm that you have flashed the router with the [provided instructions](./router-setup.md)
+>    - First confirm that you have flashed the router with the
+>      [provided instructions](./router-setup.md)
 >    - Attempt resetting your board again.
 
 Congratulations! We now have a networked mote. We now must modify the provided
@@ -155,21 +167,23 @@ implementation to be integrated with the controller app.
 >    then must notify the client that the requested service is completed.
 >
 > More specifically, here is a todo list of things to implement. If you become
-> stuck, we provide a checkpoint with the completed OpenThread app (ADD
-> CHECKPOINT LINK). To be implemented:
+> stuck, we provide a checkpoint with the completed OpenThread app
+> (`07_openthread_final`). To be implemented:
 >
-> 1. Add IPC callback (mirroring structure of sensor IPC) and register the
->    the service.
+> 1. Add IPC callback (mirroring structure of sensor IPC) and register the the
+>    service.
 > 2. Within this callback copy the `local_setpoint` found in the shared IPC
 >    buffer to the variable `local_temperature_setpoint`.i
-> 3. Send a UDP packet with the local temperature setpoint. You can use
->    the `udpSend()` method. This function multicasts to all routers
->    the value stored in the variable `local_temperature_setpoint`.
+> 3. Send a UDP packet with the local temperature setpoint. You can use the
+>    `udpSend()` method. This function multicasts to all routers the value
+>    stored in the variable `local_temperature_setpoint`.
 > 4. We should _ONLY_ copy the global setpoint into the shared IPC buffer and
 >    notify the controller client _IF_ the mote is connected to a thread
 >    network. If we are not connected to a network, we have no way of knowing
 >    the global setpoint. _(HINT: we can use the `statechangedcallback` to track
 >    when we are attached to a network)_.
+
+> **CHECKPOINT:** `07_openthread_final`
 
 We now have a completed OpenThread app that provides an IPC service capable of
 broadcasting the given mote's desired setpoint, receiving the global average
