@@ -1,17 +1,6 @@
-## My Outline
-
-- Need for networking? What does Tock provide?
-- What is Thread?
-- Tock/OpenThread
-- Describe Tock/OpenThread port. (elaborate on reasons for why not to have
-  directly linked?)
-
-- How to setup openthread network
-- what do we want to leave as exercise for them to do?
-
 # Wireless Networking
 
-We have created a device cable of sensing temperature, accepting user input, and
+We have created a device capable of sensing temperature, accepting user input, and
 displaying data. We now set out to utilize Tock's network capabilities to
 connect our temperature controller to a central node.
 
@@ -23,7 +12,7 @@ To facilitate wireless communication, Tock provides an IEEE 802.15.4 network
 stack. IEEE 802.15.4 (hence forth abbreviated 15.4) is a physical (PHY) and
 media access control (MAC) specification that is purpose built for low-rate
 wireless personal area networks. As such, 15.4 is harmonious with Tock's use
-case an embedded operating system for resource constrained devices.
+case as an embedded operating system for resource constrained devices.
 
 Notable examples of popular wireless network technologies utilizing 15.4
 include:
@@ -80,7 +69,7 @@ the OpenThread stack and the platform's hardware.
 OpenThread is a popular network stack supported by other embedded platforms
 (e.g. [Zephyr](https://github.com/zephyrproject-rtos/zephyr)). In other embedded
 platforms, the OpenThread PAL is exposed either directly to hardware or links
-directly to the kernel. Tock faces a unique designchallenge in supporting
+directly to the kernel. Tock faces a unique design challenge in supporting
 OpenThread as the Tock kernel's threat model explicitly bans external
 dependencies. Subsequently, Tock provides an OpenThread port that runs as an
 application. This provides the added benefit that a bug in OpenThread will not
@@ -94,7 +83,7 @@ possesses the entire set of OpenThread APIs.
 ### Libopenthread
 
 We assume that a single nRF52840DK board is used as a Thread router that also
-performs certain business logic (such as averaging temperature setponts). In a
+performs certain logic (such as averaging temperature setponts). In a
 hosted tutorial setting you will likely be provided with such a board; we do
 provide instructions for this [here](./router-setup.md).
 
@@ -132,7 +121,10 @@ $tock reset
 If you have successfully compiled and flashed the app, you will see:
 
 ```
-ADD OUTPUT
+tock$ [THREAD] Device IPv6 Addresses: fe80:0:0:0:b4ef:e680:d8ef:475e
+[State Change] - Detached.
+[State Change] - Child.
+Successfully attached to Thread network as a child.
 ```
 
 > **TROUBLESHOOTING**
@@ -142,8 +134,7 @@ ADD OUTPUT
 >    - You should see (TODO ADD).
 >    - If you do not see this, you have not successfully flashed the app.
 > 2. _Thread output does not say succesfully joined_.
->    - First confirm that you have flashed the router with the provided hex and
->      (TODO ADD LINK)
+>    - First confirm that you have flashed the router with the [provided instructions](./router-setup.md)
 >    - Attempt resetting your board again.
 
 Congratulations! We now have a networked mote. We now must modify the provided
@@ -167,10 +158,14 @@ implementation to be integrated with the controller app.
 > stuck, we provide a checkpoint with the completed OpenThread app (ADD
 > CHECKPOINT LINK). To be implemented:
 >
-> 1. Add IPC callback (mirroring structure of sensor IPC)
+> 1. Add IPC callback (mirroring structure of sensor IPC) and register the
+>    the service.
 > 2. Within this callback copy the `local_setpoint` found in the shared IPC
->    buffer to the variable (ADD).
-> 3. We should _ONLY_ copy the global setpoint into the shared IPC buffer and
+>    buffer to the variable `local_temperature_setpoint`.i
+> 3. Send a UDP packet with the local temperature setpoint. You can use
+>    the `udpSend()` method. This function multicasts to all routers
+>    the value stored in the variable `local_temperature_setpoint`.
+> 4. We should _ONLY_ copy the global setpoint into the shared IPC buffer and
 >    notify the controller client _IF_ the mote is connected to a thread
 >    network. If we are not connected to a network, we have no way of knowing
 >    the global setpoint. _(HINT: we can use the `statechangedcallback` to track
