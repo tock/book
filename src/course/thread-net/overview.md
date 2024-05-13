@@ -59,6 +59,14 @@ either application. In this tutorial we demonstratate this by injecting a bug
 into the communication application and deliberately faulting it with a malicious
 packet.
 
+## Software Prerequisites
+
+- Getting Started Guide
+- Rust
+- Make
+- GCC for ARM and RISC-V
+- Tockloader Python Package
+
 ## nRF52840dk Hardware Setup
 
 ![nRF52840dk](../../imgs/nrf52840dk.jpg)
@@ -129,15 +137,16 @@ required for it.
    make the current temperature accessible to other applications that request
    it.
 
-   Our _controller application_ will use the information provided through this
-   interface. We also create the scaffolding required for the controller app.
+3. [Our _controller application_](comms-app.md) takes this information and
+   displays it onto an attached OLED screen. It provides a basic user interface,
+   wiring up a screen driver, buttons, and an "IPC client".
 
-3. [Following this, we develop the _communication application_](comms-app.md).
+4. [Following this, we develop the _communication application_](comms-app.md).
    This application will let our mote join the Thread network and exchange
    messages.
 
-4. [Finally, our _control application_](control-app.md) ties the prior two apps
-   together. It builds a user interface that we display on the attached screen
-   and will continue to work even if the communication app faults.
+5. Finally,
+   [we demonstrate how Tock's mutually distrustful application model can protect the system](robustness.md)
+   from misbehavior in any given app.
 
 Sound good? Let's [get started](sensor-app.md).
