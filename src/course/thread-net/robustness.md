@@ -137,7 +137,7 @@ kernel:
 After making this change, you will need to recompile the kernel, like so:
 
 ```
-$ cd tock/tutorials/nrf52840dk-thread-tutorial
+$ cd tock/boards/tutorials/nrf52840dk-thread-tutorial
 $ make
    [...]
    Compiling nrf52_components v0.1.0 (/home/leons/proj/tock/kernel/boards/nordic/nrf52_components)

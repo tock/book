@@ -21,7 +21,7 @@ You can compile this configuration board by entering into its respective
 directory and typing `make`:
 
 ```
-$ cd tock/tutorials/nrf52840dk-thread-tutorial
+$ cd tock/boards/tutorials/nrf52840dk-thread-tutorial
 $ make
    [...]
    Compiling nrf52_components v0.1.0 (/home/leons/proj/tock/kernel/boards/nordic/nrf52_components)
