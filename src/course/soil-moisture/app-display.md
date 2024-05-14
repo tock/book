@@ -10,6 +10,10 @@ Copy an existing libtock-c application into a folder named
 
 We start by implementing a function that displays the soil moisture on the screen.
 
+To help with this, we will use the [U8G2](https://github.com/olikraus/u8g2)
+library supported by libtock-c. This is a library designed for monochromatic
+displays. It includes a host of functions for drawing text and shapes.
+
 1.  The first step is to put together a string to display on the screen.
 
     ```c
