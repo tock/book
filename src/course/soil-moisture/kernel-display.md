@@ -232,8 +232,8 @@ to our applications.
         .finalize(components::appid_assigner_names_component_static!());
 
     // Create the null credential checker.
-    let checking_policy = components::appid::checker_sha::AppCheckerNullComponent::new()
-        .finalize();
+    let checking_policy = components::appid::checker_null::AppCheckerNullComponent::new()
+        .finalize(components::app_checker_null_component_static!());
 
     // Create the process checking machine.
     let checker = components::appid::checker::ProcessCheckerMachineComponent::new(checking_policy)
@@ -255,8 +255,8 @@ to our applications.
         .finalize(components::appid_assigner_names_component_static!());
 
     // Create the null credential checker.
-    let checking_policy = components::appid::checker_sha::AppCheckerNullComponent::new()
-        .finalize();
+    let checking_policy = components::appid::checker_null::AppCheckerNullComponent::new()
+        .finalize(components::app_checker_null_component_static!());
 
     // Create the process checking machine.
     let checker = components::appid::checker::ProcessCheckerMachineComponent::new(checking_policy)
