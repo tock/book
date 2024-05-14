@@ -1,5 +1,4 @@
-Soil Moisture Watering Instructions Kernel Configuration
-=======
+# Soil Moisture Watering Instructions Kernel Configuration
 
 Our next task is to configure the kernel to support a third app, the
 `soil-moisture-watering` watering instructions app. For this app we only need
@@ -9,11 +8,10 @@ when needed.
 
 ## Watering Screen Support
 
-To do this, all we need to do is add to the `apps_regions` array. We will
-give the remainder of the screen to the watering app.
+To do this, all we need to do is add to the `apps_regions` array. We will give
+the remainder of the screen to the watering app.
 
 Update your kernel like the following:
-
 
 ```rust
 let apps_regions = static_init!(
@@ -41,10 +39,6 @@ let apps_regions = static_init!(
 );
 ```
 
-
 ## Wrap up
 
 You can compile and load the kernel to support the next app.
-
-
-

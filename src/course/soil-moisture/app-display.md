@@ -1,5 +1,4 @@
-Soil Moisture Data Display Application
-=================================
+# Soil Moisture Data Display Application
 
 The second app will display the soil moisture reading on the screen.
 
@@ -8,7 +7,8 @@ Copy an existing libtock-c application into a folder named
 
 ## Display Soil Moisture on the Screen
 
-We start by implementing a function that displays the soil moisture on the screen.
+We start by implementing a function that displays the soil moisture on the
+screen.
 
 To help with this, we will use the [U8G2](https://github.com/olikraus/u8g2)
 library supported by libtock-c. This is a library designed for monochromatic
@@ -27,33 +27,33 @@ displays. It includes a host of functions for drawing text and shapes.
 
 2.  Now we will center the text on the display and write it to the screen.
 
-	```c
-	u8g2_t u8g2;
+    ```c
+    u8g2_t u8g2;
 
-	int display_width;
-	int display_height;
+    int display_width;
+    int display_height;
 
-	static void show_moisture(uint32_t reading) {
-	  char buf[30];
-	  uint32_t whole   = reading / 10;
-	  uint32_t decimal = reading % 10;
-	  snprintf(buf, 30, "Soil Moisture: %lu.%01lu%%", whole, decimal);
+    static void show_moisture(uint32_t reading) {
+      char buf[30];
+      uint32_t whole   = reading / 10;
+      uint32_t decimal = reading % 10;
+      snprintf(buf, 30, "Soil Moisture: %lu.%01lu%%", whole, decimal);
 
-	  int strwidth = u8g2_GetUTF8Width(&u8g2, buf);
+      int strwidth = u8g2_GetUTF8Width(&u8g2, buf);
 
-	  int y_center = display_height / 2;
-	  int x        = max((display_width / 2) - (strwidth / 2), 0);
+      int y_center = display_height / 2;
+      int x        = max((display_width / 2) - (strwidth / 2), 0);
 
-	  u8g2_ClearBuffer(&u8g2);
-	  u8g2_DrawStr(&u8g2, x, y_center, buf);
-	  u8g2_SendBuffer(&u8g2);
-	}
-	```
+      u8g2_ClearBuffer(&u8g2);
+      u8g2_DrawStr(&u8g2, x, y_center, buf);
+      u8g2_SendBuffer(&u8g2);
+    }
+    ```
 
 ## Connect to the IPC Service
 
-Next we connect with the IPC service to get soil moisture data. We will put this in a new file
-(`sensor_service.c`) so it is easier to re-use for other apps.
+Next we connect with the IPC service to get soil moisture data. We will put this
+in a new file (`sensor_service.c`) so it is easier to re-use for other apps.
 
 1.  Connecting to an IPC service takes four steps:
 
@@ -62,7 +62,8 @@ Next we connect with the IPC service to get soil moisture data. We will put this
     3. Sharing a buffer with the service.
     4. Notifying the service we want to use it.
 
-    Create a function named `connect_to_sensor_service()` and use it to connect to the IPC service.
+    Create a function named `connect_to_sensor_service()` and use it to connect
+    to the IPC service.
 
     ```c
     returncode_t connect_to_sensor_service(char* ipc_buf) {
@@ -100,89 +101,89 @@ Next we connect with the IPC service to get soil moisture data. We will put this
 
 2.  Create a callback function to receive the events when data is available.
 
-	```c
-	static void ipc_callback(__attribute__ ((unused)) int   pid,
-	                         __attribute__ ((unused)) int   len,
-	                         __attribute__ ((unused)) int   arg2,
-	                         __attribute__ ((unused)) void* ud) {
-	  uint32_t* moisture_buf    = (uint32_t*) ipc_buf;
-	  uint32_t moisture_reading = moisture_buf[0];
-	  callback(moisture_reading);
-	}
-	```
+    ```c
+    static void ipc_callback(__attribute__ ((unused)) int   pid,
+                             __attribute__ ((unused)) int   len,
+                             __attribute__ ((unused)) int   arg2,
+                             __attribute__ ((unused)) void* ud) {
+      uint32_t* moisture_buf    = (uint32_t*) ipc_buf;
+      uint32_t moisture_reading = moisture_buf[0];
+      callback(moisture_reading);
+    }
+    ```
 
-3.  Save a callback for the top-level application and provide the sensor reading.
+3.  Save a callback for the top-level application and provide the sensor
+    reading.
 
-	```c
-	static sensor_service_callback _callback;
-	static char* _ipc_buf;
+    ```c
+    static sensor_service_callback _callback;
+    static char* _ipc_buf;
 
-	static void ipc_callback(__attribute__ ((unused)) int   pid,
-	                         __attribute__ ((unused)) int   len,
-	                         __attribute__ ((unused)) int   arg2,
-	                         __attribute__ ((unused)) void* ud) {
-	  uint32_t* moisture_buf    = (uint32_t*) ipc_buf;
-	  uint32_t moisture_reading = moisture_buf[0];
-	  callback(moisture_reading);
-	}
+    static void ipc_callback(__attribute__ ((unused)) int   pid,
+                             __attribute__ ((unused)) int   len,
+                             __attribute__ ((unused)) int   arg2,
+                             __attribute__ ((unused)) void* ud) {
+      uint32_t* moisture_buf    = (uint32_t*) ipc_buf;
+      uint32_t moisture_reading = moisture_buf[0];
+      callback(moisture_reading);
+    }
 
-	returncode_t connect_to_sensor_service(char* ipc_buf, sensor_service_callback cb) {
-	  int err;
-	  size_t svc_num = 0;
+    returncode_t connect_to_sensor_service(char* ipc_buf, sensor_service_callback cb) {
+      int err;
+      size_t svc_num = 0;
 
-	  // Save the callback to use when we get notified.
-	  _callback = cb;
-	  _ipc_buf = ipc_buf;
+      // Save the callback to use when we get notified.
+      _callback = cb;
+      _ipc_buf = ipc_buf;
 
-	  // Find the sensing service.
-	  err = ipc_discover("soil_moisture_sensor", &svc_num);
-	  if (err < 0) {
-	    printf("No soil moisture service\n");
-	    return err;
-	  }
-	  // Setup our local callback for when new sensor data is ready.
-	  err = ipc_register_client_callback(svc_num, ipc_callback, NULL);
-	  if (err < 0) {
-	    printf("No ipc_register_client_callback\n");
-	    return err;
-	  }
-	  // Share a buffer with the service to send us data.
-	  err = ipc_share(svc_num, ipc_buf, 64);
-	  if (err < 0) {
-	    printf("No ipc_share\n");
-	    return err;
-	  }
-	  // Notify that we exist so the service will send us data.
-	  err = ipc_notify_service(svc_num);
-	  if (err < 0) {
-	    printf("No ipc_notify_service\n");
-	    return err;
-	  }
+      // Find the sensing service.
+      err = ipc_discover("soil_moisture_sensor", &svc_num);
+      if (err < 0) {
+        printf("No soil moisture service\n");
+        return err;
+      }
+      // Setup our local callback for when new sensor data is ready.
+      err = ipc_register_client_callback(svc_num, ipc_callback, NULL);
+      if (err < 0) {
+        printf("No ipc_register_client_callback\n");
+        return err;
+      }
+      // Share a buffer with the service to send us data.
+      err = ipc_share(svc_num, ipc_buf, 64);
+      if (err < 0) {
+        printf("No ipc_share\n");
+        return err;
+      }
+      // Notify that we exist so the service will send us data.
+      err = ipc_notify_service(svc_num);
+      if (err < 0) {
+        printf("No ipc_notify_service\n");
+        return err;
+      }
 
-	  return RETURNCODE_SUCCESS;
-	}
-	```
+      return RETURNCODE_SUCCESS;
+    }
+    ```
 
 4.  Finally, create a header file (`sensor_service.h`) for our IPC service.
 
-	```c
-	#pragma once
+    ```c
+    #pragma once
 
-	#include <libtock/tock.h>
+    #include <libtock/tock.h>
 
-	#ifdef __cplusplus
-	extern "C" {
-	#endif
+    #ifdef __cplusplus
+    extern "C" {
+    #endif
 
-	typedef void (*sensor_service_callback)(uint32_t);
+    typedef void (*sensor_service_callback)(uint32_t);
 
-	returncode_t connect_to_sensor_service(char* ipc_buf, sensor_service_callback cb);
+    returncode_t connect_to_sensor_service(char* ipc_buf, sensor_service_callback cb);
 
-	#ifdef __cplusplus
-	}
-	#endif
-	```
-
+    #ifdef __cplusplus
+    }
+    #endif
+    ```
 
 ## Initialize the Screen
 
@@ -260,4 +261,3 @@ In the `main()` function, we will setup the screen.
 ## Wrap Up - Second App
 
 You can now compile and load this app!
-

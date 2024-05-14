@@ -1,18 +1,14 @@
-Soil Moisture Watering Instructions Application
-=================================
-
-
+# Soil Moisture Watering Instructions Application
 
 Our third app signals to people when they need to water the plant.
 
 Copy an existing libtock-c application into a folder named
 `soil-moisture-watering`.
 
-
 ### Display "Water Me!"
 
-Our first step will be to create a function to display "Water Me!" when
-the plant needs water. This looks similar to displaying the moisture level.
+Our first step will be to create a function to display "Water Me!" when the
+plant needs water. This looks similar to displaying the moisture level.
 
 ```c
 u8g2_t u8g2;
@@ -38,8 +34,8 @@ static void water_me(void) {
 
 ### Connect to the IPC Service
 
-We will use the `sensor_service.c` file we created for the previous app.
-Create a symlink from the other app.
+We will use the `sensor_service.c` file we created for the previous app. Create
+a symlink from the other app.
 
 ```
 ln -s ../soil-moisture-display/sensor_service.* .
@@ -47,38 +43,37 @@ ln -s ../soil-moisture-display/sensor_service.* .
 
 1.  Connect to the IPC service:
 
-	```c
-	char ipc_buf[64] __attribute__((aligned(64)));
+    ```c
+    char ipc_buf[64] __attribute__((aligned(64)));
 
-	int main(void) {
-	  int err;
-	  printf("[Soil Moisture Instructions] When to water\n");
+    int main(void) {
+      int err;
+      printf("[Soil Moisture Instructions] When to water\n");
 
-	  err = connect_to_sensor_service(ipc_buf, ipc_callback);
-	  if (err != RETURNCODE_SUCCESS) return -1;
+      err = connect_to_sensor_service(ipc_buf, ipc_callback);
+      if (err != RETURNCODE_SUCCESS) return -1;
 
-	  while (1) yield();
-	}
-	```
+      while (1) yield();
+    }
+    ```
 
 2.  Create the IPC callback. This will call `water_me()` if the soil moisture is
     low enough.
 
-	```c
-	// Water if the soil moisture is below 45.5%.
-	#define WATER_THRESHOLD_TENTH_PERCENT 455
+    ```c
+    // Water if the soil moisture is below 45.5%.
+    #define WATER_THRESHOLD_TENTH_PERCENT 455
 
-	static void ipc_callback(uint32_t moisture_reading) {
-	  if (moisture_reading < WATER_THRESHOLD_TENTH_PERCENT) {
-	    water_me();
-	  } else {
-	    // No water needed, just clear the screen.
-	    u8g2_ClearBuffer(&u8g2);
-	    u8g2_SendBuffer(&u8g2);
-	  }
-	}
-	```
-
+    static void ipc_callback(uint32_t moisture_reading) {
+      if (moisture_reading < WATER_THRESHOLD_TENTH_PERCENT) {
+        water_me();
+      } else {
+        // No water needed, just clear the screen.
+        u8g2_ClearBuffer(&u8g2);
+        u8g2_SendBuffer(&u8g2);
+      }
+    }
+    ```
 
 ### Initialize the screen
 
@@ -102,10 +97,6 @@ int main(void) {
 }
 ```
 
-
 ### Wrap Up - Third App
 
 We now have an app to notify when a plant needs watering!
-
-
-

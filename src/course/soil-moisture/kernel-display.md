@@ -1,11 +1,9 @@
-Soil Moisture Display Kernel Configuration
-================
+# Soil Moisture Display Kernel Configuration
 
-In this submodule we will continue to configure the Tock kernel to support
-a screen so we can display the soil moisture reading to users.
+In this submodule we will continue to configure the Tock kernel to support a
+screen so we can display the soil moisture reading to users.
 
-Background and Goal
-----
+## Background and Goal
 
 Our goal with the display is to eventually support _multiple_ applications which
 can write to the display. This poses an issue as the two applications will not
@@ -31,13 +29,11 @@ support for cryptographic assignment, but we will use the AppId mechanism to
 ensure that our applications have persistent identifiers we can use when
 assigning screen windows.
 
-
-
 ## Enabling the Screen
 
 We start, however, by configuring our Tock kernel to support a display. This
-guide assumes you are using a SSD1306-based OLED display (like [this
-one](https://www.amazon.com/UCTRONICS-SSD1306-Self-Luminous-Display-Raspberry/dp/B072Q2X2LL)).
+guide assumes you are using a SSD1306-based OLED display (like
+[this one](https://www.amazon.com/UCTRONICS-SSD1306-Self-Luminous-Display-Raspberry/dp/B072Q2X2LL)).
 You can use other displays, but note you will have to use a different driver and
 connection to the screen.
 
@@ -45,45 +41,44 @@ connection to the screen.
     using one of the hardware I2C peripherals, and then define an `I2CDevice` to
     use for the screen.
 
-	```rust
-	const I2C_SDA_PIN: Pin = Pin::P0_26;
-	const I2C_SCL_PIN: Pin = Pin::P0_27;
+    ```rust
+    const I2C_SDA_PIN: Pin = Pin::P0_26;
+    const I2C_SCL_PIN: Pin = Pin::P0_27;
 
-	let i2c_bus = components::i2c::I2CMuxComponent::new(&base_peripherals.twi0, None)
-	    .finalize(components::i2c_mux_component_static!(nrf52840::i2c::TWI));
-	base_peripherals.twi0.configure(
-	    nrf52840::pinmux::Pinmux::new(I2C_SCL_PIN as u32),
-	    nrf52840::pinmux::Pinmux::new(I2C_SDA_PIN as u32),
-	);
+    let i2c_bus = components::i2c::I2CMuxComponent::new(&base_peripherals.twi0, None)
+        .finalize(components::i2c_mux_component_static!(nrf52840::i2c::TWI));
+    base_peripherals.twi0.configure(
+        nrf52840::pinmux::Pinmux::new(I2C_SCL_PIN as u32),
+        nrf52840::pinmux::Pinmux::new(I2C_SDA_PIN as u32),
+    );
 
-	// I2C address is b011110X, and on this board D/C̅ is GND.
-	let ssd1306_i2c = components::i2c::I2CComponent::new(i2c_bus, 0x3c)
-	    .finalize(components::i2c_component_static!(nrf52840::i2c::TWI));
-	``` 
-
+    // I2C address is b011110X, and on this board D/C̅ is GND.
+    let ssd1306_i2c = components::i2c::I2CComponent::new(i2c_bus, 0x3c)
+        .finalize(components::i2c_component_static!(nrf52840::i2c::TWI));
+    ```
 
 2.  Next, we instantiate the actual driver for the SSD1306 display. This uses
     the I2C device we created in the previous step.
 
-	```rust
-	const I2C_SDA_PIN: Pin = Pin::P0_26;
-	const I2C_SCL_PIN: Pin = Pin::P0_27;
+    ```rust
+    const I2C_SDA_PIN: Pin = Pin::P0_26;
+    const I2C_SCL_PIN: Pin = Pin::P0_27;
 
-	let i2c_bus = components::i2c::I2CMuxComponent::new(&base_peripherals.twi0, None)
-	    .finalize(components::i2c_mux_component_static!(nrf52840::i2c::TWI));
-	base_peripherals.twi0.configure(
-	    nrf52840::pinmux::Pinmux::new(I2C_SCL_PIN as u32),
-	    nrf52840::pinmux::Pinmux::new(I2C_SDA_PIN as u32),
-	);
+    let i2c_bus = components::i2c::I2CMuxComponent::new(&base_peripherals.twi0, None)
+        .finalize(components::i2c_mux_component_static!(nrf52840::i2c::TWI));
+    base_peripherals.twi0.configure(
+        nrf52840::pinmux::Pinmux::new(I2C_SCL_PIN as u32),
+        nrf52840::pinmux::Pinmux::new(I2C_SDA_PIN as u32),
+    );
 
-	// I2C address is b011110X, and on this board D/C̅ is GND.
-	let ssd1306_i2c = components::i2c::I2CComponent::new(i2c_bus, 0x3c)
-	    .finalize(components::i2c_component_static!(nrf52840::i2c::TWI));
+    // I2C address is b011110X, and on this board D/C̅ is GND.
+    let ssd1306_i2c = components::i2c::I2CComponent::new(i2c_bus, 0x3c)
+        .finalize(components::i2c_component_static!(nrf52840::i2c::TWI));
 
-	// Create the ssd1306 object for the actual screen driver.
-	let ssd1306 = components::ssd1306::Ssd1306Component::new(ssd1306_i2c, true)
-	    .finalize(components::ssd1306_component_static!(nrf52840::i2c::TWI));
-	```
+    // Create the ssd1306 object for the actual screen driver.
+    let ssd1306 = components::ssd1306::Ssd1306Component::new(ssd1306_i2c, true)
+        .finalize(components::ssd1306_component_static!(nrf52840::i2c::TWI));
+    ```
 
 3.  For now, our last step is going to be instantiating a capsule to provide
     userspace with access to the screen. There are multiple capsules that
@@ -92,45 +87,45 @@ connection to the screen.
     Again, for now we will just create an empty array of screen regions and
     assignments. We will fill this in later.
 
-	```rust
-	const I2C_SDA_PIN: Pin = Pin::P0_26;
-	const I2C_SCL_PIN: Pin = Pin::P0_27;
+    ```rust
+    const I2C_SDA_PIN: Pin = Pin::P0_26;
+    const I2C_SCL_PIN: Pin = Pin::P0_27;
 
-	type Screen = components::ssd1306::Ssd1306ComponentType<nrf52840::i2c::TWI<'static>>;
+    type Screen = components::ssd1306::Ssd1306ComponentType<nrf52840::i2c::TWI<'static>>;
 
-	let i2c_bus = components::i2c::I2CMuxComponent::new(&base_peripherals.twi0, None)
-	    .finalize(components::i2c_mux_component_static!(nrf52840::i2c::TWI));
-	base_peripherals.twi0.configure(
-	    nrf52840::pinmux::Pinmux::new(I2C_SCL_PIN as u32),
-	    nrf52840::pinmux::Pinmux::new(I2C_SDA_PIN as u32),
-	);
+    let i2c_bus = components::i2c::I2CMuxComponent::new(&base_peripherals.twi0, None)
+        .finalize(components::i2c_mux_component_static!(nrf52840::i2c::TWI));
+    base_peripherals.twi0.configure(
+        nrf52840::pinmux::Pinmux::new(I2C_SCL_PIN as u32),
+        nrf52840::pinmux::Pinmux::new(I2C_SDA_PIN as u32),
+    );
 
-	// I2C address is b011110X, and on this board D/C̅ is GND.
-	let ssd1306_i2c = components::i2c::I2CComponent::new(i2c_bus, 0x3c)
-	    .finalize(components::i2c_component_static!(nrf52840::i2c::TWI));
+    // I2C address is b011110X, and on this board D/C̅ is GND.
+    let ssd1306_i2c = components::i2c::I2CComponent::new(i2c_bus, 0x3c)
+        .finalize(components::i2c_component_static!(nrf52840::i2c::TWI));
 
-	// Create the ssd1306 object for the actual screen driver.
-	let ssd1306 = components::ssd1306::Ssd1306Component::new(ssd1306_i2c, true)
-	    .finalize(components::ssd1306_component_static!(nrf52840::i2c::TWI));
+    // Create the ssd1306 object for the actual screen driver.
+    let ssd1306 = components::ssd1306::Ssd1306Component::new(ssd1306_i2c, true)
+        .finalize(components::ssd1306_component_static!(nrf52840::i2c::TWI));
 
-	let apps_regions = static_init!(
-	    [capsules_extra::screen_shared::AppScreenRegion; 0],
-	    []
-	);
+    let apps_regions = static_init!(
+        [capsules_extra::screen_shared::AppScreenRegion; 0],
+        []
+    );
 
-	let screen = components::screen::ScreenSharedComponent::new(
-	    board_kernel,
-	    capsules_extra::screen::DRIVER_NUM,
-	    ssd1306,
-	    apps_regions,
-	)
-	.finalize(components::screen_shared_component_static!(1032, Screen));
+    let screen = components::screen::ScreenSharedComponent::new(
+        board_kernel,
+        capsules_extra::screen::DRIVER_NUM,
+        ssd1306,
+        apps_regions,
+    )
+    .finalize(components::screen_shared_component_static!(1032, Screen));
 
-	ssd1306.init_screen();
-	```
+    ssd1306.init_screen();
+    ```
 
-	We end up with a `screen` object we can use to handle syscalls from
-	userspace.
+    We end up with a `screen` object we can use to handle syscalls from
+    userspace.
 
 ### Connect Screen to Userspace
 
@@ -179,7 +174,6 @@ impl SyscallDriverLookup for Platform {
 }
 ```
 
-
 ## Assigning AppIds
 
 Next, we need to use Tock's application identifier mechanism to assign each
@@ -212,8 +206,8 @@ to our applications.
         .finalize(components::appid_assigner_names_component_static!());
     ```
 
-2.  We also need a credential checker. At this point, we won't actually use credentials,
-    so we can use a NULL credential checker.
+2.  We also need a credential checker. At this point, we won't actually use
+    credentials, so we can use a NULL credential checker.
 
     ```rust
     // Create the AppID assigner.
@@ -232,8 +226,8 @@ to our applications.
 3.  Next we need an additional process binary array for the more advanced
     process loader.
 
-	```rust
-	// Create the AppID assigner.
+    ```rust
+    // Create the AppID assigner.
     let assigner = components::appid::assigner_name::AppIdAssignerNamesComponent::new()
         .finalize(components::appid_assigner_names_component_static!());
 
@@ -245,7 +239,7 @@ to our applications.
     let checker = components::appid::checker::ProcessCheckerMachineComponent::new(checking_policy)
         .finalize(components::process_checker_machine_component_static!());
 
-	let process_binary_array = static_init!(
+    let process_binary_array = static_init!(
         [Option<kernel::process::ProcessBinary>; NUM_PROCS],
         [None, None, None, None, None, None, None, None]
     );
@@ -268,7 +262,7 @@ to our applications.
     let checker = components::appid::checker::ProcessCheckerMachineComponent::new(checking_policy)
         .finalize(components::process_checker_machine_component_static!());
 
-	let process_binary_array = static_init!(
+    let process_binary_array = static_init!(
         [Option<kernel::process::ProcessBinary>; NUM_PROCS],
         [None, None, None, None, None, None, None, None]
     );
@@ -305,8 +299,6 @@ to our applications.
 Now the kernel will assign ShortIds to every process as the CRC of the process
 name. This serves as the mechanism we can use to ensure we assign the same
 screen window to the same process on every reboot.
-
-
 
 ## Assigning Screen Windows
 
@@ -345,26 +337,7 @@ let apps_regions = static_init!(
 );
 ```
 
-
 ## Wrap Up
 
 You can now compile and load the kernel. This will support both the
 `soil-moisture-sensor` and `soil-moisture-display` apps.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

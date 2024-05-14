@@ -1,5 +1,4 @@
-Soil Moisture Sensing Application
-=================================
+# Soil Moisture Sensing Application
 
 Tock applications are going to implement the main operation of the soil moisture
 sensor. This submodule guides you through building the soil moisture sensor
@@ -16,60 +15,60 @@ To get started copy an existing libtock-c application into a folder named
     pin. The kernel configured the first GPIO pin as the power pin, so we use
     index 0.
 
-	```c
-	#include <libtock/peripherals/gpio.h>
+    ```c
+    #include <libtock/peripherals/gpio.h>
 
-	// Activate the soil moisture sensor and take a reading. Returns the soil
-	// moisture in tenths of a percent.
-	static uint32_t take_measurement(void) {
-	  // Power on the soil moisture sensor.
-	  libtock_gpio_set(0);
+    // Activate the soil moisture sensor and take a reading. Returns the soil
+    // moisture in tenths of a percent.
+    static uint32_t take_measurement(void) {
+      // Power on the soil moisture sensor.
+      libtock_gpio_set(0);
 
-	  // Sample the sensor
+      // Sample the sensor
 
-	  // Disable the soil moisture sensor.
-	  libtock_gpio_clear(0);
+      // Disable the soil moisture sensor.
+      libtock_gpio_clear(0);
 
-	  return 0;
-	}
-	```
+      return 0;
+    }
+    ```
 
 2.  To read the sensor we are going to use the ADC driver. Specifically, we are
     going to use the `libtocksync_adc_sample_buffer()` API. This interface will
     take multiple sensors and save them to a buffer we provide. To get a more
     reliable measurement, we are going to take 25 samples and average them.
 
-	```c
-	#include <libtock-sync/peripherals/adc.h>
-	#include <libtock/peripherals/gpio.h>
+    ```c
+    #include <libtock-sync/peripherals/adc.h>
+    #include <libtock/peripherals/gpio.h>
 
-	// Activate the soil moisture sensor and take a reading. Returns the soil
-	// moisture in tenths of a percent.
-	static uint32_t take_measurement(void) {
-	  // Power on the soil moisture sensor.
-	  libtock_gpio_set(0);
+    // Activate the soil moisture sensor and take a reading. Returns the soil
+    // moisture in tenths of a percent.
+    static uint32_t take_measurement(void) {
+      // Power on the soil moisture sensor.
+      libtock_gpio_set(0);
 
-	  // Take 25 ADC readings.
-	  uint16_t samples[25];
-	  int err = libtocksync_adc_sample_buffer(0, 25, samples, 25);
-	  if (err != RETURNCODE_SUCCESS) {
-	    printf("Error sampling ADC: %d\n", err);
-	    return -1;
-	  }
+      // Take 25 ADC readings.
+      uint16_t samples[25];
+      int err = libtocksync_adc_sample_buffer(0, 25, samples, 25);
+      if (err != RETURNCODE_SUCCESS) {
+        printf("Error sampling ADC: %d\n", err);
+        return -1;
+      }
 
-	  // Calculate the average of the ADC readings.
-	  uint32_t total = 0;
-	  for (int i = 0; i < 30; i++) {
-	    total += samples[i];
-	  }
-	  uint32_t average = total / 30;
+      // Calculate the average of the ADC readings.
+      uint32_t total = 0;
+      for (int i = 0; i < 30; i++) {
+        total += samples[i];
+      }
+      uint32_t average = total / 30;
 
-	  // Disable the soil moisture sensor.
-	  libtock_gpio_clear(0);
+      // Disable the soil moisture sensor.
+      libtock_gpio_clear(0);
 
-	  return 0;
-	}
-	```
+      return 0;
+    }
+    ```
 
 3.  Next we calculate the soil moisture percentage. First we convert the
     readings into voltages. The ADC driver always returns 16 bit readings
@@ -81,58 +80,58 @@ To get started copy an existing libtock-c application into a folder named
     constants that I found when I created a soil moisture sensor. Later we
     calibrate for your specific sensor.
 
-	```c
-	#include <libtock-sync/peripherals/adc.h>
-	#include <libtock/peripherals/gpio.h>
+    ```c
+    #include <libtock-sync/peripherals/adc.h>
+    #include <libtock/peripherals/gpio.h>
 
-	// Activate the soil moisture sensor and take a reading. Returns the soil
-	// moisture in tenths of a percent.
-	static uint32_t take_measurement(void) {
-	  // Power on the soil moisture sensor.
-	  libtock_gpio_set(0);
+    // Activate the soil moisture sensor and take a reading. Returns the soil
+    // moisture in tenths of a percent.
+    static uint32_t take_measurement(void) {
+      // Power on the soil moisture sensor.
+      libtock_gpio_set(0);
 
-	  // Take 25 ADC readings.
-	  uint16_t samples[25];
-	  int err = libtocksync_adc_sample_buffer(0, 25, samples, 25);
-	  if (err != RETURNCODE_SUCCESS) {
-	    printf("Error sampling ADC: %d\n", err);
-	    return -1;
-	  }
+      // Take 25 ADC readings.
+      uint16_t samples[25];
+      int err = libtocksync_adc_sample_buffer(0, 25, samples, 25);
+      if (err != RETURNCODE_SUCCESS) {
+        printf("Error sampling ADC: %d\n", err);
+        return -1;
+      }
 
-	  // Calculate the average of the ADC readings.
-	  uint32_t total = 0;
-	  for (int i = 0; i < 30; i++) {
-	    total += samples[i];
-	  }
-	  uint32_t average = total / 30;
+      // Calculate the average of the ADC readings.
+      uint32_t total = 0;
+      for (int i = 0; i < 30; i++) {
+        total += samples[i];
+      }
+      uint32_t average = total / 30;
 
-	  // Convert from ADC counts to millivolts. First get the ADC reference\
-	  // voltage.
-	  uint32_t reference_voltage;
-	  err = libtock_adc_command_get_reference_voltage(&reference_voltage);
-	  if (err != RETURNCODE_SUCCESS) {
-	    reference_voltage = 3300;
-	    printf("ADC no reference voltage, assuming 3.3V\n");
-	  }
-	  // The actual soil moisture sensor voltage in mV.
-	  uint32_t voltage_mv = (average * reference_voltage) / ((1 << 16) - 1);
+      // Convert from ADC counts to millivolts. First get the ADC reference\
+      // voltage.
+      uint32_t reference_voltage;
+      err = libtock_adc_command_get_reference_voltage(&reference_voltage);
+      if (err != RETURNCODE_SUCCESS) {
+        reference_voltage = 3300;
+        printf("ADC no reference voltage, assuming 3.3V\n");
+      }
+      // The actual soil moisture sensor voltage in mV.
+      uint32_t voltage_mv = (average * reference_voltage) / ((1 << 16) - 1);
 
-	  // Calculate the soil moisture percentage.
-	  uint32_t soil = 1797 - ((8111 * voltage_mv) / 10000);
+      // Calculate the soil moisture percentage.
+      uint32_t soil = 1797 - ((8111 * voltage_mv) / 10000);
 
-	  printf("[Soil Moisture Sensor]\n");
-	  printf("  voltage %ld.%03ldV\n", voltage_mv / 1000, voltage_mv % 1000);
-	  printf("  soil: %lu.%lu%%\n\n", soil / 10, soil % 10);
+      printf("[Soil Moisture Sensor]\n");
+      printf("  voltage %ld.%03ldV\n", voltage_mv / 1000, voltage_mv % 1000);
+      printf("  soil: %lu.%lu%%\n\n", soil / 10, soil % 10);
 
-	  // Disable the soil moisture sensor.
-	  libtock_gpio_clear(0);
+      // Disable the soil moisture sensor.
+      libtock_gpio_clear(0);
 
-	  // And actually return the soil moisture reading.
-	  return soil;
-	}
-	```
+      // And actually return the soil moisture reading.
+      return soil;
+    }
+    ```
 
-	We now have a sensing function!
+    We now have a sensing function!
 
 ## Setup a Soil Moisture Sensing IPC Service
 
@@ -146,28 +145,29 @@ an inter-process communication (IPC) service that shared the soil moisture data.
     get when clients notify us. The third argument is a user pointer we get in
     the callback. We do not need to use the third argument.
 
-	```c
-	#include <libtock/kernel/ipc.h>
+    ```c
+    #include <libtock/kernel/ipc.h>
 
-	int main(void) {
-	  int err;
-	  printf("[Soil Moisture] Sensor App\n");
+    int main(void) {
+      int err;
+      printf("[Soil Moisture] Sensor App\n");
 
-	  // Create an IPC service to make sensor readings available to other apps.
-	  err = ipc_register_service_callback("soil_moisture_sensor", ipc_client_registered, NULL);
-	  if (err != RETURNCODE_SUCCESS) {
-	    printf("Could not register %i ?\n", err);
-	    return -1;
-	  }
+      // Create an IPC service to make sensor readings available to other apps.
+      err = ipc_register_service_callback("soil_moisture_sensor", ipc_client_registered, NULL);
+      if (err != RETURNCODE_SUCCESS) {
+        printf("Could not register %i ?\n", err);
+        return -1;
+      }
 
-	  // Wait for upcalls in a loop.
-	  while (1) yield();
-	}
-	```
+      // Wait for upcalls in a loop.
+      while (1) yield();
+    }
+    ```
 
-2.  Now we can define the callback function. The signature is `void callback(int, int, int, void*)`.
-    This will get called with the process ID of the client, a pointer to the buffer the client shared with us,
-    and the length of the buffer.
+2.  Now we can define the callback function. The signature is
+    `void callback(int, int, int, void*)`. This will get called with the process
+    ID of the client, a pointer to the buffer the client shared with us, and the
+    length of the buffer.
 
     ```c
     // Called when another app registers to our IPC service.

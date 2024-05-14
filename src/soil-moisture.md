@@ -1,5 +1,4 @@
-Advanced Soil Moisture Sensor with Tock
-===========
+# Advanced Soil Moisture Sensor with Tock
 
 In this guide we are going to build a sophisticated soil moisture sensor using
 many of the advanced features Tock provides.

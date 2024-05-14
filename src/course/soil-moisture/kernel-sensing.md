@@ -1,19 +1,16 @@
-Soil Moisture Sensor Kernel
-================
+# Soil Moisture Sensor Kernel
 
 In this submodule we will configure a Tock kernel to support reading the soil
 moisture sensor. This will enable the `soil-moisture-sensor` app from the next
 section.
 
-Prerequisites
----------
+## Prerequisites
 
 This guide assumes you already have a working Tock kernel for your board. We
 will extend the kernel with the necessary features to support soil moisture
 sensing.
 
-Syscall 1: GPIO
----------------
+## Syscall 1: GPIO
 
 We will start with adding support for GPIO pins in userspace. We need one GPIO
 pin to power on the soil moisture sensor.
@@ -49,7 +46,8 @@ let gpio = components::gpio::GpioComponent::new(
 .finalize(components::gpio_component_static!(nrf52840::gpio::GPIOPin));
 ```
 
-Then we need to connect that capsule to userspace. This requires a couple setup steps.
+Then we need to connect that capsule to userspace. This requires a couple setup
+steps.
 
 First, add the `gpio` type to the `Platform` struct:
 
@@ -90,8 +88,7 @@ impl SyscallDriverLookup for Platform {
 }
 ```
 
-Syscall 2: ADC
----------------
+## Syscall 2: ADC
 
 The second syscall we need to add is for the analog-to-digital (ADC) converter.
 This will nearly directly mirror adding GPIO.
@@ -120,7 +117,6 @@ let adc = components::adc::AdcDedicatedComponent::new(
 
 And connect the ADC capsule to the rest of the system:
 
-
 ```rust
 type AdcDriver = components::adc::AdcDedicatedComponentType<nrf52840::adc::Adc<'static>>;
 
@@ -144,7 +140,6 @@ impl SyscallDriverLookup for Platform {
 }
 ```
 
-
 ```rust
 let platform = Platform {
     ...
@@ -153,10 +148,7 @@ let platform = Platform {
 };
 ```
 
-
-
-Compile and Install
---------------------
+## Compile and Install
 
 You can now compile the kernel and load it on the board:
 
@@ -166,12 +158,3 @@ $ make install
 ```
 
 This will enable the `soil-moisture-sensor` app from the next module.
-
-
-
-
-
-
-
-
-
