@@ -98,39 +98,39 @@ application.
     error makes it look like to the app that the GPIO/ADC syscalls are just not
     included on this kernel.
 
-	```rust
-	use kernel::errorcode;
-	use kernel::process;
-	use kernel::syscall;
+    ```rust
+    use kernel::errorcode;
+    use kernel::process;
+    use kernel::syscall;
 
-	pub struct SoilMoistureSyscallFilter {}
+    pub struct SoilMoistureSyscallFilter {}
 
-	impl kernel::platform::SyscallFilter for SoilMoistureSyscallFilter {
-	    fn filter_syscall(
-	        &self,
-	        process: &dyn process::Process,
-	        syscall: &syscall::Syscall,
-	    ) -> Result<(), errorcode::ErrorCode> {
-	        let permitted = kernel::process::ShortId::Fixed(
-	            core::num::NonZeroU32::new(kernel::utilities::helpers::crc32_posix(
-	                "soil-moisture-sensor".as_bytes(),
-	            ))
-	            .unwrap(),
-	        );
+    impl kernel::platform::SyscallFilter for SoilMoistureSyscallFilter {
+        fn filter_syscall(
+            &self,
+            process: &dyn process::Process,
+            syscall: &syscall::Syscall,
+        ) -> Result<(), errorcode::ErrorCode> {
+            let permitted = kernel::process::ShortId::Fixed(
+                core::num::NonZeroU32::new(kernel::utilities::helpers::crc32_posix(
+                    "soil-moisture-sensor".as_bytes(),
+                ))
+                .unwrap(),
+            );
 
-	        match syscall.driver_number() {
-	            Some(capsules_core::adc::DRIVER_NUM) | Some(capsules_core::gpio::DRIVER_NUM) => {
-	                if process.short_app_id() == permitted {
-	                    Ok(())
-	                } else {
-	                    Err(errorcode::ErrorCode::NODEVICE)
-	                }
-	            }
-	            _ => Ok(()),
-	        }
-	    }
-	}
-	```
+            match syscall.driver_number() {
+                Some(capsules_core::adc::DRIVER_NUM) | Some(capsules_core::gpio::DRIVER_NUM) => {
+                    if process.short_app_id() == permitted {
+                        Ok(())
+                    } else {
+                        Err(errorcode::ErrorCode::NODEVICE)
+                    }
+                }
+                _ => Ok(()),
+            }
+        }
+    }
+    ```
 
 We now have our syscall filtering policy!
 
@@ -174,7 +174,7 @@ policy.
 
 4.  We also need to instantiate the policy and add it to the platform struct.
 
-	```rust
+    ```rust
     //--------------------------------------------------------------------------
     // SYSCALL FILTERING
     //--------------------------------------------------------------------------
@@ -197,13 +197,13 @@ policy.
 
 ## Compile and Load
 
-Our kernel is now configured to enforce process resource isolation.
-You can compile and load the kernel.
+Our kernel is now configured to enforce process resource isolation. You can
+compile and load the kernel.
 
 ## Testing The Isolation
 
-To test that the isolation is successful, install another
-app which uses the ADC syscall.
+To test that the isolation is successful, install another app which uses the ADC
+syscall.
 
 ```
 cd libtock-c/examples/tests/adc/adc
@@ -211,20 +211,5 @@ make
 tockloader install
 ```
 
-You should see that the app errors out as it does not have access to
-the ADC syscall.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+You should see that the app errors out as it does not have access to the ADC
+syscall.
