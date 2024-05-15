@@ -29,6 +29,35 @@ support for cryptographic assignment, but we will use the AppId mechanism to
 ensure that our applications have persistent identifiers we can use when
 assigning screen windows.
 
+### Screen Software Stack
+
+Tock supports displays using a layered software stack. In userspace, graphics
+are handled by the U8G2 library. The libtock-sync screen driver calls the
+screen-specific syscalls. In the kernel, the ScreenShared capsule provides the
+userspace interface. That uses the Screen HIL to call the SSD1306 driver for the
+screen we are using. Finally, that driver uses the chip's I2C interface.
+
+```text
+┌──────────────────────┐ ┐
+│     U8G2 Library     │ │
+└──────────────────────┘ │Userspace
+┌──────────────────────┐ │
+│  libtock-sync/screen │ │
+└──────────────────────┘ ┘
+┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄ Syscall Interface
+┌──────────────────────┐ ┐
+│ ScreenShared Capsule │ │
+└──────────────────────┘ │
+    ┄┄ hil::Screen ┄┄    │
+┌──────────────────────┐ │
+│SSD1306 Screen Capsule│ │Kernel
+└──────────────────────┘ │
+     ┄┄ hil::I2C ┄┄      │
+┌──────────────────────┐ │
+│        I2C           │ │
+└──────────────────────┘ ┘
+```
+
 ## Enabling the Screen
 
 We start, however, by configuring our Tock kernel to support a display. This

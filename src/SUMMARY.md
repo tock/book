@@ -33,6 +33,7 @@
     - [Application 2: Display](./course/soil-moisture/app-display.md)
     - [Kernel: Watering Setup](./course/soil-moisture/kernel-watering.md)
     - [Application 3: Watering](./course/soil-moisture/app-watering.md)
+    - [Kernel: Resource Isolation](./course/soil-moisture/kernel-resource.md)
   - [Kernel Boot](./course/boot.md)
   - [Policies](./course/policies.md)
   - [TicKV](./course/tickv.md)
