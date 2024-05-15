@@ -131,22 +131,21 @@ Successfully attached to Thread network as a child.
 >
 > 1. _Thread output not printed to the console_.
 >
->    - Run `tockloader list`
->    - You should see:
+>    Run `tockloader list` and you should see:
 >
->      ```
->      tock$ list
->       PID    ShortID    Name                Quanta  Syscalls  Restarts  Grants  State
->       0      Unique     org.tockos.thread-tutorial.openthread   125      1586         0   6/18   Running
->       1      Unique     thread_controller        2       187         0   5/18   Yielded
->       2      Unique     org.tockos.thread-tutorial.sensor     0       132         0   3/18   Yielded
->      ```
+>    ```
+>    tock$ list
+>     PID    ShortID    Name                Quanta  Syscalls  Restarts  Grants  State
+>     0      Unique     org.tockos.thread-tutorial.openthread   125      1586         0   6/18   Running
+>     1      Unique     thread_controller        2       187         0   5/18   Yielded
+>     2      Unique     org.tockos.thread-tutorial.sensor     0       132         0   3/18   Yielded
+>    ```
 >
->    - If you do not see this, you have not successfully flashed the app.
+>    If you do not see this, you have not successfully flashed the app.
 >
-> 2. _Thread output does not say succesfully joined_.
+> 2. _Thread output does not say successfully joined_.
 >    - First confirm that you have flashed the router with the
->      [provided instructions](./router-setup.md)
+>      [provided instructions](./router-setup.md).
 >    - Attempt resetting your board again.
 
 Congratulations! We now have a networked mote. We now must modify the provided

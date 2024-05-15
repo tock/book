@@ -1,6 +1,6 @@
 # Thread Router Setup
 
-The thread network tutorial requires some Thread router to be present, which is
+The thread network tutorial requires a Thread router to be present, which is
 able to accept certain messages from participant boards, average the supplied
 values, and broadcast them back. We provide a pre-built flash image that
 performs this task here:
