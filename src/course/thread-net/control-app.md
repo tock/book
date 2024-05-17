@@ -21,8 +21,8 @@ addition to the `u8g2` graphics library.
 Tock is able to run arbitrary code in its userspace applications, including
 existing C libraries. For this stage in particular, we are interested in
 displaying information on a screen. Without a library to render text or symbols,
-this can be quite cumbersome. Instead, we will use the `u8g2` library for which
-`libtock-c` provides some bindings.
+this can be quite cumbersome. Instead, we will use the `u8g2` library with
+`libtock-c` bindings.
 
 To add this library to our application we add the following two lines to our
 application's `Makefile`, before the `AppMakefile.mk` include:
@@ -43,7 +43,7 @@ application.
 Once this is done, we can add some initialization code to our controller
 application:
 
-```
+```c
 #include <u8g2.h>
 #include <u8g2-tock.h>
 
@@ -61,6 +61,7 @@ int main(void) {
   u8g2_SendBuffer(&u8g2);
 
   [...]
+}
 ```
 
 When we now build and install this app, it should still display the temperature
@@ -83,7 +84,7 @@ application, which exposes this data via IPC.
 The controller should regularly sample data from the sensor application. A naive
 way to implement this is shown in the pseudo-code example below:
 
-```
+```c
 void ipc_callback(int temperature) {
   // Print temperature onto screen.
 }
@@ -109,7 +110,7 @@ complex application code which may, in turn, wait on some asynchronous events
 the `ipc_callback`, other callbacks -- including `ipc_callback` itself -- may be
 scheduled again. Consider the following example:
 
-```
+```c
 void ipc_callback() {
   // The call to yield allows other callbacks to be scheduled,
   // including `ipc_callback` itself!
@@ -145,7 +146,7 @@ As such, this loop does not execute any blocking / `yield`ing operations in any
 callback. It also moves all timing / scheduling logic out of the applications
 main loop, which can instead look like this:
 
-```
+```c
 int main(void) {
   // Send initial IPC request
 
@@ -164,7 +165,7 @@ certain condition is met. For instance, the controller application sets the
 we want to wait on this event in our main function, we can use the following
 logic:
 
-```
+```c
 // Shared variable to signal whether a callback has fired:
 bool callback_event = false;
 

@@ -80,6 +80,60 @@ Make sure the switches and jumpers are properly configured on your board:
 You should plug one USB cable into the top of the board for programming (NOT
 into the "nRF USB" port on the side).
 
+If you have a SSD1306-based screen with I2C pins, you should attach it to pins
+P1.10 (SDA) and P1.11 (SCL).
+
+See this diagram for the full configuration:
+
+```text
+     ┌────────────────┬───┬─────────────────┐
+     │┌POWER┐         │USB│← PROG/DEBUG     │
+     ││ ON ▓│         └───┘                 │
+     ││OFF ░│                               │
+     │└─────┘          ┌──DEBUG──┐          │
+     │                 │VDD nRF ▪│  P0.27 □ │
+     │                 │VDD nRF ▪│  P0.26 □ │
+     │ □ VDD   ┌SOURCE┐│SWD SEL ▪│  P0.02 □ │
+     │ □ VDD   │LiPo ░││ SWD IO ▪│    GND □ │
+     │ □ RESET │ VDD ▓││SWD CLK ▪│  P1.15 □ │
+VCC →│ ▣ VDD   │ USB ░││    SWO ▪│  P1.14 □ │
+     │ □ 5V    └──────┘│  RESET ▪│  P1.13 □ │
+     │ □ GND           │        ▪│  P1.12 □ │
+GND →│ ▣ GND     ┌────┐│    VIN ▪│  P1.11 ▣ │← I2C SCL
+     │ □ NC      │JTAG││  VDDHV ▪│  P1.10 ▣ │← I2C SDA
+     │         ┐ │    ││  VDDHV ▪│          │
+     │ □ P0.03 │ └────┘│ VIOREF ▪│  P1.08 □ │
+     │ □ P0.04 A       │        ▪│  P1.07 □ │
+     │ □ P0.28 D       └─────────┘  P1.06 □ │
+     │ □ P0.29 C                    P1.05 □ │
+     │ □ P0.30 │                    P1.04 □ │
+     │ □ P0.31 │                    P1.03 □ │
+     │         ┘                    P1.02 □ │
+     │                              P1.01 □ │
+     │                                      │
+     │                              P0.10 □ │
+     │                              P0.09 □ │
+     │                              P0.08 □ │
+     │ ☉ RESET                      P0.07 □ │
+     │   BTN                        P0.06 □ │
+     ├───┐                          P0.05 □ │
+     │USB│  nRF                     P0.01 □ │
+     │   │← PERIPHERAL              P0.00 □ │
+     ├───┘                           ┌─────┐│
+     │                               │░ nRF││
+     │BTN3 BTN1                      │▓ DEF││
+     │ ☉    ☉                        └─────┘│
+     │BTN4 BTN2                  LED3 LED1  │
+     │ ☉    ☉                     □    □    │
+     │                ┌───┐      LED4 LED2  │
+     │ ┌─┐            │nRF│       □    □    │
+     │ │ │NFC         └───┘                 │
+     │ └─┘                                  │
+     └───                    ───────────────┘
+         ╲                  ╱
+          ──────────────────
+```
+
 ## Organization and Getting Oriented to Tock
 
 Tock consists of multiple inter-working components. We briefly describe the

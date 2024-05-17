@@ -59,7 +59,7 @@ We can see the fault policy that is in use with the kernel by looking at the
 a `FAULT_RESPONSE` variable with an instance of the fault policy that we want to
 use:
 
-```
+```rust
 // How should the kernel respond when a process faults.
 const FAULT_RESPONSE: kernel::process::PanicFaultPolicy =
     kernel::process::PanicFaultPolicy {};
