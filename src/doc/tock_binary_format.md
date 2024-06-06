@@ -140,6 +140,7 @@ enum TbfHeaderTypes {
     TbfHeaderPersistent = 7,
     TbfHeaderKernelVersion = 8,
     TbfHeaderProgram = 9,
+    TbfHeaderShortId = 10,
     TbfFooterCredentials = 128,
 }
 ```
@@ -585,6 +586,37 @@ The Main Header and Program Header have overlapping functionality. If a TBF
 Object has both, the kernel decides which to use. Tock is transitioning to
 having the Program Header as the standard one to use, but older kernels (2.0 and
 earlier) do not recognize it and use the Main Header.
+
+#### `10` ShortID
+
+```rust
+struct TbfHeaderV2ShortId {
+    base: TbfHeaderTlv,
+    short_id: u32,
+}
+```
+
+This header allows the compile-time workflow to specify the fixed `ShortId` the
+application should be assigned when it is loaded. The header only includes
+the 32 bit ShortId.
+
+Note, fixed `ShortId`s are defined to be nonzero. Therefore, including this
+header but setting the `short_id` field to 0 is the same as not including this
+header.
+
+Also, this header is just one method for indicating what `ShortId` an
+application should be assigned. The kernel must be configured to use this header
+and any particular Tock kernel may ignore this header.
+
+```
+0             2             4             6             8
++-------------+-------------+---------------------------+
+| Type (10)   | Length (4)  | short_id                  |
++-------------+-------------+---------------------------+
+```
+
+- `short_id`: The 32 bit nonzero fixed ShortId the application should be
+  assigned when executed.
 
 #### `128` Credentials Footer
 
