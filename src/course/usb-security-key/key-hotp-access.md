@@ -131,11 +131,20 @@ next to it.
 ### Verifying Credentials in the Kernel
 
 To have the kernel check that our hash credential is present and valid, we need
-to add a credential checker before the kernel starts each process.
+to add a credential checker before the kernel starts each process. For Tock's
+credential checking architecture, this actually requires three pieces:
 
-To create the app checker, we'll edit the board's `main.rs` file in the kernel.
-Tock includes a basic SHA256 credential checker, so we can use that. The
-following code should be added to the `main.rs` file somewhere before the
+1. The app checking policy that verifies SHA256 credentials.
+2. An AppID assignment policy that assigns identifiers to applications with
+   verified credentials.
+3. A credential checking engine that iterates over each process binary and
+   checks all provided credentials.
+
+To create these, we'll edit the board's `main.rs` file in the kernel. Tock
+includes a basic SHA256 credential checker, so we can use that. We also will use
+an AppID assigner that creates the ID based on the process's name.
+
+The following code should be added to the `main.rs` file somewhere before the
 platform setup occurs (probably right after the encryption oracle capsule from
 the last module!).
 
@@ -145,82 +154,60 @@ the last module!).
 //--------------------------------------------------------------------------
 
 // Create the software-based SHA engine.
-let sha = static_init!(capsules_extra::sha256::Sha256Software<'static>,
-                       capsules_extra::sha256::Sha256Software::new());
-kernel::deferred_call::DeferredCallClient::register(sha);
+let sha = components::sha::ShaSoftware256Component::new()
+    .finalize(components::sha_software_256_component_static!());
 
 // Create the credential checker.
-static mut SHA256_CHECKER_BUF: [u8; 32] = [0; 32];
-let checker = static_init!(
-    kernel::process_checker::basic::AppCheckerSha256,
-    kernel::process_checker::basic::AppCheckerSha256::new(sha, &mut SHA256_CHECKER_BUF)
-    );
-kernel::hil::digest::Digest::set_client(sha, checker);
+let checking_policy = components::appid::checker_sha::AppCheckerSha256Component::new(sha)
+    .finalize(components::app_checker_sha256_component_static!());
+
+// Create the AppID assigner.
+let assigner = components::appid::assigner_name::AppIdAssignerNamesComponent::new()
+    .finalize(components::appid_assigner_names_component_static!());
+
+// Create the process checking machine.
+let checker = components::appid::checker::ProcessCheckerMachineComponent::new(checking_policy)
+    .finalize(components::process_checker_machine_component_static!());
 ```
 
-That code creates a `checker` object. We now need to modify the board so it
-hangs on to that `checker` struct. To do so, we need to add this to our
-`Platform` struct type definition near the top of the file:
-
-```rust
-struct Platform {
-    ...
-    credentials_checking_policy: &'static kernel::process_checker::basic::AppCheckerSha256,
-}
-```
-
-Then when we create the platform object near the end of `main()`, we can add our
-`checker`:
-
-```rust
-let platform = Platform {
-    ...
-    credentials_checking_policy: checker,
-}
-```
-
-And we need the platform to provide access to that checker when requested by the
-kernel for credentials-checking purposes. This goes in the `KernelResources`
-implementation for the `Platform` type:
-
-```rust
-impl KernelResources for Platform {
-    ...
-    type CredentialsCheckingPolicy = kernel::process_checker::basic::AppCheckerSha256;
-    ...
-    fn credentials_checking_policy(&self) -> &'static Self::CredentialsCheckingPolicy {
-        self.credentials_checking_policy
-    }
-    ...
-}
-```
-
-Finally, we need to use the function that checks credentials when processes are
-loaded (not just loads and executes them unconditionally). This should go at the
-end of `main()`, replacing the existing call to
+That code creates a `checker` object. We will use that checker when processes
+are loaded. Now we setup the process loader which uses the process checker. This
+should go at the end of `main()`, replacing the existing call to
 `kernel::process::load_processes`:
 
 ```rust
-kernel::process::load_and_check_processes(
+let process_binary_array = static_init!(
+    [Option<kernel::process::ProcessBinary>; NUM_PROCS],
+    [None, None, None, None, None, None, None, None]
+);
+
+let loader = static_init!(
+    kernel::process::SequentialProcessLoaderMachine<
+        nrf52840::chip::NRF52<Nrf52840DefaultPeripherals>,
+    >,
+    kernel::process::SequentialProcessLoaderMachine::new(
+        checker,
+        &mut *addr_of_mut!(PROCESSES),
+        process_binary_array,
         board_kernel,
-        &platform, // note this function requires providing the platform.
         chip,
         core::slice::from_raw_parts(
-            &_sapps as *const u8,
-            &_eapps as *const u8 as usize - &_sapps as *const u8 as usize,
+            core::ptr::addr_of!(_sapps),
+            core::ptr::addr_of!(_eapps) as usize - core::ptr::addr_of!(_sapps) as usize,
         ),
         core::slice::from_raw_parts_mut(
-            &mut _sappmem as *mut u8,
-            &_eappmem as *const u8 as usize - &_sappmem as *const u8 as usize,
+            core::ptr::addr_of_mut!(_sappmem),
+            core::ptr::addr_of!(_eappmem) as usize - core::ptr::addr_of!(_sappmem) as usize,
         ),
-        &mut PROCESSES,
         &FAULT_RESPONSE,
-        &process_management_capability,
+        assigner,
+        &process_management_capability
     )
-    .unwrap_or_else(|err| {
-        debug!("Error loading processes!");
-        debug!("{:?}", err);
-    });
+);
+checker.set_client(loader);
+
+loader.register();
+loader.start();
 ```
 
 Compile and install the updated kernel.
@@ -239,7 +226,7 @@ make
 tockloader install --erase
 ```
 
-Now, if we list the processes on the board with the process console. Note we
+Now, we can list the processes on the board with the process console. Note we
 need to run the `console-start` command to active the tock process console.
 
 ```
@@ -255,15 +242,14 @@ Now we can list the processes:
 ```
 tock$ list
  PID    Name                Quanta  Syscalls  Restarts  Grants  State
- 0      blink                    0         0         0   0/16   CredentialsFailed
 tock$
 ```
 
 > Tip: You can re-disable the process console by using the `console-stop`
 > command.
 
-You can see our app is in the state `CredentialsFailed` meaning it will not
-execute (and the LEDs are not blinking).
+You can see our app is not there because it failed to load due to lack of proper
+credentials.
 
 To fix this, we can add the SHA256 credential.
 
@@ -293,7 +279,7 @@ To allow all apps to run, even if they don't pass the credential check, we need
 to configure our checker. Doing that is actually quite simple. We just need to
 modify the credential checker we are using to not require credentials.
 
-In `tock/kernel/src/process_checker/basic.rs`, modify the
+In `tock/capsules/system/src/process_checker/basic.rs`, modify the
 `require_credentials()` function to not require credentials:
 
 ```rust
@@ -360,7 +346,7 @@ impl SyscallFilter for TrustedSyscallFilter {
     ) -> Result<(), errorcode::ErrorCode> {
 
         // To determine if the process has credentials we can use the
-        // `process.get_credentials()` function.
+        // `process.short_app_id()` function.
 
         // Now inspect the `syscall` the app is calling. If the `driver_numer`
         // is not XXXXXX, then return `Ok(())` to permit the call. Otherwise, if
