@@ -111,6 +111,12 @@ let (keyboard_hid, keyboard_hid_driver) = components::keyboard_hid::KeyboardHidC
 
 ### 4. Activate USB HID Support
 
+Include the USB client trait:
+
+```rust
+use kernel::hil::usb::Client;
+```
+
 Towards the end of the main.rs, you need to enable the USB HID driver:
 
 ```rust
