@@ -596,13 +596,13 @@ struct TbfHeaderV2ShortId {
 }
 ```
 
-This header allows the compile-time workflow to specify the fixed `ShortId` the
-application should be assigned when it is loaded. The header only includes
+This header allows the compile-time workflow to specify a fixed `ShortId` the
+kernel can use to assign a ShortId to this application. The header only includes
 the 32 bit ShortId.
 
-Note, fixed `ShortId`s are defined to be nonzero. Therefore, including this
-header but setting the `short_id` field to 0 is the same as not including this
-header.
+Note, fixed `ShortId`s are defined to be nonzero. Therefore, even if this header
+is present, but with a `short_id` field of 0, the kernel will not be able to
+assign a fixed ShortId of 0.
 
 Also, this header is just one method for indicating what `ShortId` an
 application should be assigned. The kernel must be configured to use this header
@@ -615,8 +615,7 @@ and any particular Tock kernel may ignore this header.
 +-------------+-------------+---------------------------+
 ```
 
-- `short_id`: The 32 bit nonzero fixed ShortId the application should be
-  assigned when executed.
+- `short_id`: The 32 bit nonzero fixed ShortId.
 
 #### `128` Credentials Footer
 
