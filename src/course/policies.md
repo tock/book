@@ -33,9 +33,6 @@ pub trait KernelResources<C: Chip> {
     /// Process fault handling mechanism.
     type ProcessFault: ProcessFault;
 
-    /// Credentials checking policy.
-    type CredentialsCheckingPolicy: CredentialsCheckingPolicy<'static> + 'static;
-
     /// Context switch callback handler.
     type ContextSwitchCallback: ContextSwitchCallback;
 
@@ -53,7 +50,6 @@ pub trait KernelResources<C: Chip> {
     fn syscall_driver_lookup(&self) -> &Self::SyscallDriverLookup;
     fn syscall_filter(&self) -> &Self::SyscallFilter;
     fn process_fault(&self) -> &Self::ProcessFault;
-    fn credentials_checking_policy(&self) -> &'static Self::CredentialsCheckingPolicy;
     fn context_switch_callback(&self) -> &Self::ContextSwitchCallback;
     fn scheduler(&self) -> &Self::Scheduler;
     fn scheduler_timer(&self) -> &Self::SchedulerTimer;
@@ -84,27 +80,27 @@ cryptographically verify that a particular app is trusted. The kernel can then
 establish a persistent identifier for the app based on its credentials.
 
 A specific process binary can be appended with zero or more credentials. The
-per-board `KernelResources::CredentialsCheckingPolicy` then uses these
-credentials to establish if the kernel should run this process and what
-identifier it should have. The Tock kernel design does not impose any
-restrictions on how applications or processes are identified. For example, it is
-possible to use a SHA256 hash of the binary as an identifier, or a RSA4096
-signature as the identifier. As different use cases will want to use different
-identifiers, Tock avoids specifying any constraints.
+`AppCredentialsPolicy` then uses these credentials to establish if the kernel
+should run this process. If the credentials policy approves the process, the
+`AppIdPolicy` determines what identifier it should have. The Tock kernel design
+does not impose any restrictions on how applications or processes are
+identified. For example, it is possible to use a SHA256 hash of the binary as an
+identifier, or a RSA4096 signature as the identifier. As different use cases
+will want to use different identifiers, Tock avoids specifying any constraints.
 
 However, long identifiers are difficult to use in software. To enable more
 efficiently handling of application identifiers, Tock also includes mechanisms
-for a per-process `ShortID` which is stored in 32 bits. This can be used
+for a per-process `ShortId` which is stored in 32 bits. This can be used
 internally by the kernel to differentiate processes. As with long identifiers,
-ShortIDs are set by `KernelResources::CredentialsCheckingPolicy` and are chosen
-on a per-board basis. The only property the kernel enforces is that ShortIDs
-must be unique among processes installed on the board. For boards that do not
-need to use ShortIDs, the ShortID type includes a `LocallyUnique` option which
-ensures the uniqueness invariant is upheld without the overhead of choosing
-distinct, unique numbers for each process.
+ShortIds are set by `AppIdPolicy` (specifically the `Compress` trait) and are
+chosen on a per-board basis. The only property the kernel enforces is that
+ShortIDs must be unique among processes installed on the board. For boards that
+do not need to use ShortIDs, the ShortID type includes a `LocallyUnique` option
+which ensures the uniqueness invariant is upheld without the overhead of
+choosing distinct, unique numbers for each process.
 
 ```rust
-pub enum ShortID {
+pub enum ShortId {
     LocallyUnique,
     Fixed(core::num::NonZeroU32),
 }
@@ -177,11 +173,11 @@ impl ProcessFaultPolicy for RestartTrustedAppsFaultPolicy {
 }
 ```
 
-To determine if a process is trusted, we will use its `ShortID`. A `ShortID` is
+To determine if a process is trusted, we will use its `ShortId`. A `ShortId` is
 a type as follows:
 
 ```rust
-pub enum ShortID {
+pub enum ShortId {
 	/// No specific ID, just an abstract value we know is unique.
     LocallyUnique,
     /// Specific 32 bit ID number guaranteed to be unique.
@@ -189,9 +185,9 @@ pub enum ShortID {
 }
 ```
 
-If the app has a short ID of `ShortID::LocallyUnique` then it is untrusted (i.e.
+If the app has a short ID of `ShortId::LocallyUnique` then it is untrusted (i.e.
 the kernel could not validate its signature or it was not signed). If the app
-has a concrete number as its short ID (i.e. `ShortID::Fixed(u32)`), then we
+has a concrete number as its short ID (i.e. `ShortId::Fixed(u32)`), then we
 consider the app to be trusted.
 
 To determine how many times the process has already been restarted we can use
@@ -433,81 +429,65 @@ In `main.rs`, we need to create the app checker. Tock includes a basic SHA256
 credential checker, so we can use that:
 
 ```rust
-use capsules_extra::sha256::Sha256Software;
-use kernel::process_checker::basic::AppCheckerSha256;
-
 // Create the software-based SHA engine.
-let sha = static_init!(Sha256Software<'static>, Sha256Software::new());
-kernel::deferred_call::DeferredCallClient::register(sha);
+let sha = components::sha::ShaSoftware256Component::new()
+    .finalize(components::sha_software_256_component_static!());
 
 // Create the credential checker.
-static mut SHA256_CHECKER_BUF: [u8; 32] = [0; 32];
-let checker = static_init!(
-    AppCheckerSha256,
-    AppCheckerSha256::new(sha, &mut SHA256_CHECKER_BUF)
+let checking_policy = components::appid::checker_sha::AppCheckerSha256Component::new(sha)
+    .finalize(components::app_checker_sha256_component_static!());
+
+// Create the AppID assigner.
+let assigner = components::appid::assigner_name::AppIdAssignerNamesComponent::new()
+    .finalize(components::appid_assigner_names_component_static!());
+
+// Create the process checking machine.
+let checker = components::appid::checker::ProcessCheckerMachineComponent::new(checking_policy)
+    .finalize(components::process_checker_machine_component_static!());
+```
+
+To use the checker, we must switch to asynchronous process loading. Many boards
+by default use a synchronous loader which iterates through flash discovering
+processes. However, to verify credentials, we need asynchronous operations
+during loading and therefore need an asynchronous process loader.
+
+```rust
+let process_binary_array = static_init!(
+    [Option<kernel::process::ProcessBinary>; NUM_PROCS],
+    [None, None, None, None, None, None, None, None]
 );
-sha.set_client(checker);
-```
 
-Then we need to add this to our `Platform` struct:
-
-```rust
-struct Platform {
-    ...
-    credentials_checking_policy: &'static AppCheckerSha256,
-}
-```
-
-Add it when create the platform object:
-
-```rust
-let platform = Platform {
-    ...
-    credentials_checking_policy: checker,
-}
-```
-
-And configure our kernel to use it:
-
-```rust
-impl KernelResources for Platform {
-    ...
-    type CredentialsCheckingPolicy = AppCheckerSha256;
-    ...
-    fn credentials_checking_policy(&self) -> &'static Self::CredentialsCheckingPolicy {
-        self.credentials_checking_policy
-    }
-    ...
-}
-```
-
-Finally, we need to use the function that checks credentials when processes are
-loaded (not just loads and executes them unconditionally):
-
-```rust
-kernel::process::load_and_check_processes(
+let loader = static_init!(
+    kernel::process::SequentialProcessLoaderMachine<
+        nrf52840::chip::NRF52<Nrf52840DefaultPeripherals>,
+    >,
+    kernel::process::SequentialProcessLoaderMachine::new(
+        checker,
+        &mut *addr_of_mut!(PROCESSES),
+        process_binary_array,
         board_kernel,
-        &platform, // note this function requires providing the platform.
         chip,
         core::slice::from_raw_parts(
-            &_sapps as *const u8,
-            &_eapps as *const u8 as usize - &_sapps as *const u8 as usize,
+            core::ptr::addr_of!(_sapps),
+            core::ptr::addr_of!(_eapps) as usize - core::ptr::addr_of!(_sapps) as usize,
         ),
         core::slice::from_raw_parts_mut(
-            &mut _sappmem as *mut u8,
-            &_eappmem as *const u8 as usize - &_sappmem as *const u8 as usize,
+            core::ptr::addr_of_mut!(_sappmem),
+            core::ptr::addr_of!(_eappmem) as usize - core::ptr::addr_of!(_sappmem) as usize,
         ),
-        &mut PROCESSES,
         &FAULT_RESPONSE,
-        &process_management_capability,
+        assigner,
+        &process_management_capability
     )
-    .unwrap_or_else(|err| {
-        debug!("Error loading processes!");
-        debug!("{:?}", err);
-    });
+);
+
+checker.set_client(loader);
+
+loader.register();
+loader.start();
 ```
 
-(Instead of just `kernel::process::load_processes(...)`.)
+(Instead of the `kernel::process::load_processes(...)` function.)
 
 Compile and install the updated kernel.
 
@@ -533,12 +513,38 @@ Initialization complete. Entering main loop
 NRF52 HW INFO: Variant: AAF0, Part: N52840, Package: QI, Ram: K256, Flash: K1024
 tock$ list
  PID    Name                Quanta  Syscalls  Restarts  Grants  State
- 0      blink                    0         0         0   0/16   CredentialsFailed
 tock$
 ```
 
-You can see our app is in the state `CredentialsFailed` meaning it will not
-execute (and the LEDs are not blinking).
+You can see our app does not show up. That is because it did not pass the
+credential check.
+
+We can see this more clearly by updating the kernel to use the
+`ProcessLoadingAsyncClient` client. We can implement this client for `Platform`:
+
+```rust
+impl kernel::process::ProcessLoadingAsyncClient for Platform {
+    fn process_loaded(&self, result: Result<(), kernel::process::ProcessLoadError>) {
+        match result {
+            Ok(()) => {},
+            Err(e) => {
+                kernel::debug!("Process failed to load: {:?}", e);
+            }
+        }
+    }
+
+    fn process_loading_finished(&self) { }
+}
+```
+
+And then configure it with the loader:
+
+```rust
+loader.set_client(platform);
+```
+
+Now re-compiling and flashing the kernel and we will see the process load error
+when the kernel boots.
 
 To fix this, we can add the SHA256 credential.
 
@@ -568,7 +574,7 @@ First, we need to allow all apps to run, even if they don't pass the credential
 check. Doing that is actually quite simple. We just need to modify the
 credential checker we are using to not require credentials.
 
-In `tock/kernel/src/process_checker/basic.rs`, modify the
+In `tock/capsules/system/src/process_checker/basic.rs`, modify the
 `require_credentials()` function to not require credentials:
 
 ```rust
@@ -605,8 +611,8 @@ impl ProcessFaultPolicy for RestartTrustedAppsFaultPolicy {
         // ID. If so, return the restart action if the restart count is below
         // the threshold. Otherwise return stop.
         match short_id {
-            kernel::process::ShortID::LocallyUnique => process::FaultAction::Stop,
-            kernel::process::ShortID::Fixed(_) => {
+            kernel::process::ShortId::LocallyUnique => process::FaultAction::Stop,
+            kernel::process::ShortId::Fixed(_) => {
                 if restart_count < self.threshold {
                     process::FaultAction::Restart
                 } else {
