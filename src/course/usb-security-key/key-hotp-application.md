@@ -229,16 +229,7 @@ information as key-value pairs. Completed code is available in
 3. Make sure to update the key-value pair whenever part of the HOTP key is
    modified, i.e. when programming a new secret or updating the counter.
 
-4. Make sure your app has permissions to use storage in the kernel. The app
-   needs a TBF header to grant it permission. You can have the app automatically
-   include this when compiling by adding these flags to the app Makefile:
-
-   ```
-   # Make sure we have storage permissions.
-   ELF2TAB_ARGS += --write_id 0x4016 --read_ids 0x4016 --access_ids 0x4016
-   ```
-
-5. Upload your code to test it. You should be able to keep the same secret and
+4. Upload your code to test it. You should be able to keep the same secret and
    counter value on resets and also on power cycles.
 
 - There is an on/off switch on the top left of the nRF52840DK you can use for
