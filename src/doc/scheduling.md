@@ -37,7 +37,7 @@ schedulers just requires implementing this trait.
 
 ## Process State
 
-In Tock, a process can be in one of seven states:
+In Tock, a process can be in one of these states:
 
 - **Running**: Normal operation. A Running process is eligible to be scheduled
   for execution, although is subject to being paused by Tock to allow interrupt
@@ -50,17 +50,17 @@ In Tock, a process can be in one of seven states:
   to complete and have no immediately useful work to do. Whenever the kernel
   issues an upcall to a Yielded process, the process is transitioned to the
   Running state.
+- **YieldedFor**: Suspended operation. Like a Yielded process, a YieldedFor
+  process will not be scheduled by Tock. A YieldedFor process is waiting for a
+  specific UpcallId (i.e., a specific upcall for a specific driver). The process
+  will only be transitioned to the Running state when the kernel issues that
+  specific upcall.
 - **Fault**: Erroneous operation. A Fault-ed process will not be scheduled by
   Tock. Processes enter the Fault state by performing an illegal operation, such
   as accessing memory outside of their address space.
 - **Terminated**: The process ended itself by calling the `Exit` system call and
   the kernel has not restarted it.
-- **Unstarted**: The process has not yet started; this state is typically very
-  short-lived, between process loading and it started. However, in cases when
-  processes might be loaded for a long time without running, this state might be
-  long-lived.
-- **StoppedRunning**, **StoppedYielded**: These states correspond to a process
-  that was in either the Running or Yielded state but was then explicitly
+- **Stopped**: The process was running or yielded but was then explicitly
   stopped by the kernel (e.g., by the process console). A process in these
-  states will not be made runnable until it is restarted, at which point it will
+  states will not be made runnable until it is started, at which point it will
   continue execution where it was stopped.
