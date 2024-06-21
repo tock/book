@@ -20,35 +20,28 @@ press.
 2. **Setup a button callback handler**. A button press in Tock is treated as an
    interrupt, and in an application this translates to a function being called,
    much like in any other event-driven system. To listen for button presses, we
-   first need to define a callback function, then tell the kernel that the
-   callback exists.
+   first need to define a callback function.
 
    ```c
    #include <stdio.h>
-   #include <button.h>
+   #include <libtock/interface/button.h>
 
    // Callback for button presses.
    //   btn_num: The index of the button associated with the callback
-   //   val:     1 if pressed, 0 if depressed
-   static void button_callback(int btn_num,
-                               int val,
-                               int arg2 __attribute__ ((unused)),
-                               void *user_data __attribute__ ((unused)) ) {
+   //   val: true if pressed, false if depressed
+   static void button_callback(
+     returncode_t ret,
+     int          btn_num,
+     bool         val) {
    }
 
    int main(void) {
-     button_subscribe(button_callback, NULL);
-
      return 0;
    }
    ```
 
-   All callbacks from the kernel are passed four arguments, and the meaning of
-   the four arguments depends on the driver. The first three are integers, and
-   can be used to represent buffer lengths, pin numbers, button numbers, and
-   other simple data. The fourth argument is a pointer to user defined object.
-   This pointer is set in the subscribe call (in this example it is set to
-   `NULL`), and returned when the callback fires.
+   All callbacks in the libtock are specific to the individual driver, and the
+   values provided depend on how the individual drivers work.
 
 3. **Enable the button interrupts**. By default, the interrupts for the buttons
    are not enabled. To enable them, we make a syscall. Buttons, like other
@@ -57,75 +50,80 @@ press.
 
    ```c
    #include <stdio.h>
-   #include <button.h>
+   #include <libtock/interface/button.h>
 
    // Callback for button presses.
    //   btn_num: The index of the button associated with the callback
-   //   val:     1 if pressed, 0 if depressed
-   static void button_callback(int btn_num,
-                               int val,
-                               int arg2 __attribute__ ((unused)),
-                               void *user_data __attribute__ ((unused)) ) {
+   //   val: true if pressed, false if depressed
+   static void button_callback(
+     returncode_t ret,
+     int          btn_num,
+     bool         val) {
    }
 
    int main(void) {
-     button_subscribe(button_callback, NULL);
-
      // Ensure there is a button to use.
-     int count = button_count();
+     int count;
+     libtock_button_count(&count);
      if (count < 1) {
        // There are no buttons on this platform.
-       printf("Error! No buttons on this platform.");
+       printf("Error! No buttons on this platform.\n");
      } else {
        // Enable an interrupt on the first button.
-       button_enable_interrupt(0);
+       libtock_button_notify_on_press(0, button_callback);
      }
 
-     // Can just return here. The application will continue to execute.
-     return 0;
+     // Loop forever waiting on button presses.
+     while (1) {
+       yield();
+     }
    }
    ```
 
    The button count is checked, and the app only continues if there exists at
-   least one button. To enable the button interrupt, `button_enable_interrupt()`
-   is called with the index of the button to use. In this example we just use
-   the first button.
+   least one button. To enable the button interrupt,
+   `libtock_button_notify_on_press()` is called with the index of the button to
+   use. In this example we just use the first button.
+
+   We then need to wait in a loop calling `yield()` to continue to receive
+   button presses.
 
 4. **Call `printf()` on button press**. To print a message, we call `printf()`
    in the callback.
 
    ```c
    #include <stdio.h>
-   #include <button.h>
+   #include <libtock/interface/button.h>
 
    // Callback for button presses.
    //   btn_num: The index of the button associated with the callback
-   //   val:     1 if pressed, 0 if depressed
-   static void button_callback(int btn_num,
-                               int val,
-                               int arg2 __attribute__ ((unused)),
-                               void *user_data __attribute__ ((unused)) ) {
+   //   val: true if pressed, false if depressed
+   static void button_callback(
+     __attribute__ ((unused)) returncode_t ret,
+     __attribute__ ((unused)) int          btn_num,
+     bool                                  val) {
      // Only print on the down press.
-     if (val == 1) {
+     if (val) {
        printf("Hello!\n");
      }
    }
 
    int main(void) {
-     button_subscribe(button_callback, NULL);
-
      // Ensure there is a button to use.
-     int count = button_count();
+     int count;
+     libtock_button_count(&count);
      if (count < 1) {
        // There are no buttons on this platform.
        printf("Error! No buttons on this platform.\n");
      } else {
        // Enable an interrupt on the first button.
-       button_enable_interrupt(0);
+       libtock_button_notify_on_press(0, button_callback);
      }
 
-     // Can just return here. The application will continue to execute.
-     return 0;
+     // Loop forever waiting on button presses.
+     while (1) {
+       yield();
+     }
    }
    ```
 
