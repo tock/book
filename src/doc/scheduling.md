@@ -1,0 +1,66 @@
+# Scheduling
+
+This describes how processes are scheduled by the Tock kernel.
+
+## Tock Scheduling
+
+The kernel defines a `Scheduler` trait that the main kernel loop uses to
+determine which process to execute next. Here is a simplified view of that
+trait:
+
+```rust
+pub trait Scheduler {
+    /// Decide which process to run next.
+    fn next(&self) -> SchedulingDecision;
+
+    /// Inform the scheduler of why the last process stopped executing, and how
+    /// long it executed for.
+    fn result(&self, result: StoppedExecutingReason, execution_time_us: Option<u32>);
+
+    /// Tell the scheduler to execute kernel work such as interrupt bottom
+    /// halves and dynamic deferred calls. Most schedulers will use the default
+    /// implementation.
+    unsafe fn execute_kernel_work(&self, chip: &C) {...}
+
+    /// Ask the scheduler whether to take a break from executing userspace
+    /// processes to handle kernel tasks.
+    unsafe fn do_kernel_work_now(&self, chip: &C) -> bool {...}
+
+    /// Ask the scheduler whether to continue trying to execute a process.
+    /// Most schedulers will use this default implementation.
+    unsafe fn continue_process(&self, _id: ProcessId, chip: &C) -> bool {...}
+}
+```
+
+Individual boards can choose which scheduler to use, and implementing new
+schedulers just requires implementing this trait.
+
+## Process State
+
+In Tock, a process can be in one of these states:
+
+- **Running**: Normal operation. A Running process is eligible to be scheduled
+  for execution, although is subject to being paused by Tock to allow interrupt
+  handlers or other processes to run. During normal operation, a process remains
+  in the Running state until it explicitly yields. Upcalls from other kernel
+  operations are not delivered to Running processes (i.e. upcalls do not
+  interrupt processes), rather they are enqueued until the process yields.
+- **Yielded**: Suspended operation. A Yielded process will not be scheduled by
+  Tock. Processes often yield while they are waiting for I/O or other operations
+  to complete and have no immediately useful work to do. Whenever the kernel
+  issues an upcall to a Yielded process, the process is transitioned to the
+  Running state.
+- **YieldedFor**: Suspended operation. Like a Yielded process, a YieldedFor
+  process will not be scheduled by Tock. A YieldedFor process is waiting for a
+  specific UpcallId (i.e., a specific upcall for a specific driver). The process
+  will only be transitioned to the Running state when the kernel issues that
+  specific upcall.
+- **Fault**: Erroneous operation. A Fault-ed process will not be scheduled by
+  Tock. Processes enter the Fault state by performing an illegal operation, such
+  as accessing memory outside of their address space.
+- **Terminated**: The process ended itself by calling the `Exit` system call and
+  the kernel has not restarted it.
+- **Stopped**: The process was running or yielded but was then explicitly
+  stopped by the kernel (e.g., by the process console). A process in these
+  states will not be made runnable until it is started, at which point it will
+  continue execution where it was stopped.
