@@ -102,5 +102,6 @@
     - [TRD Public/Private Keys](./trd/trd-public-private-keys.md)
     - [TRD Radio](./trd/trd-radio.md)
     - [TRD SPI](./trd/trd-spi.md)
+    - [TRD Storage Permissions](./trd/trd-storage-permissions.md)
     - [TRD UART](./trd/trd-uart.md)
     - [TRD Userspace Read Allow](./trd/trd-userspace-readable-allow-syscalls.md)
