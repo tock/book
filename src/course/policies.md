@@ -94,8 +94,8 @@ for a per-process `ShortId` which is stored in 32 bits. This can be used
 internally by the kernel to differentiate processes. As with long identifiers,
 ShortIds are set by `AppIdPolicy` (specifically the `Compress` trait) and are
 chosen on a per-board basis. The only property the kernel enforces is that
-ShortIDs must be unique among processes installed on the board. For boards that
-do not need to use ShortIDs, the ShortID type includes a `LocallyUnique` option
+ShortIds must be unique among processes installed on the board. For boards that
+do not need to use ShortIds, the ShortId type includes a `LocallyUnique` option
 which ensures the uniqueness invariant is upheld without the overhead of
 choosing distinct, unique numbers for each process.
 
