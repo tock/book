@@ -170,7 +170,7 @@ $ tockloader listen
 Initialization complete. Entering main loop
 NRF52 HW INFO: Variant: AAC0, Part: N52840, Package: QI, Ram: K256, Flash: K1024
 Hello World!
-tock$=
+tock$
 ```
 
 Congratulations, you have successfully installed and run your first Tock
