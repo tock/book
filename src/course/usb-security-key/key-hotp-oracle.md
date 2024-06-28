@@ -382,9 +382,10 @@ pub const DRIVER_NUM: usize = 0x99999;
 ### Instantiating the System Call Driver
 
 Now, open the board's main file (for example
-`boards/nordic/nrf52840dk/src/main.rs`) and scroll down to the line that reads
-"_PLATFORM SETUP, SCHEDULER, AND START KERNEL LOOP_". We'll instantiate our
-encryption oracle driver right above that, with the following snippet:
+`boards/tutorials/nrf52840dk-hotp-tutorial/src/main.rs`) and scroll down to the
+line that reads "_PLATFORM SETUP, SCHEDULER, AND START KERNEL LOOP_". We'll
+instantiate our encryption oracle driver right above that, with the following
+snippet:
 
 ```rust
 const CRYPT_SIZE: usize = 7 * kernel::hil::symmetric_encryption::AES128_BLOCK_SIZE;
@@ -398,7 +399,7 @@ let oracle = static_init!(
     >,
     // Call our constructor:
     capsules_extra::tutorials::encryption_oracle::EncryptionOracleDriver::new(
-        &base_peripherals.ecb,
+        &nrf52840_peripherals.nrf52.ecb,
         aes_src_buffer,
         aes_dst_buffer,
 		// Magic incantation to create our `Grant` struct:
@@ -410,7 +411,7 @@ let oracle = static_init!(
 );
 
 // Leave commented out for now:
-// kernel::hil::symmetric_encryption::AES128::set_client(&base_peripherals.ecb, oracle);
+// kernel::hil::symmetric_encryption::AES128::set_client(&nrf52840_peripherals.nrf52.ecb, oracle);
 ```
 
 If you are using a microcontroller other than the nRF52840, you will need to
@@ -427,9 +428,9 @@ Add the following line to the very bottom of the `pub struct Platform {`
 declaration:
 
 ```diff
-  pub struct Platform {
+  struct Platform {
       [...],
-      systick: cortexm4::systick::SysTick,
+      base: nrf52840dk_lib::Platform,
 +     oracle: &'static capsules_extra::tutorials::encryption_oracle::EncryptionOracleDriver<
 +         'static,
 +         nrf52840::aes::AesECB<'static>,
@@ -443,7 +444,7 @@ instantiation:
 ```diff
   let platform = Platform {
       [...],
-      systick: cortexm4::systick::SysTick::new_with_calibration(64000000),
+      screen,
 +     oracle,
   };
 ```
@@ -459,11 +460,11 @@ trait implementation:
           F: FnOnce(Option<&dyn kernel::syscall::SyscallDriver>) -> R,
       {
           match driver_num {
-              capsules_core::console::DRIVER_NUM => f(Some(self.console)),
+              capsules_extra::hmac::DRIVER_NUM => f(Some(self.hmac)),
               [...],
               capsules_extra::app_flash_driver::DRIVER_NUM => f(Some(self.app_flash)),
 +             capsules_extra::tutorials::encryption_oracle::DRIVER_NUM => f(Some(self.oracle)),
-              _ => f(None),
+              _ => self.base.with_driver(driver_num, f),
           }
       }
   }
@@ -538,13 +539,13 @@ impl<'a, A: AES128<'a> + AES128Ctr> Client<'a> for EncryptionOracleDriver<'a, A>
 ```
 
 With this trait implemented, we can wire up the `oracle` driver instance to
-receive callbacks from the AES engine (`base_peripherals.ecb`) by uncommenting
-the following line in `main.rs`:
+receive callbacks from the AES engine (`nrf52840_peripherals.nrf52.ecb`) by
+uncommenting the following line in `main.rs`:
 
 ```diff
 - // Leave commented out for now:
-- // kernel::hil::symmetric_encryption::AES128::set_client(&base_peripherals.ecb, oracle);
-+ kernel::hil::symmetric_encryption::AES128::set_client(&base_peripherals.ecb, oracle);
+- // kernel::hil::symmetric_encryption::AES128::set_client(&nrf52840_peripherals.nrf52.ecb, oracle);
++ kernel::hil::symmetric_encryption::AES128::set_client(&nrf52840_peripherals.nrf52.ecb, oracle);
 ```
 
 If this is missing, our capsule will not be able to receive feedback from the
