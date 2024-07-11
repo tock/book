@@ -151,17 +151,20 @@ and its security-relevant dependencies:
 
 ## What is an "Application"?
 
-Tock does not currently have a precise definition of "application", although
-there is consensus on the following:
+Formally, a Tock application is the set of all processes that have a particular
+application ID (as detailed in
+[the AppID TRD](https://github.com/tock/tock/blob/master/doc/reference/trd-appid.md)).
 
-- Unlike a process, an application persists across reboots and updates. For
-  example, an application binary can be updated without becoming a new
-  application but the update will create a new process.
+Every process has an application ID (which may be global or locally unique), so
+every process is part of an application.
 
-- An application consists of at least one application binary (in the Tock Binary
-  Format), although it is unclear whether multiple application binaries can
-  collectively be considered a single application (e.g. if they implement a
-  single piece of functionality).
+Application IDs are generally used as a way to grant access to something. For
+example, a process that wants to send a message to another process will
+generally do so by sending the message to that process' application ID. Doing so
+grants that application access to the message. The IPC system is responsible for
+identifying which process has that application ID (if any) and giving the
+message to that process.
 
-This section will be updated when we have a more precise definition of
-"application".
+In the context of storage, it often makes sense for a process to share data with
+its own application ID. That allows future processes belonging to the same
+application (e.g. after a system reboot) to access that data.
