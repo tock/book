@@ -5,6 +5,9 @@
 - [Getting Started](./getting_started.md)
 
   - [Quickstart](./setup/quickstart.md)
+    - [Mac](./setup/quickstart-mac.md)
+    - [Linux](./setup/quickstart-linux.md)
+    - [Windows](./setup/quickstart-windows.md)
   - [Hardware Setup](./setup/hardware.md)
   - [Building the Kernel](./setup/kernel.md)
   - [Installing Applications](./setup/apps.md)
