@@ -158,7 +158,7 @@ application ID (as detailed in
 Every process has an application ID (which may be global or locally unique), so
 every process is part of an application.
 
-Applications are generally used as a way to grant access to something. For
+Application IDs are generally used as a way to grant access to something. For
 example, a process that wants to send a message to another process will
 generally do so by sending the message to that process' application ID. Doing so
 grants that application access to the message. The IPC system is responsible for
