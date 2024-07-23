@@ -91,7 +91,7 @@ So, with that introduction, lets get going.
     ```c
     #include <stdio.h>
 
-    #include <led.h>
+    #include <libtock/interface/led.h>
 
     // Called when each advertisement is received.
     void ble_evt_adv_report (ble_evt_t* p_ble_evt) {
@@ -104,7 +104,7 @@ So, with that introduction, lets get going.
         adv->rssi, adv->dlen);
 
       // Also toggle the first LED.
-      led_toggle(0);
+      libtock_led_toggle(0);
     }
     ```
 
@@ -133,7 +133,7 @@ So, with that introduction, lets get going.
     For any new applications, ensure that the following is in the makefile so
     that the BLE serialization library is included.
 
-         include $(TOCK_USERLAND_BASE_DIR)/libnrfserialization/Makefile.app
+        EXTERN_LIBS += $(TOCK_USERLAND_BASE_DIR)/libnrfserialization
 
 ## Details
 

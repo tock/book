@@ -58,7 +58,7 @@ service on how to turn on or off the system's LEDs.
    `examples/tutorials` folder.
 
    ```c
-   #include "led.h"
+   #include <tock/interface/led.h>
 
    static void ipc_callback(int pid, int len, int buf, void* ud) {
      uint8_t* buffer = (uint8_t*) buf;
@@ -71,9 +71,9 @@ service on how to turn on or off the system's LEDs.
          uint8_t led_state = buffer[2] > 0;
 
          if (led_state == 0) {
-           led_off(led_id);
+           libtock_led_off(led_id);
          } else {
-           led_on(led_id);
+           libtock_led_on(led_id);
          }
 
          // Tell the client that we have finished setting the specified LED.
@@ -102,7 +102,7 @@ folder.
    the shared buffer before calling notify.
 
    ```c
-   #include <rng.h>
+   #include <libtock-sync/peripherals/rng.h>
 
    static void ipc_callback(int pid, int len, int buf, void* ud) {
      uint8_t* buffer = (uint8_t*) buf;
@@ -111,7 +111,8 @@ folder.
      uint8_t number_of_bytes = buffer[0];
 
      // Fill the buffer with random bytes.
-     int number_of_bytes_received = rng_sync(rng, len, number_of_bytes);
+     int number_of_bytes_received;
+     libtocksync_rng_get_random_bytes(rng, len, number_of_bytes, &number_of_bytes_received);
      memcpy(buffer, rng, number_of_bytes_received);
 
      // Signal the client that we have the number of random bytes requested.
@@ -172,9 +173,9 @@ service applications.
    }
    ```
 
-3. We of course need the callback too. For this app we use the `yield_for`
+3. We of course need the callback too. For this app we use the `yield_for()`
    function to implement the logical synchronously, so all the callback needs to
-   do is set a flag to signal the end of the `yield_for`.
+   do is set a flag to signal the end of the `yield_for()`.
 
    ```c
    bool done = false;
