@@ -77,12 +77,12 @@ With the kernel setup, you are ready to try the mini tutorials.
    to interact with kernel drivers.
 1. **[Inter-process Communication](05_ipc.md)**: Tock's IPC mechanism.
 
-### Board compatiblity matrix
+### Board compatibility matrix
 
-| Tutorial # | Supported boards          |
-| ---------- | ------------------------- |
-| 1          | All                       |
-| 2          | All Cortex-M based boards |
-| 3          | Hail and imix             |
-| 4          | Hail and imix             |
-| 5          | All that support IPC      |
+| Tutorial # | Supported boards        |
+| ---------- | ----------------------- |
+| 1          | All                     |
+| 2          | All with a button       |
+| 3          | Hail and imix           |
+| 4          | All with a light sensor |
+| 5          | All that support IPC    |
