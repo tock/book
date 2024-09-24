@@ -53,6 +53,8 @@ all:	check_mdbook check_mdbook_linkcheck check_mdbook_webinclude check_mdbook_pa
 pretty:	check_prettier
 	$(PRETTIER) --write --prose-wrap always '**/*.md'
 
+fmt format: pretty
+
 install_mdbook:
 ifndef CI
 	cargo install mdbook --version $(MDBOOK_VERSION)
