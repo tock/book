@@ -83,6 +83,7 @@
     - [Startup](./doc/startup.md)
     - [Syscalls](./doc/syscalls.md)
     - [Tock Binary Format](./doc/tock_binary_format.md)
+    - [Types](./doc/types.md)
   - [Module Documentation](./doc/modules.md)
     - [Process Console](./doc/pconsole.md)
     - [Networking Stack](./doc/networking_stack.md)
