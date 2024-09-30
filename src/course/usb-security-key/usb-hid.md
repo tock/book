@@ -26,7 +26,7 @@ board and microcontroller can "type" to your computer.
 ## Configuring the Kernel
 
 We need to setup our kernel to include USB support, and particularly the USB HID
-(keyboard) profile. This requires modifying the board's `main.rs` file. These
+(keyboard) profile. This requires modifying the board's `lib.rs` file. These
 steps will guide you through adding the USB HID device as a new resource
 provided by the Tock kernel on your hardware board. You will also expose this
 resource to userspace via the syscall interface.
@@ -36,7 +36,7 @@ resource to userspace via the syscall interface.
 You first need to create three strings that will represent this device to the
 USB host.
 
-You should add the following setup near the end of main.rs, just before the
+You should add the following setup near the end of lib.rs, just before the
 creating the `Platform` struct.
 
 ```rust
@@ -66,7 +66,7 @@ the specific microcontroller on the board. This type can become unwieldy and
 redundant, so specifying a type makes adding the same capsule and component to
 multiple boards more consistent.
 
-Near the top of the main.rs file, include the correct definitions based on your
+Near the top of the lib.rs file, include the correct definitions based on your
 board. In particular, the `UsbHw` definition must match the type of the USB
 hardware driver for your specific microcontroller.
 
@@ -117,7 +117,7 @@ Include the USB client trait:
 use kernel::hil::usb::Client;
 ```
 
-Towards the end of the main.rs, you need to enable the USB HID driver:
+Towards the end of the lib.rs, you need to enable the USB HID driver:
 
 ```rust
 keyboard_hid.enable();
