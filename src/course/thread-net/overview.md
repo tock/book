@@ -41,9 +41,8 @@ control unit (_mote_).
 
 We divide the mote's functionality into three separate applications:
 
-- The _control application_ is responsible for interacting with the user. It
-  drives the connected screen to display the current temperature and the local
-  and global-average set points.
+- The _screen app_ drives the connected screen to display the current
+  temperature and the local and global-average set points.
 - The _sensor application_ gathers readings from the `nRF52840`s internal
   temperature sensor and exposes them to the control application.
 - Last but not least, the _communication application_ is responsible for
@@ -174,7 +173,7 @@ set up this router as well.
 
 ## Stages
 
-We divide this tutorial into four stages, with checkpoints that you can use to
+We divide this tutorial into five stages, with checkpoints that you can use to
 skip ahead. Each stage contains information on how to obtain all checkpoint-code
 required for it.
 
@@ -185,17 +184,16 @@ required for it.
    This demonstrates how you can flash a Tock kernel and applications onto your
    development board, and introduces some key Tock concepts.
 
-2. We continue by extending this application into an "IPC service". This will
-   make the current temperature accessible to other applications that request
-   it.
+2. [Following this, we develop the _communication application_](comms-app.md).
+   This application will let our mote join the Thread network.
 
-3. [Our _controller application_](comms-app.md) takes this information and
-   displays it onto an attached OLED screen. It provides a basic user interface,
-   wiring up a screen driver, buttons, and an "IPC client".
+3. We continue by adding the [_screen application_](screen-app.md). This app will:
+   -  Receive user input to set the desired temperature.
+   -  Display the measured temperature, desired temperature setpoint, and global setpoint
+      to the attached OLED screen.
 
-4. [Following this, we develop the _communication application_](comms-app.md).
-   This application will let our mote join the Thread network and exchange
-   messages.
+4. Taking these three applications, we then add IPC functionality to allow for
+   passing data between applications.
 
 5. Finally,
    [we demonstrate how Tock's mutually distrustful application model can protect the system](robustness.md)
