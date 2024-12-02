@@ -187,10 +187,12 @@ required for it.
 2. [Following this, we develop the _communication application_](comms-app.md).
    This application will let our mote join the Thread network.
 
-3. We continue by adding the [_screen application_](screen-app.md). This app will:
-   -  Receive user input to set the desired temperature.
-   -  Display the measured temperature, desired temperature setpoint, and global setpoint
-      to the attached OLED screen.
+3. We continue by adding the [_screen application_](screen-app.md). This app
+   will:
+
+   - Receive user input to set the desired temperature.
+   - Display the measured temperature, desired temperature setpoint, and global
+     setpoint to the attached OLED screen.
 
 4. Taking these three applications, we then add IPC functionality to allow for
    passing data between applications.
