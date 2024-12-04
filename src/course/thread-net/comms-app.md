@@ -1,8 +1,7 @@
 # Wireless Networking
 
-We have created a device capable of sensing temperature, accepting user input,
-and displaying data. We now set out to utilize Tock's network capabilities to
-connect our temperature controller to a central node.
+We now set out to utilize Tock's network capabilities to connect our temperature
+controller to a central node.
 
 ## Background
 
@@ -75,8 +74,8 @@ dependencies. Subsequently, Tock provides an OpenThread port that runs as an
 application. This provides the added benefit that a bug in OpenThread will not
 cause the entire system to crash and that a faulting OpenThread app can be
 recovered and restarted by the Tock kernel. The libtock-c OpenThread port can be
-found in the `libopenthread` directory for further details. `libopenthread`
-directly checks out the upstream
+found in the `libtock-c/libopenthread` directory for further details.
+`libopenthread` directly checks out the upstream
 [OpenThread](https://github.com/openthread/openthread) repository and as such
 possesses the entire set of OpenThread APIs.
 
@@ -96,29 +95,61 @@ For the purposes of this tutorial, we provide a hardcoded network key
 (_commissioned joining_ would be a more secure authentication method). The major
 steps to join a Thread network include:
 
-1. Initializing the IP interface (`ifconfig up`)
-2. Creating a dataset (`dataset init new`)
-3. Adding the network key, _panid_, and channel to the dataset
-4. Committing the active dataset ('dataset commit active')
-5. Begin thread network attachment (`thread start`)
+1. Creating a dataset.
+2. Adding the network key, _panid_, and channel to the dataset.
+3. Committing the active dataset.
+4. Initializing the IP interface.
+5. Begin thread network attachment.
 
-To send and receive UDP packets, we must also correctly configure UDP. Because
-of these steps are mostly OpenThread specific, we provide an application that
-performs the vast majority of these steps.
+Each of these steps are accomplished using functions the OpenThread API exposes.
 
-> **CHECKPOINT:** `06_openthread`
+> **CHECKPOINT:** `03_openthread`
 
-> **EXERCISE:** Build and flash the openthread app, located under
-> `examples/tutorials/thread_network/06_openthread`.
+We provide a skeleton implementation in 03_openthread that is missing the logic
+needed to attach to the thread network. Your task is to add the needed
+OpenThread API calls to attach your device to the thread network.
 
-Upon successfully flashing the app, launch `tockloader listen`. Once in the
-tockloader console reset the board using:
+The provided starter code includes a helper method: 
+`void setNetworkConfiguration(otInstance* aInstance)`. This method will 
+initialize the network configuration dataset to the correct values (this
+completes steps 1,2,3 above).
+
+> **EXERCISE** Initialize the network dataset.
+
+Now that we have the network dataset initialized, we now must initialize the IP
+interface to have an IPv6 address assigned to our Thread node. The OpenThread
+library possess an API exposed as many functions. Two useful API
+functions include:
+```
+otIp6SetEnabled(otInstance* aInstance, bool aEnabled)
+otThreadSetEnabled(otInstance* aInstance, bool aEnabled)
+```
+
+> **EXERCISE** Initialize the IP interface.
+
+To confirm that we have successfully initialized the IP interface, add the following
+helper method after your IP initialization
+
+```
+print_ip_addr(instance);
+```
+
+Our Thread node is now fully configured and ready to attempt joining a network.
+
+> **EXERCISE** Start the Thread Network
+
+After completing these changes, build and flash the updated openthread app
+(`$make install`). 
+
+Our skeleton registers a callback with OpenThread to notify upon
+state change. Upon successfully implementing the above network attachment,
+flash the app, launch `tockloader listen` and reset the board using:
 
 ```
 tock$ reset
 ```
 
-If you have successfully compiled and flashed the app, you will see:
+If you have successfully implemented the thread network attachment, you will see:
 
 ```
 tock$ [THREAD] Device IPv6 Addresses: fe80:0:0:0:b4ef:e680:d8ef:475e
@@ -127,63 +158,125 @@ tock$ [THREAD] Device IPv6 Addresses: fe80:0:0:0:b4ef:e680:d8ef:475e
 Successfully attached to Thread network as a child.
 ```
 
-> **TROUBLESHOOTING**
->
-> 1. _Thread output not printed to the console_.
->
->    Run `tockloader list` and you should see:
->
->    ```
->    tock$ list
->     PID    ShortID    Name                Quanta  Syscalls  Restarts  Grants  State
->     0      Unique     org.tockos.thread-tutorial.openthread   125      1586         0   6/18   Running
->     1      Unique     thread_controller        2       187         0   5/18   Yielded
->     2      Unique     org.tockos.thread-tutorial.sensor     0       132         0   3/18   Yielded
->    ```
->
->    If you do not see this, you have not successfully flashed the app.
->
-> 2. _Thread output does not say successfully joined_.
->    - First confirm that you have flashed the router with the
->      [provided instructions](./router-setup.md).
->    - Attempt resetting your board again.
+If you are unable to join the network, feel free to jump ahead to the checkpoint below.
 
-Congratulations! We now have a networked mote. We now must modify the provided
-implementation to be integrated with the controller app.
+> **CHECKPOINT:** 03_openthread_attach
 
-> **EXERCISE:** We provide a list of the features and expected behaviors of this
-> app. We leave the implementation of this logic to you. This will utilize a
-> similar IPC framework as between the controller and sensor apps. The specified
-> behavior is as follows.
->
-> 1. The openthread app will receive an IPC request (the specified local
->    setpoint will be contained in the first byte of the shared buffer).
-> 2. The openthread app will multicast this value to all router devices.
-> 3. The router will average this value against all other received requests and
->    then multicast the averaged value to all children.
-> 4. Upon receiving the multicasted response, our openthread app will place the
->    received global average into the first byte of the shared IPC buffer. We
->    then must notify the client that the requested service is completed.
->
-> More specifically, here is a todo list of things to implement. If you become
-> stuck, we provide a checkpoint with the completed OpenThread app
-> (`07_openthread_final`). To be implemented:
->
-> 1. Add IPC callback (mirroring structure of sensor IPC) and register the the
->    service.
-> 2. Within this callback copy the `local_setpoint` found in the shared IPC
->    buffer to the variable `local_temperature_setpoint`.i
-> 3. Send a UDP packet with the local temperature setpoint. You can use the
->    `udpSend()` method. This function multicasts to all routers the value
->    stored in the variable `local_temperature_setpoint`.
-> 4. We should _ONLY_ copy the global setpoint into the shared IPC buffer and
->    notify the controller client _IF_ the mote is connected to a thread
->    network. If we are not connected to a network, we have no way of knowing
->    the global setpoint. _(HINT: we can use the `statechangedcallback` to track
->    when we are attached to a network)_.
+To send and receive UDP packets, we must also correctly configure UDP.
 
-> **CHECKPOINT:** `07_openthread_final`
+We must complete the following steps to setup UDP in the OpenThread library:
 
-We now have a completed OpenThread app that provides an IPC service capable of
-broadcasting the given mote's desired setpoint, receiving the global average
-setpoint, and notifying the IPC client.
+1. Initialize UDP interface.
+2. Register a function as a receive callback.
+3. Implement a function to transmit.
+
+For your convience, we provide helper methods to accomplish each of the aformentioned steps.
+
+1. Initialize UDP interface => `initUdp`
+2. Register a function as a receive callback => `handleUdpRecvTemperature` 
+3. Implement a function to transmit => `sendUdpTemperature`
+
+Internally, our provided `initUDP` function registers our receive callback (`handleUdpReceive`).
+
+Add the following functions to the openthread app's `main.c`.
+
+```c
+static otUdpSocket sUdpSocket;
+
+void initUdp(otInstance* instance);
+
+void handleUdpRecvTemperature(void* aContext, otMessage* aMessage,
+			      const otMessageInfo* aMessageInfo);
+
+void sendUdpTemperature(otInstance* aInstance, uint8_t temperature);
+
+void handleUdpRecvTemperature(void* aContext, otMessage* aMessage,
+                      	      const otMessageInfo* aMessageInfo) {
+  OT_UNUSED_VARIABLE(aContext);
+  OT_UNUSED_VARIABLE(aMessageInfo);
+  char buf[2];
+
+  const otIp6Address sender_addr = aMessageInfo->mPeerAddr;
+  otIp6AddressToString(&sender_addr, buf, sizeof(buf));
+
+  otMessageRead(aMessage, otMessageGetOffset(aMessage), buf, sizeof(buf) - 1);
+  printf("Received UDP Packet: %d\r\n", buf[0]);
+}
+
+void initUdp(otInstance* aInstance) {
+  otSockAddr listenSockAddr;
+
+  memset(&sUdpSocket, 0, sizeof(sUdpSocket));
+  memset(&listenSockAddr, 0, sizeof(listenSockAddr));
+
+  listenSockAddr.mPort = 1212;
+
+  otUdpOpen(aInstance, &sUdpSocket, handleUdpRecvTemperature, aInstance);
+  otUdpBind(aInstance, &sUdpSocket, &listenSockAddr, OT_NETIF_THREAD);
+}
+
+void sendUdpTemperature(otInstance* aInstance, uint8_t temperature) {
+
+  otError error = OT_ERROR_NONE;
+  otMessage*   message;
+  otMessageInfo messageInfo;
+  otIp6Address destinationAddr;
+
+  memset(&messageInfo, 0, sizeof(messageInfo));
+
+  otIp6AddressFromString("ff02::02", &destinationAddr);
+  messageInfo.mPeerAddr = destinationAddr;
+  messageInfo.mPeerPort = 1212;
+
+  message = otUdpNewMessage(aInstance, NULL);
+  if (message == NULL) {
+    printf("Error creating udp message\n");
+    return;
+  }
+
+  error = otMessageAppend(message, &temperature, 1);
+  if (error != OT_ERROR_NONE && message != NULL) {
+    printf("Error appending to udp message\n");
+    otMessageFree(message);
+    return;
+  }
+
+  error = otUdpSend(aInstance, &sUdpSocket, message, &messageInfo);
+  if (error != OT_ERROR_NONE && message != NULL) {
+    printf("Error sending udp packet\n");
+    otMessageFree(message);
+  }
+}
+```
+
+> **EXERCISE** Add the `initUDP` function to the Thread initialization that occurs within `main()`. 
+
+We now have an initialized UDP interface. Now let's try to send a UDP packet to our router over
+the Thread interface. Importantly, we must only attempt to send a UDP packet _after_ we
+have succesfully joined the Thread network. 
+
+> **EXERCISE** Modify the `stateChangeCallback` such that when our device attaches to 
+the network and becomes a child, we send a UDP packet using:
+
+```
+sendUdpTemperature(instance, 22)
+```
+
+The registered UDP receive callback is implemented to print received packets to the 
+console. Our router is implemented to receive UDP packets and reply with a multicast
+of the global average temperature setpoint. 
+
+After completing these changes, build and flash the openthread application. In the 
+tockloader console, you should see (upon reset):
+
+```
+tock$ [THREAD] Device IPv6 Addresses: fe80:0:0:0:b4ef:e680:d8ef:475e
+[State Change] - Detached.
+[State Change] - Child.
+Successfully attached to Thread network as a child.
+Received UDP Packet: {GLOBAL_SET_POINT_VALUE} 
+```
+
+Congratulations! We now have a networked mote that is attached to our router 
+and capable of sending / receiving UDP packets. We now will work to obtain user
+input (buttons) and implement the display [here](screen-app.md).
