@@ -277,6 +277,8 @@ Successfully attached to Thread network as a child.
 Received UDP Packet: {GLOBAL_SET_POINT_VALUE} 
 ```
 
+> **CHECKPOINT:** `06_openthread_final`
+
 Congratulations! We now have a networked mote that is attached to our router 
 and capable of sending / receiving UDP packets. We now will work to obtain user
 input (buttons) and implement the display [here](screen-app.md).
