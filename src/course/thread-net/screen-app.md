@@ -10,7 +10,7 @@ We will first build a simple button interface to introduce's Tock's concept of
 callbacks. We will then expand this to utilize an OLED screen to display the 
 temperature readings and desired temperature setpoint.
 
-> **CHECKPOINT:** `08_screen`
+> **CHECKPOINT:** `07_screen`
 
 Now that you're familiar with `tock` and `libtock-c`, We begin making the
 screen app with an empty application! Remember, if you get stuck at any point,
@@ -91,6 +91,7 @@ console. Add the following to `main.c`:
 static void button_callback(returncode_t ret,
                             int          btn_num,
                             bool         pressed) {
+  if (ret != RETURNCODE_SUCCESS) return;
 
   if (pressed) {
     printf("Button %i pressed!\r\n", btn_num);
@@ -120,7 +121,7 @@ tock$ Button 0 pressed!
 
 ```
 
-> **CHECKPOINT** 09_screen_button
+> **CHECKPOINT** `08_screen_button`
 
 ## Adding the `u8g2` Library
 
@@ -153,8 +154,11 @@ application:
 #include <u8g2.h>
 #include <u8g2-tock.h>
 
-// Global reference to the u8g2 context:
+// Global reference to the u8g2 context.
 u8g2_t u8g2;
+
+// Helper method to update and format u8g2 screen.
+static void update_screen(void);
 
 int main(void) {
   // Required initialization code:
@@ -225,7 +229,7 @@ As always, build and flash the screen application. At this point,
 you should see 3 strings on your u8g2 screen matching. If you
 are struggling to display the 3 strings, feel free to utilize the checkpoint!
 
-> **CHECKPOINT** 10_screen_u8g2
+> **CHECKPOINT** `09_screen_u8g2`
 
 ## Updating the Desired Local Temperature
 
@@ -291,4 +295,6 @@ bool callback_event = false;
 As always, build and flash your screen application. You should now see 
 that your displayed local setpoint temperature updates with button presses!
 
-> **CHECKPOINT:** `11_screen_final`
+> **CHECKPOINT:** `10_screen_final`
+
+This concludes the screen app module. Continue on [here](ipc.md).
