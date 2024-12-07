@@ -28,6 +28,7 @@
     - [Sensor App](./course/thread-net/sensor-app.md)
     - [Communications App](./course/thread-net/comms-app.md)
     - [Screen App](./course/thread-net/screen-app.md)
+    - [IPC](./course/thread-net/ipc.md)
     - [Robustness](./course/thread-net/robustness.md)
   - [Kernel Boot](./course/boot.md)
   - [Policies](./course/policies.md)
