@@ -36,29 +36,29 @@ Current Temperature: 24
 ```
 
 The exact output you observe will likely be interspersed. Remember Tock is
-multitenant and scheduling each of our applications (resulting in our
-output to the console being mixed across applications). In addition to this
-output, you should also have the global/local/measured temperature text
-on your screen in addition to the ability to alter the local temperature
-setpoint using the buttons.
+multitenant and scheduling each of our applications (resulting in our output to
+the console being mixed across applications). In addition to this output, you
+should also have the global/local/measured temperature text on your screen in
+addition to the ability to alter the local temperature setpoint using the
+buttons.
 
 Let's review how our HVAC system will work:
 
 1. Thread application will receive the global setpoint from the central router
-and will send our desired local temperature setpoint.
+   and will send our desired local temperature setpoint.
 2. Sensor application will measure the temperature.
 3. Screen application will obtain user input to the desired temperature setpoint
-and display the global setpoint / local setpoint / measured temperature.
+   and display the global setpoint / local setpoint / measured temperature.
 
-We see that these applications are interdependent on each other. How can we share 
-data between applications? A naive solution would be to allocate shared global
-state that each application can access. Although this is inadvisable, many embedded
-OSes would allow for this shared global state. Tock, however, strictly isolates 
-applications---meaning we are unable to have shared global state across applications.
-This is beneficial as a buggy or malicious application is unable to harm other 
-applications or the kernel. To allow applications to share data, the Tock kernel
-provides interprocess communication. We will update our applications to do this 
-here.
+We see that these applications are interdependent on each other. How can we
+share data between applications? A naive solution would be to allocate shared
+global state that each application can access. Although this is inadvisable,
+many embedded OSes would allow for this shared global state. Tock, however,
+strictly isolates applications---meaning we are unable to have shared global
+state across applications. This is beneficial as a buggy or malicious
+application is unable to harm other applications or the kernel. To allow
+applications to share data, the Tock kernel provides interprocess communication.
+We will update our applications to do this here.
 
 ![thread_net_tutorial_apps](../../imgs/thread_net_tutorial_apps.svg)
 
@@ -72,9 +72,11 @@ will act as services.
 
 Let's go ahead and setup our client code first! We first must initialize our IPC
 client. This will consist of:
-1. Discovering the services (these will error for now since they are not implemented).
-2. Register callbacks that the kernel will invoke when our service wishes to notify 
-the client. 
+
+1. Discovering the services (these will error for now since they are not
+   implemented).
+2. Register callbacks that the kernel will invoke when our service wishes to
+   notify the client.
 3. Share a buffer to the IPC interface.
 
 To make your life easier we have implemented this changes in the checkpoint
@@ -90,12 +92,11 @@ Now that our IPC client is setup, let's add our IPC services!
 
 ## Temperature Sensor IPC
 
-Let's setup the sensor app as an IPC service! As mentioned earlier,
-we will be expanding `02_sensor_final`.
+Let's setup the sensor app as an IPC service! As mentioned earlier, we will be
+expanding `02_sensor_final`.
 
-First, we will create the callback that our client invokes 
-when they request this service. Add the following callback to 
-our `main.c`:
+First, we will create the callback that our client invokes when they request
+this service. Add the following callback to our `main.c`:
 
 ```c
 static void sensor_ipc_callback(int pid, int len, int buf,
@@ -116,8 +117,8 @@ static void sensor_ipc_callback(int pid, int len, int buf,
 }
 ```
 
-Now, let's register this app as an IPC service with the
-kernel. Add the following to the sensor app `main()`:
+Now, let's register this app as an IPC service with the kernel. Add the
+following to the sensor app `main()`:
 
 ```c
 // Register this application as an IPC service under its name:
@@ -125,28 +126,26 @@ ipc_register_service_callback("org.tockos.thread-tutorial.sensor",
                               sensor_ipc_callback,
                               NULL);
 ```
- 
-To ensure an IPC client cannot request our service before our service
-has read the temperature, be sure to read the temperature sensor 
-_at least_ once before registering the service with the kernel.
 
-Additionally, let's go ahead and remove the `printf()` as, now that
-we are using the screen, we no longer need this information to be 
-displayed on the console. 
+To ensure an IPC client cannot request our service before our service has read
+the temperature, be sure to read the temperature sensor _at least_ once before
+registering the service with the kernel.
 
-> **CHECKPOINT:** `11_sensor_ipc` 
+Additionally, let's go ahead and remove the `printf()` as, now that we are using
+the screen, we no longer need this information to be displayed on the console.
 
-Congrats! You just successfully created a temperature sensor service!
-Let's go ahead and do this for OpenThread now.
+> **CHECKPOINT:** `11_sensor_ipc`
+
+Congrats! You just successfully created a temperature sensor service! Let's go
+ahead and do this for OpenThread now.
 
 ## OpenThread IPC
 
 > **NOTE** We assume you are modifying `06_openthread_final`
 
-We follow a similar structure to the temperature sensor service here.
-Let's first create our callback that our client will invoke to use this 
-service. Add the following global variables and callback to the openthread
-app's `main.c`:
+We follow a similar structure to the temperature sensor service here. Let's
+first create our callback that our client will invoke to use this service. Add
+the following global variables and callback to the openthread app's `main.c`:
 
 ```c
 uint8_t local_temperature_setpoint        = 22;
@@ -188,7 +187,7 @@ static void openthread_ipc_callback(int pid, int len, int buf,
 
 ```
 
-Now that we have this callback, let's register our service with the kernel. Add 
+Now that we have this callback, let's register our service with the kernel. Add
 the following to the openthread app's main function:
 
 ```c
@@ -200,16 +199,16 @@ ipc_register_service_callback("org.tockos.thread-tutorial.openthread",
 
 The logic in the callback determines if the local temperature setpoint has
 changed, and if so, sends an update over the Thread network (if the Thread
-network is enabled). We send this update using UDP. If you look closely,
-you will notice that our callback does not directly call the `sendUdpTemperature(...)`
-we used in the openthread module. Why is this?
+network is enabled). We send this update using UDP. If you look closely, you
+will notice that our callback does not directly call the
+`sendUdpTemperature(...)` we used in the openthread module. Why is this?
 
 ### Callbacks and Re-entrancy
 
 If a callback function, say the `ipc_callback`, executes code that waits some
 asynchronous events that insert a yield point, we may experience reentrancy.
-This means that during the execution of the `ipc_callback`, other callbacks
- -- including `ipc_callback` itself -- may be scheduled again. Consider the
+This means that during the execution of the `ipc_callback`, other callbacks --
+including `ipc_callback` itself -- may be scheduled again. Consider the
 following example:
 
 ```c
@@ -234,29 +233,30 @@ internally, it can unexpectedly be run _within_ the execution of the function.
 This can in turn break the function's semantics. Thus, it is good practice to
 restrict callback handler code to only non-blocking operations.
 
-For this reason, the openthread IPC callback only sets a flag specifying that 
-we should send an update packet (as `sendUdpTemperature(..)` internally will yield). 
+For this reason, the openthread IPC callback only sets a flag specifying that we
+should send an update packet (as `sendUdpTemperature(..)` internally will
+yield).
 
 We now must add a check to our main loop to see if a client of our openthread
 service requires us to send a packet updating the local temperature setpoint.
 
-> **EXERCISE** Add a check to see if the `send_local_temp` flag is set. If 
-this condition is met, send the value of `local_temperature_setpoint` using
-the `sendUdpTemperature(...)` method.
+> **EXERCISE** Add a check to see if the `send_local_temp` flag is set. If this
+> condition is met, send the value of `local_temperature_setpoint` using the
+> `sendUdpTemperature(...)` method.
 
-> **EXERCISE** Alter the `handleUdpRecvTemperature(...)` method to no longer print the 
-received global temperature packet, but instead update the
-`global_temperature_setpoint` variable with this value.
+> **EXERCISE** Alter the `handleUdpRecvTemperature(...)` method to no longer
+> print the received global temperature packet, but instead update the
+> `global_temperature_setpoint` variable with this value.
 
-Wonderful, we are almost finished. The final modification we will need to 
-make is to the state change callback. The way we have currently designed
-our system, we must send the local temperature setpoint and update the 
-`network_up` flag when we attach to a thread network. Add the following 
-to the `stateChangeCallback(...)` for the case of becoming a child:
+Wonderful, we are almost finished. The final modification we will need to make
+is to the state change callback. The way we have currently designed our system,
+we must send the local temperature setpoint and update the `network_up` flag
+when we attach to a thread network. Add the following to the
+`stateChangeCallback(...)` for the case of becoming a child:
 
 ```c
 network_up = true;
 sendUdpTemperature(instance, local_temperature_setpoint);
 ```
 
-> **CHECKPOINT:** `12_openthread_ipc` 
+> **CHECKPOINT:** `12_openthread_ipc`

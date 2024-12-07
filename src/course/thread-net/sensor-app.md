@@ -122,7 +122,6 @@ outside of the kernel repository [here](https://github.com/tock/libtock-c).
 We provide some scaffolding for this tutorial. Make sure to enter the following
 directory:
 
-
 ```
 $ cd libtock-c/examples/tutorials/thread_network
 $ ls
@@ -221,8 +220,9 @@ temperature. For this, we can extend the provided `00_sensor_hello`
 application's `main.c` file with a call to that function. Your code should
 invoke this function and pass it a reference into which the temperature value
 will be written. You can then extend the `printf` call to print this number.
-Note, the temperature sensor syscall returns a value of the form 2200 for a 
-temperature of 22C. You will need to format your temperature reading appropriately. 
+Note, the temperature sensor syscall returns a value of the form 2200 for a
+temperature of 22C. You will need to format your temperature reading
+appropriately.
 
 With these changes, compile and re-install your application by running
 `make install` again. Once that is done, you should see output similar to the
@@ -239,12 +239,12 @@ tock$
 > **CHECKPOINT:** `01_sensor_temperature`
 
 Congratulations! We now have a `libtock-c` application that is able to read the
-nRF52840 internal temperature sensor. Now, we expand this to read the temperature
-sensor continuously.
+nRF52840 internal temperature sensor. Now, we expand this to read the
+temperature sensor continuously.
 
-Given that temperatures change gradually, it is reasonable to read our temperature
-sensor once per second. `libtock-c` provides a convient method to delay for a
-specified duration in `libtock-c/libtock-sync/services/alarm.h`:
+Given that temperatures change gradually, it is reasonable to read our
+temperature sensor once per second. `libtock-c` provides a convient method to
+delay for a specified duration in `libtock-c/libtock-sync/services/alarm.h`:
 
 ```
 /** \brief Blocks for the given amount of time in milliseconds.
@@ -258,10 +258,10 @@ specified duration in `libtock-c/libtock-sync/services/alarm.h`:
 int libtocksync_alarm_delay_ms(uint32_t ms);
 ```
 
-> **EXERCISE** Read the temperature sensor once per second and print the temperature
-value.
+> **EXERCISE** Read the temperature sensor once per second and print the
+> temperature value.
 
-If you have implemented this correctly, you should see the following output: 
+If you have implemented this correctly, you should see the following output:
 
 ```
 $ tockloader listen
@@ -274,20 +274,19 @@ Current temperature: 22.25
 
 ```
 
-To confirm that your sensor is working, try placing your finger on the nRF52840 SoC
-(this is located above the 4 buttons and in the center of the white box on the 
-nRF52840dk). You should see the temperature change as the temperature sensor
+To confirm that your sensor is working, try placing your finger on the nRF52840
+SoC (this is located above the 4 buttons and in the center of the white box on
+the nRF52840dk). You should see the temperature change as the temperature sensor
 we are using is the "on-dye" temperature sensor.
 
 > **CHECKPOINT:** `02_sensor_final`
 
-This concludes the sensor module. Before continuing, please uninstall the sensor app
-using the following tockloader command:
+This concludes the sensor module. Before continuing, please uninstall the sensor
+app using the following tockloader command:
 
 ```
 $ tockloader erase-apps
 ```
 
-
-Now that we are able to read the temperature, we now continue on to network our mote 
-using Tock's supported OpenThread stack [here](comms-app.md).
+Now that we are able to read the temperature, we now continue on to network our
+mote using Tock's supported OpenThread stack [here](comms-app.md).

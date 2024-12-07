@@ -109,8 +109,8 @@ We provide a skeleton implementation in 03_openthread that is missing the logic
 needed to attach to the thread network. Your task is to add the needed
 OpenThread API calls to attach your device to the thread network.
 
-The provided starter code includes a helper method: 
-`void setNetworkConfiguration(otInstance* aInstance)`. This method will 
+The provided starter code includes a helper method:
+`void setNetworkConfiguration(otInstance* aInstance)`. This method will
 initialize the network configuration dataset to the correct values (this
 completes steps 1,2,3 above).
 
@@ -118,8 +118,9 @@ completes steps 1,2,3 above).
 
 Now that we have the network dataset initialized, we now must initialize the IP
 interface to have an IPv6 address assigned to our Thread node. The OpenThread
-library possess an API exposed as many functions. Two useful API
-functions include:
+library possess an API exposed as many functions. Two useful API functions
+include:
+
 ```
 otIp6SetEnabled(otInstance* aInstance, bool aEnabled)
 otThreadSetEnabled(otInstance* aInstance, bool aEnabled)
@@ -127,8 +128,8 @@ otThreadSetEnabled(otInstance* aInstance, bool aEnabled)
 
 > **EXERCISE** Initialize the IP interface.
 
-To confirm that we have successfully initialized the IP interface, add the following
-helper method after your IP initialization
+To confirm that we have successfully initialized the IP interface, add the
+following helper method after your IP initialization
 
 ```
 print_ip_addr(instance);
@@ -139,17 +140,18 @@ Our Thread node is now fully configured and ready to attempt joining a network.
 > **EXERCISE** Start the Thread Network
 
 After completing these changes, build and flash the updated openthread app
-(`$make install`). 
+(`$make install`).
 
-Our skeleton registers a callback with OpenThread to notify upon
-state change. Upon successfully implementing the above network attachment,
-flash the app, launch `tockloader listen` and reset the board using:
+Our skeleton registers a callback with OpenThread to notify upon state change.
+Upon successfully implementing the above network attachment, flash the app,
+launch `tockloader listen` and reset the board using:
 
 ```
 tock$ reset
 ```
 
-If you have successfully implemented the thread network attachment, you will see:
+If you have successfully implemented the thread network attachment, you will
+see:
 
 ```
 tock$ [THREAD] Device IPv6 Addresses: fe80:0:0:0:b4ef:e680:d8ef:475e
@@ -158,7 +160,8 @@ tock$ [THREAD] Device IPv6 Addresses: fe80:0:0:0:b4ef:e680:d8ef:475e
 Successfully attached to Thread network as a child.
 ```
 
-If you are unable to join the network, feel free to jump ahead to the checkpoint below.
+If you are unable to join the network, feel free to jump ahead to the checkpoint
+below.
 
 > **CHECKPOINT:** 03_openthread_attach
 
@@ -170,13 +173,15 @@ We must complete the following steps to setup UDP in the OpenThread library:
 2. Register a function as a receive callback.
 3. Implement a function to transmit.
 
-For your convience, we provide helper methods to accomplish each of the aformentioned steps.
+For your convience, we provide helper methods to accomplish each of the
+aformentioned steps.
 
 1. Initialize UDP interface => `initUdp`
-2. Register a function as a receive callback => `handleUdpRecvTemperature` 
+2. Register a function as a receive callback => `handleUdpRecvTemperature`
 3. Implement a function to transmit => `sendUdpTemperature`
 
-Internally, our provided `initUDP` function registers our receive callback (`handleUdpReceive`).
+Internally, our provided `initUDP` function registers our receive callback
+(`handleUdpReceive`).
 
 Add the following functions to the openthread app's `main.c`.
 
@@ -249,36 +254,37 @@ void sendUdpTemperature(otInstance* aInstance, uint8_t temperature) {
 }
 ```
 
-> **EXERCISE** Add the `initUDP` function to the Thread initialization that occurs within `main()`. 
+> **EXERCISE** Add the `initUDP` function to the Thread initialization that
+> occurs within `main()`.
 
-We now have an initialized UDP interface. Now let's try to send a UDP packet to our router over
-the Thread interface. Importantly, we must only attempt to send a UDP packet _after_ we
-have succesfully joined the Thread network. 
+We now have an initialized UDP interface. Now let's try to send a UDP packet to
+our router over the Thread interface. Importantly, we must only attempt to send
+a UDP packet _after_ we have succesfully joined the Thread network.
 
-> **EXERCISE** Modify the `stateChangeCallback` such that when our device attaches to 
-the network and becomes a child, we send a UDP packet using:
+> **EXERCISE** Modify the `stateChangeCallback` such that when our device
+> attaches to the network and becomes a child, we send a UDP packet using:
 
 ```
 sendUdpTemperature(instance, 22)
 ```
 
-The registered UDP receive callback is implemented to print received packets to the 
-console. Our router is implemented to receive UDP packets and reply with a multicast
-of the global average temperature setpoint. 
+The registered UDP receive callback is implemented to print received packets to
+the console. Our router is implemented to receive UDP packets and reply with a
+multicast of the global average temperature setpoint.
 
-After completing these changes, build and flash the openthread application. In the 
-tockloader console, you should see (upon reset):
+After completing these changes, build and flash the openthread application. In
+the tockloader console, you should see (upon reset):
 
 ```
 tock$ [THREAD] Device IPv6 Addresses: fe80:0:0:0:b4ef:e680:d8ef:475e
 [State Change] - Detached.
 [State Change] - Child.
 Successfully attached to Thread network as a child.
-Received UDP Packet: {GLOBAL_SET_POINT_VALUE} 
+Received UDP Packet: {GLOBAL_SET_POINT_VALUE}
 ```
 
 > **CHECKPOINT:** `06_openthread_final`
 
-Congratulations! We now have a networked mote that is attached to our router 
-and capable of sending / receiving UDP packets. We now will work to obtain user
+Congratulations! We now have a networked mote that is attached to our router and
+capable of sending / receiving UDP packets. We now will work to obtain user
 input (buttons) and implement the display [here](screen-app.md).

@@ -1,27 +1,27 @@
 # Building the User Interface
 
-In the previous stages we have built a _sensor application_ that is able to query
-the Tock kernel for the current temperature and an openthread application that
-is able to send and receive UDP packets. We now will build a user interface 
+In the previous stages we have built a _sensor application_ that is able to
+query the Tock kernel for the current temperature and an openthread application
+that is able to send and receive UDP packets. We now will build a user interface
 so that you are able to request your desired temperature and avoid overheating
-or freezing! 
+or freezing!
 
-We will first build a simple button interface to introduce's Tock's concept of 
-callbacks. We will then expand this to utilize an OLED screen to display the 
+We will first build a simple button interface to introduce's Tock's concept of
+callbacks. We will then expand this to utilize an OLED screen to display the
 temperature readings and desired temperature setpoint.
 
 > **CHECKPOINT:** `07_screen`
 
-Now that you're familiar with `tock` and `libtock-c`, We begin making the
-screen app with an empty application! Remember, if you get stuck at any point,
-we include checkpoints along the way. Here we go!
+Now that you're familiar with `tock` and `libtock-c`, We begin making the screen
+app with an empty application! Remember, if you get stuck at any point, we
+include checkpoints along the way. Here we go!
 
 ## Adding the button interface
 
-`tock` and `libtock-c` embrace an asynchronous design. Thus far, we have been using
-the command syscalls the kernel exposes to userland. The `tock` kernel also
-allows user applications to register callbacks so that applications
-can be notified upon certain events. In practice, Tock userland apps often take the 
+`tock` and `libtock-c` embrace an asynchronous design. Thus far, we have been
+using the command syscalls the kernel exposes to userland. The `tock` kernel
+also allows user applications to register callbacks so that applications can be
+notified upon certain events. In practice, Tock userland apps often take the
 form:
 
 ```
@@ -29,7 +29,7 @@ form:
        	        |
                 |
              [Yield]
-                | 
+                |
                 |
 	       ...
                 |
@@ -37,15 +37,16 @@ form:
     [Kernel invokes callback]
                 |
                 |
-    [app continues execution]	
+    [app continues execution]
 ```
 
-Sometimes blocking an app with a synchronous function is useful. To accomodate this,
-`libtock-c` libraries are split into `libtock-c` (which is async) and `libtock-sync`.
-If you recall, we used a `libtock-sync` function to implement the delay when 
-reading the temperature sensor earlier. Internally, the `libtock-sync` methods call
-the standard `libtock-c` async methods, but utilize the following patter to provide
-the application with synchronous blocking behavior:
+Sometimes blocking an app with a synchronous function is useful. To accomodate
+this, `libtock-c` libraries are split into `libtock-c` (which is async) and
+`libtock-sync`. If you recall, we used a `libtock-sync` function to implement
+the delay when reading the temperature sensor earlier. Internally, the
+`libtock-sync` methods call the standard `libtock-c` async methods, but utilize
+the following patter to provide the application with synchronous blocking
+behavior:
 
 ```c
 void yield_for(bool* cond) {
@@ -54,15 +55,16 @@ void yield_for(bool* cond) {
   }
 ```
 
-Another important consideration with callbacks is that the `tock` kernel will only 
-execute a pending callback once the application has yielded. This means that the application
-developer should `yield` when waiting to receive a callback from the kernel.
+Another important consideration with callbacks is that the `tock` kernel will
+only execute a pending callback once the application has yielded. This means
+that the application developer should `yield` when waiting to receive a callback
+from the kernel.
 
-Now that we understand a bit more what's happening under the hood, let's add our first
-callback!
+Now that we understand a bit more what's happening under the hood, let's add our
+first callback!
 
-`libtock-c` possess a wrapper to register a callback with the kernel that corresponds
-to button presses:
+`libtock-c` possess a wrapper to register a callback with the kernel that
+corresponds to button presses:
 
 ```c
 // Function signature for button press callbacks.
@@ -82,8 +84,8 @@ typedef void (*libtock_button_callback)(returncode_t, int, bool);
 returncode_t libtock_button_notify_on_press(int button_num, libtock_button_callback cb);
 ```
 
-With this in mind, let's add a callback function to our screen app that prints to the 
-console. Add the following to `main.c`:
+With this in mind, let's add a callback function to our screen app that prints
+to the console. Add the following to `main.c`:
 
 ```c
 #include <libtock/interface/button.h>
@@ -99,19 +101,21 @@ static void button_callback(returncode_t ret,
 }
 ```
 
-> **EXERCISE** Register our above `button_callback` with the `libtock_button_notify_on_press(...)`
-method. 
+> **EXERCISE** Register our above `button_callback` with the
+> `libtock_button_notify_on_press(...)` method.
 
-> **HINTS** 
+> **HINTS**
+>
 > 1. We must register callbacks for each of the four buttons.
-> 2. Did you remember to `yield`? The kernel will only execute an app's registered
-callback if the application has yielded.
+> 2. Did you remember to `yield`? The kernel will only execute an app's
+>    registered callback if the application has yielded.
 > 3. Does your `main()` return? We want this application to "run forever". Still
-confused? an infinite loop with `yield()` inside the body should do the trick :) 
+>    confused? an infinite loop with `yield()` inside the body should do the
+>    trick :)
 
-Let's build and flash this screen application to our board. Try pressing any of the 4 buttons on 
-the nRF52840dk (not the reset button). If you have correctly implemented the callback, you should 
-see:
+Let's build and flash this screen application to our board. Try pressing any of
+the 4 buttons on the nRF52840dk (not the reset button). If you have correctly
+implemented the callback, you should see:
 
 ```
 tock$ reset
@@ -174,8 +178,8 @@ int main(void) {
 }
 ```
 
-When we now build and install this app, it should clear the screen and you
-may see repeatedly flicker when installing applications or resetting your board.
+When we now build and install this app, it should clear the screen and you may
+see repeatedly flicker when installing applications or resetting your board.
 
 > **EXERCISE:** Extend the above app to print a simple message on the screen.
 > You can use the `u8g2_SetDrawColor(&u8g2, 1);` method to draw in either the
@@ -196,15 +200,13 @@ Global Set Point: {VALUE}
 Measured Temp: {VALUE}
 ```
 
-The set point is _our_ desired temperature for the HVAC system. The global 
-set point is the average of all motes requested desired temperature. Finally,
-the measured temperature is the temperature measured using the temperature
-sensor.
+The set point is _our_ desired temperature for the HVAC system. The global set
+point is the average of all motes requested desired temperature. Finally, the
+measured temperature is the temperature measured using the temperature sensor.
 
-For use with the later stages of our application, it will be helpful to have
-a function that performs the screen update. Add the following global variables
-and a function of the form to our screen `main.c`:
-
+For use with the later stages of our application, it will be helpful to have a
+function that performs the screen update. Add the following global variables and
+a function of the form to our screen `main.c`:
 
 ```c
 uint8_t global_temperature_setpoint = 0;
@@ -215,42 +217,43 @@ static void update_screen(void) {
   char temperature_set_point_str[35];
   char temperature_global_set_point_str[35];
   char temperature_current_measure_str[35];
-  
+
   // TODO: Format output buffer; display text to screen.
 }
 ```
 
-> **EXERCISE** Extend `update_screen` to display our desired 3 lines of text
-and the value of the respective global variable.
+> **EXERCISE** Extend `update_screen` to display our desired 3 lines of text and
+> the value of the respective global variable.
 
 > **HINT** `sprintf(...)` is useful for formating our char array.
 
-As always, build and flash the screen application. At this point,
-you should see 3 strings on your u8g2 screen matching. If you
-are struggling to display the 3 strings, feel free to utilize the checkpoint!
+As always, build and flash the screen application. At this point, you should see
+3 strings on your u8g2 screen matching. If you are struggling to display the 3
+strings, feel free to utilize the checkpoint!
 
 > **CHECKPOINT** `09_screen_u8g2`
 
 ## Updating the Desired Local Temperature
 
-We are now able to display text to our screen and also receive user input through
-the button presses. With these pieces, we can begin building our controller user
-interface! This interface will allow the user to input their desired temperature
-setpoint. The nRF52840dk has 4 user input buttons. These buttons are labeled
-0-3 moving clockwise from the upper left button. We map the buttons as follows:
+We are now able to display text to our screen and also receive user input
+through the button presses. With these pieces, we can begin building our
+controller user interface! This interface will allow the user to input their
+desired temperature setpoint. The nRF52840dk has 4 user input buttons. These
+buttons are labeled 0-3 moving clockwise from the upper left button. We map the
+buttons as follows:
 
-- Button 0 => increase local setpoint (+1) 
+- Button 0 => increase local setpoint (+1)
 - Button 1 => decrease local setpoint (-1)
 - Button 2 => reset local setpoint to 22 C
 
 > **EXERCISE:** Update the `button_callback` to update the
-> `local_temperature_setpoint` for button presses---using the above button mapping.
-> When implementing this setpoint logic, ensure that the maximum setpoint is 35 C
-> and that the minimum setpoint is 0 C.
+> `local_temperature_setpoint` for button presses---using the above button
+> mapping. When implementing this setpoint logic, ensure that the maximum
+> setpoint is 35 C and that the minimum setpoint is 0 C.
 
-If we build / flash this application, we notice that the screen remains at the 
-default values. This is because we need to call the update function when a button
-is pressed. How can we do this?
+If we build / flash this application, we notice that the screen remains at the
+default values. This is because we need to call the update function when a
+button is pressed. How can we do this?
 
 We can naively update `main()` to update the screen within our main loop:
 
@@ -258,19 +261,19 @@ We can naively update `main()` to update the screen within our main loop:
   for(;;) {
     yield();
     update_screen();
-  }  
-``` 
+  }
+```
 
-This will yield until the kernel fires a callback, at 
-which point the u8g2 screen update function will be invoked.
-Although this works for our current example, take a second to think
-why this may cause issues as we expand our application.
+This will yield until the kernel fires a callback, at which point the u8g2
+screen update function will be invoked. Although this works for our current
+example, take a second to think why this may cause issues as we expand our
+application.
 
-You guessed it! Because this function will only yield until a callback 
-is fired, _any_ callback will cause our screen to be updated. This is 
-somewhat inefficient. We instead desire the application to yield _until_
-a button press occurs. Do you remember something we discussed earlier that 
-might fill this need? (hint, this was mentioned in the `libtock-sync` discussion).
+You guessed it! Because this function will only yield until a callback is fired,
+_any_ callback will cause our screen to be updated. This is somewhat
+inefficient. We instead desire the application to yield _until_ a button press
+occurs. Do you remember something we discussed earlier that might fill this
+need? (hint, this was mentioned in the `libtock-sync` discussion).
 
 Exactly! `yield_for`:
 
@@ -281,19 +284,21 @@ void yield_for(bool* cond) {
   }
 ```
 
-This `libtock-sync` function will `yield` until our desired condition is met. Let's
-add this to our screen application. To do this, we will add a global bool variable
+This `libtock-sync` function will `yield` until our desired condition is met.
+Let's add this to our screen application. To do this, we will add a global bool
+variable
 
 ```c
 bool callback_event = false;
 ```
 
-> **EXERCISE** 
+> **EXERCISE**
+>
 > 1. Update the button callback to set the `callback_event` true
 > 2. Update our infinite loop to use `yield_for(&callback_event)`.
 
-As always, build and flash your screen application. You should now see 
-that your displayed local setpoint temperature updates with button presses!
+As always, build and flash your screen application. You should now see that your
+displayed local setpoint temperature updates with button presses!
 
 > **CHECKPOINT:** `10_screen_final`
 
