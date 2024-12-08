@@ -66,8 +66,8 @@ abstraction layer (PAL) that a given platform implements as the "glue" between
 the OpenThread stack and the platform's hardware.
 
 OpenThread is a popular network stack supported by other embedded platforms
-(e.g. [Zephyr](https://github.com/zephyrproject-rtos/zephyr)). In other embedded
-platforms, the OpenThread PAL is exposed either directly to hardware or links
+(e.g. [Zephyr](https://github.com/zephyrproject-rtos/zephyr)).
+Typically, the OpenThread PAL is exposed either directly to hardware or links
 directly to the kernel. Tock faces a unique design challenge in supporting
 OpenThread as the Tock kernel's threat model explicitly bans external
 dependencies. Subsequently, Tock provides an OpenThread port that runs as an
@@ -129,7 +129,7 @@ otThreadSetEnabled(otInstance* aInstance, bool aEnabled)
 > **EXERCISE** Initialize the IP interface.
 
 To confirm that we have successfully initialized the IP interface, add the
-following helper method after your IP initialization
+following helper method after your IP initialization:
 
 ```
 print_ip_addr(instance);
@@ -163,7 +163,7 @@ Successfully attached to Thread network as a child.
 If you are unable to join the network, feel free to jump ahead to the checkpoint
 below.
 
-> **CHECKPOINT:** 03_openthread_attach
+> **CHECKPOINT:** 04_openthread_attach
 
 To send and receive UDP packets, we must also correctly configure UDP.
 
@@ -181,7 +181,7 @@ aformentioned steps.
 3. Implement a function to transmit => `sendUdpTemperature`
 
 Internally, our provided `initUDP` function registers our receive callback
-(`handleUdpReceive`).
+(`handleUdpRecvTemperature`).
 
 Add the following functions to the openthread app's `main.c`.
 
@@ -283,7 +283,7 @@ Successfully attached to Thread network as a child.
 Received UDP Packet: {GLOBAL_SET_POINT_VALUE}
 ```
 
-> **CHECKPOINT:** `06_openthread_final`
+> **CHECKPOINT:** `05_openthread_final`
 
 Congratulations! We now have a networked mote that is attached to our router and
 capable of sending / receiving UDP packets. We now will work to obtain user

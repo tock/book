@@ -3,9 +3,9 @@
 We now have three working applications! To make sure we are on the same page,
 navigate to each of the following directories and run `make install`:
 
-1. `libtock-c/examples/tutorials/thread_network/02_sensor_final
-2. `libtock-c/examples/tutorials/thread_network/06_openthread_final
-3. `libtock-c/examples/tutorials/thread_network/10_screen_final
+1. `libtock-c/examples/tutorials/thread_network/02_sensor_final`
+2. `libtock-c/examples/tutorials/thread_network/05_openthread_final`
+3. `libtock-c/examples/tutorials/thread_network/09_screen_final`
 
 After installing these three applications, run:
 
@@ -42,7 +42,7 @@ should also have the global/local/measured temperature text on your screen in
 addition to the ability to alter the local temperature setpoint using the
 buttons.
 
-Let's review how our HVAC system will work:
+Let's review how our HVAC control system will work:
 
 1. Thread application will receive the global setpoint from the central router
    and will send our desired local temperature setpoint.
@@ -79,11 +79,11 @@ client. This will consist of:
    notify the client.
 3. Share a buffer to the IPC interface.
 
-To make your life easier we have implemented this changes in the checkpoint
-`11_screen_ipc`. If you are interested in seeing what has changed, try
+To make your life easier we have implemented these changes in the checkpoint
+`10_screen_ipc`. If you are interested in seeing what has changed, try
 
 ```
-$ diff 10_screen_final/main.c 11_screen_ipc/main.c
+$ diff 09_screen_final/main.c 10_screen_ipc/main.c
 ```
 
 Before proceeding, be sure to build and flash `10_screen_ipc` to your board.
@@ -205,8 +205,8 @@ will notice that our callback does not directly call the
 
 ### Callbacks and Re-entrancy
 
-If a callback function, say the `ipc_callback`, executes code that waits some
-asynchronous events that insert a yield point, we may experience reentrancy.
+If a callback function, say the `ipc_callback`, executes code that
+inserts a yield point, we may experience reentrancy.
 This means that during the execution of the `ipc_callback`, other callbacks --
 including `ipc_callback` itself -- may be scheduled again. Consider the
 following example:

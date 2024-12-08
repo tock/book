@@ -10,7 +10,7 @@ We will first build a simple button interface to introduce's Tock's concept of
 callbacks. We will then expand this to utilize an OLED screen to display the
 temperature readings and desired temperature setpoint.
 
-> **CHECKPOINT:** `07_screen`
+> **CHECKPOINT:** `06_screen`
 
 Now that you're familiar with `tock` and `libtock-c`, We begin making the screen
 app with an empty application! Remember, if you get stuck at any point, we
@@ -31,21 +31,21 @@ form:
              [Yield]
                 |
                 |
-	       ...
+               ...
                 |
                 |
     [Kernel invokes callback]
                 |
                 |
-    [app continues execution]
+    [App continues execution]
 ```
 
 Sometimes blocking an app with a synchronous function is useful. To accomodate
 this, `libtock-c` libraries are split into `libtock-c` (which is async) and
 `libtock-sync`. If you recall, we used a `libtock-sync` function to implement
 the delay when reading the temperature sensor earlier. Internally, the
-`libtock-sync` methods call the standard `libtock-c` async methods, but utilize
-the following patter to provide the application with synchronous blocking
+`libtock-sync` methods call the standard `libtock-c` async methods, but utilizes
+the following pattern to provide the application with synchronous blocking
 behavior:
 
 ```c
@@ -125,7 +125,7 @@ tock$ Button 0 pressed!
 
 ```
 
-> **CHECKPOINT** `08_screen_button`
+> **CHECKPOINT** `07_screen_button`
 
 ## Adding the `u8g2` Library
 
@@ -179,7 +179,7 @@ int main(void) {
 ```
 
 When we now build and install this app, it should clear the screen and you may
-see repeatedly flicker when installing applications or resetting your board.
+see repeatedly flickering when installing applications or resetting your board.
 
 > **EXERCISE:** Extend the above app to print a simple message on the screen.
 > You can use the `u8g2_SetDrawColor(&u8g2, 1);` method to draw in either the
@@ -228,10 +228,10 @@ static void update_screen(void) {
 > **HINT** `sprintf(...)` is useful for formating our char array.
 
 As always, build and flash the screen application. At this point, you should see
-3 strings on your u8g2 screen matching. If you are struggling to display the 3
+3 strings on your u8g2 screen. If you are struggling to display the 3
 strings, feel free to utilize the checkpoint!
 
-> **CHECKPOINT** `09_screen_u8g2`
+> **CHECKPOINT** `08_screen_u8g2`
 
 ## Updating the Desired Local Temperature
 
@@ -300,6 +300,6 @@ bool callback_event = false;
 As always, build and flash your screen application. You should now see that your
 displayed local setpoint temperature updates with button presses!
 
-> **CHECKPOINT:** `10_screen_final`
+> **CHECKPOINT:** `09_screen_final`
 
 This concludes the screen app module. Continue on [here](ipc.md).
