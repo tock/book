@@ -86,7 +86,7 @@ P1.10 (SDA) and P1.11 (SCL).
 
 See this diagram for the full configuration:
 
-```text
+<pre style="transform: rotate(270deg); font-size: small; margin-top: calc(1vw - 40%);">
      ┌────────────────┬───┬─────────────────┐
      │┌POWER┐         │USB│← PROG/DEBUG     │
      ││ ON ▓│         └───┘                 │
@@ -133,7 +133,7 @@ GND →│ ▣ GND     ┌────┐│    VIN ▪│  P1.11 ▣ │← I2C
      └───                    ───────────────┘
          ╲                  ╱
           ──────────────────
-```
+</pre>
 
 ## Organization and Getting Oriented to Tock
 
