@@ -7,21 +7,22 @@ By the end of this submodule, you will know how to:
 1. Compile and flash the Tock kernel.
 2. Compile and flash a `libtock-c` application.
 3. Interact with the tock process console.
-4. Interact with Tock syscalls, callbacks, and Inter-Process Communication.
+4. Interact with Tock syscalls.
 
 ## Compiling and Installing the Kernel
 
 For this tutorial, we provide a Tock kernel _configuration_ that exposes all
 required peripherals to userspace applications. It is based on the
 [`nrf52840dk`](https://github.com/tock/tock/tree/master/boards/nordic/nrf52840dk)
-base board defition and adds an additional driver instantiation for the Ssd1306
-1.3" OLED screen we are using in this tutorial.
+base board defition and adds an additional driver instantiation for the
+`SSD1306 1.3" OLED` screen we are using in this tutorial.
 
 You can compile this configuration board by entering into its respective
 directory and typing `make`:
 
-```
+```bash
 $ cd tock/boards/tutorials/nrf52840dk-thread-tutorial
+#    ^^^^this is your checkout of github.com/tock/tock
 $ make
    [...]
    Compiling nrf52_components v0.1.0 (/home/leons/proj/tock/kernel/boards/nordic/nrf52_components)
@@ -33,7 +34,7 @@ cb0df7abb1...d47b383aaf  tock/target/thumbv7em-none-eabi/release/nrf52840dk-thre
 ```
 
 To flash the kernel onto your nRF52840DK development board, make sure that you
-use the debug USB port (top-side, not "nRF USB"). Then type
+use the debug USB port (skinny-side, not "nRF USB" on the wide edge). Then type
 
 ```
 $ make install
@@ -62,6 +63,13 @@ USB speed mode: High speed (480 MBit/s)
 VTref=3.300V
 ```
 
+And verify your `tockloader` install with:
+
+```bash
+$ tockloader --version
+1.13.0   # (or newer)
+```
+
 ## Connecting to the Tock Kernel
 
 You can connect to your board's serial console using `tockloader` or any other
@@ -84,10 +92,12 @@ tock$
 ```
 
 If you don't see this prompt, try hitting ENTER or pressing the `RESET` button
-on your board (near the left-hand side USB port). In case you see the following
-selection dialog, the nRF52840DK exposes the chip's serial console on the first
-UART port (e.g., `ttyACM0` instead of `ttyACM1`). If that does not work, simply
-try the available ports:
+on your board (near the unused, wide-side USB port).
+
+In the case where you a selection dialog similar to that below, the nRF52840DK
+exposes the chip's serial console on the lowest UART port (e.g., `ttyACM0`
+instead of `ttyACM1`). If selecting `ttyACM0` or similar does not work, simply
+try all the available ports:
 
 ```
 $ tockloader listen
@@ -117,16 +127,17 @@ and stop applications, and control other parts of the tock kernel. For instance,
 With the kernel running we can now load applications onto our board. Tock
 applications are compiled and loaded separately from the kernel. For this
 tutorial we will use the `libtock-c` userspace library, whose source is located
-outside of the kernel repository [here](https://github.com/tock/libtock-c).
+outside of the kernel repository
+[at github/tock/libtock-c](https://github.com/tock/libtock-c).
 
 We provide some scaffolding for this tutorial. Make sure to enter the following
 directory:
 
-```
+```bash
 $ cd libtock-c/examples/tutorials/thread_network
 $ ls
 00_sensor_hello
-01_sensor_ipc
+01_sensor_final
 [...]
 ```
 
@@ -138,12 +149,20 @@ message like the following:
 
 > **CHECKPOINT:** `00_sensor_hello`
 
+If you are ever struggling, you can always jump ahead by working from one of our
+checkpoints. Lets get started by making a copy of this initial checkpoint to
+work from:
+
+```bash
+$ cp -r 00_sensor_hello my_sensor
+```
+
 To compile and flash this application, we enter into its directory and run the
 following command:
 
 ```
-$ cd 00_sensor_hello
-$ make -j install
+$ cd my_sensor
+$ make install
 [...]
 Application size report for arch family cortex-m:
 Application size report for arch family rv32i:
@@ -186,8 +205,7 @@ $ tockloader erase-apps         # Erases all apps
 ## Making Your First System Call
 
 The goal of the _sensor application_ is to sample this chip's internal
-temperature sensor, and to provide this value to other applications using Tock's
-Inter-Process Communcation facility.
+temperature sensor.
 
 However, an application in Tock runs as an unprivileged process, and as such it
 does not have direct access to any chip peripherals. Instead, the application
@@ -195,8 +213,9 @@ needs to ask the Tock kernel to perform this operation. For this, `libtock-c`
 provides some system call wrappers that our application can use. These are
 defined in the `libtock` folder of the `libtock-c repository`. For this
 particular application, we are mainly interested in talking to Tock's sensor
-driver subsystem. For this, `libtock-c/libtock/temperature.h` provides
-convenient userspace wrapper functions, such as `libtocksync_temperature_read`:
+driver subsystem. For this, `libtock-c/libtock-sync/sensors/temperature.h`
+provides convenient userspace wrapper functions, such as
+`libtocksync_temperature_read`:
 
 ```c
 #include <libtock-sync/sensors/temperature.h>
@@ -220,6 +239,9 @@ temperature. For this, we can extend the provided `00_sensor_hello`
 application's `main.c` file with a call to that function. Your code should
 invoke this function and pass it a reference into which the temperature value
 will be written. You can then extend the `printf` call to print this number.
+Note, the temperature sensor syscall returns a value of the form 2200 for a
+temperature of 22C. You will need to format your temperature reading
+appropriately.
 
 With these changes, compile and re-install your application by running
 `make install` again. Once that is done, you should see output similar to the
@@ -229,187 +251,57 @@ following:
 $ tockloader listen
 Initialization complete. Entering main loop
 NRF52 HW INFO: Variant: AAC0, Part: N52840, Package: QI, Ram: K256, Flash: K1024
-Hello World, the temperature is: 2600
+Hello World, the temperature is: 22.00
 tock$
 ```
 
-> **CHECKPOINT:** `01_sensor_ipc`
+> **CHECKPOINT:** `01_sensor_temperature`
 
-## Implementing an IPC Service
+Congratulations! We now have a `libtock-c` application that is able to read the
+nRF52840 internal temperature sensor. Now, we expand this to read the
+temperature sensor continuously.
 
-In our next step, we want to extend this application into an IPC service, such
-that we can provide the most recent temperature reading to other applications as
-well.
+Given that temperatures change gradually, it is reasonable to read our
+temperature sensor once per second. `libtock-c` provides a convient method to
+delay for a specified duration in `libtock-c/libtock-sync/services/alarm.h`:
 
-Because we do not want to make a system call every time we get such an IPC
-request, we instead change the main function to run a loop and query the
-temperature periodically, such as once every 250 milliseconds. For this, we can
-use the `libtocksync_alarm_delay_ms` function:
-
-```c
-#include <libtock-sync/services/alarm.h>
-
-int main(void) {
-  // Perform initialization, declare variables
-
-  for (;;) {
-    // Read temperature into global variable
-
-    // Wait for 250ms
-    libtocksync_alarm_delay_ms(250);
-  }
-
-  return 0;
-}
+```
+/** \brief Blocks for the given amount of time in milliseconds.
+ *
+ * This is a blocking version of `libtock_alarm_in_ms`. Instead of calling a user
+ * specified callback, it blocks the current call-stack.
+ *
+ * \param ms the number of milliseconds to delay for.
+ * \return An error code. Either RETURNCODE_SUCCESS or RETURNCODE_FAIL.
+ */
+int libtocksync_alarm_delay_ms(uint32_t ms);
 ```
 
-It is worth noting at this point that the `libtocksync_alarm_delay_ms` function
-does not perform busy-waiting. It instead blocks this application from executing
-for some time, and unblocks it by notifying it after 250 ms. This notification
-comes in the form of a _callback_. A callback is a kernel-scheduled task in the
-userspace application that can run at specific, pre-determined points in the
-application: so-called _yield-points_. In contrast to, e.g., signal handlers on
-Linux, an application will not receive a callback between any arbitrary
-instructions. `libtocksync_alarm_delay_ms` is such a yield-point and allows any
-number of callbacks to be invoked until the 250ms wait-time has expired. When an
-application has no work to be done, the kernel is free to schedule other
-applications or place the chip into a low-power state.
+> **EXERCISE** Read the temperature sensor once per second and print the
+> temperature value.
 
-In the above example, `libtocksync_alarm_delay_ms` internally configures an
-appropriate handler for the callback that is invoked when its wait-time has
-expired. However, other types of events require a developer to write and
-register a callback manually -- for instance, for IPC service requests. We do so
-by invoking the `ipc_register_service_callback`, defined in `ipc.h`:
+If you have implemented this correctly, you should see output similar to:
 
-```c
-#include <libtock/kernel/ipc.h>
+```
+$ tockloader listen
+Initialization complete. Entering main loop
+NRF52 HW INFO: Variant: AAF0, Part: N52840, Package: QI, Ram: K256, Flash: K1024
+Current temperature: 22.25
+tock$ Current temperature: 22.25
+Current temperature: 22.25
+Current temperature: 22.25
 
-// Registers a service callback for this process.
-//
-// Service callbacks are called in response to `notify`s from clients and take
-// the following arguments in order:
-//
-//   pkg_name  - the package name of this service
-//   callback  - the address callback function to execute when clients notify
-//   void* ud  - `userdata`. data passed to callback function
-int ipc_register_service_callback(const char *pkg_name,
-                                  subscribe_upcall callback, void *ud);
 ```
 
-In the above, `ipc_register_service_callback` takes a "package name" under which
-the IPC service will be reachable by clients. By convention this should be the
-same name that the application uses -- in our example, it should be
-`org.tockos.thread-tutorial.sensor` as defined in the `Makefile`. When a client
-sends an IPC request to a service, the provided `callback` will be invoked in
-the service application. This callback is invoked with some parameters provided
-by the IPC client, and is passed the `ud` pointer provided in the call to
-`ipc_register_service_callback`. This callback has a function signature as
-follows:
-
-```c
-static void sensor_ipc_callback(int pid, int len, int buf, void *ud) {
-  // Callback handler code
-}
-```
-
-Here, `pid` is an identifier that can be used to send a notification back to the
-requesting client, using the following call:
-
-```c
-ipc_notify_client(pid);
-```
-
-IPC clients and services communicate through memory sharing. In particular, an
-IPC client can share a region of its own memory with the IPC service, provided
-some constraints on buffer size and alignment. This shared buffer is then
-provided to the IPC service callback through the `len` and `buf` parameters,
-where `buf` should be cast to the appropriate pointer type.
-
-> **EXERCISE:** Implement an IPC service callback for your sensor application
-> that writes the current temperature value into the provided buffer.
->
-> You should write the temperature value into a global variable in the `main`
-> loop, and read this variable in the callback handler. You may use something
-> along the lines of:
->
-> ```
-> memcpy((uint8_t*) buf, (uint8_t*) &current_temperature, sizeof(current_temperature))
-> ```
->
-> After copying the value, notify the calling client using the
-> `ipc_notify_client` call.
->
-> Install the application.
+To confirm that your sensor is working, try placing your finger on the nRF52840
+SoC (this is located between the cluster of 4 buttons and the cluster of 4 LEDs,
+in the center of the white box on the nRF52840dk). You should see the
+temperature change as the temperature sensor we are using is the "on-die"
+temperature sensor.
 
 > **CHECKPOINT:** `02_sensor_final`
 
-## Testing your IPC Service
+This concludes the sensor module.
 
-To test whether this IPC service works we also need an appropriate IPC client.
-For this, we provide a client application that also forms the basis of our
-_control application_.
-
-> **CHECKPOINT:** `03_controller_screen`
-
-> **EXERCISE:** Install the provided `03_controller_screen` application next to
-> the sensor IPC service. A `tockloader list` command should show both
-> applications as being installed:
->
-> ```
-> $ tockloader list
-> [INFO   ] Using jlink channel to communicate with the board.
-> [INFO   ] Using settings from KNOWN_BOARDS["nrf52dk"]
-> ┌──────────────────────────────────────────────────┐
-> │ App 0                                            |
-> └──────────────────────────────────────────────────┘
->   Name:                  org.tockos.thread-tutorial.controller
->   Version:               0
->   Enabled:               True
->   Sticky:                False
->   Total Size in Flash:   16384 bytes
->
->
-> ┌──────────────────────────────────────────────────┐
-> │ App 1                                            |
-> └──────────────────────────────────────────────────┘
->   Name:                  org.tockos.thread-tutorial.sensor
->   Version:               0
->   Enabled:               True
->   Sticky:                False
->   Total Size in Flash:   8192 bytes
->
-> [INFO   ] Finished in 4.381 seconds
-> ```
->
-> When both applications are flashed onto a Tock board, the provided
-> `03_controller_screen` application should indicate that it is making repeated
-> IPC calls to the sensor and retrieving a temperature value, which can look
-> like the following. You can also trigger these prints by pressing button 1 or
-> 2 on the board.
->
-> ```
-> $ tockloader listen
-> NRF52 HW INFO: Variant: AAC0, Part: N52840, Package: QI, Ram: K256, Flash: K1024
-> [controller] Discovered sensor service: 1
-> [controller] TODO: update screen! Measured temperature: 2500
-> tock$ [controller] TODO: update screen! Measured temperature: 2600
-> [controller] TODO: update screen! Measured temperature: 2700
-> [controller] TODO: update screen! Measured temperature: 2600
-> [controller] TODO: update screen! Measured temperature: 2500
-> [controller] TODO: update screen! Measured temperature: 2500
-> ```
-
-Take a moment to look at the `03_controller_screen/main.c` implementation. It
-implements the IPC client logic by defining a `sensor_callback`, quite similar
-to the service callback we defined above. This callback is fired whenever the
-service notifies the client. This app also defines some logic to handle button
-presses and change a "set-point temperature", which it displays on the console.
-This part will be relevant in the next stage of the tutorial.
-
-This concludes the first stage of this tutorial. In the next step, we will
-extend the controller application to utilize a more involved peripheral: an
-attached OLED screen. This screen, alongside the four buttons present on the
-nRF52840DK development board will serve as the user interface for our HVAC
-control system.
-
-[Continue here.](control-app.md)
+Now that we are able to read the temperature, we will continue on to
+[network our mote using Tock's supported OpenThread stack](comms-app.md).

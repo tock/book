@@ -34,20 +34,19 @@ temperature set point can be a contencious subject, we allow each employee to
 enter their desired temperature. In turn, their control unit will display the
 average temperature set across all controllers, in addition to the current
 temperature at the control unit. We use Tock's OpenThread-based communications
-stack and it's ability to run multiple concurrent applications to build this
+stack and its ability to run multiple concurrent applications to build this
 control unit (_mote_).
 
 ![thread_net_figure](../../imgs/thread_net_tutorial_figure.png)
 
 We divide the mote's functionality into three separate applications:
 
-- The _control application_ is responsible for interacting with the user. It
-  drives the connected screen to display the current temperature and the local
-  and global-average set points.
-- The _sensor application_ gathers readings from the `nRF52840`s internal
-  temperature sensor and exposes them to the control application.
-- Last but not least, the _communication application_ is responsible for
-  exchanging data with other participants using the Thread network.
+- The _screen app_ drives the connected screen to display the current
+  temperature and the local and global-average set points.
+- The _sensor app_ gathers readings from the `nRF52840`'s internal temperature
+  sensor and exposes them to the control application.
+- Last but not least, the _communication app_ is responsible for exchanging data
+  with other participants using the Thread network.
 
 ![thread_net_tutorial_apps](../../imgs/thread_net_tutorial_apps.svg)
 
@@ -67,25 +66,27 @@ packet.
 
 ## nRF52840dk Hardware Setup
 
-![nRF52840dk](../../imgs/nrf52840dk.jpg)
+![nRF52840dk with key pieces annotated](../../imgs/nrf52840dk-annotated.jpg)
 
 Make sure the switches and jumpers are properly configured on your board:
 
-1. The "Power" switch on the top left should be set to "On".
+1. The board "Power" switch on the bottom left should be set to "On".
 2. The "nRF power source" switch in the top middle of the board should be set to
    "VDD".
-3. The "nRF ONLY | DEFAULT" switch on the bottom right should be set to
-   "DEFAULT".
+   - _Note:_ If you have a screen already attached, this switch is partially
+     hidden underneath the screen.
+3. The isolation switch, labeled "nRF ONLY | DEFAULT", on the top right should
+   be set to "DEFAULT".
 
-You should plug one USB cable into the top of the board for programming (NOT
-into the "nRF USB" port on the side).
+You should plug one USB cable into the side of the board for programming (NOT
+into the "nRF USB" port on the bottom right).
 
-If you have a SSD1306-based screen with I2C pins, you should attach it to pins
-P1.10 (SDA) and P1.11 (SCL).
+If you have a `SSD1306`-based screen with I2C pins, you should attach it to pins
+`P1.10 (SDA)` and `P1.11 (SCL)`.
 
 See this diagram for the full configuration:
 
-```text
+<pre style="transform: rotate(270deg); font-size: small; margin-top: calc(1vw - 40%);">
      ┌────────────────┬───┬─────────────────┐
      │┌POWER┐         │USB│← PROG/DEBUG     │
      ││ ON ▓│         └───┘                 │
@@ -132,7 +133,7 @@ GND →│ ▣ GND     ┌────┐│    VIN ▪│  P1.11 ▣ │← I2C
      └───                    ───────────────┘
          ╲                  ╱
           ──────────────────
-```
+</pre>
 
 ## Organization and Getting Oriented to Tock
 
@@ -157,10 +158,12 @@ While the Tock kernel is written entirely in Rust, it supports userspace
 applications written in multiple languages. In particular, we provide two
 userspace libraries for application development in C and Rust respectively:
 
-- `libtock-c` for C applications (https://github.com/tock/libtock-c)
-- `libtock-rs` for Rust applications (https://github.com/tock/libtock-rs)
+- `libtock-c` for C applications (
+  [tock/libtock-c](https://github.com/tock/libtock-c) )
+- `libtock-rs` for Rust applications (
+  [tock/libtock-rs](https://github.com/tock/libtock-rs) )
 
-We will use `libtock-c` in this tutorial. Its example-applications are located
+We will use `libtock-c` in this tutorial. Its example applications are located
 in the [`/examples`](https://github.com/tock/libtock-c/tree/master/examples)
 directory of the `libtock-c` repository.
 
@@ -174,7 +177,7 @@ set up this router as well.
 
 ## Stages
 
-We divide this tutorial into four stages, with checkpoints that you can use to
+We divide this tutorial into five stages, with checkpoints that you can use to
 skip ahead. Each stage contains information on how to obtain all checkpoint-code
 required for it.
 
@@ -185,17 +188,18 @@ required for it.
    This demonstrates how you can flash a Tock kernel and applications onto your
    development board, and introduces some key Tock concepts.
 
-2. We continue by extending this application into an "IPC service". This will
-   make the current temperature accessible to other applications that request
-   it.
+2. [Following this, we develop the _communication application_](comms-app.md).
+   This application will let our mote join the Thread network.
 
-3. [Our _controller application_](comms-app.md) takes this information and
-   displays it onto an attached OLED screen. It provides a basic user interface,
-   wiring up a screen driver, buttons, and an "IPC client".
+3. We continue by adding the [_screen application_](screen-app.md). This app
+   will:
 
-4. [Following this, we develop the _communication application_](comms-app.md).
-   This application will let our mote join the Thread network and exchange
-   messages.
+   - Receive user input to set the desired temperature.
+   - Display the measured temperature, desired temperature setpoint, and global
+     setpoint to the attached OLED screen.
+
+4. Taking these three applications, we [then add IPC functionality](ipc.md) to
+   allow for passing data between applications.
 
 5. Finally,
    [we demonstrate how Tock's mutually distrustful application model can protect the system](robustness.md)
