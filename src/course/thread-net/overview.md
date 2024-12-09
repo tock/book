@@ -34,7 +34,7 @@ temperature set point can be a contencious subject, we allow each employee to
 enter their desired temperature. In turn, their control unit will display the
 average temperature set across all controllers, in addition to the current
 temperature at the control unit. We use Tock's OpenThread-based communications
-stack and it's ability to run multiple concurrent applications to build this
+stack and its ability to run multiple concurrent applications to build this
 control unit (_mote_).
 
 ![thread_net_figure](../../imgs/thread_net_tutorial_figure.png)
