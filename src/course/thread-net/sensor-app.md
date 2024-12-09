@@ -153,14 +153,14 @@ our checkpoints. Lets get started by making a copy of this initial checkpoint
 to work from:
 
 ```bash
-$ cp -r 00_sensor_hello my_sensor_hello
+$ cp -r 00_sensor_hello my_sensor
 ```
 
 To compile and flash this application, we enter into its directory and run the
 following command:
 
 ```
-$ cd my_sensor_hello
+$ cd my_sensor
 $ make install
 [...]
 Application size report for arch family cortex-m:
