@@ -161,7 +161,7 @@ following command:
 
 ```
 $ cd my_sensor_hello
-$ make -j install
+$ make install
 [...]
 Application size report for arch family cortex-m:
 Application size report for arch family rv32i:
