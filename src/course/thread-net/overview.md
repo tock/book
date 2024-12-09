@@ -158,10 +158,10 @@ While the Tock kernel is written entirely in Rust, it supports userspace
 applications written in multiple languages. In particular, we provide two
 userspace libraries for application development in C and Rust respectively:
 
-- `libtock-c` for C applications (https://github.com/tock/libtock-c)
-- `libtock-rs` for Rust applications (https://github.com/tock/libtock-rs)
+- `libtock-c` for C applications ( [tock/libtock-c](https://github.com/tock/libtock-c) )
+- `libtock-rs` for Rust applications ( [tock/libtock-rs](https://github.com/tock/libtock-rs) )
 
-We will use `libtock-c` in this tutorial. Its example-applications are located
+We will use `libtock-c` in this tutorial. Its example applications are located
 in the [`/examples`](https://github.com/tock/libtock-c/tree/master/examples)
 directory of the `libtock-c` repository.
 
@@ -196,8 +196,8 @@ required for it.
    - Display the measured temperature, desired temperature setpoint, and global
      setpoint to the attached OLED screen.
 
-4. Taking these three applications, we then add IPC functionality to allow for
-   passing data between applications.
+4. Taking these three applications, we [then add IPC functionality](ipc.md) to
+   allow for passing data between applications.
 
 5. Finally,
    [we demonstrate how Tock's mutually distrustful application model can protect the system](robustness.md)
