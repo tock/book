@@ -21,7 +21,7 @@ controller to a central node.
 
 To facilitate wireless communication, Tock provides an IEEE 802.15.4 network
 stack. IEEE 802.15.4 (hence forth abbreviated 15.4) is a physical (PHY) and
-media access control (MAC) specification that is purpose built for low-rate
+media access control (MAC) specification that is purpose-built for low-rate
 wireless personal area networks. As such, 15.4 is harmonious with Tock's use
 case as an embedded operating system for resource constrained devices.
 
@@ -33,8 +33,8 @@ include:
 - 6LoWPAN
 - ISA100.11a
 
-Tock exposes to userspace 15.4 functionality through a series of command
-syscalls. Within the kernel, a 15.4 capsule and 15.4 radio driver serve to
+Tock exposes 15.4 functionality to userspace through a series of command
+syscalls. Within the kernel, a 15.4 capsule and a 15.4 radio driver serve to
 virtualize radio resources across other kernel endpoints and applications. To
 provide platform agnostic 15.4 logic, Tock prescribes a 15.4 radio Hardware
 Interface Layer (HIL) that must be implemented for each 15.4 radio supported by
@@ -43,18 +43,18 @@ Tock.
 ### Thread
 
 [Thread networking](https://www.threadgroup.org) is a low-power and low-latency
-wireless mesh networking protocol built using a 15.4, 6LoWPAN, UDP network
+wireless mesh networking protocol built using a 15.4, 6LoWPAN, and UDP network
 stack. Notably, each Thread node possess a globally addressable IPv6 address
 given Thread's adoption of 6LoWPAN (an IPv6 compression scheme). Although we
 will not exhaustively describe Thread here, we will provide a brief overview and
 pointers to more in-depth resources that further describe Thread.
 
 Thread devices fit into two broadly generalized device types: routers and
-children. Routers often possess a non constrained power supply (i.e. "plugged
+children. Routers often possess a non-constrained power supply (i.e., "plugged
 in") while children are often power constrained battery devices. Children form a
 star topology around their respective parent router while routers maintain a
 mesh network amongst routers. This division of responsibilities allows for the
-robustness and self healing capabilities a mesh network provides while not being
+robustness and self-healing capabilities a mesh network provides while not being
 prohibitive to power constrained devices.
 
 Further resources on Thread networking can be found
@@ -62,11 +62,11 @@ Further resources on Thread networking can be found
 
 ### Tock and OpenThread
 
-[OpenThread](https://github.com/openthread/openthread) is an opensource
+[OpenThread](https://github.com/openthread/openthread) is an open source
 implementation of the [Thread standard](https://www.threadgroup.org/). This
 implementation is the "de facto" Thread implementation.
 
-In order for a given platform to support OpenThread, the platform must provide:
+For a given platform to support OpenThread, the platform must provide:
 
 - IEEE 802.15.4 radio
 - Random Number Generator
@@ -82,21 +82,28 @@ OpenThread is a popular network stack supported by other embedded platforms
 Typically, the OpenThread PAL is exposed either directly to hardware or links
 directly to the kernel. Tock faces a unique design challenge in supporting
 OpenThread as the Tock kernel's threat model explicitly bans external
-dependencies. Subsequently, Tock provides an OpenThread port that runs as an
-application. This provides the added benefit that a bug in OpenThread will not
-cause the entire system to crash and that a faulting OpenThread app can be
-recovered and restarted by the Tock kernel. The libtock-c OpenThread port can be
-found in the `libtock-c/libopenthread` directory for further details.
-`libopenthread` directly checks out the upstream
+dependencies.
+
+Subsequently, Tock provides an OpenThread port that runs as an application.
+This provides the added benefit that a bug in OpenThread will not cause the
+entire system to crash and that a faulting OpenThread app can be recovered and
+restarted by the Tock kernel without affecting other apps.  The libtock-c
+OpenThread port can be found in the `libtock-c/libopenthread` directory for
+further details.  `libopenthread` directly checks out the upstream
 [OpenThread](https://github.com/openthread/openthread) repository and as such
 possesses the entire set of OpenThread APIs.
 
 ### Libopenthread
 
-We assume that a single nRF52840DK board is used as a Thread router that also
-performs certain logic (such as averaging temperature setponts). In a hosted
-tutorial setting you will likely be provided with such a board; we do provide
-instructions for this [here](./router-setup.md).
+> At this point the tutorial assumes there is a separate, single nRF52840DK
+> board running nearby that is acting as a Thread router and also providing a
+> network endpoint that performs certain logic (such as averaging temperature
+> setponts).
+>
+> In a hosted tutorial setting this will already be set up for you. If you
+> are working through the tutorial on your own, you will need to
+> [follow the router setup instructions](./router-setup.md) before continuing
+> if you have not already.
 
 We now begin implementing an OpenThread app using `libopenthread`. Because Tock
 is able to run arbitrary code in userspace, we can make use of this existing
@@ -108,7 +115,7 @@ For the purposes of this tutorial, we provide a hardcoded network key
 steps to join a Thread network include:
 
 1. Creating a dataset.
-2. Adding the network key, _panid_, and channel to the dataset.
+2. Adding the network key, `panid`, and channel to the dataset.
 3. Committing the active dataset.
 4. Initializing the IP interface.
 5. Begin thread network attachment.
@@ -117,14 +124,21 @@ Each of these steps are accomplished using functions the OpenThread API exposes.
 
 > **CHECKPOINT:** `03_openthread`
 
-We provide a skeleton implementation in 03_openthread that is missing the logic
-needed to attach to the thread network. Your task is to add the needed
+We provide a skeleton implementation in `03_openthread` that is missing the
+logic needed to attach to the thread network. Your task is to add the needed
 OpenThread API calls to attach your device to the thread network.
 
+As before, begin by making a copy of the starting checkpoint to work from:
+
+```bash
+$ cp -r 03_openthread my_openthread
+$ cd my_openthread
+```
+
 The provided starter code includes a helper method:
-`void setNetworkConfiguration(otInstance* aInstance)`. This method will
+`void setNetworkConfiguration(otInstance* aInstance)`. This method will
 initialize the network configuration dataset to the correct values (this
-completes steps 1,2,3 above).
+completes steps 1, 2, and 3 above).
 
 > **EXERCISE** Initialize the network dataset.
 
@@ -152,7 +166,7 @@ Our Thread node is now fully configured and ready to attempt joining a network.
 > **EXERCISE** Start the Thread Network
 
 After completing these changes, build and flash the updated openthread app
-(`$make install`).
+(`$ make install`).
 
 Our skeleton registers a callback with OpenThread to notify upon state change.
 Upon successfully implementing the above network attachment, flash the app,
@@ -172,8 +186,8 @@ tock$ [THREAD] Device IPv6 Addresses: fe80:0:0:0:b4ef:e680:d8ef:475e
 Successfully attached to Thread network as a child.
 ```
 
-If you are unable to join the network, feel free to jump ahead to the checkpoint
-below.
+If you are unable to join the network, this is a good time to ask for help at a
+hosted tutorial event, or feel free to jump ahead to the checkpoint below.
 
 > **CHECKPOINT:** 04_openthread_attach
 
@@ -188,14 +202,14 @@ We must complete the following steps to setup UDP in the OpenThread library:
 For your convience, we provide helper methods to accomplish each of the
 aformentioned steps.
 
-1. Initialize UDP interface => `initUdp`
-2. Register a function as a receive callback => `handleUdpRecvTemperature`
-3. Implement a function to transmit => `sendUdpTemperature`
+1. Initialize UDP interface &rarr; `initUdp`
+2. Register a function as a receive callback &rarr; `handleUdpRecvTemperature`
+3. Implement a function to transmit &rarr; `sendUdpTemperature`
 
 Internally, our provided `initUDP` function registers our receive callback
 (`handleUdpRecvTemperature`).
 
-Add the following functions to the openthread app's `main.c`.
+Add the following functions to the communication application's `main.c`:
 
 ```c
 static otUdpSocket sUdpSocket;
@@ -275,10 +289,10 @@ a UDP packet _after_ we have succesfully joined the Thread network.
 
 > **EXERCISE** Modify the `stateChangeCallback` such that when our device
 > attaches to the network and becomes a child, we send a UDP packet using:
-
-```
-sendUdpTemperature(instance, 22)
-```
+>
+> ```
+> sendUdpTemperature(instance, 22)
+> ```
 
 The registered UDP receive callback is implemented to print received packets to
 the console. Our router is implemented to receive UDP packets and reply with a
@@ -298,5 +312,7 @@ Received UDP Packet: {GLOBAL_SET_POINT_VALUE}
 > **CHECKPOINT:** `05_openthread_final`
 
 Congratulations! We now have a networked mote that is attached to our router and
-capable of sending / receiving UDP packets. We now will work to obtain user
-input (buttons) and implement the display [here](screen-app.md).
+capable of sending and receiving UDP packets.
+
+Next up, we will work to
+[obtain user input (buttons) and implement the display](screen-app.md).
