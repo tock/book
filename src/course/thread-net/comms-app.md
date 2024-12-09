@@ -3,6 +3,18 @@
 We now set out to utilize Tock's network capabilities to connect our temperature
 controller to a central node.
 
+---
+
+> Before starting to develop this app, please remove any existing apps from
+> the board (including the sensor application from the prior step for now)
+> using the following tockloader command:
+>
+> ```
+> $ tockloader erase-apps
+> ```
+
+---
+
 ## Background
 
 ### IEEE 802.15.4

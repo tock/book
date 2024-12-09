@@ -300,12 +300,7 @@ temperature sensor.
 
 > **CHECKPOINT:** `02_sensor_final`
 
-This concludes the sensor module. Before continuing, please uninstall the sensor
-app using the following tockloader command:
-
-```
-$ tockloader erase-apps
-```
+This concludes the sensor module.
 
 Now that we are able to read the temperature, we will continue on to [network
 our mote using Tock's supported OpenThread stack](comms-app.md).
