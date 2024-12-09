@@ -1,20 +1,41 @@
 # Building the User Interface
 
-In the previous stages we have built a _sensor application_ that is able to
-query the Tock kernel for the current temperature and an openthread application
-that is able to send and receive UDP packets. We now will build a user interface
-so that you are able to request your desired temperature and avoid overheating
-or freezing!
+In the previous stages we built a _sensor application_ that is able to query
+the Tock kernel for the current temperature and a _communication application_
+that is able to send and receive UDP packets. We now will build a user
+interface so that you are able to request your desired temperature and avoid
+overheating or freezing!
 
-We will first build a simple button interface to introduce's Tock's concept of
+---
+
+> Before starting to develop this app, please remove any existing apps from
+> the board (including the sensor application and communication applications)
+> using the following tockloader command:
+>
+> ```
+> $ tockloader erase-apps
+> ```
+
+---
+
+We will first build a simple button interface to introduce Tock's concept of
 callbacks. We will then expand this to utilize an OLED screen to display the
 temperature readings and desired temperature setpoint.
 
 > **CHECKPOINT:** `06_screen`
 
-Now that you're familiar with `tock` and `libtock-c`, We begin making the screen
-app with an empty application! Remember, if you get stuck at any point, we
-include checkpoints along the way. Here we go!
+Let's begin this app like the others, with a copy of the starting checkpoint:
+
+```bash
+$ cp -r 06_screen my_screen
+$ cd my_screen
+```
+
+Now that you're familiar with `tock` and `libtock-c`, our starter here is
+basically an empty application! Remember, if you get stuck at any point, we
+include checkpoints along the way.
+
+Here we go!
 
 ## Adding the button interface
 
@@ -40,17 +61,17 @@ form:
     [App continues execution]
 ```
 
-Sometimes blocking an app with a synchronous function is useful. To accomodate
-this, `libtock-c` libraries are split into `libtock-c` (which is async) and
+Sometimes blocking an app with a synchronous function is useful. To accommodate
+this, `libtock-c` libraries are split into `libtock` (which is async) and
 `libtock-sync`. If you recall, we used a `libtock-sync` function to implement
 the delay when reading the temperature sensor earlier. Internally, the
-`libtock-sync` methods call the standard `libtock-c` async methods, but utilizes
+`libtock-sync` methods call the standard `libtock` async methods, but utilize
 the following pattern to provide the application with synchronous blocking
 behavior:
 
 ```c
 void yield_for(bool* cond) {
-  while (!*cond) {
+  while (!*cond) { // async callback will set `cond`
     yield();
   }
 ```
@@ -63,7 +84,7 @@ from the kernel.
 Now that we understand a bit more what's happening under the hood, let's add our
 first callback!
 
-`libtock-c` possess a wrapper to register a callback with the kernel that
+`libtock` provides a wrapper to register a callback with the kernel that
 corresponds to button presses:
 
 ```c
@@ -85,7 +106,9 @@ returncode_t libtock_button_notify_on_press(int button_num, libtock_button_callb
 ```
 
 With this in mind, let's add a callback function to our screen app that prints
-to the console. Add the following to `main.c`:
+to the console.
+
+Add the following to `main.c`:
 
 ```c
 #include <libtock/interface/button.h>
@@ -101,17 +124,24 @@ static void button_callback(returncode_t ret,
 }
 ```
 
-> **EXERCISE** Register our above `button_callback` with the
-> `libtock_button_notify_on_press(...)` method.
+<blockquote>
+<p>
+<strong>EXERCISE</strong> Register our above <tt>button_callback</tt> with the
+<tt>libtock_button_notify_on_press(...)</tt> method.
+</p>
 
-> **HINTS**
->
-> 1. We must register callbacks for each of the four buttons.
-> 2. Did you remember to `yield`? The kernel will only execute an app's
->    registered callback if the application has yielded.
-> 3. Does your `main()` return? We want this application to "run forever". Still
->    confused? an infinite loop with `yield()` inside the body should do the
->    trick :)
+<details>
+<summary>Hints (click to open)</summary>
+<ol>
+<li>We must register callbacks for each of the four buttons.</li>
+<li>Did you remember to <tt>yield</tt>? The kernel will only execute an app's
+    registered callback if the application has yielded.</li>
+<li>Does your <tt>main()</tt> return? We want this application to "run forever".
+    <small>Still confused? An infinite loop with `yield()` inside the body should
+    do the trick :)</small></li>
+</ol>
+</details>
+</blockquote>
 
 Let's build and flash this screen application to our board. Try pressing any of
 the 4 buttons on the nRF52840dk (not the reset button). If you have correctly
@@ -139,7 +169,7 @@ To add this library to our application we add the following two lines to our
 application's `Makefile`, before the `AppMakefile.mk` include:
 
 ```makefile
-STACK_SIZE  = 4096
+STACK_SIZE  := 4096
 EXTERN_LIBS += $(TOCK_USERLAND_BASE_DIR)/u8g2
 ```
 
@@ -178,15 +208,20 @@ int main(void) {
 }
 ```
 
-When we now build and install this app, it should clear the screen and you may
-see repeatedly flickering when installing applications or resetting your board.
+When we now build and install this app, it should clear the screen. With this
+app installed, you may see repeated flickering when installing applications or
+resetting your board.
 
 > **EXERCISE:** Extend the above app to print a simple message on the screen.
+>
 > You can use the `u8g2_SetDrawColor(&u8g2, 1);` method to draw in either the
 > `0` or `1` color (i.e., foreground or background).
+>
 > `u8g2_DrawStr(&u8g2, $XCOORD, $YCOORD, $YOUR_STRING);` can be used to print a
-> string to the display. Make sure you update the display contents with a final
-> call to `u8g2_SendBuffer(&u8g2);`.
+> string to the display.
+>
+> Make sure you update the display contents with a final call to
+> `u8g2_SendBuffer(&u8g2);`.
 
 Well done! Now we can begin adding the desired text for our HVAC controller.
 
@@ -201,8 +236,8 @@ Measured Temp: {VALUE}
 ```
 
 The set point is _our_ desired temperature for the HVAC system. The global set
-point is the average of all motes requested desired temperature. Finally, the
-measured temperature is the temperature measured using the temperature sensor.
+point is the average of all motes' requested desired temperature. Finally, the
+measured temperature is the measure from the device's local temperature sensor.
 
 For use with the later stages of our application, it will be helpful to have a
 function that performs the screen update. Add the following global variables and
@@ -224,18 +259,20 @@ static void update_screen(void) {
 
 > **EXERCISE** Extend `update_screen` to display our desired 3 lines of text and
 > the value of the respective global variable.
+>
+> **HINT** `sprintf(...)` is useful for formatting our char array.
 
-> **HINT** `sprintf(...)` is useful for formating our char array.
-
-As always, build and flash the screen application. At this point, you should see
-3 strings on your u8g2 screen. If you are struggling to display the 3
-strings, feel free to utilize the checkpoint!
+As always, build and flash the screen application. At this point, you should
+see three strings on your u8g2 screen. If you are struggling to display the
+three strings, this is a good time to ask for help or to utilize the
+checkpoint!
 
 > **CHECKPOINT** `08_screen_u8g2`
 
+
 ## Updating the Desired Local Temperature
 
-We are now able to display text to our screen and also receive user input
+We are now able to display text to our screen and to receive user input
 through the button presses. With these pieces, we can begin building our
 controller user interface! This interface will allow the user to input their
 desired temperature setpoint. The nRF52840dk has 4 user input buttons. These
@@ -247,15 +284,16 @@ buttons as follows:
 - Button 2 => reset local setpoint to 22 C
 
 > **EXERCISE:** Update the `button_callback` to update the
-> `local_temperature_setpoint` for button presses---using the above button
+> `local_temperature_setpoint` for button presses&mdash;using the above button
 > mapping. When implementing this setpoint logic, ensure that the maximum
 > setpoint is 35 C and that the minimum setpoint is 0 C.
 
-If we build / flash this application, we notice that the screen remains at the
-default values. This is because we need to call the update function when a
-button is pressed. How can we do this?
+If we build and flash this application at this point, we will notice that the
+screen remains at the default values. This is because we need to call the
+update function when a button is pressed. How can we do this?
 
-We can naively update `main()` to update the screen within our main loop:
+A simple (but naïve) approach is to change `main()` to update the screen within
+the main loop:
 
 ```c
   for(;;) {
@@ -278,6 +316,9 @@ need? (hint, this was mentioned in the `libtock-sync` discussion).
 Exactly! `yield_for`:
 
 ```c
+// n.b., this function is provided by libtock/tock.h
+// You do not need to copy this function, just use the libtock-provided version.
+// We repeat its definition here for conceptual understanding only.
 void yield_for(bool* cond) {
   while (!*cond) {
     yield();
@@ -302,4 +343,6 @@ displayed local setpoint temperature updates with button presses!
 
 > **CHECKPOINT:** `09_screen_final`
 
-This concludes the screen app module. Continue on [here](ipc.md).
+This concludes the screen app module.
+
+Continue on to [put everything together with inter-process communication](ipc.md)!
