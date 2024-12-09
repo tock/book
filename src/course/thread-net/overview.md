@@ -43,10 +43,10 @@ We divide the mote's functionality into three separate applications:
 
 - The _screen app_ drives the connected screen to display the current
   temperature and the local and global-average set points.
-- The _sensor app_ gathers readings from the `nRF52840`'s internal
-  temperature sensor and exposes them to the control application.
-- Last but not least, the _communication app_ is responsible for
-  exchanging data with other participants using the Thread network.
+- The _sensor app_ gathers readings from the `nRF52840`'s internal temperature
+  sensor and exposes them to the control application.
+- Last but not least, the _communication app_ is responsible for exchanging data
+  with other participants using the Thread network.
 
 ![thread_net_tutorial_apps](../../imgs/thread_net_tutorial_apps.svg)
 
@@ -74,7 +74,7 @@ Make sure the switches and jumpers are properly configured on your board:
 2. The "nRF power source" switch in the top middle of the board should be set to
    "VDD".
    - _Note:_ If you have a screen already attached, this switch is partially
-             hidden underneath the screen.
+     hidden underneath the screen.
 3. The isolation switch, labeled "nRF ONLY | DEFAULT", on the top right should
    be set to "DEFAULT".
 
@@ -158,8 +158,10 @@ While the Tock kernel is written entirely in Rust, it supports userspace
 applications written in multiple languages. In particular, we provide two
 userspace libraries for application development in C and Rust respectively:
 
-- `libtock-c` for C applications ( [tock/libtock-c](https://github.com/tock/libtock-c) )
-- `libtock-rs` for Rust applications ( [tock/libtock-rs](https://github.com/tock/libtock-rs) )
+- `libtock-c` for C applications (
+  [tock/libtock-c](https://github.com/tock/libtock-c) )
+- `libtock-rs` for Rust applications (
+  [tock/libtock-rs](https://github.com/tock/libtock-rs) )
 
 We will use `libtock-c` in this tutorial. Its example applications are located
 in the [`/examples`](https://github.com/tock/libtock-c/tree/master/examples)

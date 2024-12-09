@@ -1,9 +1,9 @@
 # Tock Robustness
 
 Setting Tock apart from many other embedded operating systems is its
-security-first design model: applications are generally mutually distrustful.
-In practice, this means that any misbehavior in one application should not
-affect other applications.  This includes both faults (such as invalid pointer
+security-first design model: applications are generally mutually distrustful. In
+practice, this means that any misbehavior in one application should not affect
+other applications. This includes both faults (such as invalid pointer
 dereferences, etc.) and excessive resource utilization.
 
 Take, for instance, a standard network application that implements all logic
@@ -206,5 +206,5 @@ We also provide some community resources, which you can find here:
 We always appreciate feedback on our tutorials... What went well? What did you
 like? What was not so smooth? What was less interesting? How can we make things
 better?... Please do not hesitate to reach out, and if you have found any
-smaller typographical or technical errors, [pull requests are welcome and
-appreciated!](https://github.com/tock/book/tree/master/src/course/thread-net)
+smaller typographical or technical errors,
+[pull requests are welcome and appreciated!](https://github.com/tock/book/tree/master/src/course/thread-net)

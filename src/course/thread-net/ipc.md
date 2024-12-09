@@ -1,7 +1,7 @@
 # Inter Process Communication
 
-We now have three working applications! To make sure we are on the same page,
-if you have any uncertainty of your implementation(s) thus far, update your
+We now have three working applications! To make sure we are on the same page, if
+you have any uncertainty of your implementation(s) thus far, update your
 tutorial implementation with the final checkpoint implementation. Then install
 all three applications on your board:
 
@@ -72,7 +72,7 @@ can access. Although this is inadvisable for security and robustness, many
 embedded OSes would allow for this shared global state.
 
 Tock, however, strictly isolates applications&mdash;meaning we are unable to
-have shared global state across applications.  This is beneficial as a buggy or
+have shared global state across applications. This is beneficial as a buggy or
 malicious application is unable to harm other applications or the kernel.
 
 To allow applications to share data, the Tock kernel provides interprocess
@@ -80,13 +80,13 @@ communication (IPC). We will update our applications to use IPC next.
 
 ![thread_net_tutorial_apps](../../imgs/thread_net_tutorial_apps.svg)
 
-
 IPC in Tock is separated into services and clients.
 
 For our HVAC control system:
- - The _screen application_ will serve as our ___client___.
- - The _sensor application_ and _communication application_ will act as ___services___.
 
+- The _screen application_ will serve as our **_client_**.
+- The _sensor application_ and _communication application_ will act as
+  **_services_**.
 
 ## Screen Application IPC
 
@@ -104,9 +104,8 @@ client. This will consist of:
    notify client(s).
 3. Sharing a buffer to the IPC interface.
 
-Tock's IPC interface can be a bit challenging.  For this early tutorial, we
-have simply implemented these changes for you in the checkpoint
-`10_screen_ipc`.
+Tock's IPC interface can be a bit challenging. For this early tutorial, we have
+simply implemented these changes for you in the checkpoint `10_screen_ipc`.
 
 Simply `$ cp 10_screen_ipc/main.c my_screen/main.c`.
 
@@ -122,14 +121,13 @@ board.
 
 Now that our IPC client is setup, let's add our IPC services!
 
-
 ## Temperature Sensor IPC
 
 > This part will edit `my_sensor`, which should be up-to-date with equivalent
 > operation of `02_sensor_final`.
 
-Let's setup the sensor app as an IPC service!
-Change into the `my_sensor` application.
+Let's setup the sensor app as an IPC service! Change into the `my_sensor`
+application.
 
 First, we will create the callback that our client invokes when they request
 this service. Add the following callback to our `main.c`:
@@ -163,7 +161,7 @@ ipc_register_service_callback("org.tockos.thread-tutorial.sensor",
                               NULL);
 ```
 
-___Careful!___ To ensure an IPC client cannot make a request of the sensor
+**_Careful!_** To ensure an IPC client cannot make a request of the sensor
 service before this app has read the temperature, be sure your app reads the
 temperature sensor _at least_ once before registering the service with the
 kernel.
@@ -175,8 +173,6 @@ the screen, we no longer need this information to be displayed on the console.
 
 Congrats! You just successfully created a temperature sensor service! Let's go
 ahead and do this for OpenThread now.
-
-
 
 ## OpenThread IPC
 
@@ -241,15 +237,14 @@ The logic in the callback determines if the local temperature setpoint has
 changed, and if so, sends an update over the Thread network (if the Thread
 network is enabled). We send this update using UDP. If you look closely, you
 will notice that our callback does not directly call the
-`sendUdpTemperature(...)` we used in the openthread module.
-___Why is this?___
+`sendUdpTemperature(...)` we used in the openthread module. **_Why is this?_**
 
 ### Callbacks and Reentrancy
 
-If a callback function, say the `ipc_callback`, executes code that
-inserts a yield point, we may experience reentrancy.
-This means that during the execution of the `ipc_callback`, other
-callbacks&mdash;including `ipc_callback` itself&mdash;may be scheduled again.
+If a callback function, say the `ipc_callback`, executes code that inserts a
+yield point, we may experience reentrancy. This means that during the execution
+of the `ipc_callback`, other callbacks&mdash;including `ipc_callback`
+itself&mdash;may be scheduled again.
 
 Consider the following example:
 
@@ -303,9 +298,8 @@ sendUdpTemperature(instance, local_temperature_setpoint);
 
 > **CHECKPOINT:** `12_openthread_ipc`
 
-
 And congratulations! You have now have a complete, working, networked
 temperature controller!
 
-In the final stage, next, we will [explore how isolated processes enable robust
-operation](robustness.md).
+In the final stage, next, we will
+[explore how isolated processes enable robust operation](robustness.md).

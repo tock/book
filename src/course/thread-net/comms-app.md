@@ -5,9 +5,9 @@ controller to a central node.
 
 ---
 
-> Before starting to develop this app, please remove any existing apps from
-> the board (including the sensor application from the prior step for now)
-> using the following tockloader command:
+> Before starting to develop this app, please remove any existing apps from the
+> board (including the sensor application from the prior step for now) using the
+> following tockloader command:
 >
 > ```
 > $ tockloader erase-apps
@@ -78,18 +78,17 @@ abstraction layer (PAL) that a given platform implements as the "glue" between
 the OpenThread stack and the platform's hardware.
 
 OpenThread is a popular network stack supported by other embedded platforms
-(e.g. [Zephyr](https://github.com/zephyrproject-rtos/zephyr)).
-Typically, the OpenThread PAL is exposed either directly to hardware or links
-directly to the kernel. Tock faces a unique design challenge in supporting
-OpenThread as the Tock kernel's threat model explicitly bans external
-dependencies.
+(e.g. [Zephyr](https://github.com/zephyrproject-rtos/zephyr)). Typically, the
+OpenThread PAL is exposed either directly to hardware or links directly to the
+kernel. Tock faces a unique design challenge in supporting OpenThread as the
+Tock kernel's threat model explicitly bans external dependencies.
 
-Subsequently, Tock provides an OpenThread port that runs as an application.
-This provides the added benefit that a bug in OpenThread will not cause the
-entire system to crash and that a faulting OpenThread app can be recovered and
-restarted by the Tock kernel without affecting other apps.  The libtock-c
+Subsequently, Tock provides an OpenThread port that runs as an application. This
+provides the added benefit that a bug in OpenThread will not cause the entire
+system to crash and that a faulting OpenThread app can be recovered and
+restarted by the Tock kernel without affecting other apps. The libtock-c
 OpenThread port can be found in the `libtock-c/libopenthread` directory for
-further details.  `libopenthread` directly checks out the upstream
+further details. `libopenthread` directly checks out the upstream
 [OpenThread](https://github.com/openthread/openthread) repository and as such
 possesses the entire set of OpenThread APIs.
 
@@ -100,10 +99,10 @@ possesses the entire set of OpenThread APIs.
 > network endpoint that performs certain logic (such as averaging temperature
 > setponts).
 >
-> In a hosted tutorial setting this will already be set up for you. If you
-> are working through the tutorial on your own, you will need to
-> [follow the router setup instructions](./router-setup.md) before continuing
-> if you have not already.
+> In a hosted tutorial setting this will already be set up for you. If you are
+> working through the tutorial on your own, you will need to
+> [follow the router setup instructions](./router-setup.md) before continuing if
+> you have not already.
 
 We now begin implementing an OpenThread app using `libopenthread`. Because Tock
 is able to run arbitrary code in userspace, we can make use of this existing

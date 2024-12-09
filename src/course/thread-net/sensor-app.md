@@ -127,7 +127,8 @@ and stop applications, and control other parts of the tock kernel. For instance,
 With the kernel running we can now load applications onto our board. Tock
 applications are compiled and loaded separately from the kernel. For this
 tutorial we will use the `libtock-c` userspace library, whose source is located
-outside of the kernel repository [at github/tock/libtock-c](https://github.com/tock/libtock-c).
+outside of the kernel repository
+[at github/tock/libtock-c](https://github.com/tock/libtock-c).
 
 We provide some scaffolding for this tutorial. Make sure to enter the following
 directory:
@@ -148,9 +149,9 @@ message like the following:
 
 > **CHECKPOINT:** `00_sensor_hello`
 
-If you are ever struggling, you can always jump ahead by working from one of
-our checkpoints. Lets get started by making a copy of this initial checkpoint
-to work from:
+If you are ever struggling, you can always jump ahead by working from one of our
+checkpoints. Lets get started by making a copy of this initial checkpoint to
+work from:
 
 ```bash
 $ cp -r 00_sensor_hello my_sensor
@@ -302,5 +303,5 @@ temperature sensor.
 
 This concludes the sensor module.
 
-Now that we are able to read the temperature, we will continue on to [network
-our mote using Tock's supported OpenThread stack](comms-app.md).
+Now that we are able to read the temperature, we will continue on to
+[network our mote using Tock's supported OpenThread stack](comms-app.md).

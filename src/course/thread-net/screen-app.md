@@ -1,16 +1,16 @@
 # Building the User Interface
 
-In the previous stages we built a _sensor application_ that is able to query
-the Tock kernel for the current temperature and a _communication application_
-that is able to send and receive UDP packets. We now will build a user
-interface so that you are able to request your desired temperature and avoid
-overheating or freezing!
+In the previous stages we built a _sensor application_ that is able to query the
+Tock kernel for the current temperature and a _communication application_ that
+is able to send and receive UDP packets. We now will build a user interface so
+that you are able to request your desired temperature and avoid overheating or
+freezing!
 
 ---
 
-> Before starting to develop this app, please remove any existing apps from
-> the board (including the sensor application and communication applications)
-> using the following tockloader command:
+> Before starting to develop this app, please remove any existing apps from the
+> board (including the sensor application and communication applications) using
+> the following tockloader command:
 >
 > ```
 > $ tockloader erase-apps
@@ -262,22 +262,19 @@ static void update_screen(void) {
 >
 > **HINT** `sprintf(...)` is useful for formatting our char array.
 
-As always, build and flash the screen application. At this point, you should
-see three strings on your u8g2 screen. If you are struggling to display the
-three strings, this is a good time to ask for help or to utilize the
-checkpoint!
+As always, build and flash the screen application. At this point, you should see
+three strings on your u8g2 screen. If you are struggling to display the three
+strings, this is a good time to ask for help or to utilize the checkpoint!
 
 > **CHECKPOINT** `08_screen_u8g2`
 
-
 ## Updating the Desired Local Temperature
 
-We are now able to display text to our screen and to receive user input
-through the button presses. With these pieces, we can begin building our
-controller user interface! This interface will allow the user to input their
-desired temperature setpoint. The nRF52840dk has 4 user input buttons. These
-buttons are labeled 0-3 moving clockwise from the upper left button. We map the
-buttons as follows:
+We are now able to display text to our screen and to receive user input through
+the button presses. With these pieces, we can begin building our controller user
+interface! This interface will allow the user to input their desired temperature
+setpoint. The nRF52840dk has 4 user input buttons. These buttons are labeled 0-3
+moving clockwise from the upper left button. We map the buttons as follows:
 
 - Button 0 => increase local setpoint (+1)
 - Button 1 => decrease local setpoint (-1)
@@ -289,8 +286,8 @@ buttons as follows:
 > setpoint is 35 C and that the minimum setpoint is 0 C.
 
 If we build and flash this application at this point, we will notice that the
-screen remains at the default values. This is because we need to call the
-update function when a button is pressed. How can we do this?
+screen remains at the default values. This is because we need to call the update
+function when a button is pressed. How can we do this?
 
 A simple (but naïve) approach is to change `main()` to update the screen within
 the main loop:
@@ -345,4 +342,5 @@ displayed local setpoint temperature updates with button presses!
 
 This concludes the screen app module.
 
-Continue on to [put everything together with inter-process communication](ipc.md)!
+Continue on to
+[put everything together with inter-process communication](ipc.md)!
