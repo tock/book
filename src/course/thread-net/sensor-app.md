@@ -14,14 +14,15 @@ By the end of this submodule, you will know how to:
 For this tutorial, we provide a Tock kernel _configuration_ that exposes all
 required peripherals to userspace applications. It is based on the
 [`nrf52840dk`](https://github.com/tock/tock/tree/master/boards/nordic/nrf52840dk)
-base board defition and adds an additional driver instantiation for the Ssd1306
-1.3" OLED screen we are using in this tutorial.
+base board defition and adds an additional driver instantiation for the
+`SSD1306 1.3" OLED` screen we are using in this tutorial.
 
 You can compile this configuration board by entering into its respective
 directory and typing `make`:
 
-```
+```bash
 $ cd tock/boards/tutorials/nrf52840dk-thread-tutorial
+#    ^^^^this is your checkout of github.com/tock/tock
 $ make
    [...]
    Compiling nrf52_components v0.1.0 (/home/leons/proj/tock/kernel/boards/nordic/nrf52_components)
@@ -33,7 +34,7 @@ cb0df7abb1...d47b383aaf  tock/target/thumbv7em-none-eabi/release/nrf52840dk-thre
 ```
 
 To flash the kernel onto your nRF52840DK development board, make sure that you
-use the debug USB port (top-side, not "nRF USB"). Then type
+use the debug USB port (skinny-side, not "nRF USB" on the wide edge). Then type
 
 ```
 $ make install
@@ -62,6 +63,13 @@ USB speed mode: High speed (480 MBit/s)
 VTref=3.300V
 ```
 
+And verify your `tockloader` install with:
+
+```bash
+$ tockloader --version
+1.13.0   # (or newer)
+```
+
 ## Connecting to the Tock Kernel
 
 You can connect to your board's serial console using `tockloader` or any other
@@ -84,10 +92,12 @@ tock$
 ```
 
 If you don't see this prompt, try hitting ENTER or pressing the `RESET` button
-on your board (near the left-hand side USB port). In case you see the following
-selection dialog, the nRF52840DK exposes the chip's serial console on the first
-UART port (e.g., `ttyACM0` instead of `ttyACM1`). If that does not work, simply
-try the available ports:
+on your board (near the unused, wide-side USB port).
+
+In the case where you a selection dialog similar to that below, the nRF52840DK
+exposes the chip's serial console on the lowest UART port (e.g., `ttyACM0`
+instead of `ttyACM1`). If selecting `ttyACM0` or similar does not work, simply
+try all the available ports:
 
 ```
 $ tockloader listen
@@ -117,12 +127,12 @@ and stop applications, and control other parts of the tock kernel. For instance,
 With the kernel running we can now load applications onto our board. Tock
 applications are compiled and loaded separately from the kernel. For this
 tutorial we will use the `libtock-c` userspace library, whose source is located
-outside of the kernel repository [here](https://github.com/tock/libtock-c).
+outside of the kernel repository [at github/tock/libtock-c](https://github.com/tock/libtock-c).
 
 We provide some scaffolding for this tutorial. Make sure to enter the following
 directory:
 
-```
+```bash
 $ cd libtock-c/examples/tutorials/thread_network
 $ ls
 00_sensor_hello

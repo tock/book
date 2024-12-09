@@ -81,8 +81,8 @@ Make sure the switches and jumpers are properly configured on your board:
 You should plug one USB cable into the side of the board for programming (NOT
 into the "nRF USB" port on the bottom right).
 
-If you have a SSD1306-based screen with I2C pins, you should attach it to pins
-P1.10 (SDA) and P1.11 (SCL).
+If you have a `SSD1306`-based screen with I2C pins, you should attach it to pins
+`P1.10 (SDA)` and `P1.11 (SCL)`.
 
 See this diagram for the full configuration:
 
