@@ -1,5 +1,16 @@
 # Thread Router Setup
 
+---
+
+> _Note:_ If you are a participant at a hosted tutorial, we have already
+> set up a thread router. You should skip this step and
+> [go straight to creating the sensor application](sensor-app.md).
+>
+> Please **do not** set up your own router during a hosted tutorial, as
+> this may confuse other tutorial participants.
+
+---
+
 The thread network tutorial requires a Thread router to be present, which is
 able to accept certain messages from participant boards, average the supplied
 values, and broadcast them back. We provide a pre-built flash image that
