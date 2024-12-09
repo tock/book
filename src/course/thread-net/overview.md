@@ -66,18 +66,20 @@ packet.
 
 ## nRF52840dk Hardware Setup
 
-![nRF52840dk](../../imgs/nrf52840dk.jpg)
+![nRF52840dk with key pieces annotated](../../imgs/nrf52840dk-annotated.jpg)
 
 Make sure the switches and jumpers are properly configured on your board:
 
-1. The "Power" switch on the top left should be set to "On".
+1. The board "Power" switch on the bottom left should be set to "On".
 2. The "nRF power source" switch in the top middle of the board should be set to
    "VDD".
-3. The "nRF ONLY | DEFAULT" switch on the bottom right should be set to
-   "DEFAULT".
+   - _Note:_ If you have a screen already attached, this switch is partially
+             hidden underneath the screen.
+3. The isolation switch, labeled "nRF ONLY | DEFAULT", on the top right should
+   be set to "DEFAULT".
 
-You should plug one USB cable into the top of the board for programming (NOT
-into the "nRF USB" port on the side).
+You should plug one USB cable into the side of the board for programming (NOT
+into the "nRF USB" port on the bottom right).
 
 If you have a SSD1306-based screen with I2C pins, you should attach it to pins
 P1.10 (SDA) and P1.11 (SCL).
