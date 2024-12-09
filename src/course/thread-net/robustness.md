@@ -1,13 +1,13 @@
 # Tock Robustness
 
-Setting Tock apart from many other embedded operating systems is security
-design: applications are generally mutually distrustful. In practice, this means
-that any misbehavior in one application should not affect other applications.
-This includes both faults (such as invalid pointer dereferences, etc.), and
-excessive resource utilization.
+Setting Tock apart from many other embedded operating systems is its
+security-first design model: applications are generally mutually distrustful.
+In practice, this means that any misbehavior in one application should not
+affect other applications.  This includes both faults (such as invalid pointer
+dereferences, etc.) and excessive resource utilization.
 
-Take for instance a standard network application that implements all logic
-within one application unit (i.e. links OpenThread directly to the platform
+Take, for instance, a standard network application that implements all logic
+within one application unit (i.e., links OpenThread directly to the platform
 implementation). We consider two illustrative scenarios below of what may go
 wrong and how Tock guards against such outcomes.
 
@@ -16,13 +16,13 @@ wrong and how Tock guards against such outcomes.
 OpenThread is a large code base and interacts with a number of buffers.
 Furthermore, our OpenThread app adds the complexity of sharing buffers across
 IPC. Given the challenges in writing C code, it is likely that some aspect of
-the application will fault at somepoint in the future.
+the application will fault at some point in the future.
 
-In a traditional embedded platform, a fault in the OpenThread app or OpenThread
-code base would in turn result in the platform itself faulting. Tock guards
-against this by isolating different applications and the kernel using memory
-protection. Subsequently, a faulting app can be handled by the kernel and the
-broader system is left unharmed.
+In a traditional embedded platform, a fault in the OpenThread app logic or the
+third-party OpenThread code base would in turn result in the platform itself
+faulting. Tock guards against this by isolating different applications and the
+kernel using memory protection. Subsequently, a faulting app can be handled by
+the kernel and the broader system is left unharmed.
 
 In practice, developers have the option to specify how the kernel should handle
 such faults through a _fault policy_. Such policies can be user-defined, and
@@ -50,8 +50,8 @@ system will be unharmed.
 
 Up to this juncture, we have exclusively worked within userspace. To demonstrate
 Tock's ability to recover from faulting applications, we will first modify our
-application and deliberately introduce a fault -- this will cause the kernel to
-panic and print useful debug information. We then modify the kernel's fault
+application and deliberately introduce a fault. This will cause the kernel to
+panic and to print useful debug information. We then modify the kernel's fault
 policy to instead restart the application.
 
 We can see the fault policy that is in use with the kernel by looking at the
@@ -97,6 +97,7 @@ No Cortex-M faults detected.
  ╚0x2000E000═╪══════════════════════════════════════════╝
              │ Grant Ptrs      144
              │ Upcalls         320
+[...]
 ```
 
 ## Injecting a Fault into the Application
@@ -117,15 +118,15 @@ to an application.
 > Do not forget to register a callback handler for Button 4, too!
 
 Now, whenever you press Button 4, your board should print output similar to the
-above. Because the kernel panics, it will loop forever and blink LED1 in a
+above. Because the kernel panic's, it will loop forever and blink LED1 in a
 recognizable pattern. You will need to reset the board to restart the Tock
 kernel and all applications.
 
 ## Switching the Fault Handler
 
 With this application fault implemented, we can now switch the kernel's fault
-policy to restart the offending application, instead of panicing the overall
-kernel:
+policy to restart the offending application, instead of panic'ing the whole
+platform:
 
 ```diff
   // How should the kernel respond when a process faults.
@@ -199,3 +200,11 @@ guides and documentation:
 
 We also provide some community resources, which you can find here:
 [https://tockos.org/community/](https://tockos.org/community/)
+
+---
+
+We always appreciate feedback on our tutorials... What went well? What did you
+like? What was not so smooth? What was less interesting? How can we make things
+better?... Please do not hesitate to reach out, and if you have found any
+smaller typographical or technical errors, [pull requests are welcome and
+appreciated!](https://github.com/tock/book/tree/master/src/course/thread-net)
