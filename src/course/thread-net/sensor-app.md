@@ -279,7 +279,7 @@ int libtocksync_alarm_delay_ms(uint32_t ms);
 > **EXERCISE** Read the temperature sensor once per second and print the
 > temperature value.
 
-If you have implemented this correctly, you should see the following output:
+If you have implemented this correctly, you should see output similar to:
 
 ```
 $ tockloader listen
@@ -293,9 +293,10 @@ Current temperature: 22.25
 ```
 
 To confirm that your sensor is working, try placing your finger on the nRF52840
-SoC (this is located above the 4 buttons and in the center of the white box on
-the nRF52840dk). You should see the temperature change as the temperature sensor
-we are using is the "on-dye" temperature sensor.
+SoC (this is located between the cluster of 4 buttons and the cluster of 4 LEDs,
+in the center of the white box on the nRF52840dk). You should see the
+temperature change as the temperature sensor we are using is the "on-die"
+temperature sensor.
 
 > **CHECKPOINT:** `02_sensor_final`
 
@@ -306,5 +307,5 @@ app using the following tockloader command:
 $ tockloader erase-apps
 ```
 
-Now that we are able to read the temperature, we now continue on to network our
-mote using Tock's supported OpenThread stack [here](comms-app.md).
+Now that we are able to read the temperature, we will continue on to [network
+our mote using Tock's supported OpenThread stack](comms-app.md).
