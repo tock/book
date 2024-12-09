@@ -43,9 +43,9 @@ We divide the mote's functionality into three separate applications:
 
 - The _screen app_ drives the connected screen to display the current
   temperature and the local and global-average set points.
-- The _sensor application_ gathers readings from the `nRF52840`s internal
+- The _sensor app_ gathers readings from the `nRF52840`'s internal
   temperature sensor and exposes them to the control application.
-- Last but not least, the _communication application_ is responsible for
+- Last but not least, the _communication app_ is responsible for
   exchanging data with other participants using the Thread network.
 
 ![thread_net_tutorial_apps](../../imgs/thread_net_tutorial_apps.svg)
