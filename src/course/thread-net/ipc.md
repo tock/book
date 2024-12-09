@@ -1,11 +1,23 @@
 # Inter Process Communication
 
 We now have three working applications! To make sure we are on the same page,
-navigate to each of the following directories and run `make install`:
+if you have any uncertainty of your implementation(s) thus far, update your
+tutorial implementation with the final checkpoint implementation. Then install
+all three applications on your board:
 
-1. `libtock-c/examples/tutorials/thread_network/02_sensor_final`
-2. `libtock-c/examples/tutorials/thread_network/05_openthread_final`
-3. `libtock-c/examples/tutorials/thread_network/09_screen_final`
+```bash
+$ cd libtock-c/examples/tutorials/thread_network/
+
+# As-needed
+$ cp -r 02_sensor_final my_sensor
+$ cp -r 05_openthread_final my_openthread
+$ cp -r 09_screen_final my_screen
+
+# Then install each app!
+$ make install -C my_sensor
+$ make install -C my_openthread
+$ make install -C my_screen
+```
 
 After installing these three applications, run:
 
@@ -37,63 +49,87 @@ Current Temperature: 24
 
 The exact output you observe will likely be interspersed. Remember Tock is
 multitenant and scheduling each of our applications (resulting in our output to
-the console being mixed across applications). In addition to this output, you
-should also have the global/local/measured temperature text on your screen in
-addition to the ability to alter the local temperature setpoint using the
-buttons.
+this console being mixed across applications).
+
+In addition to this output, you should also have the global/local/measured
+temperature text on your screen as well as the ability to alter the local
+temperature setpoint using the buttons.
 
 Let's review how our HVAC control system will work:
 
-1. Thread application will receive the global setpoint from the central router
-   and will send our desired local temperature setpoint.
-2. Sensor application will measure the temperature.
-3. Screen application will obtain user input to the desired temperature setpoint
-   and display the global setpoint / local setpoint / measured temperature.
+1. The _communication application_ will send our desired local temperature
+   setpoint and will receive the global setpoint from the central router.
+2. The _sensor application_ will measure the local device temperature.
+3. The _screen application_ will obtain user input to select the desired
+   temperature setpoint and will display the global setpoint, local setpoint,
+   and local measured temperature.
 
 We see that these applications are interdependent on each other. How can we
-share data between applications? A naive solution would be to allocate shared
-global state that each application can access. Although this is inadvisable,
-many embedded OSes would allow for this shared global state. Tock, however,
-strictly isolates applications---meaning we are unable to have shared global
-state across applications. This is beneficial as a buggy or malicious
-application is unable to harm other applications or the kernel. To allow
-applications to share data, the Tock kernel provides interprocess communication.
-We will update our applications to do this here.
+share data between applications?
+
+A naïve solution would be to allocate shared global state that each application
+can access. Although this is inadvisable for security and robustness, many
+embedded OSes would allow for this shared global state.
+
+Tock, however, strictly isolates applications&mdash;meaning we are unable to
+have shared global state across applications.  This is beneficial as a buggy or
+malicious application is unable to harm other applications or the kernel.
+
+To allow applications to share data, the Tock kernel provides interprocess
+communication (IPC). We will update our applications to use IPC next.
 
 ![thread_net_tutorial_apps](../../imgs/thread_net_tutorial_apps.svg)
 
-## Screen IPC
 
-IPC in Tock is seperated into services and clients. For our HVAC control system,
-the screen application will serve as our client; the openthread and sensor apps
-will act as services.
+IPC in Tock is separated into services and clients.
 
-### Initialize / Discover IPC Client
+For our HVAC control system:
+ - The _screen application_ will serve as our ___client___.
+ - The _sensor application_ and _communication application_ will act as ___services___.
+
+
+## Screen Application IPC
+
+> This part will edit `my_screen`, which should be up-to-date with equivalent
+> operation of `09_screen_final`.
+
+### Creating an IPC Client: Initialize and Discover Services
 
 Let's go ahead and setup our client code first! We first must initialize our IPC
 client. This will consist of:
 
 1. Discovering the services (these will error for now since they are not
    implemented).
-2. Register callbacks that the kernel will invoke when our service wishes to
-   notify the client.
-3. Share a buffer to the IPC interface.
+2. Registering callbacks that the kernel will invoke when our service wishes to
+   notify client(s).
+3. Sharing a buffer to the IPC interface.
 
-To make your life easier we have implemented these changes in the checkpoint
-`10_screen_ipc`. If you are interested in seeing what has changed, try
+Tock's IPC interface can be a bit challenging.  For this early tutorial, we
+have simply implemented these changes for you in the checkpoint
+`10_screen_ipc`.
 
-```
-$ diff 09_screen_final/main.c 10_screen_ipc/main.c
-```
+Simply `$ cp 10_screen_ipc/main.c my_screen/main.c`.
 
-Before proceeding, be sure to build and flash `10_screen_ipc` to your board.
+> If you are interested in instead applying the changes to your screen
+> implementation, work through the diff to update your application.
+>
+> ```bash
+> $ diff -w 09_screen_final/main.c 10_screen_ipc/main.c
+> ```
+
+In either case, be sure to re-build and flash the updated `my_screen` to your
+board.
 
 Now that our IPC client is setup, let's add our IPC services!
 
+
 ## Temperature Sensor IPC
 
-Let's setup the sensor app as an IPC service! As mentioned earlier, we will be
-expanding `02_sensor_final`.
+> This part will edit `my_sensor`, which should be up-to-date with equivalent
+> operation of `02_sensor_final`.
+
+Let's setup the sensor app as an IPC service!
+Change into the `my_sensor` application.
 
 First, we will create the callback that our client invokes when they request
 this service. Add the following callback to our `main.c`:
@@ -127,11 +163,12 @@ ipc_register_service_callback("org.tockos.thread-tutorial.sensor",
                               NULL);
 ```
 
-To ensure an IPC client cannot request our service before our service has read
-the temperature, be sure to read the temperature sensor _at least_ once before
-registering the service with the kernel.
+___Careful!___ To ensure an IPC client cannot make a request of the sensor
+service before this app has read the temperature, be sure your app reads the
+temperature sensor _at least_ once before registering the service with the
+kernel.
 
-Additionally, let's go ahead and remove the `printf()` as, now that we are using
+Additionally, let's go ahead and remove the `printf()`. Now that we are using
 the screen, we no longer need this information to be displayed on the console.
 
 > **CHECKPOINT:** `11_sensor_ipc`
@@ -139,9 +176,12 @@ the screen, we no longer need this information to be displayed on the console.
 Congrats! You just successfully created a temperature sensor service! Let's go
 ahead and do this for OpenThread now.
 
+
+
 ## OpenThread IPC
 
-> **NOTE** We assume you are modifying `06_openthread_final`
+> This part will edit `my_openthread`, which should be up-to-date with
+> equivalent operation of `05_openthread_final`.
 
 We follow a similar structure to the temperature sensor service here. Let's
 first create our callback that our client will invoke to use this service. Add
@@ -201,15 +241,17 @@ The logic in the callback determines if the local temperature setpoint has
 changed, and if so, sends an update over the Thread network (if the Thread
 network is enabled). We send this update using UDP. If you look closely, you
 will notice that our callback does not directly call the
-`sendUdpTemperature(...)` we used in the openthread module. Why is this?
+`sendUdpTemperature(...)` we used in the openthread module.
+___Why is this?___
 
-### Callbacks and Re-entrancy
+### Callbacks and Reentrancy
 
 If a callback function, say the `ipc_callback`, executes code that
 inserts a yield point, we may experience reentrancy.
-This means that during the execution of the `ipc_callback`, other callbacks --
-including `ipc_callback` itself -- may be scheduled again. Consider the
-following example:
+This means that during the execution of the `ipc_callback`, other
+callbacks&mdash;including `ipc_callback` itself&mdash;may be scheduled again.
+
+Consider the following example:
 
 ```c
 void ipc_callback() {
@@ -260,3 +302,10 @@ sendUdpTemperature(instance, local_temperature_setpoint);
 ```
 
 > **CHECKPOINT:** `12_openthread_ipc`
+
+
+And congratulations! You have now have a complete, working, networked
+temperature controller!
+
+In the final stage, next, we will [explore how isolated processes enable robust
+operation](robustness.md).
