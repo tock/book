@@ -148,11 +148,19 @@ message like the following:
 
 > **CHECKPOINT:** `00_sensor_hello`
 
+If you are ever struggling, you can always jump ahead by working from one of
+our checkpoints. Lets get started by making a copy of this initial checkpoint
+to work from:
+
+```bash
+$ cp -r 00_sensor_hello my_sensor_hello
+```
+
 To compile and flash this application, we enter into its directory and run the
 following command:
 
 ```
-$ cd 00_sensor_hello
+$ cd my_sensor_hello
 $ make -j install
 [...]
 Application size report for arch family cortex-m:
