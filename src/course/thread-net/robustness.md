@@ -61,8 +61,8 @@ use:
 
 ```rust
 // How should the kernel respond when a process faults.
-const FAULT_RESPONSE: kernel::process::PanicFaultPolicy =
-    kernel::process::PanicFaultPolicy {};
+const FAULT_RESPONSE: capsules_system::process_policies::PanicFaultPolicy =
+    capsules_system::process_policies::PanicFaultPolicy {};
 ```
 
 We can also artificially fault a process through Tock's process console. For
@@ -130,9 +130,10 @@ platform:
 
 ```diff
   // How should the kernel respond when a process faults.
-- const FAULT_RESPONSE: kernel::process::PanicFaultPolicy = kernel::process::PanicFaultPolicy {};
-+ const FAULT_RESPONSE: kernel::process::RestartWithDebugFaultPolicy =
-+     kernel::process::RestartWithDebugFaultPolicy {};
+-const FAULT_RESPONSE: capsules_system::process_policies::PanicFaultPolicy =
+-    capsules_system::process_policies::PanicFaultPolicy {};
++const FAULT_RESPONSE: capsules_system::process_policies::RestartWithDebugFaultPolicy =
++    capsules_system::process_policies::RestartWithDebugFaultPolicy {};
 ```
 
 After making this change, you will need to recompile the kernel, like so:
