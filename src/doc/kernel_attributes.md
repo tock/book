@@ -5,6 +5,14 @@ allocated flash region. These attributes describe properties of the flashed
 kernel on a particular hardware board. External tools can read these attributes
 to learn about the kernel installed on the board.
 
+The attributes are stored at the end of the kernel's allocated flash region to
+help with discoverability. Tock tools generally assume that 1) userspace
+applications are installed immediately after the end of the kernel region in
+flash, and 2) that the address for the start of userspace applications is known.
+By placing the kernel attributes at the end of the kernel flash region, Tock
+tools can find the attributes by starting at the start of userspace applications
+in flash and working backwards.
+
 ## Format
 
 Kernel attributes are stored in a descending TLV (type-length-value) structure.
