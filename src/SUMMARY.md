@@ -35,6 +35,8 @@
   - [TicKV](./course/tickv.md)
   - [Application](./course/application.md)
   - [Graduation](./course/graduation.md)
+  - [Setup](./course/setup/setup.md)
+    - [Screen](./course/setup/screen.md)
   - [Deprecated](./course/deprecated/deprecated.md)
     - [Important Client](./course/deprecated/important_client.md)
     - [Capsule](./course/deprecated/capsule.md)
