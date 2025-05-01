@@ -47,6 +47,28 @@ For now, you should plug one USB cable into the top of the board for programming
 (NOT into the "nRF USB" port on the side). We'll attach the other USB cable
 later.
 
+## Kernel Setup
+
+This tutorial requires a Tock kernel configured with four specific capsules
+instantiated that may not be included by default with a particular kernel:
+
+1. [USB Keyboard Device](../setup/usb-hid.md).
+2. [HMAC](../setup/hmac.md)
+3. [Key-Value](../setup/kv.md)
+4. [Screen](../setup/screen.md)
+
+The easiest way to get a kernel image with these installed is to use the
+[HOTP tutorial configuration for the nRF52840dk]
+(https://github.com/tock/tock/tree/master/boards/tutorials/nrf52840dk-hotp-tutorial).
+
+```
+cd tock/boards/tutorials/nrf52840dk-hotp-tutorial
+make install
+```
+
+But, you can also follow the guides to setup these capsules yourself in a
+different kernel setup or for a different board.
+
 ## Organization and Getting Oriented to Tock
 
 This module will refer to various Tock components. This section briefly
@@ -73,12 +95,8 @@ respectively). Those applications are compiled within those repositories.
 
 ## Stages
 
-This module is broken into four stages:
+This module is broken into three stages:
 
-1. Configuring the kernel to provide necessary syscall drivers:
-   1. [USB Keyboard Device](./usb-hid.md).
-   2. [HMAC](./key-hotp-hmac.md)
-   3. [Key-Value](./key-hotp-kv.md)
-2. [Creating an HOTP userspace application](./key-hotp-application.md).
-3. [Creating an in-kernel encryption oracle](./key-hotp-oracle.md).
-4. [Enforcing access control restrictions to the oracle](./key-hotp-access.md).
+1. [Creating an HOTP userspace application](./key-hotp-application.md).
+2. [Creating an in-kernel encryption oracle](./key-hotp-oracle.md).
+3. [Enforcing access control restrictions to the oracle](./key-hotp-access.md).
