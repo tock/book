@@ -1,13 +1,13 @@
 # Using HMAC-SHA256 in Userspace
 
-Our next task is we need an HMAC engine for our HOTP application to use. Tock
+This guide explains how to setup an HMAC engine for userspace to use. Tock
 already includes HMAC-SHA256 as a capsule within the kernel, we just need to
 expose it to userspace.
 
-## Background
+## HMAC Background
 
-An HMAC engine is a necessary tool for a HOTP security key. From
-[Wikipedia](https://en.wikipedia.org/wiki/HMAC):
+An HMAC engine is a necessary tool for many use cases, including for a HOTP
+security key. From[Wikipedia](https://en.wikipedia.org/wiki/HMAC):
 
 > An HMAC...is a specific type of message authentication code (MAC) involving a
 > cryptographic hash function and a secret cryptographic key. As with any MAC,

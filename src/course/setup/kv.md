@@ -1,18 +1,13 @@
 # Using Key-Value Storage in Userspace
 
-When we use the HOTP application to store new keys, we want those keys to be
-persistent across reboots. That is, if we unplug the USB key, we would like our
-saved keys to still be accessible when we plug the key back in.
-
-To enable this, we are using Tock's Key-Value (KV) interface. This allows
-userspace applications to store data in the form of key-value pairs.
-Applications can retrieve data by querying for the given key.
+To enable persistent storage across reboots, we can use Tock's Key-Value
+(KV) interface. This allows userspace applications to store data in the form of
+key-value pairs. Applications can retrieve data by querying for the given key.
 
 ## Checking if Key-Value Support Already Exists
 
-Having key-value support is useful for more cases than just implementing an HOTP
-key, and so it is possible that your board already has key-value support
-enabled.
+Having key-value support is useful for many cases, and so it is possible that
+your board already has key-value support enabled.
 
 To check this, load the `kv_check` test app onto your board:
 

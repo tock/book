@@ -1,8 +1,8 @@
 # Implementing a USB Keyboard Device
 
 The Tock kernel supports implementing a USB device and we can setup our kernel
-so that it is recognized as a USB keyboard device. This is necessary to enable
-the HOTP key to send the generated key to the computer when logging in.
+so that it is recognized as a USB keyboard device. This allows the Tock board
+to effectively "type" into a host machine.
 
 ## Background
 
