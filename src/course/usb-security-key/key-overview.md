@@ -57,8 +57,8 @@ instantiated that may not be included by default with a particular kernel:
 3. [Key-Value](../setup/kv.md)
 4. [Screen](../setup/screen.md)
 
-The easiest way to get a kernel image with these installed is to use the
-[HOTP tutorial configuration for the nRF52840dk]
+The easiest way to get a kernel image with these installed is to use the [HOTP
+tutorial configuration for the nRF52840dk]
 (https://github.com/tock/tock/tree/master/boards/tutorials/nrf52840dk-hotp-tutorial).
 
 ```

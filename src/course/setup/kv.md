@@ -1,7 +1,7 @@
 # Using Key-Value Storage in Userspace
 
-To enable persistent storage across reboots, we can use Tock's Key-Value
-(KV) interface. This allows userspace applications to store data in the form of
+To enable persistent storage across reboots, we can use Tock's Key-Value (KV)
+interface. This allows userspace applications to store data in the form of
 key-value pairs. Applications can retrieve data by querying for the given key.
 
 ## Checking if Key-Value Support Already Exists
