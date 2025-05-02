@@ -10,8 +10,9 @@ load the application, so we need to set that up as well.
 
 ## Configuring the Kernel
 
-We will use components to add app_state to the kernel. To add the proper
-drivers, include this in the main.rs file:
+We will use components to add `app_loader` to the kernel. We will also set up some
+syscall driver types to make it portable across different hardware. 
+To add the proper drivers, include this in the main.rs file:
 
 ```rust
 
@@ -106,5 +107,3 @@ impl SyscallDriverLookup for Platform {
     }
 }
 ```
-
-> **Checkpoint:** App Loader is now accessible to userspace!
