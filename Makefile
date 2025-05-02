@@ -73,7 +73,6 @@ install_mdbook_linkcheck:
 ifndef CI
 	cargo install mdbook-linkcheck --version $(MDBOOK_LINKCHECK_VERSION)
 else
-	$(warning WTF $(MDBOOK_LINKCHECK_VERSION))
 	rm -f mdbook-linkcheck.x86_64-unknown-linux-gnu.zip
 	curl -L https://github.com/Michael-F-Bryan/mdbook-linkcheck/releases/download/v$(MDBOOK_LINKCHECK_VERSION)/mdbook-linkcheck.x86_64-unknown-linux-gnu.zip -O
 	unzip -n mdbook-linkcheck.x86_64-unknown-linux-gnu.zip
