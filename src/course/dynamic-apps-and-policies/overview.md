@@ -1,4 +1,4 @@
-# Dynamic Application Loading with Tock
+# Dynamic Application Loading and Secure Policies with Tock
 
 This module and submodules will walk you through how to load applications during
 runtime on Tock.
@@ -62,5 +62,5 @@ respectively). Those applications are compiled within those repositories.
 This module is broken into two stages:
 
 1. Configuring the kernel to provide necessary syscall drivers:
-   1. [Dynamic App Load Setup](./dynamic-app-load-setup.md).
-2. [Creating the application loader helper application](./dynamic-app-load-userspace.md).
+   1. [Dynamic App Load Setup](../setup/dynamic-app-loading.md).
+2. [Creating the application loader helper application](./userspace.md).
