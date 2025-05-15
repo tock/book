@@ -59,8 +59,9 @@ respectively). Those applications are compiled within those repositories.
 
 ## Stages
 
-This module is broken into two stages:
+This module is broken into N stages:
 
 1. Configuring the kernel to provide necessary syscall drivers:
    1. [Dynamic App Load Setup](../setup/dynamic-app-loading.md).
+2. [Experimenting with the Process Info userspace application](./process-info.md).
 2. [Creating the application loader helper application](./userspace.md).
