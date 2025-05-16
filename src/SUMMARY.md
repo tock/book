@@ -30,6 +30,7 @@
   - [Dynamic Apps and Secure Policies](./course/dynamic-apps-and-policies/overview.md)
     - [Userspace](./course/dynamic-apps-and-policies/userspace.md)
     - [Process Info](./course/dynamic-apps-and-policies/process-info.md)
+    - [Button Snooping](./course/dynamic-apps-and-policies/snooping.md)
   - [Kernel Boot](./course/boot.md)
   - [Policies](./course/policies.md)
   - [TicKV](./course/tickv.md)
