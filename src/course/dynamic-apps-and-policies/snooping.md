@@ -35,16 +35,34 @@ to enforce stronger security properties for a Tock system.
 
 ## Eavesdropping on Button Presses
 
-We use the buttons to navigate the interface on the Process Info application.
+We use the buttons to navigate the interface on the Process Manager application.
 However, any application can register button notifications. To see this, we
 can observe a perhaps unexpected operation of the `temperature` application.
 
 If we run `tockloader listen` to observe the console output from the board,
-while interacting with the Process Info app, you will see additional messages
+while interacting with the Process Manager app, you will see additional messages
 from the temperature app:
 
 ```
-insert console output
+Initialization complete. Entering main loop
+NRF52 HW INFO: Variant: AAF0, Part: N52840, Package: QI, Ram: K256, Flash: K1024
+Processes Loaded at Main:
+[0] temperature
+    ShortId: 0xfb713632
+[1] counter
+    ShortId: 0xf7b60a92
+[2] process_manager
+    ShortId: 0xfc5167b0
+[Temp App] Snooped button 2
+[Temp App] Snooped button 0
+[Temp App] Snooped button 2
+[Temp App] Snooped button 2
+[Temp App] Snooped button 2
+[Temp App] Snooped button 0
+[Temp App] Snooped button 2
+[Temp App] Snooped button 3
+[Temp App] Snooped button 3
+[Temp App] Snooped button 2
 ```
 
 Maybe maliciously, or maybe for future use, the temperature app is actually
@@ -53,13 +71,13 @@ app (temperature) from eavesdropping on our button presses.
 
 ## System Call Filtering Approach
 
-To securely restrict access to the buttons to only the Process Info application we need two things:
+To securely restrict access to the buttons to only the Process Manager application we need two things:
 
-1. A way to cryptographically verify which process is the Process Info application.
-2. A system call filtering policy that only allows the Process Info application to access the buttons system call.
+1. A way to cryptographically verify which process is the Process Manager application.
+2. A system call filtering policy that only allows the Process Manager application to access the buttons system call.
 
 To accomplish these in this module, we are going to setup an additional
-application signing key that we will only use for the Process Info application.
+application signing key that we will only use for the Process Manager application.
 We will configure the kernel that if an app is signed with that special key
 then it will have access to the buttons. All other apps will be denied access
 to the buttons.
@@ -155,9 +173,9 @@ you will need to add the key to `tock/boards/tutorials/nrf52840dk-dynamic-apps-a
 
 FILL IN
 
-## Re-Signing the Process Info App
+## Re-Signing the Process Manager App
 
-Finally, we need to change the signature used to sign the Process Info app. We can do this with the existing TAB.
+Finally, we need to change the signature used to sign the Process Manager app. We can do this with the existing TAB.
 
 ```
 $ cd libtock-c/examples/tutorials/dynamic-apps-and-policies/process-info
@@ -172,7 +190,7 @@ Now, if you haven't already, you need to:
 1. Re-install the kernel with the new key for verification and system call filtering policy.
 2. Re-install the process-info application with the new signature.
 
-Once those steps are completed, Process Info should work just as it did before.
+Once those steps are completed, Process Manager should work just as it did before.
 The temperature app continues to work, which we can verify by holding our
 finger on the nRF52840 IC and seeing the temperature rise.
 
