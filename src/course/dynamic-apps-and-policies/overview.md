@@ -1,7 +1,18 @@
 # Dynamic Application Loading and Secure Policies with Tock
 
-This module and submodules will walk you through how to load applications during
-runtime on Tock.
+Tock enables a host of security features not possible with other embedded system
+OSes. Tock kernels can enforce strict isolation and least privilege for
+applications through mechanisms including application signing, system call
+filtering, and resource controls. Platforms running Tock can strongly reason
+about the capabilities entrusted to each application.
+
+Further, Tock platforms are designed to be dynamic, with applications updating
+over time. Tock supports loading new applications at runtime without
+interrupting existing processes.
+
+This module will walk you through some of these features and how Tock supports
+many security features not otherwise possible on resource-constrained embedded
+systems.
 
 ## Hardware Notes
 
@@ -19,6 +30,9 @@ Imagine if your phone restarted each time you had to update an app!
 
 To allow for a seamless application loading experience, we will try to enable
 Tock to do this process without using `tockloader`, or requiring a restart.
+
+Then we will use cryptographic application signing to enforce per-process
+security properties for running Tock applications.
 
 ## nRF52840dk Hardware Setup
 
@@ -63,5 +77,5 @@ This module is broken into N stages:
 
 1. Configuring the kernel to provide necessary syscall drivers:
    1. [Dynamic App Load Setup](../setup/dynamic-app-loading.md).
-2. [Experimenting with the Process Info userspace application](./process-info.md).
+2. [Experimenting with the Process Manager userspace application](./process-manager.md).
 2. [Creating the application loader helper application](./userspace.md).
