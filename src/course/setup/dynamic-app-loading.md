@@ -20,7 +20,7 @@ To add the proper drivers, include this in the main.rs file:
 // Syscall Driver Type Definitions
 //--------------------------------------------------------------------------
 
-type FlashUser = nrf52833::nvmc::Nvmc;
+type FlashUser = nrf52840::nvmc::Nvmc;
 type NonVolatilePages = components::dynamic_binary_storage::NVPages<FlashUser>;
 type DynamicBinaryStorage<'a> = kernel::dynamic_binary_storage::SequentialDynamicBinaryStorage<
     'static,
@@ -73,6 +73,8 @@ like:
 
 type FlashUser =
     capsules_core::virtualizers::virtual_flash::FlashUser<'static, nrf52840::nvmc::Nvmc>;
+
+and then we pass the virtual flash instance to the `dynamic_binary_storage` instance.
 ```
 
 Then add the capsule to the `Platform` struct:
