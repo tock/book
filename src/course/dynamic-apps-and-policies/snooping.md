@@ -152,8 +152,52 @@ You can see the full implementation in `tock/boards/tutorials/nrf52840dk-dynamic
 Now with the `ShortId` conveying which key signed each app, effectively encoding its authority,
 we can now implement our system call filtering policy.
 
+The implementation of a system call filter looks like this. You can find the full starter code
+in `tock/boards/tutorials/nrf52840dk-dynamic-apps-and-policies/src/system_call_filter.rs`.
 
-FILL IN
+```rust
+use kernel::errorcode::ErrorCode;
+use kernel::process::Process;
+use kernel::syscall::Syscall;
+
+pub struct DynamicPoliciesCustomFilter {}
+
+impl SyscallFilter for DynamicPoliciesCustomFilter {
+    fn filter_syscall(&self, process: &dyn Process, syscall: &Syscall) -> Result<(), ErrorCode> {
+        // Get the upper four bits of the ShortId.
+        let signing_key_id = if let ShortId::Fixed(fixed_id) = process.short_app_id() {
+            ((u32::from(fixed_id) >> 28) & 0xF) as u8
+        } else {
+            0xff_u8
+        };
+
+        // Enforce the correct policy based on the signing key and the system
+        // call.
+        //
+        // Documentation for system call:
+        // https://docs.tockos.org/kernel/syscall/enum.syscall#implementations
+        match signing_key_id {
+            0 => Ok(()),
+            1 => Ok(()),
+            _ => Ok(()),
+        }
+    }
+}
+```
+
+We also need two other helpful pieces of information: how to get the system call driver number and how to get
+the driver number for buttons:
+
+```rust
+let driver_num = syscall.driver_number();
+let button_driver_num = capsules_core::button::DRIVER_NUM;
+```
+
+**Task:** finish the implementation for the `SyscallFilter` that only permits
+system calls for buttons if the signing key is 1.
+
+
+
 
 
 
@@ -164,24 +208,32 @@ add a second public key to the kernel configuration so we can sign the Process
 Info app to give it the advanced permissions (e.g., access to buttons).
 
 We have included a second public-private ECDSA key pair
-in the `libtock-c/examples/tutorials/dynamic-apps-and-policies` folder.
+in the `libtock-c/examples/tutorials/dynamic-apps-and-policies/keys` folder.
 You may use these. If you are interested in setting up the keys yourself,
 you can follow the [ECDSA Setup Guide](../setup/ecdsa.md) to generate your own key pair.
 
 Once you have the public key that the kernel will use to do the signature verification,
 you will need to add the key to `tock/boards/tutorials/nrf52840dk-dynamic-apps-and-policies/src/main.rs`.
+We need to modify the `verifying_keys` object to include the second key. To get
+the bytes of the second public key (the private key files hold both keys), run:
 
-FILL IN
+```
+$ tail -c 64 ec-secp256r1-manager-key.private.p8 | hexdump -v -e '1/1 "0x%02x, "'
+```
+
+**Task:**: Modify the `verifying_keys` object in main.rs to add the second key.
 
 ## Re-Signing the Process Manager App
 
 Finally, we need to change the signature used to sign the Process Manager app. We can do this with the existing TAB.
 
 ```
-$ cd libtock-c/examples/tutorials/dynamic-apps-and-policies/process-info
+$ cd libtock-c/examples/tutorials/dynamic-apps-and-policies/process-manager
 $ tockloader tbf credential delete ecdsap256
-$ tockloader tbf credential add ecdsap256 ../public_key
+$ tockloader tbf credential add ecdsap256 --private-key ../keys/ec-secp256r1-manager-key.private.pem
 ```
+
+You can also modify the application's Makefile to use the other key when the application is compiled.
 
 ## Putting It All Together
 
