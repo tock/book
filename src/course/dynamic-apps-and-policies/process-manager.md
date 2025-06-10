@@ -20,10 +20,10 @@ $ make install
 
 You can install the Process Manager app like any other Tock application. You can
 find it in
-`libtock-c/examples/tutorials/dynamic-apps-and-policies/process-manager`.
+`libtock-c/examples/tutorials/dynamic-apps-and-policies/process_manager`.
 
 ```
-$ cd libtock-c/examples/tutorials/dynamic-apps-and-policies/process-manager
+$ cd libtock-c/examples/tutorials/dynamic-apps-and-policies/process_manager
 $ make
 $ tockloader install
 ```
