@@ -77,5 +77,9 @@ This module is broken into N stages:
 
 1. Configuring the kernel to provide necessary syscall drivers:
    1. [Dynamic App Load Setup](../setup/dynamic-app-loading.md).
-2. [Experimenting with the Process Manager userspace application](./process-manager.md).
-2. [Creating the application loader helper application](./userspace.md).
+2. Experimenting with the
+   [Process Manager userspace application](./process-manager.md).
+3. Installing Applications with the
+   [App loader helper application](./app-loader.md).
+4. Exploring Security Mechanisms via [Syscall Filtering](./snooping.md)
+5.

@@ -8,8 +8,8 @@ will help you install it and walk you through its features.
 
 ## Tock Kernel Image
 
-If you haven't already, install the `tutorials/nrf52840dk-dynamic-apps-and-policies`
-kernel on your board.
+If you haven't already, install the
+`tutorials/nrf52840dk-dynamic-apps-and-policies` kernel on your board.
 
 ```
 $ cd tock/boards/tutorials/nrf52840dk-dynamic-apps-and-policies
@@ -30,7 +30,8 @@ $ tockloader install
 
 ## Exploring with the Process Manager Application
 
-When the Tock kernel is running the Process Manager should be shown on the screen:
+When the Tock kernel is running the Process Manager should be shown on the
+screen:
 
 > insert image
 
@@ -55,7 +56,7 @@ Interact with the application using the buttons:
 ```
 
 | nRF52840dk Button Number | Action |
-|--------------------------|--------|
+| ------------------------ | ------ |
 | 1                        | Up     |
 | 2                        | unused |
 | 3                        | Down   |
@@ -63,7 +64,6 @@ Interact with the application using the buttons:
 
 Process Manager supports inspecting and controlling existing processes and
 installing new applications.
-
 
 ### Viewing Active Processes
 
@@ -73,14 +73,15 @@ and down to look through all installed applications.
 
 ### Details on a Specific Process
 
-Scroll to a desired application such that it is highlighted on the screen. Press the enter button
-(`BUTTON 4`) to select it. You will now see a list of details about that application.
+Scroll to a desired application such that it is highlighted on the screen. Press
+the enter button (`BUTTON 4`) to select it. You will now see a list of details
+about that application.
 
 | Entry          | Name                     | Description                                                                                                                                                                            |
-|----------------|--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| -------------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- |
 | PID            | `ProcessId`              | The ProcessId is the runtime identifier for the process. Every time a process starts it gets a new ProcessId. All process IDs must be unique.                                          |
 | ShortID        | `ShortId`                | The ShortId is the fixed identifier for a specific application. Each Tock kernel uses a policy for determining the ShortId. This identifier is persistent across reboots and restarts. |
-| Timeslices Exp | Expired Timeslices       | The number of times the process exceeded its timeslice and was pre-empted by the kernel.                                                                                               |                                                                                                                                                                                       |
+| Timeslices Exp | Expired Timeslices       | The number of times the process exceeded its timeslice and was pre-empted by the kernel.                                                                                               |     |
 | Syscall Count  | Number of System Calls   | How many system calls the process has made.                                                                                                                                            |
 | Restart Count  | Number of Restarts       | How many times the process has been restarted, either manually or after a crash.                                                                                                       |
 | State          | Process State            | The current state of the process. Most likely `Yielded` because the Process Manager must be running to update the screen.                                                              |
@@ -93,7 +94,7 @@ process. Highlight `State Control` and press enter. With the action field
 highlighted, press enter to scroll through the available actions:
 
 | Operation | Description                                                                   |
-|-----------|-------------------------------------------------------------------------------|
+| --------- | ----------------------------------------------------------------------------- |
 | Start     | Resume running a stopped process.                                             |
 | Stop      | Halt a running process such that it is no longer scheduled to run.            |
 | Fault     | Cause a process to crash and have the kernel run the process's fault handler. |
@@ -104,8 +105,5 @@ Choose the action for the selected process and then press down to highlight
 `OK`, and then enter to perform that action.
 
 > Not all actions are valid from all process states. In particular, boot is only
-> valid when the process is terminated, and start and stop are only valid
-> when the process is running or yielded.
-
-
-
+> valid when the process is terminated, and start and stop are only valid when
+> the process is running or yielded.
