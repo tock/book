@@ -28,7 +28,7 @@
     - [IPC](./course/thread-net/ipc.md)
     - [Robustness](./course/thread-net/robustness.md)
   - [Dynamic Apps and Secure Policies](./course/dynamic-apps-and-policies/overview.md)
-    - [Userspace](./course/dynamic-apps-and-policies/userspace.md)
+    - [App Loader](./course/dynamic-apps-and-policies/app-loader.md)
     - [Process Manager](./course/dynamic-apps-and-policies/process-manager.md)
     - [Button Snooping](./course/dynamic-apps-and-policies/snooping.md)
   - [Kernel Boot](./course/boot.md)
