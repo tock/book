@@ -124,6 +124,11 @@ list. Add `temperature` to the makefile like you did with `counter` and install
 the application. Once installed, you will see the bottom right corner of the
 screen display the internal temperature of the chip!
 
+> **Hint**: Watch the count as the temperature app is installed. It keeps going
+> up! The counter app does not use any nonvolatile storage. But, since
+> dynamically loading apps does not reset the kernel (or any running apps) the
+> counter keeps its count.
+
 However, not everything is as it seems... If you open your console, you will see
 that one of the apps you just installed is doing more than what it claims to be
 doing. The `temperature` app is sneakily logging your button presses! This is a
