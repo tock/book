@@ -33,15 +33,15 @@ $ tockloader install
 When the Tock kernel is running the Process Manager should be shown on the
 screen:
 
-> insert image
+![Process Manager App](../../imgs/dynamic_apps_tutorial_process-manager.gif)
 
 Interact with the application using the buttons:
 
 ```
 ┌────────────────────────────────────────────────────────────────────┐
 │                                                                    │
-│                                                                    │
-│                                                                    │
+│                                                LED1 ☐ ☐ LED2       │
+│                                                LED3 ☐ ☐ LED4       │
 │           ┌────────────────┐                                       │
 │           │                │                                        \
 ├───┐       │                │                                         │
@@ -78,10 +78,10 @@ the enter button (`BUTTON 4`) to select it. You will now see a list of details
 about that application.
 
 | Entry          | Name                     | Description                                                                                                                                                                            |
-| -------------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- |
+| -------------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | PID            | `ProcessId`              | The ProcessId is the runtime identifier for the process. Every time a process starts it gets a new ProcessId. All process IDs must be unique.                                          |
 | ShortID        | `ShortId`                | The ShortId is the fixed identifier for a specific application. Each Tock kernel uses a policy for determining the ShortId. This identifier is persistent across reboots and restarts. |
-| Timeslices Exp | Expired Timeslices       | The number of times the process exceeded its timeslice and was pre-empted by the kernel.                                                                                               |     |
+| Timeslices Exp | Expired Timeslices       | The number of times the process exceeded its timeslice and was pre-empted by the kernel.                                                                                               |
 | Syscall Count  | Number of System Calls   | How many system calls the process has made.                                                                                                                                            |
 | Restart Count  | Number of Restarts       | How many times the process has been restarted, either manually or after a crash.                                                                                                       |
 | State          | Process State            | The current state of the process. Most likely `Yielded` because the Process Manager must be running to update the screen.                                                              |

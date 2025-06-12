@@ -29,10 +29,12 @@ install other apps using tockloader again!
 
 Once you have the app installed, you should be able to navigate to the
 `Load New Applications` menu option. When you select it, you will be taken to a
-new page titled `Select Application`, but for now there is nothing on that page,
-so let us go back. Getting to this stage proves that our app is now functional.
-However, we still want to be able to load new apps, so we need to make some
-changes.
+new page titled `Select Application`, but for now there is nothing on that page.
+
+![Empty Select App](../../imgs/dynamic_apps_tutorial_app-loader_select_empty.gif)
+
+Getting to this stage proves that our app is now functional. However, we still
+want to be able to load new apps, so we need to make some changes.
 
 ## Adding Our First Test App
 
