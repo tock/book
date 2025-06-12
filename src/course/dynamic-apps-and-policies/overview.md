@@ -41,10 +41,10 @@ the nrf52840dk board.
 There are a couple of configurations on the nRF52840DK board that you should
 double-check:
 
-1. The "Power" switch on the top left should be set to "On".
-2. The "nRF power source" switch in the top middle of the board should be set to
-   "VDD".
-3. The "nRF ONLY | DEFAULT" switch on the bottom right should be set to
+1. The "Power" switch in the corner near the USB should be set to "On".
+2. The "nRF power source" switch in the middle of the board (under the screen)
+   should be set to "VDD".
+3. The "nRF ONLY | DEFAULT" switch on the side near the LEDs should be set to
    "DEFAULT".
 
 ## Organization and Getting Oriented to Tock
