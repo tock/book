@@ -14,17 +14,12 @@ This module will walk you through some of these features and how Tock supports
 many security features not otherwise possible on resource-constrained embedded
 systems.
 
-## Hardware Notes
-
-Any hardware that supports Tock should work, although this module will build on
-the nrf52840dk board.
-
 ## Goal
 
 Traditionally, for an application to be installed on a Tock supported board, one
-must use `tockloader`, a python tool that offers users various ways to interact
-with the OS. Typically, applications are used using `tockloader install` which
-writes the application to the board and restarts the device.
+must use `tockloader`, a tool that offers users various ways to interact with
+the OS. Typically, applications are used using `tockloader install` which writes
+the application to the board and restarts the device.
 
 Imagine if your phone restarted each time you had to update an app!
 
@@ -34,7 +29,12 @@ Tock to do this process without using `tockloader`, or requiring a restart.
 Then we will use cryptographic application signing to enforce per-process
 security properties for running Tock applications.
 
-## nRF52840dk Hardware Setup
+## Hardware Notes
+
+Any hardware that supports Tock should work, although this module will build on
+the nrf52840dk board.
+
+### nRF52840dk Hardware Setup
 
 ![nRF52840dk](../../imgs/nrf52840dk.jpg)
 
@@ -73,13 +73,18 @@ respectively). Those applications are compiled within those repositories.
 
 ## Stages
 
-This module is broken into N stages:
+**Pre-setup.** These steps are done for you if you are using the nRF52840dk
+board.
 
-1. Configuring the kernel to provide necessary syscall drivers:
-   1. [Dynamic App Load Setup](../setup/dynamic-app-loading.md).
-2. Experimenting with the
+1. [Dynamic App Load Setup](../setup/dynamic-app-loading.md).
+2. [ECDSA Signature Verification](../setup/ecdsa.md).
+
+**Main Tutorial**
+
+This module is broken into N3 stages:
+
+1. Experimenting with the
    [Process Manager userspace application](./process-manager.md).
-3. Installing Applications with the
+2. Installing Applications with the
    [App loader helper application](./app-loader.md).
-4. Exploring Security Mechanisms via [Syscall Filtering](./snooping.md)
-5.
+3. Exploring Security Mechanisms via [Syscall Filtering](./snooping.md)
