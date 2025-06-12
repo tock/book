@@ -81,7 +81,7 @@ board.
 
 **Main Tutorial**
 
-This module is broken into N3 stages:
+This module is broken into 3 stages:
 
 1. Experimenting with the
    [Process Manager userspace application](./process-manager.md).
