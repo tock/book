@@ -42,6 +42,7 @@
     - [HMAC](./course/setup/hmac.md)
     - [Key-Value](./course/setup/kv.md)
     - [Dynamic App Loading](./course/setup/dynamic-app-loading.md)
+    - [ECDSA Support](./course/setup/ecdsa.md)
   - [Deprecated](./course/deprecated/deprecated.md)
     - [Important Client](./course/deprecated/important_client.md)
     - [Capsule](./course/deprecated/capsule.md)
