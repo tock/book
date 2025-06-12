@@ -154,7 +154,96 @@ impl kernel::process_checker::Compress for AppIdAssignerNameMetadata {
 You can see the full implementation in
 `tock/boards/tutorials/nrf52840dk-dynamic-apps-and-policies/src/app_id_assigner_name_metadata.rs`.
 
-### System Call Filtering
+## Setting Up A Second Signature Verification Key
+
+Tock's signature checking mechanism supports multiple verifying keys. We need to
+add a second public key to the kernel configuration so we can sign the Process
+Info app to give it the advanced permissions (e.g., access to buttons).
+
+We have included a second public-private ECDSA key pair in the
+`libtock-c/examples/tutorials/dynamic-apps-and-policies/keys` folder. You may
+use these. If you are interested in setting up the keys yourself, you can follow
+the [ECDSA Setup Guide](../setup/ecdsa.md) to generate your own key pair.
+
+Once you have the public key that the kernel will use to do the signature
+verification, you will need to add the key to
+`tock/boards/tutorials/nrf52840dk-dynamic-apps-and-policies/src/main.rs`. We
+need to modify the `verifying_keys` object to include the second key. To get the
+bytes of the second public key (the private key files hold both keys), run:
+
+```
+$ tail -c 64 ec-secp256r1-manager-key.private.p8 | hexdump -v -e '1/1 "0x%02x, "'
+```
+
+**Task:**: Modify the `verifying_keys` object in main.rs to add the second key.
+
+## Re-Signing the Process Manager App
+
+Finally, we need to change the signature used to sign the Process Manager app.
+We can do this with the existing TAB.
+
+```
+$ cd libtock-c/examples/tutorials/dynamic-apps-and-policies/process-manager
+$ tockloader tbf credential delete ecdsap256
+$ tockloader tbf credential add ecdsap256 --private-key ../keys/ec-secp256r1-manager-key.private.pem
+```
+
+You can also modify the application's Makefile to use the other key when the
+application is compiled.
+
+> **Checkpoint**: Verify that the Process Manager application is being verified
+> with the second key. You can check this by verifying that the `ShortId`
+> computed by the kernel starts with `0x1` (instead of `0x0`). The `ShortId` is
+> printed to the console when the kernel boots.
+
+## Re-Enabling the Screen for Process Manager
+
+You may have noticed that the Process Manager no longer works. This is because
+it no longer has access to the screen. The Tock kernel allocates regions of the
+screen to different apps based on their `ShortId`, but we just changed Process
+Manager's `ShortId`!
+
+To fix this, we need to update the short ID used to assign a region of screen
+for the Process Manager. The screen allocation looks like this in main.rs:
+
+```rust
+let apps_regions = kernel::static_init!(
+    [capsules_extra::screen_shared::AppScreenRegion; 3],
+    [
+        capsules_extra::screen_shared::AppScreenRegion::new(
+            create_short_id_from_name("process_manager", 0x0), // Need to change 0x0 to 0x1
+            0,      // x
+            0,      // y
+            16 * 8, // width
+            7 * 8   // height
+        ),
+        capsules_extra::screen_shared::AppScreenRegion::new(
+            create_short_id_from_name("counter", 0x0),
+            0,     // x
+            7 * 8, // y
+            8 * 8, // width
+            1 * 8  // height
+        ),
+        capsules_extra::screen_shared::AppScreenRegion::new(
+            create_short_id_from_name("temperature", 0x0),
+            8 * 8, // x
+            7 * 8, // y
+            8 * 8, // width
+            1 * 8  // height
+        )
+    ]
+);
+
+let screen = components::screen::ScreenSharedComponent::new().finalize();
+```
+
+**Task:**: Modify the arguments to `create_short_id_from_name()` for the Process
+Manager to set the key metadata to 0x1.
+
+> **Checkpoint**: After re-flashing the kernel verify that the Process Manager
+> app continues to work and that the buttons work to interact with the app.
+
+## System Call Filtering
 
 Now with the `ShortId` conveying which key signed each app, effectively encoding
 its authority, we can now implement our system call filtering policy.
@@ -203,43 +292,6 @@ let button_driver_num = capsules_core::button::DRIVER_NUM;
 
 **Task:** finish the implementation for the `SyscallFilter` that only permits
 system calls for buttons if the signing key is 1.
-
-## Setting Up A Second Signature Verification Key
-
-Tock's signature checking mechanism supports multiple verifying keys. We need to
-add a second public key to the kernel configuration so we can sign the Process
-Info app to give it the advanced permissions (e.g., access to buttons).
-
-We have included a second public-private ECDSA key pair in the
-`libtock-c/examples/tutorials/dynamic-apps-and-policies/keys` folder. You may
-use these. If you are interested in setting up the keys yourself, you can follow
-the [ECDSA Setup Guide](../setup/ecdsa.md) to generate your own key pair.
-
-Once you have the public key that the kernel will use to do the signature
-verification, you will need to add the key to
-`tock/boards/tutorials/nrf52840dk-dynamic-apps-and-policies/src/main.rs`. We
-need to modify the `verifying_keys` object to include the second key. To get the
-bytes of the second public key (the private key files hold both keys), run:
-
-```
-$ tail -c 64 ec-secp256r1-manager-key.private.p8 | hexdump -v -e '1/1 "0x%02x, "'
-```
-
-**Task:**: Modify the `verifying_keys` object in main.rs to add the second key.
-
-## Re-Signing the Process Manager App
-
-Finally, we need to change the signature used to sign the Process Manager app.
-We can do this with the existing TAB.
-
-```
-$ cd libtock-c/examples/tutorials/dynamic-apps-and-policies/process-manager
-$ tockloader tbf credential delete ecdsap256
-$ tockloader tbf credential add ecdsap256 --private-key ../keys/ec-secp256r1-manager-key.private.pem
-```
-
-You can also modify the application's Makefile to use the other key when the
-application is compiled.
 
 ## Putting It All Together
 
