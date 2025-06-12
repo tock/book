@@ -175,7 +175,7 @@ bytes of the second public key (the private key files hold both keys), run:
 $ tail -c 64 ec-secp256r1-manager-key.private.p8 | hexdump -v -e '1/1 "0x%02x, "'
 ```
 
-**Task:**: Modify the `verifying_keys` object in main.rs to add the second key.
+**Task:** Modify the `verifying_keys` object in main.rs to add the second key.
 
 ## Re-Signing the Process Manager App
 
@@ -191,7 +191,7 @@ $ tockloader tbf credential add ecdsap256 --private-key ../keys/ec-secp256r1-man
 You can also modify the application's Makefile to use the other key when the
 application is compiled.
 
-> **Checkpoint**: Verify that the Process Manager application is being verified
+> **Checkpoint:** Verify that the Process Manager application is being verified
 > with the second key. You can check this by verifying that the `ShortId`
 > computed by the kernel starts with `0x1` (instead of `0x0`). The `ShortId` is
 > printed to the console when the kernel boots.
@@ -237,10 +237,10 @@ let apps_regions = kernel::static_init!(
 let screen = components::screen::ScreenSharedComponent::new().finalize();
 ```
 
-**Task:**: Modify the arguments to `create_short_id_from_name()` for the Process
+**Task:** Modify the arguments to `create_short_id_from_name()` for the Process
 Manager to set the key metadata to 0x1.
 
-> **Checkpoint**: After re-flashing the kernel verify that the Process Manager
+> **Checkpoint:** After re-flashing the kernel verify that the Process Manager
 > app continues to work and that the buttons work to interact with the app.
 
 ## System Call Filtering
