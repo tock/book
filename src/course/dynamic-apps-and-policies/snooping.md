@@ -308,4 +308,70 @@ our finger on the nRF52840 IC and seeing the temperature rise.
 However, when we run `tockloader listen` we no longer see the button print
 messages because the temperature app no longer has access to the buttons:
 
-FILL IN
+```
+Initialization complete. Entering main loop
+NRF52 HW INFO: Variant: AAF0, Part: N52840, Package: QI, Ram: K256, Flash: K1024
+tock$ Processes Loaded at Main:
+[0] app_loader
+    ShortId: 0x1f37c81
+[1] process_manager
+    ShortId: 0x1c5167b0
+[2] counter
+    ShortId: 0x7b60a92
+[3] temperature
+    ShortId: 0xb713632
+[4] blink
+    ShortId: 0xfd19e248
+[Temp App] Error: Unable to access the buttons.
+[Process Manager] Discovered App Loader Service
+```
+
+> **Checkpoint:** You now have Tock running with multiple concurrent
+> applications, multiple signing keys, and per-app system call filtering. This
+> enables us to securely ensure that only the Process Manager app has access to
+> the buttons.
+>
+> If you want to continue to explore how Tock can enforce properties for
+> applications, here are some ideas you might investigate:
+>
+> - Modify the system call filter to only allow the Process Manager app to
+>   access the `process info` system call, and the App Loader app to access the
+>   `app loader` system call.
+> - Prevent unsigned apps from running at all.
+> - Have applications signed with two keys (e.g. by the developer and the app
+>   store).
+> - Use the `ShortId` TBF header to assign short IDs rather than a CRC of the
+>   app name.
+
+## Conclusion
+
+This concludes our tutorial on using Tock to dynamically inspect and load apps
+and use cryptographic signatures to restrict access to system calls. We hope you
+enjoyed it!
+
+We covered the following topics:
+
+- an interactive, screen-based tool for inspecting the state of Tock processes
+- dynamically loading new applications at runtime without restarting the kernel
+- signing applications with ECDSA signing keys
+- implementing least-privilege with system call filtering
+
+Tock is an operating system applicable to a broad set of application domains,
+such as low-power and security-critical systems. We provide a broad set of
+guides and documentation:
+
+- This book: [https://book.tockos.org](https://book.tockos.org)
+- Tock code documentation: [https://docs.tockos.org](https://docs.tockos.org)
+- Reference documentation:
+  [https://github.com/tock/tock/tree/master/doc](https://github.com/tock/tock/tree/master/doc)
+
+We also provide some community resources, which you can find here:
+[https://tockos.org/community/](https://tockos.org/community/)
+
+---
+
+We always appreciate feedback on our tutorials. What went well? What did you
+like? What was not so smooth? What was less interesting? How can we make things
+better? Please do not hesitate to reach out, and if you have found any smaller
+typographical or technical errors,
+[pull requests are welcome and appreciated!](https://github.com/tock/book)

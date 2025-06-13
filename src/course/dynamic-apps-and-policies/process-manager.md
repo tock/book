@@ -107,3 +107,6 @@ Choose the action for the selected process and then press down to highlight
 > Not all actions are valid from all process states. In particular, boot is only
 > valid when the process is terminated, and start and stop are only valid when
 > the process is running or yielded.
+
+Now that you have the Process Manager running, let's take advantage of the app
+loading functionality in the [next section](./app-loader.md).
