@@ -336,9 +336,3 @@ access it:
 ```
 tockloader tickv append appkey appvalue --write-id 10
 ```
-
-## Wrap-Up
-
-You now know how to use a Key-Value store in your Tock apps as well as in the
-kernel. Tock's K-V stack supports access control on stored objects, and can be
-used simultaneously by both the kernel and userspace applications.

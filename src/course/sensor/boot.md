@@ -170,7 +170,7 @@ multiple boards and different microcontrollers. More detail
 > buffers before passing them to the console. The buffer passing architecture
 > looks like this:
 >
-> ![Console/UART buffer lifetimes](../imgs/console.svg)
+> ![Console/UART buffer lifetimes](../../imgs/console.svg)
 
 ### Let's Make a Tock Board!
 
