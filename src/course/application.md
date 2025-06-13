@@ -130,20 +130,21 @@ see which are available.
 
 Let's start by checking if our board has an ambient light sensor. The library
 interface for
-[ambient light](https://github.com/tock/libtock-c/blob/master/libtock/ambient_light.h)
+[ambient light](https://github.com/tock/libtock-c/blob/master/libtock/sensors/ambient_light.h)
 is in the `libtock-c/libtock` folder.
 
-We can use the `ambient_light_exists()` function. In main.c of our simsense app:
+We can use the `libtock_ambient_light_exists()` function. In main.c of our
+simsense app:
 
 ```c
 #include <stdio.h>
-#include <ambient_light.h>
+#include <libtock-sync/sensors/ambient_light.h>
 
 int main(void) {
   printf("Checking for ambient light sensor.\n");
 
   printf("Ambient Light: ");
-  if (ambient_light_exists()) {
+  if (libtock_ambient_light_exists()) {
     printf("Exists!\n");
   } else {
     printf("Does not exist.\n");
@@ -163,10 +164,10 @@ Compile and run your updated app.
 The next step is to check for other sensor types (you might not have a light
 sensor). Expand your application to check for other sensors. Some you might use:
 
-- [Temperature](https://github.com/tock/libtock-c/blob/master/libtock/temperature.h)
-- [Humidity](https://github.com/tock/libtock-c/blob/master/libtock/humidity.h)
-- [Sound Pressure](https://github.com/tock/libtock-c/blob/master/libtock/sound_pressure.h)
-- [Pressure](https://github.com/tock/libtock-c/blob/master/libtock/pressure.h)
+- [Temperature](https://github.com/tock/libtock-c/blob/master/libtock/sensors/temperature.h)
+- [Humidity](https://github.com/tock/libtock-c/blob/master/libtock/sensors/humidity.h)
+- [Sound Pressure](https://github.com/tock/libtock-c/blob/master/libtock/sensors/sound_pressure.h)
+- [Pressure](https://github.com/tock/libtock-c/blob/master/libtock/sensors/pressure.h)
 
 > **Checkpoint:** Your app now checks for the presence of several sensors. Which
 > are available on your board?
@@ -195,17 +196,28 @@ int take_measurement(void) {
 }
 ```
 
+> ### Background
+>
+> `libtock-c` is split into two libraries: `libtock` (asynchronous) and
+> `libtock-sync` (synchronous). The `libtock` library does not call yield and
+> therefore only exposes asynchronous APIs. The `libtock-sync` library calls the
+> `libtock` library internally but adds calls to yield to provide a synchronous
+> API.
+>
+> The libraries are split so applications can clearly choose to use the
+> synchronous APIs or not.
+
 ### Example: Ambient Light
 
-The interface in `libtock/ambient_light.h` is used to measure ambient light
-conditions in [lux](https://en.wikipedia.org/wiki/Lux). imix uses the
+The interface in `libtock/sensors/ambient_light.h` is used to measure ambient
+light conditions in [lux](https://en.wikipedia.org/wiki/Lux). imix uses the
 [ISL29035](https://www.intersil.com/en/products/optoelectronics/ambient-light-sensors/light-to-digital-sensors/ISL29035.html)
 sensor, but the userland library is abstracted from the details of particular
 sensors. It contains the function:
 
 ```c
-#include <ambient_light.h>
-int ambient_light_read_intensity_sync(int* lux);
+#include <libtock-sync/sensors/ambient_light.h>
+returncode_t libtocksync_ambient_light_read_intensity(int* lux);
 ```
 
 Note that the light reading is written to the location passed as an argument,
@@ -213,14 +225,14 @@ and the function returns non-zero in the case of an error.
 
 ### Example: Temperature
 
-The interface in `libtock/temperature.h` is used to measure ambient temperature
-in degrees Celsius, times 100. imix uses the
+The interface in `libtock/sensors/temperature.h` is used to measure ambient
+temperature in degrees Celsius, times 100. imix uses the
 [SI7021](https://www.silabs.com/products/sensors/humidity-sensors/Pages/si7013-20-21.aspx)
 sensor. It contains the function:
 
 ```c
-#include <temperature.h>
-int temperature_read_sync(int* temperature);
+#include <libtock-sync/sensors/temperature.h>
+returncode_t libtocksync_temperature_read(int* temperature);
 ```
 
 Again, this function returns non-zero in the case of an error.
@@ -233,12 +245,12 @@ Finally to complete our sensor we want to take multiple sensor readings. Put
 your sampling code in a loop. Use the `delay_ms()` function to sample only
 periodically.
 
-You'll find the interface for timers in `libtock/timer.h`. The function you'll
-find useful today is:
+You'll find the interface for timers in `libtock-sync/services/alarm.h`. The
+function you'll find useful today is:
 
 ```c
-#include <timer.h>
-void delay_ms(uint32_t ms);
+#include <libtock-sync/services/alarm.h>
+int libtocksync_alarm_delay_ms(uint32_t ms);
 ```
 
 This function sleeps until the specified number of milliseconds have passed, and
@@ -251,7 +263,7 @@ An example loop structure:
 int main(void) {
   while (1) {
     take_measurement();
-    delay_ms(2000);
+    libtocksync_alarm_delay_ms(2000);
   }
 }
 ```
@@ -265,13 +277,13 @@ console output, we will add an LED toggle on each sample. This is
 straightforward in Tock:
 
 ```c
-#include <led.h>
+#include <libtock/interface/led.h>
 
 int main(void) {
   while (1) {
     take_measurement();
-    led_toggle(0);
-    delay_ms(2000);
+    libtock_led_toggle(0);
+    libtocksync_alarm_delay_ms(2000);
   }
 }
 ```
