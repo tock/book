@@ -29,7 +29,6 @@
     - [Robustness](./course/thread-net/robustness.md)
   - [Kernel Boot](./course/boot.md)
   - [Policies](./course/policies.md)
-  - [TicKV](./course/tickv.md)
   - [Application](./course/application.md)
   - [Graduation](./course/graduation.md)
   - [Setup](./course/setup/setup.md)
@@ -90,6 +89,7 @@
     - [Process Console](./doc/pconsole.md)
     - [Networking Stack](./doc/networking_stack.md)
     - [Bluetooth Low Energy (BLE)](./doc/ble.md)
+    - [TicKV](./doc/tickv.md)
 
 - [Tock Reference Documents](./trd/index.md)
 
