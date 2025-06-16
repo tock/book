@@ -59,8 +59,9 @@ If you have an existing Tock app compiled into the `.tab` format, you can add
 the ECDSA signature to the `.tbf` files within the existing `.tab`. To add the
 signature, run the following command in the directory with your existing app:
 
-````bash
+```bash
 $ tockloader tbf credential add ecdsap256 --private-key ec-secp256r1-priv.pem
+```
 
 ## Verifying the Signature in the Kernel
 
@@ -79,7 +80,7 @@ type SignatureVerifyInMemoryKeys =
         32,
         64,
     >;
-````
+```
 
 Next we have to setup the public key that we will use to verify the signature.
 
