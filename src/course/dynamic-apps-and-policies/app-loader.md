@@ -39,7 +39,7 @@ want to be able to load new apps, so we need to make some changes.
 ## Adding Our First Test App
 
 All we need to do is include the path to the application directory in our
-app_loader's makefile. To do this, open the makefile located at
+`app_loader`'s makefile. To do this, open the `Makefile` located at
 `libtock-c/examples/tutorials/dynamic-apps-and-policies/app_loader/Makefile.mk`
 in your favorite editor.
 
@@ -124,12 +124,14 @@ list. Add `temperature` to the makefile like you did with `counter` and install
 the application. Once installed, you will see the bottom right corner of the
 screen display the internal temperature of the chip!
 
-> **Hint**: Watch the count as the temperature app is installed. It keeps going
-> up! The counter app does not use any nonvolatile storage. But, since
-> dynamically loading apps does not reset the kernel (or any running apps) the
-> counter keeps its count.
+> **Check this out**: Watch the count as the temperature app is installed. It
+> keeps going up! The counter app does not use any nonvolatile storage. But,
+> since dynamically loading apps does not reset the kernel (or any running
+> apps) the counter keeps its count.
 
-However, not everything is as it seems... If you open your console, you will see
+## Looking more closely at our apps...
+
+Not everything is as it seems... if you watch the serial console, you will see
 that one of the apps you just installed is doing more than what it claims to be
 doing. The `temperature` app is sneakily logging your button presses! This is a
 derivative of keylogging attacks.
@@ -137,5 +139,7 @@ derivative of keylogging attacks.
 At the core of it, we want our system to be secure and not leak information to
 applications that is not meant for them. To restrict applications to only use
 the resources they require for their functioning, we need to make kernel side
-changes to add resource filtering. Let us take a deeper look at this in the
-[Snooping](./snooping.md) part of the tutorial.
+changes to add resource filtering.
+
+Let us take a deeper look at this in the [Snooping](./snooping.md) part of the
+tutorial, next.
