@@ -68,17 +68,18 @@ let dynamic_app_loader = components::app_loader::AppLoaderComponent::new(
 
 > **Note:**
 >
->  1. The definition of the `FlashUser` type is hardware dependent.
->  2. If there are other applications that use the `IsolatedNonvolatileStorage`
->  capsule, we have to virtualize the flash. In that case, the `FlashUser` type
->  will look something like:
+> 1.  The definition of the `FlashUser` type is hardware dependent.
+> 2.  If there are other applications that use the `IsolatedNonvolatileStorage`
+>     capsule, we have to virtualize the flash. In that case, the `FlashUser`
+>     type will look something like:
 >
 > ```rust
 > type FlashUser =
 >     capsules_core::virtualizers::virtual_flash::FlashUser<'static, nrf52840::nvmc::Nvmc>;
 > ```
-> and then we pass the virtual flash instance to the `dynamic_binary_storage` instance.
-
+>
+> and then we pass the virtual flash instance to the `dynamic_binary_storage`
+> instance.
 
 ### Update the `Platform` definition
 

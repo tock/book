@@ -23,8 +23,8 @@ the application to the board and restarts the device.
 
 Imagine if your phone restarted each time you had to update an app!
 
-To allow for a seamless application loading experience, in this tutorial we
-will add required kernel components and a supporting userspace application that
+To allow for a seamless application loading experience, in this tutorial we will
+add required kernel components and a supporting userspace application that
 enables Tock to live-update apps, without using `tockloader` or any other
 external tools, nor requiring a restart.
 
@@ -74,6 +74,7 @@ Userspace applications are stored in a separate repository, either
 respectively). Those applications are compiled within those repositories.
 
 ## Stages
+
 These pre-setup is done for you if you are using the tutorial configuration for
 the nRF52840dk board:
 `tock/boards/tutorials/nrf52840dk-dynamic-apps-and-policies`. You can jump right
@@ -82,12 +83,11 @@ to the [Main Tutorial](#Main-Tutorial).
 ### Pre-setup
 
 If you are using a different hardware platform, you will need to follow these
-two setup guides first to add required support to the base kernel image
-provided for a board by default:
+two setup guides first to add required support to the base kernel image provided
+for a board by default:
 
 1. [Dynamic App Load Setup](../setup/dynamic-app-loading.md).
 2. [ECDSA Signature Verification](../setup/ecdsa.md).
-
 
 ### Main Tutorial
 

@@ -126,8 +126,8 @@ screen display the internal temperature of the chip!
 
 > **Check this out**: Watch the count as the temperature app is installed. It
 > keeps going up! The counter app does not use any nonvolatile storage. But,
-> since dynamically loading apps does not reset the kernel (or any running
-> apps) the counter keeps its count.
+> since dynamically loading apps does not reset the kernel (or any running apps)
+> the counter keeps its count.
 
 ## Looking more closely at our apps...
 

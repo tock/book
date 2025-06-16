@@ -30,8 +30,8 @@ with tockloader.
 
 ### Approach 1: Using `elf2tab`
 
-First, we need to convert the private key from `sec1` format to the `pk8`
-format that `elf2tab` expects. We can do this with `openssl`:
+First, we need to convert the private key from `sec1` format to the `pk8` format
+that `elf2tab` expects. We can do this with `openssl`:
 
 ```bash
 $ openssl pkcs8 -in ec-secp256r1-priv.pem -topk8 -nocrypt -outform der > ec-secp256r1-priv.p8
