@@ -1,7 +1,5 @@
 # Using the Process Manager Userspace Application
 
-> insert image
-
 The Process Manager application is an interactive, screen-based application for
 viewing and controlling the applications installed on a Tock board. This guide
 will help you install it and walk you through its features.
