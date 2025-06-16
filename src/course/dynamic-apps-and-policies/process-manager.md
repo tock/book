@@ -7,18 +7,22 @@ will help you install it and walk you through its features.
 ## Tock Kernel Image
 
 If you haven't already, install the
-`tutorials/nrf52840dk-dynamic-apps-and-policies` kernel on your board.
+[`tutorials/nrf52840dk-dynamic-apps-and-policies` kernel](https://github.com/tock/tock/tree/master/boards/tutorials/nrf52840dk-dynamic-apps-and-policies)
+on your board.
 
 ```
 $ cd tock/boards/tutorials/nrf52840dk-dynamic-apps-and-policies
 $ make install
 ```
 
+> If you are using a different hardware platform, be sure to follow the
+> [pre-setup](overview.html#pre-setup) steps in the overview before proceeding.
+
 ## Install the Process Manager Application
 
 You can install the Process Manager app like any other Tock application. You can
 find it in
-`libtock-c/examples/tutorials/dynamic-apps-and-policies/process_manager`.
+[`libtock-c/examples/tutorials/dynamic-apps-and-policies/process_manager`](https://github.com/tock/libtock-c/tree/master/examples/tutorials).
 
 ```
 $ cd libtock-c/examples/tutorials/dynamic-apps-and-policies/process_manager
@@ -41,15 +45,15 @@ Interact with the application using the buttons:
 │                                                LED1 ☐ ☐ LED2       │
 │                                                LED3 ☐ ☐ LED4       │
 │           ┌────────────────┐                                       │
-│           │                │                                        \
+│           │                │                                        ╲
 ├───┐       │                │                                         │
 │USB│       │     Screen     │                                         │
 ├───┘       │                │                      ┌─┐  ┌─┐           │
 │           │                │                  Up--│O│  │O│           │
-│           └────────────────┘                      └─┘  └─┘           │
+│           └────────────────┘                      └─┘1 └─┘2          │
 │                                                   ┌─┐  ┌─┐           │
-│                                             Down--│O│  │O│--Enter   /
-│                                                   └─┘  └─┘         │
+│                                             Down--│O│  │O│--Enter   ╱
+│                                                   └─┘3 └─┘4        │
 └────────────────────────────────────────────────────────────────────┘
 ```
 
