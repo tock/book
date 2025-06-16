@@ -37,11 +37,11 @@ to enforce stronger security properties for a Tock system.
 
 We use the buttons to navigate the interface on the Process Manager application.
 However, any application can register button notifications. To see this, we can
-observe a perhaps unexpected operation of the `temperature` application.
+observe a perhaps unexpected operation of the "`temperature`" application.
 
-If we run `tockloader listen` to observe the console output from the board,
-while interacting with the Process Manager app, you will see additional messages
-from the temperature app:
+If we run `tockloader listen` to observe the console output from the board, you
+will see additional messages from the "`temperature`" app while interacting with
+the Process Manager app:
 
 ```
 Initialization complete. Entering main loop
@@ -65,8 +65,11 @@ Processes Loaded at Main:
 [Temp App] Snooped button 2
 ```
 
-Maybe maliciously, or maybe for future use, the temperature app is actually
-logging all button presses! Our goal is to prevent a theoretically innocuous app
+Maybe maliciously, or maybe for some benign future use, the temperature app is
+logging all button presses!
+
+As a demonstration of how to securely partition resources on a shared embedded
+platform, our goal in this lesson is to prevent a theoretically innocuous app
 (temperature) from eavesdropping on our button presses.
 
 ## System Call Filtering Approach
@@ -175,7 +178,7 @@ bytes of the second public key (the private key files hold both keys), run:
 $ tail -c 64 ec-secp256r1-manager-key.private.p8 | hexdump -v -e '1/1 "0x%02x, "'
 ```
 
-**Task:** Modify the `verifying_keys` object in main.rs to add the second key.
+> **Task:** Modify the `verifying_keys` object in main.rs to add the second key.
 
 ## Re-Signing the Process Manager App
 
@@ -211,7 +214,8 @@ let apps_regions = kernel::static_init!(
     [capsules_extra::screen_shared::AppScreenRegion; 3],
     [
         capsules_extra::screen_shared::AppScreenRegion::new(
-            create_short_id_from_name("process_manager", 0x0), // Need to change 0x0 to 0x1
+            // ***** Need to change 0x0 to 0x1 ***** ----↘
+            create_short_id_from_name("process_manager", 0x0),
             0,      // x
             0,      // y
             16 * 8, // width
