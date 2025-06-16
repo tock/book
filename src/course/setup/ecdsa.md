@@ -9,31 +9,31 @@ P256R1 curve to sign Tock applications.
 The first step is creating a public-private key pair for the signature. We can
 do that with `openssl`:
 
-```
+```bash
 $ openssl ecparam -name secp256r1 -genkey -noout -out ec-secp256r1-priv.pem
 $ openssl ec -in ec-secp256r1-priv.pem -pubout -out ec-secp256r1-pub.pem
 ```
 
 Once created, we can view the key:
 
-```
+```bash
 $ openssl ec -in ec-secp256r1-priv.pem -text -noout
 ```
 
-Note the "pub" key is encoded in sec1 format.
+Note the "pub" key is encoded in `sec1` format.
 
 ## Signing a Tock App
 
-There are two ways to sign a Tock app with the private key: adding the signature
-when the `.tbf` is created with `elf2tab` and adding the signature with
-tockloader.
+There are two ways to sign a Tock app with the private key: (1) adding the
+signature when the `.tbf` is created with `elf2tab` or (2) adding the signature
+with tockloader.
 
-### Using `elf2tab`
+### Approach 1: Using `elf2tab`
 
-First, we need to convert the private key to the correct format. We can do this
-with `openssl`:
+First, we need to convert the private key from `sec1` format to the `pk8`
+format that `elf2tab` expects. We can do this with `openssl`:
 
-```
+```bash
 $ openssl pkcs8 -in ec-secp256r1-priv.pem -topk8 -nocrypt -outform der > ec-secp256r1-priv.p8
 ```
 
@@ -41,7 +41,7 @@ Now we can pass that key to `elf2tab` as a command line argument. This works
 best if you are running `elf2tab` directly or if you have a custom build setup
 for Tock applications.
 
-```
+```bash
 $ elf2tab ... --ecdsa-nist-p256-private ec-secp256r1-priv.p8 ...
 ```
 
@@ -53,13 +53,13 @@ Makefile:
 ELF2TAB_ARGS += --ecdsa-nist-p256-private ec-secp256r1-priv.p8
 ```
 
-### Using tockloader
+### Approach 2: Using tockloader
 
 If you have an existing Tock app compiled into the `.tab` format, you can add
 the ECDSA signature to the `.tbf` files within the existing `.tab`. To add the
 signature:
 
-```
+```bash
 $ tockloader tbf credential add ecdsap256 --private-key ec-secp256r1-priv.pem
 ```
 
@@ -84,17 +84,21 @@ type SignatureVerifyInMemoryKeys =
 
 Next we have to setup the public key that we will use to verify the signature.
 
-To get the public key in bytes we need to create the `.p8` file from the private
-key:
+We need to convert the public key to a byte-array that we can include in the
+Rust source code.
 
-```
+An easy way to do that is to convert the original keypair to `pk8` format (if
+you didn't do this already in Approach 1 above):
+
+```bash
 $ openssl pkcs8 -in ec-secp256r1-priv-key.pem -topk8 -nocrypt -outform der > ec-secp256r1-priv-key.p8
 ```
 
-And then the last 64 bytes of that file are the public key so we can extract the
-bytes:
+The last 64 bytes of that file are the public key.
 
-```
+We can extract and format as-needed with:
+
+```bash
 $ tail -c 64 ec-secp256r1-priv-key.p8 | hexdump -v -e '1/1 "0x%02x "'
 ```
 

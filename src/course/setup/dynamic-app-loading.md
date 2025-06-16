@@ -1,18 +1,20 @@
 # Implementing the Dynamic Application Loader
 
-The Tock kernel supports implementing a dynamic application loader that allows
-an external application to store and execute a new application.
+The Tock kernel supports an optional dynamic application loader component that
+allows an external application to store and execute new applications.
 
-We use the `app_loader` capsule. This will setup the bridge between the
-userspace application and the kernel for loading new applications. The
-`app_loader` capsule requires a `dynamic_binary_storage` driver to store and
-load the application, so we need to set that up as well.
+Dynamic application loading uses the `app_loader` capsule. This will setup the
+bridge between the userspace application and the kernel for loading new
+applications. The `app_loader` capsule requires a `dynamic_binary_storage`
+driver to store and load the application, so we need to set that up as well.
 
 ## Configuring the Kernel
 
 We will use components to add `app_loader` to the kernel. We will also set up
 some syscall driver types to make it portable across different hardware. To add
-the proper drivers, include this in the main.rs file:
+the proper drivers, include this in the top-level board `main.rs` file:
+
+### Add required components
 
 ```rust
 
@@ -64,20 +66,25 @@ let dynamic_app_loader = components::app_loader::AppLoaderComponent::new(
 ));
 ```
 
-```
-Note:
-1. The definition of the `FlashUser` type is hardware dependent.
-2. If there are other applications that use the `IsolatedNonvolatileStorage` capsule,
-we have to virtualize the flash. In that case, the `FlashUser` type will look something
-like:
+> **Note:**
+>
+>  1. The definition of the `FlashUser` type is hardware dependent.
+>  2. If there are other applications that use the `IsolatedNonvolatileStorage`
+>  capsule, we have to virtualize the flash. In that case, the `FlashUser` type
+>  will look something like:
+>
+> ```rust
+> type FlashUser =
+>     capsules_core::virtualizers::virtual_flash::FlashUser<'static, nrf52840::nvmc::Nvmc>;
+> ```
+> and then we pass the virtual flash instance to the `dynamic_binary_storage` instance.
 
-type FlashUser =
-    capsules_core::virtualizers::virtual_flash::FlashUser<'static, nrf52840::nvmc::Nvmc>;
 
-and then we pass the virtual flash instance to the `dynamic_binary_storage` instance.
-```
+### Update the `Platform` definition
 
-Then add the capsule to the `Platform` struct:
+The `Platform` struct defines all of the features supported by a Tock platform.
+For the `app_loader` to be usable, we need to add a reference to the capsule to
+the `Platform` struct:
 
 ```rust
 pub struct Platform {
