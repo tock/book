@@ -57,11 +57,10 @@ ELF2TAB_ARGS += --ecdsa-nist-p256-private ec-secp256r1-priv.p8
 
 If you have an existing Tock app compiled into the `.tab` format, you can add
 the ECDSA signature to the `.tbf` files within the existing `.tab`. To add the
-signature:
+signature, run the following command in the directory with your existing app:
 
 ```bash
 $ tockloader tbf credential add ecdsap256 --private-key ec-secp256r1-priv.pem
-```
 
 ## Verifying the Signature in the Kernel
 
