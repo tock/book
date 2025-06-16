@@ -15,15 +15,11 @@ it in `libtock-c/examples/tutorials/dynamic-apps-and-policies/app_loader`.
 
 ```
 $ cd libtock-c/examples/tutorials/dynamic-apps-and-policies/app_loader
-$ make
 $ make install
 ```
 
-We need to run `make` once to generate the dependent header file, and a
-`make install` to then build everything and install.
-
-The cool part of this app is that once installed, the user does not have to
-install other apps using tockloader again!
+Once this application is installed, the user does not have to install other apps
+using tockloader again!
 
 ## Exploring the AppLoader's Offerings
 
@@ -40,8 +36,8 @@ want to be able to load new apps, so we need to make some changes.
 
 All we need to do is include the path to the application directory in our
 `app_loader`'s makefile. To do this, open the `Makefile` located at
-`libtock-c/examples/tutorials/dynamic-apps-and-policies/app_loader/Makefile.mk`
-in your favorite editor.
+`libtock-c/examples/tutorials/dynamic-apps-and-policies/app_loader/Makefile` in
+your favorite editor.
 
 You don't need to know how makefiles work, or how to read one for the purpose of
 this tutorial. We will only making one change to add new applications. Find this
@@ -49,7 +45,7 @@ block of code:
 
 ```
 APPS_TO_EMBED := \
-	# ../../../blink \
+	# $(TOCK_USERLAND_BASE_DIR)/examples/blink \
 ```
 
 And uncomment the blink line.
@@ -89,13 +85,9 @@ to existing examples in your own directory, or write a whole custom app for the
 
 ```
 APPS_TO_EMBED := \
-	../../../blink \
-    ../(your application's path)
+	$(TOCK_USERLAND_BASE_DIR)/examples/blink \
+    $(TOCK_USERLAND_BASE_DIR)/(your application's path)
 ```
-
-Remember: The paths to the applications are relative to where our makefile is
-located. For example, the `blink` application is three levels above the
-`app_loader` application.
 
 Now, there is a high chance you will see something reminiscent of static from
 old cable televisions. While not that exciting, this means the screen is not
@@ -111,8 +103,8 @@ our `APPS_TO_EMBED` variable in the makefile.
 
 ```
 APPS_TO_EMBED := \
-	../../../blink \
-    ../counter \
+	$(TOCK_USERLAND_BASE_DIR)/examples/blink \
+    $(TOCK_USERLAND_BASE_DIR)/examples/tutorials/dynamic-apps-and-policies/counter \
 ```
 
 Run `make install` once again. Once the device is flashed, navigate to the new
