@@ -18,15 +18,15 @@ systems.
 
 Traditionally, for an application to be installed on a Tock supported board, one
 must use `tockloader`, a tool that offers users various ways to interact with
-the OS. Typically, applications are used using `tockloader install` which writes
-the application to the board and restarts the device.
+the OS. Typically, applications are installed using `tockloader install` which
+writes the application to the board and restarts the device.
 
 Imagine if your phone restarted each time you had to update an app!
 
 To allow for a seamless application loading experience, in this tutorial we will
 add required kernel components and a supporting userspace application that
-enables Tock to live-update apps, without using `tockloader` or any other
-external tools, nor requiring a restart.
+enables Tock to live-update apps, without using `tockloader`, other external
+tools, nor requiring a restart.
 
 Then we will use cryptographic application signing to enforce per-process
 security properties for running Tock applications.
@@ -78,16 +78,49 @@ respectively). Those applications are compiled within those repositories.
 These pre-setup is done for you if you are using the tutorial configuration for
 the nRF52840dk board:
 `tock/boards/tutorials/nrf52840dk-dynamic-apps-and-policies`. You can jump right
-to the [Main Tutorial](#Main-Tutorial).
+to the [Main Tutorial](#main-tutorial).
 
 ### Pre-setup
 
 If you are using a different hardware platform, you will need to follow these
-two setup guides first to add required support to the base kernel image provided
-for a board by default:
+three setup guides first to add required support to the base kernel image
+provided for a board by default:
 
 1. [Dynamic App Load Setup](../setup/dynamic-app-loading.md).
 2. [ECDSA Signature Verification](../setup/ecdsa.md).
+3. [Screen Setup](../setup/screen.md)
+
+> To get the screen functional for this tutorial, you need to make a minor
+> change to the `apps_regions` variable:
+>
+> ```rust
+> let apps_regions = kernel::static_init!(
+>         [capsules_extra::screen_shared::AppScreenRegion; 3],
+>         [
+>             capsules_extra::screen_shared::AppScreenRegion::new(
+>                 create_short_id_from_name("process_manager", 0x0),
+>                 0,      // x
+>                 0,      // y
+>                 16 * 8, // width
+>                 7 * 8   // height
+>             ),
+>             capsules_extra::screen_shared::AppScreenRegion::new(
+>                 create_short_id_from_name("counter", 0x0),
+>                 0,     // x
+>                 7 * 8, // y
+>                 8 * 8, // width
+>                 1 * 8  // height
+>             ),
+>             capsules_extra::screen_shared::AppScreenRegion::new(
+>                 create_short_id_from_name("temperature", 0x0),
+>                 8 * 8, // x
+>                 7 * 8, // y
+>                 8 * 8, // width
+>                 1 * 8  // height
+>             )
+>         ]
+>     );
+> ```
 
 ### Main Tutorial
 
