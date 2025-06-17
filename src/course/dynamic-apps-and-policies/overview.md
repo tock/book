@@ -91,17 +91,36 @@ provided for a board by default:
 3. [Screen Setup](../setup/screen.md)
 
 > To get the screen functional for this tutorial, you need to make a minor
-> change to the `apps_regions` variable: let apps_regions =
-> kernel::static_init!( [capsules_extra::screen_shared::AppScreenRegion; 3], [ >
-> capsules_extra::screen_shared::AppScreenRegion::new( >
-> create_short_id_from_name("process_manager", 0x0), > 0, // x > 0, // y > 16 *
-> 8, // width > 7 * 8 // height > ), >
-> capsules_extra::screen_shared::AppScreenRegion::new( >
-> create_short_id_from_name("counter", 0x0), > 0, // x > 7 * 8, // y > 8 * 8, //
-> width > 1 * 8 // height > ), >
-> capsules_extra::screen_shared::AppScreenRegion::new( >
-> create_short_id_from_name("temperature", 0x0), > 8 * 8, // x > 7 * 8, // y > 8
-> * 8, // width > 1 * 8 // height > ) > ] );
+> change to the `apps_regions` variable:
+>
+> ```rust
+> let apps_regions = kernel::static_init!(
+>         [capsules_extra::screen_shared::AppScreenRegion; 3],
+>         [
+>             capsules_extra::screen_shared::AppScreenRegion::new(
+>                 create_short_id_from_name("process_manager", 0x0),
+>                 0,      // x
+>                 0,      // y
+>                 16 * 8, // width
+>                 7 * 8   // height
+>             ),
+>             capsules_extra::screen_shared::AppScreenRegion::new(
+>                 create_short_id_from_name("counter", 0x0),
+>                 0,     // x
+>                 7 * 8, // y
+>                 8 * 8, // width
+>                 1 * 8  // height
+>             ),
+>             capsules_extra::screen_shared::AppScreenRegion::new(
+>                 create_short_id_from_name("temperature", 0x0),
+>                 8 * 8, // x
+>                 7 * 8, // y
+>                 8 * 8, // width
+>                 1 * 8  // height
+>             )
+>         ]
+>     );
+> ```
 
 ### Main Tutorial
 
