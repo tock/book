@@ -78,7 +78,7 @@ respectively). Those applications are compiled within those repositories.
 These pre-setup is done for you if you are using the tutorial configuration for
 the nRF52840dk board:
 `tock/boards/tutorials/nrf52840dk-dynamic-apps-and-policies`. You can jump right
-to the [Main Tutorial](#Main-Tutorial).
+to the [Main Tutorial](#main-tutorial).
 
 ### Pre-setup
 
