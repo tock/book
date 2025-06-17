@@ -18,14 +18,14 @@ systems.
 
 Traditionally, for an application to be installed on a Tock supported board, one
 must use `tockloader`, a tool that offers users various ways to interact with
-the OS. Typically, applications are used using `tockloader install` which writes
+the OS. Typically, applications are installed using `tockloader install` which writes
 the application to the board and restarts the device.
 
 Imagine if your phone restarted each time you had to update an app!
 
 To allow for a seamless application loading experience, in this tutorial we will
 add required kernel components and a supporting userspace application that
-enables Tock to live-update apps, without using `tockloader` or any other
+enables Tock to live-update apps, without using `tockloader`, other
 external tools, nor requiring a restart.
 
 Then we will use cryptographic application signing to enforce per-process
