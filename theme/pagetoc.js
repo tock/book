@@ -41,6 +41,10 @@ window.addEventListener('load', function() {
         pagetoc.appendChild(link);
       });
     updateFunction.call();
+
+    // Adjust the right / forward-nav bar to not overlap with pagetoc
+    const next_banner = document.getElementsByClassName("nav-chapters next")[0];
+    next_banner.style.top = pagetoc.getBoundingClientRect().bottom + "px";
 });
 
 
