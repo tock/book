@@ -24,6 +24,8 @@ HWRoTs can come in two flavors: discrete and integrated.
 
 Some notable examples of HWRoTs include:
 
+- The general-purpose, open-source _OpenTitan HWRoT_ which comes in the discrete
+  _Earl Grey_ design as well as the _Darjeeling_ integrated design
 - Apple's _Secure Enclave_, the integrated root of trust in iPhone mobile processors
 - Google's _Titan Security Module_, the discrete root of trust in Google Pixel phones
 - Hewlett Packard Enterprise's _Silicon Root of Trust_, the integrated root of
@@ -97,11 +99,9 @@ Compatible boards:
 
 Our goal is to build a simple encryption service which we'll mount several
 attacks on in order to demonstrate how Tock prevents against them.
- 
-In a real-world setting, a secure element like the Yubikey 5's SLE78 might
-encode commands and responses as application protocol data units (APDUs) over
-USB. For simplicity, we'll just use Tock's console to request values to
-encrypt, but the principle should be the same.
+
+Along the way, we'll also cover foundational Tock concepts to give a top-level
+view of the OS as a whole.
 
 ## nRF52840dk Hardware Setup
 
