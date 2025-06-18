@@ -198,8 +198,8 @@ hosted tutorial event, or feel free to jump ahead to the checkpoint below.
 
 To send and receive UDP packets, we must also correctly configure UDP.
 
-We must complete the following steps to setup receiving using UDP
-in the OpenThread library:
+We must complete the following steps to setup receiving using UDP in the
+OpenThread library:
 
 1. Initialize UDP interface.
 2. Register a function as a receive callback.
@@ -252,9 +252,8 @@ void initUdp(otInstance* aInstance) {
 > **EXERCISE** Add the `initUDP` function to the Thread initialization that
 > occurs within `main()`.
 
-We now have an initialized UDP interface. The registered UDP
-receive callback is implemented to print received packets to
-the console. 
+We now have an initialized UDP interface. The registered UDP receive callback is
+implemented to print received packets to the console.
 
 After completing these changes, build and flash the openthread application. In
 the tockloader console, you should see (upon reset):

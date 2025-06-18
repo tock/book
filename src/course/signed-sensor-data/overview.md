@@ -1,22 +1,23 @@
 # Wireless Networking and Signed Sensor Data
 
 [TODO: Turn into flushed out text]
+
 - Wireless networking exposes IoT devices to an increased attack surface.
 - To secure devices and the data that is sent over wireless networks, wireless
-protocols use encryption
+  protocols use encryption
 - although data can be secured using wireless networking protocols how can we be
-sure of the authenticity of the data and that it has not been tampered with?
+  sure of the authenticity of the data and that it has not been tampered with?
 
-One technique is to sign data using encryption. Perhaps our company, Super Secure
-Systems Corp makes a sensor that we desire to take measurements, sign/encrypt
-the data, and then send this to other devices in our network. We provide all our
-Super Secure Systems devices with the key needed to verify that the data we
-receive originates from a Super Secure Systems device and not from our
-competitor, Lazy Security LLC.
+One technique is to sign data using encryption. Perhaps our company, Super
+Secure Systems Corp makes a sensor that we desire to take measurements,
+sign/encrypt the data, and then send this to other devices in our network. We
+provide all our Super Secure Systems devices with the key needed to verify that
+the data we receive originates from a Super Secure Systems device and not from
+our competitor, Lazy Security LLC.
 
-To encrypt/decrypt our data, notice that we require all our devices
-to possess the encryption key. How can we securely ship our devices
-with the needed key to confirm that the received data is signed?
+To encrypt/decrypt our data, notice that we require all our devices to possess
+the encryption key. How can we securely ship our devices with the needed key to
+confirm that the received data is signed?
 
 - Tock provides the means to network and have RoT
 - For more details in how Tock can be used as RoT see [ADD POINTER]
@@ -29,9 +30,9 @@ properly.
 
 We will first introduce Thread Networking, a popular IoT wireless networking
 protocol and demonstrate Tock's support for OpenThread. Using our now networked
-device, we will then leverage Tock's security guarantees and ability to 
-provide a root of trust that can securely store our encryption key and 
-determine if received data is properly signed.
+device, we will then leverage Tock's security guarantees and ability to provide
+a root of trust that can securely store our encryption key and determine if
+received data is properly signed.
 
 ## Hardware Notes
 
