@@ -35,12 +35,12 @@ difficult.
 
 [TODO NOTE: update naming encryption oracle]
 
-To circumvent these issues, we will use an encryption oracle capsule: this
-Tock kernel module will allow applications to request decryption of some
-ciphertext, using a kernel-internal key not exposed to applications themselves.
-This is a commonly used paradigm in root of trust systems such as TPMs or
-OpenTitan, which feature hardware-embedded keys that are unique to a chip and
-hardened against key-readout attacks.
+To circumvent these issues, we will use an encryption oracle capsule: this Tock
+kernel module will allow applications to request decryption of some ciphertext,
+using a kernel-internal key not exposed to applications themselves. This is a
+commonly used paradigm in root of trust systems such as TPMs or OpenTitan, which
+feature hardware-embedded keys that are unique to a chip and hardened against
+key-readout attacks.
 
 Our kernel module will use a hard-coded symmetric encryption key (AES-128
 CTR-mode), embedded in the kernel binary. While this does not actually
@@ -49,31 +49,28 @@ how Tock can be integrated with root of trust hardware to securely store and use
 encryption keys in a networked IoT device.
 
 In the interest of time, we provide a completed kernel module with the needed
-userspace bindings (in `oracle.h`) to you. If you are interested in seeing how this would 
-be implemented, we provide a thorough walkthrough of creating an encryption
-oracle in the [Tock USB Security Key Tutorial](../usb-security-key/key-hotp-oracle.md).
-Let's use this to securely decrypt our signed sensor data!
+userspace bindings (in `oracle.h`) to you. If you are interested in seeing how
+this would be implemented, we provide a thorough walkthrough of creating an
+encryption oracle in the
+[Tock USB Security Key Tutorial](../usb-security-key/key-hotp-oracle.md). Let's
+use this to securely decrypt our signed sensor data!
 
-
-> EXERCISE: Decrypt the signed sensor data UDP packets.
-> and update handleUdpRecv(...) to print both unsigned
-> packets and decrypted signed packets.
-> 
-> Recall, we have decided to structure our signed packets
-> as follows:
+> EXERCISE: Decrypt the signed sensor data UDP packets. and update
+> handleUdpRecv(...) to print both unsigned packets and decrypted signed
+> packets.
 >
->   | HEADER | IV | ENCRYPTED DATA | 
+> Recall, we have decided to structure our signed packets as follows:
+>
+> | HEADER | IV | ENCRYPTED DATA |
 >
 >       3B    16B      (N)bytes
 >
-> To denote our packets, we use a header of {"R","O","T"} 
-> (root of trust) followed by our initialization vector (IV).
-> The IV is a component of AES128CTR and is needed as an input
-> for decrypting our data.
+> To denote our packets, we use a header of {"R","O","T"} (root of trust)
+> followed by our initialization vector (IV). The IV is a component of AES128CTR
+> and is needed as an input for decrypting our data.
 
 > **CHECKPOINT** 03_signed_data_final
 
-Congratulations! You now have a complete Tock application that
-can attach to an OpenThread network and use Tock's ability 
-to securely store/decrypt data. This concludes this tutorial
-module.
+Congratulations! You now have a complete Tock application that can attach to an
+OpenThread network and use Tock's ability to securely store/decrypt data. This
+concludes this tutorial module.
