@@ -32,6 +32,7 @@
     - [App Loader](./course/dynamic-apps-and-policies/app-loader.md)
     - [Button Snooping](./course/dynamic-apps-and-policies/snooping.md)
   - [Thread and Signed Sensor Data](./course/signed-sensor-data/overview.md)
+    - [Router Setup](./course/signed-sensor-data/router-setup.md)
     - [Thread Networking](./course/signed-sensor-data/thread.md)
     - [Signed Data](./course/signed-sensor-data/signed-data.md)
   - [Kernel Boot](./course/boot.md)
