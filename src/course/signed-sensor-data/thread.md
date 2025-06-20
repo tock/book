@@ -18,7 +18,7 @@ network.
 > $ make install
 > ```
 >
-> in the Tock `boards/tutorials/thread-net` directory.
+> in the Tock `boards/tutorials/nrf52840dk-thread-tutorial` directory.
 
 ---
 
@@ -196,7 +196,8 @@ hosted tutorial event, or feel free to jump ahead to the checkpoint below.
 
 > **CHECKPOINT:** 01_openthread_attach
 
-To send and receive UDP packets, we must also correctly configure UDP.
+To send and receive UDP packets, we must also correctly configure UDP. For this
+tutorial we will only focus on receiving UDP packets.
 
 We must complete the following steps to setup receiving using UDP in the
 OpenThread library:
@@ -221,19 +222,28 @@ static otUdpSocket sUdpSocket;
 void initUdp(otInstance* instance);
 
 void handleUdpRecv(void* aContext, otMessage* aMessage,
-			      const otMessageInfo* aMessageInfo);
+                   const otMessageInfo* aMessageInfo);
 
 void handleUdpRecv(void* aContext, otMessage* aMessage,
-                      	      const otMessageInfo* aMessageInfo) {
+                      const otMessageInfo* aMessageInfo) {
   OT_UNUSED_VARIABLE(aContext);
   OT_UNUSED_VARIABLE(aMessageInfo);
-  char buf[2];
+  char buf[150];
+  int length;
 
+  printf("Received UDP packet [%d bytes] from ", otMessageGetLength(aMessage) - otMessageGetOffset(aMessage));
   const otIp6Address sender_addr = aMessageInfo->mPeerAddr;
   otIp6AddressToString(&sender_addr, buf, sizeof(buf));
+  printf(" %s ", buf);
 
-  otMessageRead(aMessage, otMessageGetOffset(aMessage), buf, sizeof(buf) - 1);
-  printf("Received UDP Packet: %d\r\n", buf[0]);
+  length      = otMessageRead(aMessage, otMessageGetOffset(aMessage), buf, sizeof(buf) - 1);
+  buf[length] = '\n';
+
+  for (int i = 0; i < length; i++) {
+    printf("%c", buf[i]);
+  }
+
+  printf("\n");
 }
 
 void initUdp(otInstance* aInstance) {
@@ -263,7 +273,7 @@ tock$ [THREAD] Device IPv6 Addresses: fe80:0:0:0:b4ef:e680:d8ef:475e
 [State Change] - Detached.
 [State Change] - Child.
 Successfully attached to Thread network as a child.
-Received UDP Packet: {GLOBAL_SET_POINT_VALUE}
+Received UDP Packet: {RECEIVED DATA}
 ```
 
 > **CHECKPOINT:** `02_openthread_final`

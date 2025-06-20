@@ -12,8 +12,9 @@
 ---
 
 The signed sensor data tutorial requires a Thread router to be present, which
-multicasts both signed and unsigned data to participant boards. We provide a
-pre-built flash image that performs this task here:
+multicasts both signed (encrypted) and unsigned (unencrypted) data to
+participant boards. We provide a pre-built flash image that performs this task
+here:
 [signed-sensor-data-router.hex](../../assets/signed-sensor-data-tutorial/signed-sensor-data-router.hex).
 
 ## Flashing the Binary

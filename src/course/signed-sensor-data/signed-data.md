@@ -1,23 +1,21 @@
 # Signed Sensor Data
 
-[NOTE: I don't think signed is the right word here anymore since we're talking
-about CTR which only involves encrypt / decrypt. We should think about how else
-we should frame this]
-
-We now will extend our networked device to determine if the data we receive is
-signed data. Notice that we currently receive both signed and unsigned data.
+We now will extend our networked device to determine if the data we receive
+originates from our Super Secure Systems device (i.e. is encrypted/signed using
+our company's encryption key). Notice that we currently receive both signed and
+unsigned data.
 
 At a high level, both the sender and receiver of our sensor data possess our
 unique key. For simlicity in this tutorial, we have decided to use AES128CTR
 encryption and decide to format the payloads of the UDP packets we send as
 follows:
 
-> | HEADER | IV | SIGNED DATA |
+> |--- HEADER ---|--- IV ---|--- SIGNED DATA --- |
 
 Importantly, OpenThread already encrypts the data sent within the Thread
 network. We add this additional layer of encryption not to hide or secure the
-data we are sending but instead to ensure this data originates only from nodes
-in our network.
+data we are sending but instead to ensure this data originates only from our
+Super Secure Systems nodes that share this Thread network with other devices.
 
 ## Decrypting Received Packets
 
@@ -61,13 +59,14 @@ use this to securely decrypt our signed sensor data!
 >
 > Recall, we have decided to structure our signed packets as follows:
 >
-> | HEADER | IV | ENCRYPTED DATA |
+> |--- HEADER ---|--- IV ---|--- ENCRYPTED DATA --- |
 >
->       3B    16B      (N)bytes
+>     3 bytes      16 bytes        (N) bytes
 >
-> To denote our packets, we use a header of {"R","O","T"} (root of trust)
-> followed by our initialization vector (IV). The IV is a component of AES128CTR
-> and is needed as an input for decrypting our data.
+> To denote our Super Secure System encrypted packets, we use a header of
+> {"R","O","T"} (root of trust) followed by our initialization vector (IV). The
+> IV is a component of AES128CTR and is needed as an input for decrypting our
+> data.
 
 > **CHECKPOINT** 03_signed_data_final
 
