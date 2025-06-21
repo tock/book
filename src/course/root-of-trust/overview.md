@@ -1,4 +1,4 @@
-# Tock as a Hardware Root of Trust (HWRoT) Operating Sytsem 
+# Tock as a Hardware Root of Trust (HWRoT) Operating Sytsem
 
 This module and submodules will walk you through setting up Tock as an operating
 system capable of providing the software backbone of a hardware root of trust,
@@ -26,12 +26,15 @@ Some notable examples of HWRoTs include:
 
 - The general-purpose, open-source _OpenTitan HWRoT_ which comes in the discrete
   _Earl Grey_ design as well as the _Darjeeling_ integrated design
-- Apple's _Secure Enclave_, the integrated root of trust in iPhone mobile processors
-- Google's _Titan Security Module_, the discrete root of trust in Google Pixel phones
+- Apple's _Secure Enclave_, the integrated root of trust in iPhone mobile
+  processors
+- Google's _Titan Security Module_, the discrete root of trust in Google Pixel
+  phones
 - Hewlett Packard Enterprise's _Silicon Root of Trust_, the integrated root of
   trust in their out-of-band management chip
 - Microsoft's _Pluton Security Processor_, the integrated root of trust
-  integrated into many of its silicon collaborators' processors (Intel, AMD, etc.)
+  integrated into many of its silicon collaborators' processors (Intel, AMD,
+  etc.)
 - Arm's _TrustZone_, the general-purpose integrated HWRoT provided in some
   Cortex-M and Cortex-A processors
 - Infineon's _SLE78 Secure Element_, which is used in YubiKey 5 series USB
@@ -41,8 +44,8 @@ In practice, hardware roots of trust are essential for providing support for all
 kinds of operations, including:
 
 - **Application-level cryptography**: while any processor can be used to perform
-  cryptographic operations, doing so on a non-hardened processor can result
-  in side-channel leaks or vulnerability to fault injection attacks, allowing
+  cryptographic operations, doing so on a non-hardened processor can result in
+  side-channel leaks or vulnerability to fault injection attacks, allowing
   attackers to uncover secrets. HWRoTs are specifically designed to prevent such
   issues.
 
@@ -55,36 +58,33 @@ kinds of operations, including:
 - **Secure boot**: In many systems, it is critical to ensure that code the
   processor runs hasn't been tampered with by an attacker. Secure boot allows
   for this by having multiple boot stages, where each stage verifies a digital
-  signature on the next to verify integrity. The bottom-most boot stage
-  is immutable (usually a ROM image baked into the chip design itself). In
+  signature on the next to verify integrity. The bottom-most boot stage is
+  immutable (usually a ROM image baked into the chip design itself). In
   security-critical systems, the first boot stage is the HWRoT's ROM, which then
   boots the rest of the RoT, and finally the main processor of the system.
 
 - **Hardware attestation**: Often with internet-connected devices, it's
   important for a server to be able to verify that it's connected to a valid,
-  uncompromised device before transfering data back-and-forth. During boot,
-  each boot stage of a device with a HWRoT can generate and sign certificates
+  uncompromised device before transfering data back-and-forth. During boot, each
+  boot stage of a device with a HWRoT can generate and sign certificates
   attesting to the hash of the next boot stage's value. The server can then
   review those certificates, verifying that the expected hash values were
   reported all the way back to the HWRoT ROM.
-  
 - **Device firmware updates (DFU)**: Device firmware updates can be a major
   threat vector to a device, as a vulnerability in the target device's ability
   to verify authenticity of an update can allow for an attacker to achieve
   remote code execution. By relegating device firmware updates to a HWRoT, which
   can verify the signature and update flash in a tamper-free way on its own, the
   process of DFU can be made significantly less risky.
-  
 - **Drive encryption**: Similarly, drive encryption can be performed using a
   HWRoT to avoid attackers tampering with the drive encryption process and
   compromising the confidentiality of user data.
-
 
 ## Hardware Notes
 
 For accessibility, we will use a standard microcontroller in this demo rather
 than an actual hardware root of trust; that said, the principles in this demo
-apply readily to any HWRoT. 
+apply readily to any HWRoT.
 
 To fully follow this guide you will need a hardware board that supports a
 peripheral USB port (i.e. where the microcontroller has USB hardware support).
