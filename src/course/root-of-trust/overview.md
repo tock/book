@@ -174,6 +174,4 @@ directory of the `libtock-c` repository.
 This module is broken into four stages:
 
 1. [Creating a simple encryption service](encryption-service.md)
-2. [Adding authentication to the service's results](adding-authentication.md)
-3. [Preventing attacks at runtime with the MPU](userspace-attack.md)
-4. [Preventing attacks at compile-time with Tock's isolation guarantees](kernel-attack.md)
+2. [Preventing attacks at runtime with the MPU](userspace-attack.md)

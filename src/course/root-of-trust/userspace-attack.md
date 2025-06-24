@@ -236,7 +236,7 @@ possible to the console to aid in debugging. In some secure production contexts
 though, it might be useful to keep dumped information on system state to a
 minimum. As an example of this in Tock, we will modify the kernel's application
 fault policy to provide less information while still alerting the user that an
-applicaiton has faulted, keeping the more potentially sensitive details like MPU
+application has faulted, keeping the more potentially sensitive details like MPU
 configurations for e.g. protected logs.
 
 To start, we'll need to open up our board definition in Tock:
