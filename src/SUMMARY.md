@@ -15,6 +15,9 @@
 
 - [Tock Course](./course/course.md)
 
+  - [Root of Trust](./course/root-of-trust/overview.md)
+    - [Simple encryption service](./course/root-of-trust/encryption-service.md)
+    - [Preventing attacks with MPU](./course/root-of-trust/userspace-attack.md)
   - [USB Security Key](./course/usb-security-key/key-overview.md)
     - [HOTP Application](./course/usb-security-key/key-hotp-application.md)
     - [Encryption Oracle Capsule](./course/usb-security-key/key-hotp-oracle.md)
