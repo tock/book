@@ -125,26 +125,26 @@ available at `suspicious_service_milestone_one/`.
    printing out over UART e.g. `[<LABEL>] <address>: <value>` to show the value
    at each memory address.
 
-7. In main, call `dump_memory()` to dump the memory of the "suspicious" SRAM
-   dumping service you're modifying right now.
+7. In main, call `dump_memory()` to dump the first 16KiB (`0x1000` words of
+   memory) of the "suspicious" SRAM dumping service you're modifying right now.
 
-   To get the address that our SRAM dumping applications's memory starts and
-   ends at, Tock supplies a
+   To get the address that our SRAM dumping applications's memory starts at,
+   Tock supplies a
    [`Memop`](https://book.tockos.org/trd/trd104-syscalls.html#46-memop-class-id-5)
    class of syscalls we can use, which are nicely wrapped in utility functions
-   such as `tock_app_memory_begins_at()` and `tock_app_memory_ends_at()` in
-   libtock-c.
+   such as `tock_app_memory_begins_at()` in libtock-c.
 
    If desired, use `log_to_screen()` to log when the memory dump starts/stops.
    You should (when selecting the "Suspicious service" in the on-device menu)
    successfully be able to retrieve the bytes of code of the running SRAM
    dumping service.
 
-8. After that, try adding another `dump_memory()` call to dump the memory.
-   Because applications should never need to access each other's memory, you'll
-   need to get this address from the debug output you collected in step 3. Once
-   you've done this, your code should compile fine, but when you check the
-   `tockloader listen` UART console, you should see a fault dump.
+8. After that, try adding another `dump_memory()` call to dump the first
+   `0x1000` words of the encryption application. Because applications should
+   never need to access each other's memory, you'll need to get this address
+   from the debug output you collected in step 3. Once you've done this, your
+   code should compile fine, but when you check the `tockloader listen` UART
+   console, you should see a fault dump.
 
 With any luck, the fault dump you receive should look something like this:
 
