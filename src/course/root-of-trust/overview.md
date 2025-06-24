@@ -43,11 +43,13 @@ Some notable examples of HWRoTs include:
 In practice, hardware roots of trust are essential for providing support for all
 kinds of operations, including:
 
-- **Application-level cryptography**: While any processor can be used to perform
-  cryptographic operations, doing so on a non-hardened processor can result in
-  side-channel leaks or vulnerability to fault injection attacks, allowing
-  attackers to uncover secrets. HWRoTs are specifically designed to prevent such
-  issues.
+- **Application-level cryptography**: While any processor can be used to
+  perform cryptographic operations, doing so on a non-hardened processor (i.e.
+  one that can't prevent physical attacks) can result in [side-channel leaks]
+  (https://en.wikipedia.org/wiki/Side-channel_attack) or vulnerability to [fault
+  injection attacks](https://en.wikipedia.org/wiki/Fault_injection), allowing
+  attackers to uncover secrets. HWRoTs are specifically designed to prevent
+  such issues.
 
 - **Key management**: Similarly, cryptographic keys stored in memory can be
   leaked using invasive attacks on a chip--a secure element can instead store

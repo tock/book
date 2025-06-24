@@ -366,15 +366,15 @@ driver, then integrate it into `main`:
 3. Finally, let's wire it all together. Go back to `main()` in `main.c`, and
    make it do the following:
 
-- Wait for the start signal for the encryption service (`wait_for_start()`)
-- Set up the IPC logging interface (`setup_logging()`)
-- Looping forever (using `log_to_screen` to indicate each step is happening):
-  - Request a plaintext from the user (`request_plaintext()`), from a plaintext
-    buffer and to ciphertext buffer both of size `512` (four AES-128 blocks)
-  - Encrypt the plaintext (`oracle_encrypt()`, from `oracle.c`)
-  - Convert the ciphertext to a hex string (`bytes_to_hex()`)
-  - Dump the ciphertext to the console (e.g. with
-    `printf("Ciphertext: %s\n", ...)`)
+   - Wait for the start signal for the encryption service (`wait_for_start()`)
+   - Set up the IPC logging interface (`setup_logging()`)
+   - Looping forever (using `log_to_screen` to indicate each step is happening):
+     - Request a plaintext from the user (`request_plaintext()`), from a plaintext
+       buffer and to ciphertext buffer both of size `512` (four AES-128 blocks)
+     - Encrypt the plaintext (`oracle_encrypt()`, from `oracle.c`)
+     - Convert the ciphertext to a hex string (`bytes_to_hex()`)
+     - Dump the ciphertext to the console (e.g. with
+       `printf("Ciphertext: %s\n", ...)`)
 
 When you run the test now, you should be able to use `tockloader listen` and
 type messages into the UART console when prompted to encrypt them.
