@@ -1,29 +1,29 @@
 # Wireless Networking and Signed Sensor Data
 
-[TODO: Turn into flushed out text]
-
 Wireless networking exposes IoT devices to an increased attack surface. To
 secure devices and the data that is sent over wireless networks, wireless
 protocols use a range of security and encryption measures. Although data can be
-secured using these wireless networking protocols, certain applications require
-confirming the authenticity of the data and that it has not been tampered with.
-How can we do this?
+secured using these wireless networking protocols, this security often only
+protects our data from devices outside our network. In the context of an IoT
+network that may contain malicious devices, we may desire to add an additional
+layer of security to send sensitive data over our shared network that contains
+potentially malicious devices. How can we do this?
 
-One technique is to sign data using encryption. Perhaps our company, Super
-Secure Systems Corp makes a sensor that we desire to take measurements,
-sign/encrypt the data, and then send this to other devices in our network. Our
-Super Secure Device is an IoT device that gains network connectivity using a
-Thread network that also hosts devices from other IoT companies---importantly
-our competitor, Lazy Security LLC. Although Thread networking, a popular IoT
+One technique is to use an additional layer of encryption. Perhaps our company,
+Super Secure Systems Corp makes a sensor that we desire to take measurements,
+encrypt the data, and then send this to other devices in our network. Our Super
+Secure Device is an IoT device that gains network connectivity using a Thread
+network that also hosts devices from other IoT companies---importantly our
+competitor, Lazy Security LLC. Although Thread networking, a popular IoT
 protocol, possesses security measures to encrypt network traffic, all devices
 within the network are able to decrypt Thread packets. For these reasons, we
-need to encrypt our Super Secure Device sensor data to be sure it originates
-from other Super Secure Systems devices (and not our malicious competitor Lazy
-Security LLC).
+need to encrypt our Super Secure Device sensor data to be sure that the spies
+from our competitor, Lazy Security LLC, who ity LLC) and also to ensure that
+Lazy Security LLC's spies are not able to snoop on the data we are sending.
 
 To encrypt/decrypt our data, notice that we require all our devices to possess
 the Super Secure Systems encryption key. How can we securely ship our devices
-with the needed key to confirm that the received data is signed?
+with the needed key?
 
 A hardware root of trust provides the ability to securely store and ship a
 device with keys (more on this in a bit!). Tock's design allows for easily
@@ -41,8 +41,7 @@ to determine the authenticity of received data.
 We will first introduce Thread Networking, a popular IoT wireless networking
 protocol and demonstrate Tock's support for OpenThread. Using our now networked
 device, we will then leverage Tock's security guarantees and ability to provide
-a root of trust that can securely store our encryption key and determine if
-received data is properly signed.
+a root of trust that can securely store our encryption key and decrypt .
 
 ## Hardware Notes
 
@@ -51,7 +50,7 @@ the nrf52840dk board.
 
 ### nRF52840dk Hardware Setup
 
-![nRF52840dk](../../imgs/nrf52840dk.jpg)
+![nRF52840dk](../../../imgs/nrf52840dk.jpg)
 
 There are a couple of configurations on the nRF52840DK board that you should
 double-check:
@@ -92,8 +91,11 @@ This module is broken into 2 stages:
 
 1. Joining a Thread network using Tock.
 
-[Thread Networking](thread.md).
+[Thread Networking](thread-app.md).
 
-2. Using a kernel module to securely decrypt signed data.
+2. Using a kernel module to securely decrypt our sensor data.
 
-[Signed Data](signed-data.md).
+[Signed Data](encrypted-data.md).
+
+Let's get started! [Click here](../thread-primer.md) to continue and start
+learning about Thread networking.

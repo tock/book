@@ -78,7 +78,7 @@ malicious application is unable to harm other applications or the kernel.
 To allow applications to share data, the Tock kernel provides interprocess
 communication (IPC). We will update our applications to use IPC next.
 
-![thread_net_tutorial_apps](../../imgs/thread_net_tutorial_apps.svg)
+![thread_net_tutorial_apps](../../../imgs/thread_net_tutorial_apps.svg)
 
 IPC in Tock is separated into services and clients.
 

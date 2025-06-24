@@ -1,9 +1,9 @@
-# Signed Sensor Data
+# Encrypted Sensor Data
 
-We now will extend our networked device to determine if the data we receive
-originates from our Super Secure Systems device (i.e. is encrypted/signed using
-our company's encryption key). Notice that we currently receive both signed and
-unsigned data.
+We now will extend our networked device to decrypt the sensor readings we
+receive from other Super Secure Systems device that encrypt the data using our
+company's encryption key). Notice that we currently receive both encrypted and
+unencrypted data.
 
 At a high level, both the sender and receiver of our sensor data possess our
 unique key. For simlicity in this tutorial, we have decided to use AES128CTR
@@ -12,17 +12,19 @@ follows:
 
 > |--- HEADER ---|--- IV ---|--- SIGNED DATA --- |
 
+> **NOTE** AES128CTR is not a robust or advisable encryption methodology to use
+> in a real world device. We are using this here for ease of use and
+> demonstration purposes.
+
 Importantly, OpenThread already encrypts the data sent within the Thread
-network. We add this additional layer of encryption not to hide or secure the
-data we are sending but instead to ensure this data originates only from our
-Super Secure Systems nodes that share this Thread network with other devices.
+network. We add this additional layer of encryption to prevent non Super Secure
+Systems devices from snooping on the sensor data we collect.
 
 ## Decrypting Received Packets
 
 Tock provides apps access to cryptographic operations (e.g. an app can request
 the kernel decrypt a given buffer). Naively, we can utilize said kernel
-functionality to decrypt a signed packet and store the key in plaintext in the
-app.
+functionality to decrypt a packet and store the key in plaintext in the app.
 
 Storing such secrets in plaintext, however, is not particularly secure. For
 instance, many microcontrollers offer debug ports which can be used to gain read
@@ -50,14 +52,13 @@ In the interest of time, we provide a completed kernel module with the needed
 userspace bindings (in `oracle.h`) to you. If you are interested in seeing how
 this would be implemented, we provide a thorough walkthrough of creating an
 encryption oracle in the
-[Tock USB Security Key Tutorial](../usb-security-key/key-hotp-oracle.md). Let's
-use this to securely decrypt our signed sensor data!
+[Tock USB Security Key Tutorial](../../usb-security-key/key-hotp-oracle.md).
+Let's use this to securely decrypt our sensor data!
 
-> EXERCISE: Decrypt the signed sensor data UDP packets. and update
-> handleUdpRecv(...) to print both unsigned packets and decrypted signed
-> packets.
+> EXERCISE: Decrypt the encrypted sensor data UDP packets. and update
+> handleUdpRecv(...) to print both unencrypted packets and decrypted packets.
 >
-> Recall, we have decided to structure our signed packets as follows:
+> Recall, we have decided to structure our encrypted packets as follows:
 >
 > |--- HEADER ---|--- IV ---|--- ENCRYPTED DATA --- |
 >
@@ -68,7 +69,7 @@ use this to securely decrypt our signed sensor data!
 > IV is a component of AES128CTR and is needed as an input for decrypting our
 > data.
 
-> **CHECKPOINT** 03_signed_data_final
+> **CHECKPOINT** 03_encrypted_data_final
 
 Congratulations! You now have a complete Tock application that can attach to an
 OpenThread network and use Tock's ability to securely store/decrypt data. This

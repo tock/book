@@ -304,4 +304,4 @@ temperature sensor.
 This concludes the sensor module.
 
 Now that we are able to read the temperature, we will continue on to
-[network our mote using Tock's supported OpenThread stack](comms-app.md).
+[network our mote using Tock's supported OpenThread stack](../thread-primer.md).

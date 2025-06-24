@@ -37,7 +37,7 @@ temperature at the control unit. We use Tock's OpenThread-based communications
 stack and its ability to run multiple concurrent applications to build this
 control unit (_mote_).
 
-![thread_net_figure](../../imgs/thread_net_tutorial_figure.png)
+![thread_net_figure](../../../imgs/thread_net_tutorial_figure.png)
 
 We divide the mote's functionality into three separate applications:
 
@@ -48,7 +48,7 @@ We divide the mote's functionality into three separate applications:
 - Last but not least, the _communication app_ is responsible for exchanging data
   with other participants using the Thread network.
 
-![thread_net_tutorial_apps](../../imgs/thread_net_tutorial_apps.svg)
+![thread_net_tutorial_apps](../../../imgs/thread_net_tutorial_apps.svg)
 
 By decoupling the _sensor_ and _communication_ applications, the Tock kernel
 ensures that the mote can remain responsive even in the case of failures in
@@ -66,7 +66,7 @@ packet.
 
 ## nRF52840dk Hardware Setup
 
-![nRF52840dk with key pieces annotated](../../imgs/nrf52840dk-annotated.jpg)
+![nRF52840dk with key pieces annotated](../../../imgs/nrf52840dk-annotated.jpg)
 
 Make sure the switches and jumpers are properly configured on your board:
 
@@ -172,7 +172,7 @@ directory of the `libtock-c` repository.
 For this tutorial, we assume that one nRF52840DK is dedicated to be a Thread
 router board. As a participant in a hosted tutorial, you will likely not need to
 set this up yourself. However, we do
-[provide a pre-built image and some instructions](./router-setup.md) for how to
+[provide a pre-built image and some instructions](../router-setup.md) for how to
 set up this router as well.
 
 ## Stages

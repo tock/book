@@ -3,21 +3,24 @@
 ---
 
 > _Note:_ If you are a participant at a hosted tutorial, we have already set up
-> a thread router. You should skip this step and
-> [go straight to joining a thread network](thread.md).
+> a thread router. You should skip this step and go straight to the start of the
+> tutorial.
 >
 > Please **do not** set up your own router during a hosted tutorial, as this may
 > confuse other tutorial participants.
 
 ---
 
-The signed sensor data tutorial requires a Thread router to be present, which
-multicasts both signed (encrypted) and unsigned (unencrypted) data to
-participant boards. We provide a pre-built flash image that performs this task
-here:
-[signed-sensor-data-router.hex](../../assets/signed-sensor-data-tutorial/signed-sensor-data-router.hex).
+All Tock Thread Networking tutorials require a Thread router to be present. We
+provide a pre-built flash image that is specific to each thread tutorial:
+[ot-central-controller.hex](../../assets/temperature-sensor/ot-central-controller.hex)
+[encrypted-sensor-data-router.hex](../../assets/encrypted-sensor-data/encrypted-sensor-data-router.hex).
 
 ## Flashing the Binary
+
+The steps for flashing each respective binary are the same. Depending on which
+tutorial you are doing, please use the corresponding `hex` file. For simplicity
+we will reference the `hex` file you will use as `{ROUTER_HEX_FILE}`.
 
 You can flash this binary with an arbitrary tool that can program `hex` files,
 such as `JLinkExe` or `probe-rs`. It may be that you need to reset the board
@@ -25,7 +28,7 @@ after flashing, for example by pressing the physical `RESET` button.
 
 ```
 $ probe-rs
-probe-rs download --chip nRF52840_xxAA --format hex signed-sensor-data-router.hex
+probe-rs download --chip nRF52840_xxAA --format hex {ROUTER_HEX_FILE}
       Erasing ✔ [00:00:13] [##########] 516.00 KiB/516.00 KiB @ 37.43 KiB/s (eta 0s )
 	  Programming ✔ [00:00:11] [########] 516.00 KiB/516.00 KiB @ 46.68 KiB/s (eta 0s )
 	  Finished in 24.86s
@@ -89,11 +92,11 @@ ROMTbl[0] @ E00FF000
 Memory zones:
   Zone: "Default" Description: Default access mode
 Cortex-M4 identified.
-J-Link>loadfile signed-sensor-data-router.hex
+J-Link>loadfile {ROUTER_HEX_FILE}
 'loadfile': Performing implicit reset & halt of MCU.
 Reset: Halt core after reset via DEMCR.VC_CORERESET.
 Reset: Reset device via AIRCR.SYSRESETREQ.
-Downloading file [signed-sensor-data-router.hex]...
+Downloading file [{ROUTER_HEX_FILE}]...
 J-Link: Flash download: Bank 0 @ 0x00000000: 1 range affected (528384 bytes)
 J-Link: Flash download: Total: 17.932s (Prepare: 0.161s, Compare: 0.045s, Erase: 10.840s, Program & Verify: 6.757s, Restore: 0.128s)
 J-Link: Flash download: Program & Verify speed: 76 KB/s
