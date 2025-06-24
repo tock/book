@@ -72,7 +72,7 @@ available at `suspicious_service_milestone_one/`.
 2. Next, obtain the start addresses of our attack service and the encryption
    service we installed previously. To do this, we'll rebuild the kernel and add
    an additional feature. Under our board definition in
-   `tock/boards/ tutorials nrf52840dk-root-of-trust-tutorial/`, you'll want to
+   `tock/boards/tutorials nrf52840dk-root-of-trust-tutorial/`, you'll want to
    make the following change so that the process load debugging is enabled for
    the kernel:
 
@@ -307,7 +307,7 @@ To start, we'll need to open up our board definition in Tock:
    ```
 
 5. Finally, run `make` and then `make install` in our
-   `tock/boards/tutorials/ nrf52840dk-root-of-trust-tutorial/` directory.
+   `tock/boards/tutorials/nrf52840dk-root-of-trust-tutorial/` directory.
 
 Now, when you run the suspicious SRAM dump service, you should see something
 like the following:
