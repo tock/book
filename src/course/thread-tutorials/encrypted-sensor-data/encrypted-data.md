@@ -1,8 +1,8 @@
 # Encrypted Sensor Data
 
 We now will extend our networked device to decrypt the sensor readings we
-receive from other Super Secure Systems device that encrypt the data using our
-company's encryption key). Notice that we currently receive both encrypted and
+receive from other Super Secure Systems devices that encrypt the data using our
+company's encryption key. Notice that we currently receive both encrypted and
 unencrypted data.
 
 At a high level, both the sender and receiver of our sensor data possess our
@@ -10,7 +10,7 @@ unique key. For simlicity in this tutorial, we have decided to use AES128CTR
 encryption and decide to format the payloads of the UDP packets we send as
 follows:
 
-> |--- HEADER ---|--- IV ---|--- SIGNED DATA --- |
+    |--- HEADER ---|--- IV ---|--- SIGNED DATA --- |
 
 > **NOTE** AES128CTR is not a robust or advisable encryption methodology to use
 > in a real world device. We are using this here for ease of use and
