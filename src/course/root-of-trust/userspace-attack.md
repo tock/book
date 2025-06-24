@@ -102,15 +102,12 @@ available at `suspicious_service_milestone_one/`.
    ...
    Loading: org.tockos.tutorials.attestation.encryption [1] flash=0x00048000-0x0004C000 ram=0x2000A000-0x2000BFFF
    ...
-   Loading: org.tockos.tutorials.attestation.suspicious [2] flash=0x0004C000-0x00050000 ram=0x2000C000-0x2000DFFF
-   ...
    No more processes to load: Could not find TBF header.
    ```
 
-   These debug statements are from Tock's application loader. Reviewing the two
-   lines starting with `Loading:`, we can clearly see that the SRAM range for
-   the encryption service is `0x2000A000-0x2000BFFF`, and the encryption range
-   for our "suspicious" SRAM dumping service is `0x2000C000-0x2000DFFF`.
+   These debug statements are from Tock's application loader. Reviewing the line
+   starting with `Loading:`, we can clearly see that the SRAM range for the
+   encryption service is `0x2000A000-0x2000BFFF`.
 
 4. Now that we know where the applications SRAM ranges are, we can attempt to
    dump them. In `libtock-c/examples/tutorials/root_of_trust/`, rename the
@@ -128,17 +125,26 @@ available at `suspicious_service_milestone_one/`.
    printing out over UART e.g. `[<LABEL>] <address>: <value>` to show the value
    at each memory address.
 
-7. In main, call `dump_memory()` to dump the first `0x1000` addresses of the
-   "suspicious" SRAM dumping service you're modifying right now, using the start
-   address obtained above. If desired, use `log_to_screen()` to show indicate
-   when the logging starts/stops. You should (when selecting the "Suspicious
-   service" in the on-device menu) successfully be able to retrieve the bytes of
-   code of the running SRAM dumping service.
+7. In main, call `dump_memory()` to dump the memory of the "suspicious" SRAM
+   dumping service you're modifying right now.
 
-8. After that, try adding another `dump_memory()` call to dump the first
-   `0x1000` addresses of the encryption service. The code should compile fine,
-   but when you check the `tockloader listen` UART console, you should now see a
-   fault dump.
+   To get the address that our SRAM dumping applications's memory starts and
+   ends at, Tock supplies a
+   [`Memop`](https://book.tockos.org/trd/trd104-syscalls.html#46-memop-class-id-5)
+   class of syscalls we can use, which are nicely wrapped in utility functions
+   such as `tock_app_memory_begins_at()` and `tock_app_memory_ends_at()` in
+   libtock-c.
+
+   If desired, use `log_to_screen()` to log when the memory dump starts/stops.
+   You should (when selecting the "Suspicious service" in the on-device menu)
+   successfully be able to retrieve the bytes of code of the running SRAM
+   dumping service.
+
+8. After that, try adding another `dump_memory()` call to dump the memory.
+   Because applications should never need to access each other's memory, you'll
+   need to get this address from the debug output you collected in step 3. Once
+   you've done this, your code should compile fine, but when you check the
+   `tockloader listen` UART console, you should see a fault dump.
 
 With any luck, the fault dump you receive should look something like this:
 
