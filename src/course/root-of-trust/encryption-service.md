@@ -63,7 +63,7 @@ The libtock library is completely asynchronous. Synchronous APIs to the system
 calls are in "libtock-sync". These functions include the call to `yield` and
 expose a synchronous driver interface. Application code can use either.
 
-## Tock Allows and Upcalls
+### Tock Allows and Upcalls
 
 When interacting with drivers in Tock, it's important to note that by design,
 any driver can only access the data you explicitly allow it access to. In Tock,
@@ -76,7 +76,7 @@ In order to easily allow asynchronous driver interfaces, the Tock driver allows
 registering _upcalls_, callbacks which kernel drivers can invoke e.g. to signal
 to an app that a requested operation has completed.
 
-## Interprocess Communication in Tock
+### Interprocess Communication in Tock
 
 Tock has an IPC driver in the kernel which allows userspace apps to advertise
 _IPC services_ with names such as `org.tockos.tutorial.led_service`.
@@ -118,7 +118,7 @@ displaying encryption service logs to the OLED screen, as well as a scaffold for
 developing the remainder of the encryption service userspace app.
 
 1. Inside your copy of `libtock-c`, navigate to
-   `libtock-c/examples/tutorials/ root_of_trust/root_of_trust_starter/`.
+   `libtock-c/examples/tutorials/ root_of_trust/`.
 
    This contains the starter code which you'll work from in the following steps.
    For now, all this application does is present a list of services that the
