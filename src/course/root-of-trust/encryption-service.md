@@ -172,10 +172,11 @@ loop in an application; however, when using Tock, separating these
 functionalities into different apps is helpful from a security perspective.
 We'll discuss this more in the next part of the tutorial.
 
-First, let's modify our scaffold in `encryption_service/main.c` to respond to
-the main screen app's dispatch signal using Tock's interprocess communication
-(IPC) driver. Completed code is available in `root_of_trust_milestone_one/` if
-you run into issues.
+First, let's modify our scaffold in `encryption_service_starter/main.c` to
+respond to the main screen app's dispatch signal using Tock's interprocess
+communication (IPC) driver. Rename the directory in your local copy from
+`encryption_service_starter/` to `encryption_service/`. Completed code is
+available in `encryption_service_milestone_one/` if you run into issues.
 
 1. Take a look in `screen/main.c` at the `select_rot_service()` function. This
    function, called by `main()`, takes in the name of an IPC service hosted e.g.
@@ -274,7 +275,7 @@ the end of this section we include a challenge in this vein for after the
 tutorial is complete.
 
 To start, let's retrieve the secret from the user over UART to parse. Completed
-code is available in `root_of_trust_milestone_two/` if you run into issues.
+code is available in `encryption_service_milestone_two/` if you run into issues.
 
 1. In `encryption_service/main.c`, create a `request_plaintext()` function which
    prompts a user over UART for plaintext into a provided buffer with a provided
@@ -312,7 +313,7 @@ Finally, we want to actually encrypt our messages before we report them.
 
 > **NOTE:** If you've completed the HOTP tutorial prior, the same implementation
 > of `oracle.c` there will work--feel free to simply copy it over from
-> `root_of_trust_milestone_three/` if you've already implemented it before.
+> `encryption_service_milestone_three/` if you've already implemented it before.
 
 We first create a new file to house our interface to the encryption oracle
 driver, then integrate it into `main`:
@@ -321,7 +322,8 @@ driver, then integrate it into `main`:
    prototype (don't forget to `#include <stdint.h>`!):
 
    ```
-   int oracle_encrypt(const uint8_t* plaintext, int plaintext_len, uint8_t* output, int output_len, uint8_t iv[16]);
+   int oracle_encrypt(const uint8_t* plaintext, int plaintext_len, uint8_t*
+                      output, int output_len, uint8_t iv[16]);
    ```
 
 2. Create a source file `oracle.c` next to `oracle.h` with an implementation of
@@ -439,7 +441,7 @@ tutorial:
    - For an example this struct in use, see the ECDSA test capsule in
      `capsules/ ecdsa_sw/src/test/p256.rs` as well as the test board
      configuration in
-     `boards/configurations/nrf52840dk/nrf52840dk-test-kernel/ src/test/ ecdsa_p256_test.rs`
+     `boards/configurations/nrf52840dk/nrf52840dk-test-kernel/src/test/ecdsa_p256_test.rs`
      which depends on it.
 
 3. Finally, you'll want to create a new userspace interface to this driver akin
@@ -453,6 +455,5 @@ you need for an application to a full implementation and integration into a
 userspace app.
 
 [^1] This is _almost_ true: the nRF52840 chip contains the closed-source ARM
-TrustZone CryptoCell 310, which has support for ECDSA signatures, but sadly due
-to its closed-source nature it's not currently possible to easily write a driver
-for it.
+TrustZone CryptoCell 310, which has support for ECDSA signatures, but sadly
+there's not driver support for it yet (due to its closed-source nature).
