@@ -60,9 +60,11 @@ Let's use this to securely decrypt our sensor data!
 >
 > Recall, we have decided to structure our encrypted packets as follows:
 >
+> ```
 > |--- HEADER ---|--- IV ---|--- ENCRYPTED DATA --- |
 >
 >     3 bytes      16 bytes        (N) bytes
+> ```
 >
 > To denote our Super Secure System encrypted packets, we use a header of
 > {"R","O","T"} (root of trust) followed by our initialization vector (IV). The

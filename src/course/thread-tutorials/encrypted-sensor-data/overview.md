@@ -91,7 +91,8 @@ This module is broken into 2 stages:
 
 1. Joining a Thread network using Tock. [Thread Networking](thread-app.md).
 
-2. Using a kernel module to securely decrypt our sensor data. [Signed Data](encrypted-data.md).
+2. Using a kernel module to securely decrypt our sensor data.
+   [Signed Data](encrypted-data.md).
 
 Let's get started! [Click here](../thread-primer.md) to continue and start
 learning about Thread networking.
