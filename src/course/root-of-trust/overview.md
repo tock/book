@@ -9,7 +9,7 @@ placing emphasis on why Tock is well-suited for this role.
 A hardware root of trust (HWRoT) is a security-hardened device intended to
 provide the foundation of trust for the system they're integrated into. Systems
 such as mobile phones, servers, and industrial control systems run code and
-access data that needs to be trusted, and if compromised could have severe
+access data that needs to be trusted, and if compromised, could have severe
 negative impacts. HWRoTs serve to ensure the trustworthiness of the code and
 data their system uses to prevent these outcomes.
 
@@ -43,7 +43,7 @@ Some notable examples of HWRoTs include:
 In practice, hardware roots of trust are essential for providing support for all
 kinds of operations, including:
 
-- **Application-level cryptography**: while any processor can be used to perform
+- **Application-level cryptography**: While any processor can be used to perform
   cryptographic operations, doing so on a non-hardened processor can result in
   side-channel leaks or vulnerability to fault injection attacks, allowing
   attackers to uncover secrets. HWRoTs are specifically designed to prevent such
@@ -171,7 +171,7 @@ directory of the `libtock-c` repository.
 
 ## Stages
 
-This module is broken into four stages:
+This module is broken into two stages:
 
 1. [Creating a simple encryption service](encryption-service.md)
 2. [Preventing attacks at runtime with the MPU](userspace-attack.md)

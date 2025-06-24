@@ -118,7 +118,7 @@ displaying encryption service logs to the OLED screen, as well as a scaffold for
 developing the remainder of the encryption service userspace app.
 
 1. Inside your copy of `libtock-c`, navigate to
-   `libtock-c/examples/tutorials/ root_of_trust/`.
+   `libtock-c/examples/tutorials/root_of_trust/`.
 
    This contains the starter code which you'll work from in the following steps.
    For now, all this application does is present a list of services that the
@@ -428,18 +428,18 @@ tutorial:
      change the key the signer uses.
 
    - You can base your work off the encryption oracle implementation in
-     `capusles/extra/tutorials/ encryption_oracle_chkpt5.rs`. Most of the logic
+     `capusles/extra/tutorials/encryption_oracle_chkpt5.rs`. Most of the logic
      for tracking driver state should remain the same, but instead of the driver
      struct containing an instance of an AES struct used encrypt, your driver
      struct will contain an `EcdsaP256SignatureSigner` used to sign.
 
 2. Next, you'll want to create a board definition based off the one in
-   `boards/ nordic/nrf52840dk/src/main.rs` which instantiates a
+   `boards/nordic/nrf52840dk/src/main.rs` which instantiates a
    `EcdsaP256SignatureSigner` and your signing oracle driver, passing the former
    to the latter on creation.
 
    - For an example this struct in use, see the ECDSA test capsule in
-     `capsules/ ecdsa_sw/src/test/p256.rs` as well as the test board
+     `capsules/ecdsa_sw/src/test/p256.rs` as well as the test board
      configuration in
      `boards/configurations/nrf52840dk/nrf52840dk-test-kernel/src/test/ecdsa_p256_test.rs`
      which depends on it.
