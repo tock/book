@@ -12,7 +12,7 @@ follows:
 
     |--- HEADER ---|--- IV ---|--- SIGNED DATA --- |
 
-> **NOTE** AES128CTR is not a robust or advisable encryption methodology to use
+> **NOTE** AES128CTR is not an authenticated encryption scheme and is probably not appropriate to use
 > in a real world device. We are using this here for ease of use and
 > demonstration purposes.
 
