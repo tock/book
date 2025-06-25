@@ -1,4 +1,4 @@
-# Summary
+#Summary
 
 [Introduction](./introduction.md)
 
@@ -20,13 +20,18 @@
     - [Encryption Oracle Capsule](./course/usb-security-key/key-hotp-oracle.md)
     - [Access Control](./course/usb-security-key/key-hotp-access.md)
     - [Security Key Demo](./course/usb-security-key/key-hotp-demo.md)
-  - [Thread Temperature Sensor](./course/thread-net/overview.md)
-    - [Router Setup](./course/thread-net/router-setup.md)
-    - [Sensor App](./course/thread-net/sensor-app.md)
-    - [Communications App](./course/thread-net/comms-app.md)
-    - [Screen App](./course/thread-net/screen-app.md)
-    - [IPC](./course/thread-net/ipc.md)
-    - [Robustness](./course/thread-net/robustness.md)
+  - [Thread Networking Tutorials](./course/thread-tutorials/overview.md)
+    - [Router Setup](./course/thread-tutorials/router-setup.md)
+    - [Thread Primer](./course/thread-tutorials/thread-primer.md)
+    - [Temperature Sensor](./course/thread-tutorials/temperature-sensor/overview.md)
+      - [Sensor App](./course/thread-tutorials/temperature-sensor/sensor-app.md)
+      - [Communications App](./course/thread-tutorials/temperature-sensor/comms-app.md)
+      - [Screen App](./course/thread-tutorials/temperature-sensor/screen-app.md)
+      - [IPC](./course/thread-tutorials/temperature-sensor/ipc.md)
+      - [Robustness](./course/thread-tutorials/temperature-sensor/robustness.md)
+    - [Thread and Encrypted Sensor Data](./course/thread-tutorials/encrypted-sensor-data/overview.md)
+      - [Thread Networking](./course/thread-tutorials/encrypted-sensor-data/thread-app.md)
+      - [Encrypted Data](./course/thread-tutorials/encrypted-sensor-data/encrypted-data.md)
   - [Dynamic Apps and Secure Policies](./course/dynamic-apps-and-policies/overview.md)
     - [Process Manager](./course/dynamic-apps-and-policies/process-manager.md)
     - [App Loader](./course/dynamic-apps-and-policies/app-loader.md)
