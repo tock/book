@@ -178,3 +178,4 @@ This module is broken into two stages:
 
 1. [Creating a simple encryption service](encryption-service.md)
 2. [Preventing attacks at runtime with the MPU](userspace-attack.md)
+3. [Preventing attacks at compile-time with Tock's isolation guarantees](kernel-attack.md)
