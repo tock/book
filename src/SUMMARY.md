@@ -1,4 +1,4 @@
-# Summary
+#Summary
 
 [Introduction](./introduction.md)
 
@@ -29,7 +29,7 @@
       - [Screen App](./course/thread-tutorials/temperature-sensor/screen-app.md)
       - [IPC](./course/thread-tutorials/temperature-sensor/ipc.md)
       - [Robustness](./course/thread-tutorials/temperature-sensor/robustness.md)
-    - [Thread and Signed Sensor Data](./course/thread-tutorials/encrypted-sensor-data/overview.md)
+    - [Thread and Encrypted Sensor Data](./course/thread-tutorials/encrypted-sensor-data/overview.md)
       - [Thread Networking](./course/thread-tutorials/encrypted-sensor-data/thread-app.md)
       - [Encrypted Data](./course/thread-tutorials/encrypted-sensor-data/encrypted-data.md)
   - [Dynamic Apps and Secure Policies](./course/dynamic-apps-and-policies/overview.md)
