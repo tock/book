@@ -28,7 +28,7 @@ Following this analogy, Rust _traits_ are approximately like interfaces in other
 languages: they let you specify shared behavior between types. For instance, the
 `Clone` trait in Rust roughly looks like
 
-```
+```rust
 pub trait Clone {
   fn clone(&self) -> Self;
 }
@@ -40,7 +40,7 @@ a reference to itself (`&self`).
 
 Types can be bound by traits: for instance, a function signature like
 
-```
+```rust
 fn duplicate<C: Clone>(value: C) { ... }
 ```
 
@@ -56,7 +56,7 @@ implement to indicate that they're safe to share between threads.
 Because such traits can't be compiler-verified, the Rust compiler requires
 implementations of them to be marked as `unsafe` as well, e.g.
 
-```
+```rust
 struct MyStruct { ... }
 
 unsafe impl Send for MyStruct {}
@@ -98,7 +98,7 @@ piece by piece here. First, we import everything and define a driver number to
 identify our driver with. Since our encryption oracle uses `0x99999`, we'll use
 `0x99998`.
 
-```
+```rust
 use kernel::capabilities::ProcessManagementCapability;
 use kernel::syscall::{CommandReturn, SyscallDriver};
 use kernel::{ErrorCode, Kernel, ProcessId};
@@ -111,7 +111,7 @@ have a reference to the kernel, as well as a _capability_ of generic type `C`.
 This capability will be necessary in a second, but for now we take it for
 granted.
 
-```
+```rust
 pub struct FaultAllProcesses<C: ProcessManagementCapability> {
     kernel: &'static Kernel,
     capability: C,
@@ -121,7 +121,7 @@ pub struct FaultAllProcesses<C: ProcessManagementCapability> {
 We then define a constructor which simply takes in a reference to the Tock
 kernel and the capability itself we want.
 
-```
+```rust
 impl<C: ProcessManagementCapability> FaultAllProcesses<C> {
     pub fn new(kernel: &'static Kernel, capability: C) -> Self {
         FaultAllProcesses { kernel, capability }
@@ -140,7 +140,7 @@ action, using the Tock kernel's `hardfault_all_apps()` method. All other
 commands (the `_ => ...` arm of the `match`) return a failure with error code
 `NOSUPPORT`, indicating we only support command numbers 0 and 1.
 
-```
+```rust
 impl<C: ProcessManagementCapability> SyscallDriver for FaultAllProcesses<C> {
     fn command(&self, command_num: usize, _: usize, _: usize, _: ProcessId) -> CommandReturn {
         match command_num {
@@ -161,7 +161,7 @@ impl<C: ProcessManagementCapability> SyscallDriver for FaultAllProcesses<C> {
 If we take a look at the implementation of `Kernel::hardfault_all_apps()`, we'll
 see that it has signature
 
-```
+```rust
 pub fn hardfault_all_apps<C: capabilities::ProcessManagementCapability>(&self, _c: &C) { ... }
 ```
 
@@ -181,7 +181,7 @@ get started.
 1. First, let's define our new `FaultAllProcessesCapability` type. In Tock, the
    `ProcessManagementCapability` we need to implement is defined as follows:
 
-   ```
+   ```rust
    /// The `ProcessManagementCapability` allows the holder to control
    /// process execution, such as related to creating, restarting, and
    /// otherwise managing processes.
@@ -192,7 +192,7 @@ get started.
    implement it. Add the following right above the definition of
    `struct Platform` in our `main.rs`:
 
-   ```
+   ```rust
    struct FaultAllProcessesCapability;
    unsafe impl capabilities::ProcessManagementCapability for FaultAllProcessesCapability {}
    ```
@@ -204,7 +204,7 @@ get started.
 2. Now, let's actually add our driver to our platform. We'll want to add a new
    member `fault_all` to our `Platform` struct as follows
 
-   ```
+   ```rust
    struct Platform {
        ...
        fault_all: &'static capsules_extra::tutorials::fault_all_processes::FaultAllProcesses<
@@ -217,7 +217,7 @@ get started.
    indicating "PLATFORM SETUP, SCHEDULER, AND KERNEL LOOP," define an instance
    of our driver using Tock's `static_init!` macro
 
-   ```
+   ```rust
    let fault_all = static_init!(
        capsules_extra::tutorials::fault_all_processes::FaultAllProcesses<
            FaultAllProcessesCapability,
@@ -231,7 +231,7 @@ get started.
 
    and add it into our instantiation of the `Platform` struct below
 
-   ```
+   ```rust
    let platform = Platform {
      ...
      fault_all,
@@ -258,7 +258,7 @@ If you get stuck, see `questionable_service_milestone_one/`.
 - Log to the screen that all apps are about to be hardfaulted
 - Trigger the hardfault driver using `command()`, i.e.
 
-  ```
+  ```rust
   syscall_return_t cr = command(/* driver num */ 0x99998, /* command num */ 1, 0, 0);
   ```
 
@@ -277,7 +277,7 @@ One idea might be to move the `unsafe impl` into our driver code. Unfortunately,
 if we try that, e.g. by moving the struct definition into
 `fault_all_proceses.rs` and changing our `Kernel::hardfault_all_apps()` call to
 
-```
+```rust
 struct FaultAllProcessesCapability;
 unsafe impl capabilities::ProcessManagementCapability for FaultAllProcessesCapability {}
 
