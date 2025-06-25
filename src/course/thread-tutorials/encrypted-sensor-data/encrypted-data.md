@@ -12,9 +12,9 @@ follows:
 
     |--- HEADER ---|--- IV ---|--- SIGNED DATA --- |
 
-> **NOTE** AES128CTR is not an authenticated encryption scheme and is probably not appropriate to use
-> in a real world device. We are using this here for ease of use and
-> demonstration purposes.
+> **NOTE** AES128CTR is not an authenticated encryption scheme and is probably
+> not appropriate to use in a real world device. We are using this here for ease
+> of use and demonstration purposes.
 
 Importantly, OpenThread already encrypts the data sent within the Thread
 network. We add this additional layer of encryption to prevent non Super Secure
@@ -32,8 +32,6 @@ and write access to flash. Even if these ports can be locked down, such
 protection mechanisms have been broken in the past. Apart from that, disallowing
 external flash access makes debugging and updating our device much more
 difficult.
-
-[TODO NOTE: update naming encryption oracle]
 
 To circumvent these issues, we will use an encryption oracle capsule: this Tock
 kernel module will allow applications to request decryption of some ciphertext,
