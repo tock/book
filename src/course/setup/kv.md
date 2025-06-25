@@ -34,7 +34,7 @@ Again we will use components to add key-value support to the kernel.
 ### 1. Include the Key-Value Stack Types
 
 The KV stack includes many layers which leads to rather complex types. For more
-information about the KV stack in Tock, see the [TicKV](../../course/tickv.md)
+information about the KV stack in Tock, see the [TicKV](../../doc/tickv.md)
 reference. To simplify somewhat, we define a series of types used at each layer
 of the stack. Include these towards the top of main.rs:
 

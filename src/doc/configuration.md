@@ -9,7 +9,7 @@ configuration that Tock supports:
 
 1. Per-board customization of kernel components. For example, choosing the
    scheduling algorithm the kernel uses. The
-   [policies guide](../course/policies.md) goes into more depth on this
+   [policies guide](../course/sensor/policies.md) goes into more depth on this
    configuration variant.
 2. Crate-level composition of kernel code. Building a functional kernel consists
    of using several crates, and choosing specific crates can configure the

@@ -452,39 +452,23 @@ processes. However, to verify credentials, we need asynchronous operations
 during loading and therefore need an asynchronous process loader.
 
 ```rust
-let process_binary_array = static_init!(
-    [Option<kernel::process::ProcessBinary>; NUM_PROCS],
-    [None, None, None, None, None, None, None, None]
-);
-
-let loader = static_init!(
-    kernel::process::SequentialProcessLoaderMachine<
-        nrf52840::chip::NRF52<Nrf52840DefaultPeripherals>,
-    >,
-    kernel::process::SequentialProcessLoaderMachine::new(
-        checker,
-        &mut *addr_of_mut!(PROCESSES),
-        process_binary_array,
-        board_kernel,
-        chip,
-        core::slice::from_raw_parts(
-            core::ptr::addr_of!(_sapps),
-            core::ptr::addr_of!(_eapps) as usize - core::ptr::addr_of!(_sapps) as usize,
-        ),
-        core::slice::from_raw_parts_mut(
-            core::ptr::addr_of_mut!(_sappmem),
-            core::ptr::addr_of!(_eappmem) as usize - core::ptr::addr_of!(_sappmem) as usize,
-        ),
-        &FAULT_RESPONSE,
-        assigner,
-        &process_management_capability
-    )
-);
-
-checker.set_client(loader);
-
-loader.register();
-loader.start();
+// Create and start the asynchronous process loader.
+let loader = components::loader::sequential::ProcessLoaderSequentialComponent::new(
+    checker,
+    &mut *addr_of_mut!(PROCESSES),
+    board_kernel,
+    chip,
+    fault_policy,
+    assigner,
+    storage_permissions_policy,
+    app_flash,
+    app_memory,
+)
+.finalize(components::process_loader_sequential_component_static!(
+    nrf52840::chip::NRF52<Nrf52840DefaultPeripherals>,
+    kernel::process::ProcessStandardDebugFull,
+    NUM_PROCS
+));
 ```
 
 (Instead of the `kernel::process::load_processes(...)` function.)
@@ -627,9 +611,7 @@ impl ProcessFaultPolicy for RestartTrustedAppsFaultPolicy {
 That's it! Now we have the full policy: we verify application credentials, and
 handle process faults accordingly.
 
-> ### Task
->
-> Compile and install multiple applications, including the crash dummy app, and
-> verify that only credentialed apps are successfully restarted.
+> **Task**: Compile and install multiple applications, including the crash dummy
+> app, and verify that only credentialed apps are successfully restarted.
 
 > **SUCCESS:** We now have implemented an end-to-end security policy in Tock!
