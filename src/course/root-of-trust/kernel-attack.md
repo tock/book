@@ -7,7 +7,7 @@ context.
 Our last attempt at an attack on the HWRoT encryption service--an SRAM dumping
 attack--assumed that we were able to load a malicious application in the first
 place. To give our attacker even more of an advantage this time, let's assume
-that a hypothetical attacker of our HWRoT might try slip some quesitonable logic
+that a hypothetical attacker of our HWRoT might try slip some questionable logic
 into a kernel driver, and see how Tock provides defense-in-depth via
 language-based isolation at the driver level.
 
@@ -93,7 +93,7 @@ as usual.
 
 As a first step, we'll need to create a new capsule. For simplicity, since the
 capsule is only a few lines, we simply provide it for you in
-`tock/capsules/ extra/src/tutorials/fault_all_processes.rs` and reproduce it
+`tock/capsules/extra/src/tutorials/fault_all_processes.rs` and reproduce it
 piece by piece here. First, we import everything and define a driver number to
 identify our driver with. Since our encryption oracle uses `0x99999`, we'll use
 `0x99998`.
