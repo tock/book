@@ -94,5 +94,11 @@ This module is broken into 2 stages:
 2. Using a kernel module to securely decrypt our sensor data.
    [Encrypted Data](encrypted-data.md).
 
+As a note, the relevant source files can be found in the respective locations:
+
+- Tock kernel: `tock/boards/tutorials/nrf52840dk-thread-tutorial`
+- libtock-c checkpoints:
+  `libtock-c/examples/tutorials/thread_tutorials/encrypted_sensor_data`
+
 Let's get started! [Click here](../thread-primer.md) to continue and start
 learning about Thread networking.

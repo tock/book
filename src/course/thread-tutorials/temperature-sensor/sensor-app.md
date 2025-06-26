@@ -134,7 +134,7 @@ We provide some scaffolding for this tutorial. Make sure to enter the following
 directory:
 
 ```bash
-$ cd libtock-c/examples/tutorials/thread_network
+$ cd libtock-c/examples/tutorials/thread_tutorials/temperature_sensor/
 $ ls
 00_sensor_hello
 01_sensor_final
