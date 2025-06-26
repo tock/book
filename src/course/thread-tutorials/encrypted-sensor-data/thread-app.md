@@ -32,16 +32,16 @@ steps to join a Thread network include:
 
 Each of these steps are accomplished using functions the OpenThread API exposes.
 
-> **CHECKPOINT:** `00_openthread`
+> **CHECKPOINT:** `00_thread_network`
 
-We provide a skeleton implementation in `00_openthread` that is missing the
+We provide a skeleton implementation in `00_thread_network` that is missing the
 logic needed to attach to the thread network. Your task is to add the needed
 OpenThread API calls to attach your device to the thread network.
 
-As before, begin by making a copy of the starting checkpoint to work from:
+Let's begin by making a copy of the starting checkpoint to work from:
 
 ```bash
-$ cp -r 00_openthread my_openthread
+$ cp -r 00_thread_network my_openthread
 $ cd my_openthread
 ```
 
@@ -122,6 +122,8 @@ Internally, our provided `initUDP` function registers our receive callback
 Add the following functions to the communication application's `main.c`:
 
 ```c
+#include<ctype.h>
+
 static otUdpSocket sUdpSocket;
 
 void initUdp(otInstance* instance);
@@ -145,7 +147,13 @@ void handleUdpRecv(void* aContext, otMessage* aMessage,
   buf[length] = '\n';
 
   for (int i = 0; i < length; i++) {
-    printf("%c", buf[i]);
+    if(isprint((unsigned char)buf[i])) {
+      printf("%c", buf[i]);
+    } else {
+      // In case the received char is not
+      // printable, print '-'
+      printf("-");
+    }
   }
 
   printf("\n");

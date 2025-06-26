@@ -28,9 +28,9 @@ with the needed key?
 A hardware root of trust provides the ability to securely store and ship a
 device with keys (more on this in a bit!). Tock's design allows for easily
 creating secure systems that utilize a root of trust (for more details on how
-Tock can be used as a root of trust see [(TODO) LINK FOR ZERORISC MODULE]().
-Furthermore, Tock also possesses "out of the box" support for joining a Thread
-network.
+Tock can be used as a root of trust see
+[the root of trust tutorial](../../root-of-trust/overview.md)). Furthermore,
+Tock also possesses "out of the box" support for joining a Thread network.
 
 ## Goal
 
