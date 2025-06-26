@@ -6,12 +6,12 @@ placing emphasis on why Tock is well-suited for this role.
 
 ## Background
 
-A hardware root of trust (HWRoT) is a security-hardened device intended to
-provide the foundation of trust for the system they're integrated into. Systems
-such as mobile phones, servers, and industrial control systems run code and
-access data that needs to be trusted, and if compromised, could have severe
-negative impacts. HWRoTs serve to ensure the trustworthiness of the code and
-data their system uses to prevent these outcomes.
+A hardware root of trust (HWRoT) is a security-hardened device that provides the
+foundation of trust for another computing system. Systems such as mobile phones,
+servers, and industrial control systems run code and access data that needs to
+be trusted, and if compromised, could have severe negative impacts. HWRoTs serve
+to ensure the trustworthiness of the code and data their system uses to prevent
+these outcomes.
 
 HWRoTs can come in two flavors: discrete and integrated.
 
@@ -69,8 +69,8 @@ kinds of operations, including:
 
 - **Hardware attestation**: Often with internet-connected devices, it's
   important for a server to be able to verify that it's connected to a valid,
-  uncompromised device before transfering data back-and-forth. During boot, each
-  boot stage of a device with a HWRoT can generate and sign certificates
+  uncompromised device before transferring data back-and-forth. During boot,
+  each boot stage of a device with a HWRoT can generate and sign certificates
   attesting to the hash of the next boot stage's value. Each of these
   certificates establishes a _conditional trust_, demonstrating that a given
   stage is uncompromised, provided that all previous stages are also
@@ -93,14 +93,9 @@ For accessibility, we will use a standard microcontroller in this demo rather
 than an actual hardware root of trust; that said, the principles in this demo
 apply readily to any HWRoT.
 
-To fully follow this guide you will need a hardware board that supports a
-peripheral USB port (i.e. where the microcontroller has USB hardware support).
-In the future, this tutorial may be extended to support other boards, but for
-now only the nrf52840dk is supported.
-
-Compatible boards:
-
-- nRF52840dk
+This guide was designed for the nRF52840dk with an attached screen. However,
+other hardware will work but will need some additional configuration to match
+the directions presented here.
 
 ## Goal
 
