@@ -133,9 +133,8 @@ instantiated that may not be included by default with a particular kernel:
 1. [Screen](../setup/screen.md)
 2. [Encryption Oracle](../usb-security-key/key-hotp-oracle.md)
 
-The easiest way to get a kernel image with these installed is to use the [HOTP
-tutorial configuration for the nRF52840dk]
-(https://github.com/tock/tock/tree/master/boards/tutorials/nrf52840dk-hotp-tutorial).
+The easiest way to get a kernel image with these installed is to use the
+[Hardware Root of Trust tutorial configuration for the nRF52840dk](https://github.com/tock/tock/tree/master/boards/tutorials/nrf52840dk-root-of-trust-tutorial).
 
 ```
 cd tock/boards/tutorials/nrf52840dk-root-of-trust-tutorial

@@ -5,10 +5,10 @@ we'll use in later parts to demonstrate Tock's strengths as a hardware root of
 trust OS.
 
 We have already configured our kernel as needed to provide access to the OLED
-screen and the _encryption oracle_ driver from the [HOTP demo](../
-usb-security-key/key-hotp-oracle.md). This driver has a built-in AES key that we
-can use to encrypt messages without our userspace application ever making
-contact with the key itself.
+screen and the _encryption oracle_ driver from the
+[HOTP demo](../usb-security-key/key-overview.md). This driver has a built-in
+AES key that we can use to encrypt messages without our userspace application
+ever making contact with the key itself.
 
 ## Background
 
@@ -23,9 +23,9 @@ in the YubiKey 5 series) might communicate over a standard device-internal bus
 like SPI or I2C, or might even communicate directly with a host over USB.
 
 Often, smaller secure elements like the SLE78 will receive commands and deliver
-responses encoded as [application protocol data units (APDUs)](https://
-en.wikipedia.org/wiki/Smart_card_application_protocol_data_unit), a holdover
-from the smart card industry.
+responses encoded as
+[application protocol data units (APDUs)](https://en.wikipedia.org/wiki/Smart_card_application_protocol_data_unit),
+a holdover from the smart card industry.
 
 While we could replicate this behavior for our encryption service by passing
 APDUs back and forth over USB, we elide this complexity for the sake of
@@ -197,9 +197,9 @@ available in `encryption_service_milestone_one/` if you run into issues.
    `org.tockos.tutorials.root_of_trust.encryption_service` and then yields until
    that callback is triggered by the main screen app.
 
-   - You'll want to use the IPC function [`ipc_register_service_callback()`]
-     (https://github.com/tock/libtock-c/blob/master/libtock/kernel/ipc.h) to
-     register your callback function. See the documentation there for how the
+   - You'll want to use the IPC function
+     [`ipc_register_service_callback()`](https://github.com/tock/libtock-c/blob/master/libtock/kernel/ipc.h)
+     to register your callback function. See the documentation there for how the
      signature of your callback function should look.
    - The callback function you write should set a global `bool` from false to
      true. `wait_for_start()` can then use the
@@ -330,8 +330,9 @@ driver, then integrate it into `main`:
 2. Create a source file `oracle.c` next to `oracle.h` with an implementation of
    this function, using the encryption oracle to encrypt `plaintext` and placing
    the result in `output_len`. The `iv` buffer should be used to return the
-   randomized [initialization vector](https://en.wikipedia.org/wiki/
-   Initialization_vector) generated for encryption.
+   randomized
+   [initialization vector](https://en.wikipedia.org/wiki/Initialization_vector)
+   generated for encryption.
 
    - To randomize the IV, you'll want to use
      `libtocksync_rng_get_random_bytes()`.
@@ -404,13 +405,14 @@ be extracted by eavesdroppers; meanwhile, the latter provides authenticity of
 results so attackers can't impersonate either party.
 
 While designing a secure channel is a surprisingly tricky task, many existing
-frameworks exist, e.g. the popular [Noise Protocol Framework](https://
-noiseprotocol.org/) used by many projects including the well-known WireGuard
-VPN. As a step in this direction, the challenge described here is to just
-provide authentication using [ECDSA signatures](https://en.wikipedia.org/wiki/
-Elliptic_Curve_Digital_Signature_Algorithm) for the ciphertexts that the root of
-trust produces, so that a client of the encryption service can be sure that the
-results they receive came from our root of trust.
+frameworks exist, e.g. the popular
+[Noise Protocol Framework](https://noiseprotocol.org/) used by many projects
+including the well-known WireGuard VPN. As a step in this direction, the
+challenge described here is to just provide authentication using
+[ECDSA signatures](https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm)
+for the ciphertexts that the root of trust produces, so that a client of the
+encryption service can be sure that the results they receive came from our root
+of trust.
 
 Here is an outline for how one might go about doing so--these steps are
 intentionally a bit vague, as this is intended more to serve as a longer-term
