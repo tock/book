@@ -54,13 +54,14 @@ kernel decides which applications to run and what permissions they should be
 given.
 
 Applications make requests to the OS kernel through system calls. Applications
-instruct the kernel using "command" system calls, and the kernel notifies
-applications with upcalls the application must "subscribe" to. Importantly, upcalls never interrupt a running
-application. The application must `yield` to receive upcalls (i.e. callbacks).
+instruct the kernel using Command system calls, and the kernel notifies
+applications with upcalls the application must `subscribe` to. Importantly,
+upcalls never interrupt a running application. The application must `yield` to
+receive upcalls (i.e. callbacks).
 
-The userspace library ("libtock") wraps system calls in easier to use functions.
+The userspace library (`libtock`) wraps system calls in easier to use functions.
 The libtock library is completely asynchronous. Synchronous APIs to the system
-calls are in "libtock-sync". These functions include the call to `yield` and
+calls are in `libtock-sync`. These functions include the call to `yield` and
 expose a synchronous driver interface. Application code can use either.
 
 ### Tock Allows and Upcalls
@@ -83,13 +84,13 @@ _IPC services_ with names such as `org.tockos.tutorial.led_service`.
 Applications that want to make requests over IPC can use the `ipc_discover()`
 function with an IPC service name to fetch the application ID of the app hosting
 the service. After this is done, the requesting app can register callbacks,
-allow access to shared buffers, and finally "notify" the IPC service to perform
+allow access to shared buffers, and finally `notify` the IPC service to perform
 some operation.
 
 ## Submodule Overview
 
-We have three small milestones in this section, all of which build upon
-supplied starter code.
+We have three small milestones in this section, all of which build upon supplied
+starter code.
 
 1. Milestone one adds support for interacing with a dispatch/logging service, to
    illustrate how various root of trust services might be dispatched in practice
@@ -128,22 +129,20 @@ developing the remainder of the encryption service userspace app.
    subdirectory, run
 
    ```
-   make
-   tockloader install
+   make install
    ```
 
 3. Next, navigate to the `encrypt_service/` subdirectory in the same parent
    folder and load it as well by again running
 
    ```
-   make
-   tockloader install
+   make install
    ```
 
 4. After both applications are loaded, you should see a screen which should
    allow you to select a service to dispatch. You can navigate up and down in
-   the menu by using "BUTTON 1" and "BUTTON 3" on the nRF52840dk board, and you
-   can select an option by pressing "BUTTON 2" and then clicking "Start".
+   the menu by using `BUTTON 1` and `BUTTON 3` on the nRF52840dk board, and you
+   can select an option by pressing `BUTTON 2` and then clicking `Start`.
 
    Note that right now, the encryption service doesn't have any code to react to
    requests for dispatch, so if you select it nothing will happen.
@@ -203,9 +202,9 @@ available in `encryption_service_milestone_one/` if you run into issues.
      register your callback function. See the documentation there for how the
      signature of your callback function should look.
    - The callback function you write should set a global `bool` from false to
-     true. `wait_for_start()` can then use the [`yield_for`](https://
-     github.com/tock/libtock-c/blob/c0fa1f3d3865b9af06497fa1fed165cf65debb69/
-     libtock/tock.h) function to wait for this change in state.
+     true. `wait_for_start()` can then use the
+     [`yield_for`](https://github.com/tock/libtock-c/blob/master/libtock/tock.h)
+     function to wait for this change in state.
 
 3. Now, call `wait_for_start()` in `main()`, and follow it with a call to
    `printf()` to send a message to the UART console; this should indicate when
@@ -213,7 +212,7 @@ available in `encryption_service_milestone_one/` if you run into issues.
 
 4. To test this out, build and install your application as previous, then run
    `tockloader listen` in a separate terminal. When you select the encryption
-   service and hit "Start" in the menu, you should see your message in the
+   service and hit `Start` in the menu, you should see your message in the
    console (not on the screen).
 
    > **TIP:** You can leave the console running, even when compiling and
@@ -237,7 +236,7 @@ To do this,
      a message as will fit on the OLED screen. 32 bytes should be sufficient.
      Make sure that the buffer is marked with the `aligned` attribute. i.e.
 
-     ```
+     ```c
      char log_buffer[LOG_WIDTH] __attribute__((aligned(LOG_WIDTH)));
      ```
 
@@ -265,10 +264,12 @@ UART console to allow inputting secrets to encrypt, and make sure that we can
 encode the resulting ciphertext as hex to present back to the user.
 
 In a practical HWRoT setting, it may be inadvisable to send secret values to a
-device "in the clear" where they could be intercepted. For instance, smart cards
-and smaller secure elements often use GlobalPlatform's Secure Channel Protocols
-03 and 11 to establish an encrypted, authenticated channel before exchanging any
-secret information.
+device `in the clear` where they could be intercepted. For instance, smart cards
+and smaller secure elements often make use of GlobalPlatform's Secure Channel
+Protocols such as
+[Secure Channel Protocol 03](https://globalplatform.org/wp-content/uploads/2014/07/GPC_2.3_D_SCP03_v1.1.2_PublicRelease.pdf)
+to establish an encrypted, authenticated channel before exchanging any secret
+information.
 
 For brevity, we won't implement a full secure channel in this protocol, but at
 the end of this section we include a challenge in this vein for after the
@@ -321,7 +322,7 @@ driver, then integrate it into `main`:
 1. Create a header file `oracle.h` in `encryption_service/` with the following
    prototype (don't forget to `#include <stdint.h>`!):
 
-   ```
+   ```c
    int oracle_encrypt(const uint8_t* plaintext, int plaintext_len, uint8_t*
                       output, int output_len, uint8_t iv[16]);
    ```
@@ -348,7 +349,7 @@ driver, then integrate it into `main`:
    - Next, you'll need to set up an upcall to confirm when the encryption is
      done. You'll want the signature of your upcall to look like
 
-     ```
+     ```c
      static void crypt_upcall(__attribute__((unused))  int   num,
                                                        int   len,
                               __attribute__ ((unused)) int   arg2,
@@ -393,8 +394,9 @@ appropriate for a root of trust operating system.
 > **NOTE:** This challenge is open-ended, may take a while, and requires
 > experience working on Tock drivers--it's best approached after completing the
 > remainder of the tutorial. We'll touch on Tock drivers later in this tutorial,
-> but you can also follow the [HOTP tutorial]() for additional practice if you'd
-> like.
+> but you can also follow the
+> [HOTP tutorial](../usb-security-key/key-overview.md) for additional practice
+> if you'd like.
 
 As mentioned earlier, communication channels with a HWRoT are often _encrypted_
 and _authenticated_. The former provides confidentiality so that secrets can't

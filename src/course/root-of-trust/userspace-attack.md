@@ -57,8 +57,8 @@ the same, and starter code for the userspace attack application is in the
 `suspicious_service/` subdirectory.
 
 To launch this 'suspicious' service which we'll use to dump userspace memory,
-simply navigate as per the previous submodule to the "Suspicious service" in the
-on-device menu, select it, and then select "Start" as usual.
+simply navigate as per the previous submodule to the `Suspicious service` in the
+on-device menu, select it, and then select `Start` as usual.
 
 ## Milestone One: Attempting to Dump Memory from SRAM
 
@@ -66,8 +66,8 @@ To start, we first need to set up our attack application to attempt to dump
 memory from SRAM. If you get stuck, an implementation of this milestone is
 available at `suspicious_service_milestone_one/`.
 
-1. If you haven't yet, install the `suspicious_service` as previous using `make`
-   then `tockloader install`.
+1. If you haven't yet, install the `suspicious_service` as previous using
+   `make install`
 
 2. Next, obtain the start addresses of our attack service and the encryption
    service we installed previously. To do this, we'll rebuild the kernel and add
@@ -89,10 +89,10 @@ available at `suspicious_service_milestone_one/`.
     screen_sh1106 = []
    ```
 
-3. After making this change, run (in the same directory) `make` and
-   `make install` so that the new kernel is uploaded. From there, press the
-   "RESET" button on the board, and look at your `tockloader listen` console; it
-   should show something like
+3. After making this change, run (in the same directory) `make install` so that
+   the new kernel is uploaded. From there, press the `RESET` button on the
+   board, and look at your `tockloader listen` console; it should show something
+   like
 
    ```
    [INFO   ] Using "/dev/ttyACM0 - J-Link - CDC".
@@ -126,7 +126,7 @@ available at `suspicious_service_milestone_one/`.
    at each memory address.
 
 7. In main, call `dump_memory()` to dump the first 16KiB (`0x1000` words of
-   memory) of the "suspicious" SRAM dumping service you're modifying right now.
+   memory) of the `suspicious` SRAM dumping service you're modifying right now.
 
    To get the address that our SRAM dumping applications's memory starts at,
    Tock supplies a
@@ -135,7 +135,7 @@ available at `suspicious_service_milestone_one/`.
    such as `tock_app_memory_begins_at()` in libtock-c.
 
    If desired, use `log_to_screen()` to log when the memory dump starts/stops.
-   You should (when selecting the "Suspicious service" in the on-device menu)
+   You should (when selecting the `Suspicious service` in the on-device menu)
    successfully be able to retrieve the bytes of code of the running SRAM
    dumping service.
 
@@ -250,7 +250,7 @@ To start, we'll need to open up our board definition in Tock:
 1. Open `tock/boards/tutorials/nrf52840dk-root-of-trust-tutorial/main.rs`, and
    note where it says
 
-   ```
+   ```rust
    const FAULT_RESPONSE: capsules_system::process_policies::PanicFaultPolicy =
        capsules_system::process_policies::PanicFaultPolicy {};
    ```
@@ -265,7 +265,7 @@ To start, we'll need to open up our board definition in Tock:
 2. To implement our own fault policy, we'll add a new Rust `struct` which
    represents our policy: above the line displayed above, add a line
 
-   ```
+   ```rust
    struct LogThenStopFaultPolicy {}
    ```
 
@@ -274,7 +274,7 @@ To start, we'll need to open up our board definition in Tock:
    which requires us to add an `action()` method that the kernel can call whan a
    running app faults.
 
-   ```
+   ```rust
    impl kernel::process::ProcessFaultPolicy for LogThenStopFaultPolicy {
        fn action(&self, process: &dyn process::Process) -> process::FaultAction {
            kernel::debug!(
@@ -302,11 +302,11 @@ To start, we'll need to open up our board definition in Tock:
    line starting with `const FAULT_RESPONSE: ...` with one that defines
    `FAULT_RESPONSE` as an instance of our new `LogThenStopFaultPolicy`:
 
-   ```
+   ```rust
    const FAULT_RESPONSE: LogThenStopFaultPolicy = LogThenStopFaultPolicy {};
    ```
 
-5. Finally, run `make` and then `make install` in our
+5. Finally, run `make install` in our
    `tock/boards/tutorials/nrf52840dk-root-of-trust-tutorial/` directory.
 
 Now, when you run the suspicious SRAM dump service, you should see something

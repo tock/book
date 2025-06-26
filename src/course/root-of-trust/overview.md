@@ -49,8 +49,9 @@ kinds of operations, including:
   [side-channel leaks](https://en.wikipedia.org/wiki/Side-channel_attack) or
   vulnerability to
   [fault injection attacks](https://en.wikipedia.org/wiki/Fault_injection),
-  allowing attackers to uncover secrets by measuring execution time or power consumption of the chip, or by triggering incorrect execution paths, respectively. HWRoTs are specifically designed to
-  prevent such issues.
+  allowing attackers to uncover secrets by measuring execution time or power
+  consumption of the chip, or by triggering incorrect execution paths,
+  respectively. HWRoTs are specifically designed to prevent such issues.
 
 - **Key management**: Similarly, cryptographic keys stored in memory can be
   leaked using invasive attacks on a chip--a secure element can instead store
@@ -70,8 +71,12 @@ kinds of operations, including:
   important for a server to be able to verify that it's connected to a valid,
   uncompromised device before transfering data back-and-forth. During boot, each
   boot stage of a device with a HWRoT can generate and sign certificates
-  attesting to the hash of the next boot stage's value. Each of these certificates establishes a _conditional trust_, demonstrating that a given stage is uncompromised, provided that all previous stages are also uncompromised. Together, these certificates form a trust ladder the server can review, verifying that the expected hash values were
-  reported all the way back to the HWRoT ROM.
+  attesting to the hash of the next boot stage's value. Each of these
+  certificates establishes a _conditional trust_, demonstrating that a given
+  stage is uncompromised, provided that all previous stages are also
+  uncompromised. Together, these certificates form a trust ladder the server can
+  review, verifying that the expected hash values were reported all the way back
+  to the HWRoT ROM.
 - **Device firmware updates (DFU)**: Device firmware updates can be a major
   threat vector to a device, as a vulnerability in the target device's ability
   to verify authenticity of an update can allow for an attacker to achieve
@@ -111,14 +116,14 @@ view of the OS as a whole.
 
 Before beginning, check the following configurations on your nRF52840dk board.
 
-1. The "Power" switch on the top left should be set to "On".
-2. The "nRF power source" switch in the top middle of the board should be set to
-   "VDD".
-3. The "nRF ONLY | DEFAULT" switch on the bottom right should be set to
-   "DEFAULT".
+1. The `Power` switch on the top left should be set to `On`.
+2. The `nRF power source` switch in the top middle of the board should be set to
+   `VDD`.
+3. The `nRF ONLY | DEFAULT` switch on the bottom right should be set to
+   `DEFAULT`.
 
 You should plug one USB cable into the top of the board for both programming and
-communication, into the port labeled "MCU USB" on the short side of the board.
+communication, into the port labeled `MCU USB` on the short side of the board.
 
 ## Kernel Setup
 
@@ -153,14 +158,15 @@ A Tock system contains primarily two components:
    separately from the kernel.
 
 The Tock kernel is compiled specifically for a particular hardware device,
-termed a "board". Tock provides a set of reference board files under
+termed a `board`. Tock provides a set of reference board files under
 [`/boards/<board name>`](https://github.com/tock/tock/tree/master/boards). Any
 time you need to compile the kernel or edit the board file, you will go to that
 folder. You also install the kernel on the hardware board from that directory.
 
 While the Tock kernel is written entirely in Rust, it supports userspace
-applications written in multiple languages. In particular, the Tock community maintains two
-userspace libraries for application development in C and Rust respectively:
+applications written in multiple languages. In particular, the Tock community
+maintains two userspace libraries for application development in C and Rust
+respectively:
 
 - `libtock-c` for C applications (
   [tock/libtock-c](https://github.com/tock/libtock-c) )

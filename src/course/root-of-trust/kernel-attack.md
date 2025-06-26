@@ -97,12 +97,12 @@ Again as in the previous section, we have some starter code in libtock-c. The
 only new directory we'll use is the `quesitonable_service/` subdirectory in
 `libtock-c/examples/tutorials/root_of_trust/`.
 
-To launch this 'questionable' service which we'll use to trigger the "fault all
-processes" driver, simply navigate as per the previous submodules to the
-"Questionable service" in the on-device menu, select it, and then select "Start"
-as usual.
+To launch this 'questionable' service which we'll use to trigger the
+`fault all processes` driver, simply navigate as per the previous submodules to
+the `Questionable service` in the on-device menu, select it, and then select
+`Start` as usual.
 
-## Milestone One: Adding the "Fault All Processes" Driver
+## Milestone One: Adding the `Fault All Processes` Driver
 
 As a first step, we'll need to add some logic to our encryption oracle capsule.
 Open `tock/capsules/extra/src/tutorials/encryption_oracle_chkpt5.rs` (the
@@ -300,27 +300,27 @@ get started.
     ```
 
     Note that if you don't include the `unsafe` in the second line, `rustc` will
-    error, stating that the trait in question "requires an `unsafe impl`
-    declaration."
+    error, stating that the trait in question
+    ``requires an `unsafe impl` declaration.``
 
 2.  Now, let's tweak our platform to indicate that the oracle driver takes in an
     `EncryptionOracleCapability`. You'll want to modify the `Platform` struct
     definition to read as follows:
 
-        ```rust
-        struct Platform {
-            base: nrf52840dk_lib::Platform,
-            screen: &'static ScreenDriver,
-            oracle: &'static capsules_extra::tutorials::encryption_oracle_chkpt5::EncryptionOracleDriver<
-                'static,
-                nrf52840::aes::AesECB<'static>,
-                EncryptionOracleCapability,
-            >,
-        }
-        ```
+    ```rust
+    struct Platform {
+        base: nrf52840dk_lib::Platform,
+        screen: &'static ScreenDriver,
+        oracle: &'static capsules_extra::tutorials::encryption_oracle_chkpt5::EncryptionOracleDriver<
+            'static,
+            nrf52840::aes::AesECB<'static>,
+            EncryptionOracleCapability,
+        >,
+    }
+    ```
 
 3.  Lastly, in the actual `main()` function just above the block comment
-    indicating "PLATFORM SETUP, SCHEDULER, AND KERNEL LOOP," you'll want to
+    indicating `PLATFORM SETUP, SCHEDULER, AND KERNEL LOOP,` you'll want to
     modify the initialization of the encryption oracle driver to include our
     reference to the kernel and an instance of our capability.
 
@@ -344,7 +344,7 @@ get started.
     You should now be able to build and install the kernel as usual; not much
     should be noticably different until the next step.
 
-## Milestone Two: Triggering the "Fault All Processes" Driver
+## Milestone Two: Triggering the `Fault All Processes` Driver
 
 To actually trigger the driver, we'll need to send it a Command syscall with
 command ID 1. We'll do this in two simple steps. To start, back in libtock-c,
@@ -361,7 +361,7 @@ If you get stuck, see `questionable_service_milestone_one/`.
 - Log to the screen that all apps are about to be hardfaulted
 - Trigger the hardfault driver using `command()`, i.e.
 
-  ```rust
+  ```c
   syscall_return_t cr = command(/* driver num */ 0x99999, /* command num */ 2, 0, 0);
   ```
 
@@ -405,7 +405,7 @@ impl<'a, A: AES128<'a> + AES128Ctr, C: ProcessManagementCapability> SyscallDrive
 }
 ```
 
-then `rustc` will error, noting "implementation of an `unsafe` trait." Indeed,
+then `rustc` will error, noting ``implementation of an `unsafe` trait.`` Indeed,
 Tock drivers (and capsules in general!) _cannot_ make use of unsafe constructs,
 so any capabilities given to them _must_ come from the board definition where
 they can be more carefully audited. This makes following expected access control
