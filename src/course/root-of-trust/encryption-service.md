@@ -6,9 +6,9 @@ trust OS.
 
 We have already configured our kernel as needed to provide access to the OLED
 screen and the _encryption oracle_ driver from the
-[HOTP demo](../usb-security-key/key-overview.md). This driver has a built-in
-AES key that we can use to encrypt messages without our userspace application
-ever making contact with the key itself.
+[HOTP demo](../usb-security-key/key-overview.md). This driver has a built-in AES
+key that we can use to encrypt messages without our userspace application ever
+making contact with the key itself.
 
 ## Background
 
