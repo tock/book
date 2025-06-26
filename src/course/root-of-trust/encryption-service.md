@@ -99,7 +99,7 @@ application. An overview of the structure is here:
              ┌──────────────────┐       ┌────────────────────┐
              │                  │       │                    │
              │ Screen App       │  IPC  │ Encryption Service │
-             │                  │◄─────►├─App                │
+             │                  │◄─────►│ App                │
              │ UI + Logging     │       │                    │
              │                  │       │                    │
              └───┬───────┬──────┘       └──┬───────────┬─────┘
