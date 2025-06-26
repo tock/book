@@ -6,7 +6,7 @@ tutorial implementation with the final checkpoint implementation. Then install
 all three applications on your board:
 
 ```bash
-$ cd libtock-c/examples/tutorials/thread_network/
+$ cd libtock-c/examples/tutorials/thread_tutorials/temperature_sensor/
 
 # As-needed
 $ cp -r 02_sensor_final my_sensor
