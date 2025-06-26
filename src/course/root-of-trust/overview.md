@@ -49,7 +49,7 @@ kinds of operations, including:
   [side-channel leaks](https://en.wikipedia.org/wiki/Side-channel_attack) or
   vulnerability to
   [fault injection attacks](https://en.wikipedia.org/wiki/Fault_injection),
-  allowing attackers to uncover secrets. HWRoTs are specifically designed to
+  allowing attackers to uncover secrets by measuring execution time or power consumption of the chip, or by triggering incorrect execution paths, respectively. HWRoTs are specifically designed to
   prevent such issues.
 
 - **Key management**: Similarly, cryptographic keys stored in memory can be
@@ -70,13 +70,12 @@ kinds of operations, including:
   important for a server to be able to verify that it's connected to a valid,
   uncompromised device before transfering data back-and-forth. During boot, each
   boot stage of a device with a HWRoT can generate and sign certificates
-  attesting to the hash of the next boot stage's value. The server can then
-  review those certificates, verifying that the expected hash values were
+  attesting to the hash of the next boot stage's value. Each of these certificates establishes a _conditional trust_, demonstrating that a given stage is uncompromised, provided that all previous stages are also uncompromised. Together, these certificates form a trust ladder the server can review, verifying that the expected hash values were
   reported all the way back to the HWRoT ROM.
 - **Device firmware updates (DFU)**: Device firmware updates can be a major
   threat vector to a device, as a vulnerability in the target device's ability
   to verify authenticity of an update can allow for an attacker to achieve
-  remote code execution. By relegating device firmware updates to a HWRoT, which
+  remote code execution. By delegating device firmware updates to a HWRoT, which
   can verify the signature and update flash in a tamper-free way on its own, the
   process of DFU can be made significantly less risky.
 - **Drive encryption**: Similarly, drive encryption can be performed using a
@@ -100,8 +99,8 @@ Compatible boards:
 
 ## Goal
 
-Our goal is to build a simple encryption service which we'll mount several
-attacks on in order to demonstrate how Tock prevents against them.
+Our goal is to build a simple encryption service, which we'll mount several
+attacks against, and demonstrate how Tock protects against them.
 
 Along the way, we'll also cover foundational Tock concepts to give a top-level
 view of the OS as a whole.
@@ -138,7 +137,7 @@ cd tock/boards/tutorials/nrf52840dk-root-of-trust-tutorial
 make install
 ```
 
-But, you can also follow the guides to setup these capsules yourself in a
+However, you can also follow the guides to setup these capsules yourself in a
 different kernel setup or for a different board.
 
 ## Organization and Getting Oriented to Tock
@@ -160,7 +159,7 @@ time you need to compile the kernel or edit the board file, you will go to that
 folder. You also install the kernel on the hardware board from that directory.
 
 While the Tock kernel is written entirely in Rust, it supports userspace
-applications written in multiple languages. In particular, we provide two
+applications written in multiple languages. In particular, the Tock community maintains two
 userspace libraries for application development in C and Rust respectively:
 
 - `libtock-c` for C applications (
@@ -174,7 +173,7 @@ directory of the `libtock-c` repository.
 
 ## Stages
 
-This module is broken into two stages:
+This module is broken into three stages:
 
 1. [Creating a simple encryption service](encryption-service.md)
 2. [Preventing attacks at runtime with the MPU](userspace-attack.md)

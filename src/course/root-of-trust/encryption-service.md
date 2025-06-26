@@ -55,7 +55,7 @@ given.
 
 Applications make requests to the OS kernel through system calls. Applications
 instruct the kernel using "command" system calls, and the kernel notifies
-applications with "upcalls". Importantly, upcalls never interrupt a running
+applications with upcalls the application must "subscribe" to. Importantly, upcalls never interrupt a running
 application. The application must `yield` to receive upcalls (i.e. callbacks).
 
 The userspace library ("libtock") wraps system calls in easier to use functions.
@@ -88,7 +88,7 @@ some operation.
 
 ## Submodule Overview
 
-We have three small milestones in this section, both of which build upon
+We have three small milestones in this section, all of which build upon
 supplied starter code.
 
 1. Milestone one adds support for interacing with a dispatch/logging service, to
@@ -186,7 +186,7 @@ available in `encryption_service_milestone_one/` if you run into issues.
      process hosting that IPC service
    - calls `ipc_register_service_callback()` to register a logging IPC service
      under `org.tockos.tutorials.root_of_trust.screen`, so that the selected
-     root of trust kservice can log to screen
+     root of trust service can log to screen
    - calls `ipc_notify_service()` to trigger the IPC service of the process
      whose ID `ipc_process()` found
 
@@ -285,7 +285,7 @@ code is available in `encryption_service_milestone_two/` if you run into issues.
      message like `"Enter a secret to encrypt:"`.
 
    - For fetching a response, you'll want to use `libtocksync_console_read()` to
-     read bytes one-by-one, brekaing when you hit a newline (`\n` or `\r`).
+     read bytes one-by-one, breaking when you hit a newline (`\n` or `\r`).
      You'll also want to use this function to strip leading whitespace from the
      user's input.
 
