@@ -24,9 +24,9 @@ The Rust programming language (which the Tock kernel is written in) allows for
 defining methods on structs and enums, similar to class methods in many
 languages.
 
-Following this analogy, Rust _traits_ are approximately like interfaces in other
-languages: they let you specify shared behavior between types. For instance, the
-`Clone` trait in Rust roughly looks like
+Following this analogy, Rust _traits_ are like interfaces in other languages:
+they let you specify shared behavior between types. For instance, the `Clone`
+trait in Rust roughly looks like
 
 ```rust
 pub trait Clone {
@@ -36,7 +36,18 @@ pub trait Clone {
 
 which indicates that any type that implements the `Clone` trait needs to provide
 an implementation of `clone` returning something of its own type (`Self`) given
-a reference to itself (`&self`).
+a reference to itself (`&self`). Implementations are provided in `impl` blocks:
+for instance, to implement the above trait, you might write something like
+
+```rust
+struct MyStruct { ... }
+
+impl Clone for MyStruct {
+    fn clone(&self) -> Self {
+        ...
+    }
+}
+```
 
 Types can be bound by traits: for instance, a function signature like
 
@@ -64,12 +75,14 @@ unsafe impl Send for MyStruct {}
 
 ## Submodule Overview
 
-We additionally have two small milestones in this section, one to add a driver
-to our Tock kernel, and then one to add an application which uses it.
+We additionally have two small milestones in this section: one to sneak some
+logic into our encryption oracle driver, and then one to add an application
+which uses it.
 
-1. Milestone one adds a minimal driver which a userspace application can use to
-   fault all running applications, but with the caveat that it requires the
-   board definition to explicitly give it that permission.
+1. Milestone one adds a minimal bit of logic to the encryption oracle driver
+   which a userspace application can use to fault all running applications, but
+   with the caveat that it requires the board definition to explicitly give it
+   that permission.
 2. Milestone two adds a userspace application to trigger this driver, and then
    demonstrates how Tock performs language-level access control to
    _capabilities_ which the Tock board definition has to explicitly grant.
@@ -82,7 +95,7 @@ No additional setup is needed beyond the previous section.
 
 Again as in the previous section, we have some starter code in libtock-c. The
 only new directory we'll use is the `quesitonable_service/` subdirectory in
-`libtock-c/examples/tutorials/root_of_trust`.
+`libtock-c/examples/tutorials/root_of_trust/`.
 
 To launch this 'questionable' service which we'll use to trigger the "fault all
 processes" driver, simply navigate as per the previous submodules to the
@@ -91,75 +104,164 @@ as usual.
 
 ## Milestone One: Adding the "Fault All Processes" Driver
 
-As a first step, we'll need to create a new capsule. For simplicity, since the
-capsule is only a few lines, we simply provide it for you in
-`tock/capsules/extra/src/tutorials/fault_all_processes.rs` and reproduce it
-piece by piece here. First, we import everything and define a driver number to
-identify our driver with. Since our encryption oracle uses `0x99999`, we'll use
-`0x99998`.
+As a first step, we'll need to add some logic to our encryption oracle capsule.
+Open `tock/capsules/extra/src/tutorials/encryption_oracle_chkpt5.rs` (the
+completed encryption oracle driver) and do the following:
 
-```rust
-use kernel::capabilities::ProcessManagementCapability;
-use kernel::syscall::{CommandReturn, SyscallDriver};
-use kernel::{ErrorCode, Kernel, ProcessId};
+1. First, we need to ensure our compromised driver has a reference to the
+   kernel, as well as a _capability_ of generic type `C`. This capability will
+   be necessary in a second, but for now we take it for granted. Down where the
+   `EncryptionOracleDriver` struct is, add a new type parameter
+   `C: ProcessManagerCapability`, and then a `kernel` and `capability` member:
 
-pub const DRIVER_NUM: usize = 0x99998;
-```
+   ```rust
+   pub struct EncryptionOracleDriver<'a, A: AES128<'a> + AES128Ctr, C: ProcessManagementCapability> {
+       kernel: &'static kernel,
+       capability: C,
+       aes: &'a A,
+       process_grants: Grant<
+           ProcessState,
+           ...
+       >,
+       ...
+   }
+   ```
 
-Next, we'll define the Rust struct which defines our driver. We'll need it to
-have a reference to the kernel, as well as a _capability_ of generic type `C`.
-This capability will be necessary in a second, but for now we take it for
-granted.
+   Don't forget to add an import for
+   `kernel::capabilities::ProcessManagementCapability` and `kernel::Kernel` as
+   well at the top of the file:
 
-```rust
-pub struct FaultAllProcesses<C: ProcessManagementCapability> {
-    kernel: &'static Kernel,
-    capability: C,
-}
-```
+   ```rust
+   use core::cell::Cell;
 
-We then define a constructor which simply takes in a reference to the Tock
-kernel and the capability itself we want.
+   use kernel::capabilities::ProcessManagementCapability;
+   use kernel::grant::{AllowRoCount, AllowRwCount, Grant, UpcallCount};
+   ...
+   use kernel::{ErrorCode, Kernel};
+   ...
+   ```
 
-```rust
-impl<C: ProcessManagementCapability> FaultAllProcesses<C> {
-    pub fn new(kernel: &'static Kernel, capability: C) -> Self {
-        FaultAllProcesses { kernel, capability }
-    }
-}
-```
+2. Next, now that we've added a new type parameter to `EncryptionOracleDriver`,
+   we'll need to change the implementations of each `impl` block so that enough
+   type parameters are provided to it. In the `impl` block just below our
+   newly-modified struct definition, we'll change
 
-Then, lastly, we implement Tock's `SyscallDriver` trait to specify how our
-capsule should reply to Command syscalls from applications, using a `match` over
-`command_num` to dispatch different actions for each command. Command number 0
-for every Tock driver should return success to indicate that the driver in
-question exists.
+   ```rust
+   impl<'a, A: AES128<'a> + AES128Ctr> EncryptionOracleDriver<'a, A> {
+      ...
+   }
+   ```
 
-We select command number 1 to actually perform our "fault all applications"
-action, using the Tock kernel's `hardfault_all_apps()` method. All other
-commands (the `_ => ...` arm of the `match`) return a failure with error code
-`NOSUPPORT`, indicating we only support command numbers 0 and 1.
+   to
 
-```rust
-impl<C: ProcessManagementCapability> SyscallDriver for FaultAllProcesses<C> {
-    fn command(&self, command_num: usize, _: usize, _: usize, _: ProcessId) -> CommandReturn {
-        match command_num {
-            0 => CommandReturn::success(),
-            1 => {
-                kernel::debug!("Hardfaulting all applications...");
-                self.kernel.hardfault_all_apps(&self.capability);
-                kernel::debug!("All applications hardfaulted.");
-                CommandReturn::success()
-            }
-            _ => CommandReturn::failure(ErrorCode::NOSUPPORT),
-        }
-    }
-    ...
-}
-```
+   ```rust
+   impl<'a, A: AES128<'a> + AES128Ctr, C: ProcessManagementCapability> EncryptionOracleDriver<'a, A, C> {
+      ...
+   }
+   ```
 
-If we take a look at the implementation of `Kernel::hardfault_all_apps()`, we'll
-see that it has signature
+   Later in the file, you'll also want to change
+
+   ```rust
+   impl<'a, A: AES128<'a> + AES128Ctr> SyscallDriver for EncryptionOracleDriver<'a, A> {
+       ...
+   }
+   ```
+
+   to
+
+   ```rust
+   impl<'a, A: AES128<'a> + AES128Ctr, C: ProcessManagementCapability> SyscallDriver
+       for EncryptionOracleDriver<'a, A, C>
+   {
+       ...
+   }
+   ```
+
+   and
+
+   ```rust
+   impl<'a, A: AES128<'a> + AES128Ctr> Client<'a> for EncryptionOracleDriver<'a, A> {
+       ...
+   }
+   ```
+
+   to
+
+   ```rust
+   impl<'a, A: AES128<'a> + AES128Ctr, C: ProcessManagementCapability> Client<'a>
+       for EncryptionOracleDriver<'a, A, C>
+   {
+       ...
+   }
+   ```
+
+3. Now, we need to change our `new()` associated function to accept a reference
+   to the kernel as well as an instance of our desired capability. Add `kernel`
+   and `capability` as new arguments to `new()`, and use them to construct the
+   returned `EncryptionOracleDriver`:
+
+   ```rust
+       /// Create a new instance of our encryption oracle userspace driver:
+       pub fn new(
+           kernel: &'static kernel,
+           capability: C,
+           aes: &'a A,
+           source_buffer: &'static mut [u8],
+           ...
+       ) -> Self {
+           EncryptionOracleDriver {
+               kernel,
+               capability,
+               process_grants,
+               aes,
+               ...
+           }
+       }
+       ...
+   ```
+
+4. Lastly, we want to sneak in our new logic. In the definition of `command()`
+   is a large `match` statement that causes our `EncryptionOracleDriver` to
+   exhibit different behavior when it receives a command based on the value of
+   `command_num`. We'll add a new branch for command number 2 to fault every
+   application.
+
+   ```rust
+   impl<'a, A: AES128<'a> + AES128Ctr, C: ProcessManagementCapability> SyscallDriver
+       for EncryptionOracleDriver<'a, A, C>
+   {
+       fn command(
+           &self,
+           command_num: usize,
+           ...
+       ) -> CommandReturn {
+           match command_num {
+               ...
+
+               // Request the decryption operation:
+               1 => {
+                   ...
+               }
+
+               // Hardfault all applications
+               2 => {
+                   self.kernel.hardfault_all_apps(&self.capability);
+                   CommandReturn::success()
+               }
+
+               // Unknown command number, return a NOSUPPORT error
+               _ => CommandReturn::failure(ErrorCode::NOSUPPORT),
+           }
+       }
+   }
+   ```
+
+With this, our changes to the driver are complete! Whenever it receives a
+Command syscall with command number 2, it should fault every application.
+
+If we take a look at the implementation of the `Kernel::hardfault_all_apps()`
+function we used, we'll see that it has signature
 
 ```rust
 pub fn hardfault_all_apps<C: capabilities::ProcessManagementCapability>(&self, _c: &C) { ... }
@@ -170,76 +272,77 @@ which indicates that to be called, it needs to accept an input of generic type
 
 As such, we'll need to do two things when modifying our board definition:
 
-1. Create a new type (say `FaultAllProcessesCapability`) implementing the
+1. Create a new type (say `EncryptionOracleCapability`) implementing the
    `capabilities::ProcessManagementCapability` trait.
 2. Instantiate our new driver and provide it with an instance of our
-   `FaultAllProcessesCapability` type
+   `EncryptionOracleCapability` type
 
 Opening `boards/tutorials/nrf52840dk-root-of-trust-tutorial/src/main.rs`, we can
 get started.
 
-1. First, let's define our new `FaultAllProcessesCapability` type. In Tock, the
-   `ProcessManagementCapability` we need to implement is defined as follows:
+1.  First, let's define our new `EncryptionOracleCapability` type. In Tock, the
+    `ProcessManagementCapability` we need to implement is defined as follows:
 
-   ```rust
-   /// The `ProcessManagementCapability` allows the holder to control
-   /// process execution, such as related to creating, restarting, and
-   /// otherwise managing processes.
-   pub unsafe trait ProcessManagementCapability {}
-   ```
+    ```rust
+    /// The `ProcessManagementCapability` allows the holder to control
+    /// process execution, such as related to creating, restarting, and
+    /// otherwise managing processes.
+    pub unsafe trait ProcessManagementCapability {}
+    ```
 
-   This is an unsafe trait with no methods, so we won't have to do much to
-   implement it. Add the following right above the definition of
-   `struct Platform` in our `main.rs`:
+    This is an unsafe trait with no methods, so we won't have to do much to
+    implement it. Add the following right above the definition of
+    `struct Platform` in our `main.rs`:
 
-   ```rust
-   struct FaultAllProcessesCapability;
-   unsafe impl capabilities::ProcessManagementCapability for FaultAllProcessesCapability {}
-   ```
+    ```rust
+    struct EncryptionOracleCapability;
+    unsafe impl capabilities::ProcessManagementCapability for EncryptionOracleCapability {}
+    ```
 
-   Note that if you don't include the `unsafe` in the second line, `rustc` will
-   error, stating that the trait in question "requires an `unsafe impl`
-   declaration."
+    Note that if you don't include the `unsafe` in the second line, `rustc` will
+    error, stating that the trait in question "requires an `unsafe impl`
+    declaration."
 
-2. Now, let's actually add our driver to our platform. We'll want to add a new
-   member `fault_all` to our `Platform` struct as follows
+2.  Now, let's tweak our platform to indicate that the oracle driver takes in an
+    `EncryptionOracleCapability`. You'll want to modify the `Platform` struct
+    definition to read as follows:
 
-   ```rust
-   struct Platform {
-       ...
-       fault_all: &'static capsules_extra::tutorials::fault_all_processes::FaultAllProcesses<
-           FaultAllProcessesCapability,
-       >,
-   }
-   ```
+        ```rust
+        struct Platform {
+            base: nrf52840dk_lib::Platform,
+            screen: &'static ScreenDriver,
+            oracle: &'static capsules_extra::tutorials::encryption_oracle_chkpt5::EncryptionOracleDriver<
+                'static,
+                nrf52840::aes::AesECB<'static>,
+                EncryptionOracleCapability,
+            >,
+        }
+        ```
 
-3. Lastly, in the actual `main()` function just above the block comment
-   indicating "PLATFORM SETUP, SCHEDULER, AND KERNEL LOOP," define an instance
-   of our driver using Tock's `static_init!` macro
+3.  Lastly, in the actual `main()` function just above the block comment
+    indicating "PLATFORM SETUP, SCHEDULER, AND KERNEL LOOP," you'll want to
+    modify the initialization of the encryption oracle driver to include our
+    reference to the kernel and an instance of our capability.
 
-   ```rust
-   let fault_all = static_init!(
-       capsules_extra::tutorials::fault_all_processes::FaultAllProcesses<
-           FaultAllProcessesCapability,
-       >,
-       capsules_extra::tutorials::fault_all_processes::FaultAllProcesses::new(
-           board_kernel,
-           FaultAllProcessesCapability {},
-       )
-   );
-   ```
+    ```rust
+    let oracle = static_init!(
+        capsules_extra::tutorials::encryption_oracle_chkpt5::EncryptionOracleDriver<
+            'static,
+            nrf52840::aes::AesECB<'static>,
+            EncryptionOracleCapability,
+        >,
+        capsules_extra::tutorials::encryption_oracle_chkpt5::EncryptionOracleDriver::new(
+            board_kernel,
+            EncryptionOracleCapability {},
+            &nrf52840_peripherals.nrf52.ecb,
+            aes_src_buffer,
+            ...
+        ),
+    );
+    ```
 
-   and add it into our instantiation of the `Platform` struct below
-
-   ```rust
-   let platform = Platform {
-     ...
-     fault_all,
-   };
-   ```
-
-   You should now be able to build and install the kernel as usual; not much
-   should be noticably different until the next step.
+    You should now be able to build and install the kernel as usual; not much
+    should be noticably different until the next step.
 
 ## Milestone Two: Triggering the "Fault All Processes" Driver
 
@@ -259,7 +362,7 @@ If you get stuck, see `questionable_service_milestone_one/`.
 - Trigger the hardfault driver using `command()`, i.e.
 
   ```rust
-  syscall_return_t cr = command(/* driver num */ 0x99998, /* command num */ 1, 0, 0);
+  syscall_return_t cr = command(/* driver num */ 0x99999, /* command num */ 2, 0, 0);
   ```
 
 - Add another log to screen (can be anything; this should never be reached, as
@@ -278,15 +381,28 @@ if we try that, e.g. by moving the struct definition into
 `fault_all_proceses.rs` and changing our `Kernel::hardfault_all_apps()` call to
 
 ```rust
-struct FaultAllProcessesCapability;
+struct EncryptionOracleCapability;
 unsafe impl capabilities::ProcessManagementCapability for FaultAllProcessesCapability {}
 
-impl SyscallDriver for FaultAllProcesses {
-    fn command(&self, command_num: usize, _: usize, _: usize, _: ProcessId) -> CommandReturn {
-        ...
-        self.kernel.hardfault_all_apps(FaultAllProcessesCapability {});
-        ...
-    }
+impl<'a, A: AES128<'a> + AES128Ctr, C: ProcessManagementCapability> SyscallDriver
+   for EncryptionOracleDriver<'a, A, C>
+{
+   fn command(
+       &self,
+       command_num: usize,
+       ...
+   ) -> CommandReturn {
+       match command_num {
+           ...
+           // Hardfault all applications
+           2 => {
+               self.kernel.hardfault_all_apps(EncryptionOracleCapability {});
+               CommandReturn::success()
+           }
+           ...
+       }
+   }
+}
 ```
 
 then `rustc` will error, noting "implementation of an `unsafe` trait." Indeed,
