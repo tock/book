@@ -4,12 +4,16 @@ In this last submodule of the HWRoT course, we'll explore how Tock's
 kernel-level isolation mechanisms help protect sensitive operations in a HWRoT
 context.
 
-Our last attempt at an attack on the HWRoT encryption service--an SRAM dumping
-attack--assumed that we were able to load a malicious application in the first
-place. To give our attacker even more of an advantage this time, let's assume
-that a hypothetical attacker of our HWRoT might try slip some questionable logic
-into a kernel driver, and see how Tock provides defense-in-depth via
-language-based isolation at the driver level.
+Our previous attempt at an attack on the HWRoT encryption service—an SRAM
+dumping attack—assumed that we were able to load a malicious application. As we
+saw, Tock's process-level isolation guarantees prevented the malicious
+application from being able to compromise other processes.
+
+But what if the attacker tries to compromise the kernel itself? To give our
+attacker even more of an advantage this time, let's assume that a hypothetical
+attacker of our HWRoT might try slip some questionable logic into a kernel
+driver, and see how Tock provides defense-in-depth via language-based isolation
+at the driver level.
 
 > **NOTE:** For a full description of Tock's threat model and what forms of
 > isolation it's intended to provide, see the Tock
@@ -75,6 +79,19 @@ unsafe impl Send for MyStruct {}
 
 ## Submodule Overview
 
+Our goal in this submodule is to modify an existing kernel capsule to "slip in"
+a function call that a (malicious) userspace app can trigger that compromises
+the overall system integrity. To make this a subtle attack, the attacker wants
+to hide this new function call in the kernel so that when the board maintainer
+updates to a new version of Tock the attack is present in the kernel.
+
+For demonstration, we will insert a call to `hardfault_all_apps()`. This is of
+course a sensitive API designed exclusively for testing. This API should not be
+accessible to userspace, but we will see if an attacker can expose this to
+userspace without the board maintainer knowing about the change.
+
+### Milestones
+
 We additionally have two small milestones in this section: one to sneak some
 logic into our encryption oracle driver, and then one to add an application
 which uses it.
@@ -87,14 +104,10 @@ which uses it.
    demonstrates how Tock performs language-level access control to
    _capabilities_ which the Tock board definition has to explicitly grant.
 
-## Setup
-
-No additional setup is needed beyond the previous section.
-
 ## Starter Code
 
 Again as in the previous section, we have some starter code in libtock-c. The
-only new directory we'll use is the `quesitonable_service/` subdirectory in
+only new directory we'll use is the `questionable_service/` subdirectory in
 `libtock-c/examples/tutorials/root_of_trust/`.
 
 To launch this 'questionable' service which we'll use to trigger the
@@ -342,7 +355,7 @@ get started.
     ```
 
     You should now be able to build and install the kernel as usual; not much
-    should be noticably different until the next step.
+    should be noticeably different until the next step.
 
 ## Milestone Two: Triggering the `Fault All Processes` Driver
 
@@ -372,7 +385,7 @@ Install and run the application. You should see that the first log appears, but
 the second one never does. A fault dump should instead appear over the
 `tockloader listen` console.
 
-Now that we have a working setup, one quesiton might be whether we can make do
+Now that we have a working setup, one question might be whether we can make do
 without adding a noisy `unsafe impl` in our board definition file `main.rs`,
 likely the first file someone would inspect.
 
