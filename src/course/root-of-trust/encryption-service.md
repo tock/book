@@ -1,14 +1,16 @@
 # Encryption Service Userspace Application
 
-As a reminder, this guide guides you through creating an encryption service that
-we'll use in later parts to demonstrate Tock's strengths as a hardware root of
-trust OS.
+This submodule guides you through creating and using an encryption service.
+Providing an encryption service is a common feature of a HWRoT.
 
-We have already configured our kernel as needed to provide access to the OLED
-screen and the _encryption oracle_ driver from the
-[HOTP demo](../usb-security-key/key-overview.md). This driver has a built-in AES
-key that we can use to encrypt messages without our userspace application ever
-making contact with the key itself.
+An encryption service can cryptographically encrypt and/or decrypt data on
+behalf of an application. Crucially, the service encapsulates the encryption
+key, preventing the application from ever having access to the key. This also
+prevents an attacker from being able to retrieve the key, enhancing the security
+of the encrypted data.
+
+Once we setup the encryption service, we will use it throughout this course to
+demonstrate Tock's strengths as a hardware root of trust OS.
 
 ## Background
 
@@ -77,7 +79,7 @@ In order to easily allow asynchronous driver interfaces, the Tock driver allows
 registering _upcalls_, callbacks which kernel drivers can invoke e.g. to signal
 to an app that a requested operation has completed.
 
-### Interprocess Communication in Tock
+### Inter-process Communication (IPC) in Tock
 
 Tock has an IPC driver in the kernel which allows userspace apps to advertise
 _IPC services_ with names such as `org.tockos.tutorial.led_service`.
@@ -89,12 +91,43 @@ some operation.
 
 ## Submodule Overview
 
+We will be developing two userspace applications. The first provides a user
+interface with the screen and buttons. The second is the encryption service
+application. An overview of the structure is here:
+
+```
+             ┌──────────────────┐       ┌────────────────────┐
+             │                  │       │                    │
+             │ Screen App       │  IPC  │ Encryption Service │
+             │                  │◄─────►│ App                │
+             │ UI + Logging     │       │                    │
+             │                  │       │                    │
+             └───┬───────┬──────┘       └──┬───────────┬─────┘
+Userspace        │       │                 │           │
+─────────────────┼───────┼─────────────────┼───────────┼──────
+Tock          ┌──▼───┐┌──▼────┐      ┌─────▼────────┐┌─▼─────┐
+Kernel        │Screen││Buttons│      │AES Encryption││Console│
+              └──────┘└───────┘      │Oracle        │└───────┘
+                                     └──────────────┘
+```
+
+The two applications will communicate using IPC. We will focus on creating the
+encryption service app, and use the screen app to help interact with the user.
+
+Each application uses capsules provided by the kernel. The capsules have already
+been created and are already included with the kernel we installed. Consistent
+with our goal for an HWRoT encryption service, the AES Encryption Oracle has a
+built-in AES key that we can use to encrypt messages without our userspace
+application ever making contact with the key itself.
+
+### Milestones
+
 We have three small milestones in this section, all of which build upon supplied
 starter code.
 
-1. Milestone one adds support for interacing with a dispatch/logging service, to
-   illustrate how various root of trust services might be dispatched in practice
-   while maintaining separation.
+1. Milestone one adds support for interfacing with a dispatch/logging service,
+   to illustrate how various root of trust services might be dispatched in
+   practice while maintaining separation.
 2. Milestone two adds support for sending/receiving data and serializing
    plaintext, introducing how libtock-c APIs work.
 3. Milestone three adds actual encryption support using the encryption oracle
@@ -106,6 +139,12 @@ Before starting, check the following:
 
 1. Make sure you have compiled and installed the Tock kernel with the screen and
    encryption oracle drivers on to your board.
+
+   ```
+   cd tock/boards/tutorials/nrf52840dk-root-of-trust-tutorial
+   make install
+   ```
+
 2. Make sure you have no testing apps installed. To remove all apps:
 
    ```
@@ -172,7 +211,7 @@ functionalities into different apps is helpful from a security perspective.
 We'll discuss this more in the next part of the tutorial.
 
 First, let's modify our scaffold in `encryption_service_starter/main.c` to
-respond to the main screen app's dispatch signal using Tock's interprocess
+respond to the main screen app's dispatch signal using Tock's inter-process
 communication (IPC) driver. Rename the directory in your local copy from
 `encryption_service_starter/` to `encryption_service/`. Completed code is
 available in `encryption_service_milestone_one/` if you run into issues.
@@ -386,9 +425,15 @@ type messages into the UART console when prompted to encrypt them.
 > messages sent over the UART console, logging the status of the encryption
 > capsule to the screen as it runs.
 
-Congratulations! Feel free to move on to the next section, where we'll begin to
-attack our implementation and show how Tock allows for defense-in-depth measures
+## Submodule Complete
+
+Congratulations! Feel free to move on to the
+[next section](userspace-attack.md), where we'll begin to attack our
+implementation and show how Tock allows for defense-in-depth measures
 appropriate for a root of trust operating system.
+
+If you have additional time or are looking to deepen your knowledge of Tock,
+continue to challenge section below.
 
 ## Challenge: Authenticating the Results
 
