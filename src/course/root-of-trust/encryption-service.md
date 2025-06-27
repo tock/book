@@ -181,7 +181,7 @@ developing the remainder of the encryption service userspace app.
 4. After both applications are loaded, you should see a screen which should
    allow you to select a service to dispatch. You can navigate up and down in
    the menu by using `BUTTON 1` and `BUTTON 3` on the nRF52840dk board, and you
-   can select an option by pressing `BUTTON 2` and then clicking `Start`.
+   can select an option by pressing `BUTTON 4` and then clicking `Start`.
 
    Note that right now, the encryption service doesn't have any code to react to
    requests for dispatch, so if you select it nothing will happen.
