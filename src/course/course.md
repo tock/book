@@ -15,49 +15,23 @@ applications.
 You should follow the [getting started guide](../getting_started.html) to get
 your development setup and ensure you can communicate with the hardware.
 
-### Compile the Kernel
+## Which Tutorial Should You Follow?
 
-All of the hands-on exercises will be done within the main Tock repository and
-the `libtock-c` or `libtock-rs` userspace repositories. To work on the kernel,
-pop open a terminal, and navigate to the repository. If you're using the VM,
-that'll be:
+All tutorials explore Tock and running applications, but they focus on different
+subsystems and different application areas for Tock. If you are interested in
+learning about a specific feature or subsystem this table tries to help direct
+you to the most relevant tutorial.
 
-    $ cd ~/tock
-
-#### Make sure your Tock repository is up to date
-
-    $ git pull
-
-This will fetch the lastest commit from the Tock kernel repository. Individual
-modules may ask you to check out specific commits or branches. In this case, be
-sure to have those revisions checked out instead.
-
-#### Build the kernel
-
-To build the kernel for your board, navigate to the `boards/$YOUR_BOARD`
-subdirectory. From within this subdirectory, a simple `make` should be
-sufficient to build a kernel. For instance, for the Nordic nRF52840DK board, run
-the following:
-
-    $ cd boards/nordic/nrf52840dk
-    $ make
-       Compiling nrf52840 v0.1.0 (/home/tock/tock/chips/nrf52840)
-       Compiling components v0.1.0 (/home/tock/tock/boards/components)
-       Compiling nrf52_components v0.1.0 (/home/tock/tock/boards/nordic/nrf52_components)
-        Finished release [optimized + debuginfo] target(s) in 24.07s
-       text    data     bss     dec     hex filename
-     167940       4   28592  196536   2ffb8 /home/tock/tock/target/thumbv7em-none-eabi/release/nrf52840dk
-    88302039a5698ab37d159ec494524cc466a0da2e9938940d2930d582404dc67a  /home/tock/tock/target/thumbv7em-none-eabi/release/nrf52840dk.bin
-
-If this is the first time you are trying to make the kernel, the build system
-will use cargo and rustup to install various Tock dependencies.
-
-### Programming the kernel and interfacing with your board
-
-Boards may require slightly different procedures for programming the Tock
-kernel.
-
-If you are following along with the provided VM, do not forget to pass your
-board's USB interface(s) to the VM. In VirtualBox, this should work by selecting
-"Devices > USB" and then enabling the respective device (for example
-`SEGGER J-Link [0001]`).
+| Aspect of Tock              | Tutorial                                                                             |
+| --------------------------- | ------------------------------------------------------------------------------------ |
+| **Applications**            |                                                                                      |
+| Hardware Root-of-Trust      | [Root of Trust](./root-of-trust)                                                     |
+| Fido Security Key           | [USB Security Key](./usb-security-key)                                               |
+| Wireless Networking         | [Thread Networking](./thread-tutorials)                                              |
+| **Topics**                  |                                                                                      |
+| Process Isolation           | [Root of Trust](./root-of-trust)                                                     |
+| Inter-process Communication | [Thread Networking](./thread-tutorials), [Dynamic Apps](./dynamic-apps-and-policies) |
+| Kernel Configuration        | [Dynamic Apps](./dynamic-apps-and-policies)                                          |
+| **Skills**                  |                                                                                      |
+| Writing Apps                | [USB Security Key](./usb-security-key), [Sensor](./sensor)                           |
+| Implementing a Capsule      | [USB Security Key](./usb-security-key)                                               |
