@@ -22,16 +22,16 @@ subsystems and different application areas for Tock. If you are interested in
 learning about a specific feature or subsystem this table tries to help direct
 you to the most relevant tutorial.
 
-| Aspect of Tock              | Tutorial                                                                             |
-| --------------------------- | ------------------------------------------------------------------------------------ |
-| **Applications**            |                                                                                      |
-| Hardware Root-of-Trust      | [Root of Trust](./root-of-trust)                                                     |
-| Fido Security Key           | [USB Security Key](./usb-security-key)                                               |
-| Wireless Networking         | [Thread Networking](./thread-tutorials)                                              |
-| **Topics**                  |                                                                                      |
-| Process Isolation           | [Root of Trust](./root-of-trust)                                                     |
-| Inter-process Communication | [Thread Networking](./thread-tutorials), [Dynamic Apps](./dynamic-apps-and-policies) |
-| Kernel Configuration        | [Dynamic Apps](./dynamic-apps-and-policies)                                          |
-| **Skills**                  |                                                                                      |
-| Writing Apps                | [USB Security Key](./usb-security-key), [Sensor](./sensor)                           |
-| Implementing a Capsule      | [USB Security Key](./usb-security-key)                                               |
+| Aspect of Tock              | Tutorial                                                                                                     |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| **Applications**            |                                                                                                              |
+| Hardware Root-of-Trust      | [Root of Trust](./root-of-trust/overview.md)                                                                 |
+| Fido Security Key           | [USB Security Key](./usb-security-key/key-overview.md)                                                       |
+| Wireless Networking         | [Thread Networking](./thread-tutorials/overview.md)                                                          |
+| **Topics**                  |                                                                                                              |
+| Process Isolation           | [Root of Trust](./root-of-trust/overview.md)                                                                 |
+| Inter-process Communication | [Thread Networking](./thread-tutorials/overview.md), [Dynamic Apps](./dynamic-apps-and-policies/overview.md) |
+| Kernel Configuration        | [Dynamic Apps](./dynamic-apps-and-policies/overview.md)                                                      |
+| **Skills**                  |                                                                                                              |
+| Writing Apps                | [USB Security Key](./usb-security-key/key-overview.md), [Sensor](./sensor/overview.md)                       |
+| Implementing a Capsule      | [USB Security Key](./usb-security-key/key-overview.md)                                                       |
