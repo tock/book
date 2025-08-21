@@ -108,6 +108,28 @@ Specifies where the kernel binary is and its size.
   endian.
 - Binary Length: The number of bytes in the kernel binary. Little endian.
 
+### Kernel Version (0x0103)
+
+Specifies the current version of the Tock kernel.
+
+```text
+0          1          2          3          4 (bytes)
++----------+----------+----------+----------+
+| Major Version       | Minor Version       |
++----------+----------+----------+----------+
+| Micro Version       | padding             |
++----------+----------+----------+----------+
+| Type = 0x0103       | Length = 8          |
++----------+----------+----------+----------+
+```
+
+- Major Version: `u16`. The major version number of the kernel. Little endian.
+- Minor Version: `u16`. The minor version number of the kernel. Little endian.
+- Micro Version: `i16`. The micro version number of the kernel if nonzero.
+  Negative numbers indicate development and pre-releases. -1 indicates a
+  development branch. -2 indicates an alpha pre-release, -3 a beta pre-release,
+  etc. Little endian.
+
 ## Kernel Attributes Location
 
 Kernel attributes are stored at the end of the kernel's flash region and
