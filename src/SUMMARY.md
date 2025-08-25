@@ -63,6 +63,7 @@
   - [BLE Advertisement Scanning](./tutorials/03_ble_scan.md)
   - [Sample Sensors and Use Drivers](./tutorials/04_sensors_and_drivers.md)
   - [Inter-process Communication](./tutorials/05_ipc.md)
+  - [QEMU + libtock-rs](./tutorials/06_qemu_libtockrs.md)
 
 - [Kernel Development Guides](./development/guides.md)
 
