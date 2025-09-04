@@ -117,7 +117,7 @@ Specifies the current version of the Tock kernel.
 +----------+----------+----------+----------+
 | Major Version       | Minor Version       |
 +----------+----------+----------+----------+
-| Micro Version       | padding             |
+| Patch Version       | Pre-Release         |
 +----------+----------+----------+----------+
 | Type = 0x0103       | Length = 8          |
 +----------+----------+----------+----------+
@@ -125,9 +125,10 @@ Specifies the current version of the Tock kernel.
 
 - Major Version: `u16`. The major version number of the kernel. Little endian.
 - Minor Version: `u16`. The minor version number of the kernel. Little endian.
-- Micro Version: `i16`. The micro version number of the kernel if nonzero.
-  Negative numbers indicate development and pre-releases. -1 indicates a
-  development branch. -2 indicates an alpha pre-release, -3 a beta pre-release,
+- Path Version: `u16`. The patch version number of the kernel. Little endian.
+- Pre-Release: `u16`. If 0, this is a release. If nonzero, this indicates a
+  development version. 1 indicates this is a working development. Anything
+  above 1 indicates a development release, where 2 means alpha, 3 means beta,
   etc. Little endian.
 
 ## Kernel Attributes Location
