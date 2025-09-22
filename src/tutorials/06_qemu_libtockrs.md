@@ -1,20 +1,54 @@
 # QEMU + libtock-rs
 
+<img src="../imgs/qemu_rv32_virt_blink_buttons-crop.png" style="width:100px;float:right" />
+
 This mini tutorial will get you started running Tock on
 [QEMU](https://www.qemu.org/docs/master/about/index.html). QEMU emulates a
 RISC-V board and runs the Tock kernel and apps. This tutorial does not require
-any physical hardware board and can run on any platform.
+any physical hardware board and can run on any platform. By the end of this
+tutorial you will be able to run multiple libtock-rs apps in QEMU.
 
 ## Setup
 
-You will need the standard Tock setup for this tutorial, plus QEMU. You can
-follow the [getting started guide](../setup/quickstart.md) for your platform.
-Note, you do not need JlinkExe or OpenOCD, since we are not programming
-hardware.
+You will need the standard Tock setup for this tutorial, plus QEMU. You do not
+need JlinkExe or OpenOCD (as noted in the getting started guide), since we are
+not programming hardware.
 
-Otherwise, the basic steps are included here:
+The basic steps for each platform are included here.
+
+### macOS
 
 1. Install [rustup](https://rustup.rs/#).
+   ```
+   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+   ```
+2. Clone the Tock repository and libtock-rs.
+   ```
+   git clone https://github.com/tock/tock
+   git clone https://github.com/tock/libtock-rs
+   ```
+3. Install [tockloader](https://github.com/tock/tockloader/) version 1.15.0+.
+   ```
+   brew install pipx
+   pipx install tockloader
+   pipx ensurepath
+   ```
+4. Install [QEMU](https://www.qemu.org/download/).
+   ```
+   brew install qemu
+   ```
+
+### Ubuntu
+
+As of September 2025, running this tutorial on Ubuntu can be difficult because
+it requires a relatively recent version of QEMU (i.e., >9.0). If you are on
+Ubuntu 24.10 or newer it should work. Otherwise, it can be hard to get a new
+enough version of QEMU.
+
+1. Install [rustup](https://rustup.rs/#).
+   ```
+   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+   ```
 2. Clone the Tock repository and libtock-rs.
    ```
    git clone https://github.com/tock/tock
@@ -22,17 +56,64 @@ Otherwise, the basic steps are included here:
    ```
 3. Install [tockloader](https://github.com/tock/tockloader/).
    ```
+   sudo apt install pipx
    pipx install tockloader
    pipx ensurepath
    ```
 4. Install [QEMU](https://www.qemu.org/download/).
    ```
-   (macOS)  brew install qemu
-   (Ubuntu) sudo apt-get install qemu-system
+   sudo apt install qemu-system
    ```
-   [Windows installers](https://qemu.weilnetz.de/w64/).
 
-## How We Install Tock on a QEMU System
+### Windows
+
+The best way to install Tock from Windows is to setup the Windows Subsystem for
+Linux (WSL), compile Tock and applications in WSL, and then run QEMU from normal
+Windows.
+
+The reason it is easier to build Tock from WSL is that building the kernel and
+apps uses Makefiles, and those are not well supported in normal Windows. The
+reason it is easier to run QEMU from normal Windows is that we need a new
+version of QEMU and the Windows installers make it easy to install a new
+version.
+
+1. Setup Windows Subsystem for Linux (WSL) if you haven't already.
+   [WSL instructions](https://learn.microsoft.com/en-us/windows/wsl/install).
+   You can choose your linux distro, but the latest version of Ubuntu is a good
+   choice if you don't have a preference.
+
+   To open a WSL shell, search "ubuntu" in the start menu, or
+   [use a method here](https://learn.microsoft.com/en-us/windows/wsl/install#ways-to-run-multiple-linux-distributions-with-wsl).
+
+2. From WSL, install [rustup](https://rustup.rs/#).
+   ```
+   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+   ```
+3. From WSL, clone the Tock repository and libtock-rs.
+   ```
+   git clone https://github.com/tock/tock
+   git clone https://github.com/tock/libtock-rs
+   ```
+4. From WSL, install [tockloader](https://github.com/tock/tockloader/).
+   ```
+   sudo apt install pipx
+   pipx install tockloader
+   pipx ensurepath
+   ```
+5. Install QEMU using the latest
+   [Windows installer](https://qemu.weilnetz.de/w64/).
+6. Setup variables in PowerShell to make running QEMU easier. We need two paths,
+   the path to the QEMU executable and the path to the board's binary image.
+
+   In PowerShell, assign two variables. Substitute your username and WSL distro
+   as needed. You may need to modify these if you used different folders.
+
+   ```
+   $qemu = "C:\Program Files\qemu\qemu-system-riscv32.exe"
+   $bin  = "\\wsl.localhost\Ubuntu-22.04\home\<username>\tock\boards\tutorials\qemu_rv32_virt-tutorial\qemu_rv32_virt_tutorial.bin"
+   ```
+
+## How We Install Tock when using QEMU to Emulate Hardware
 
 The method we use to run Tock on QEMU is different from other systems because
 Tock supports multiple applications, and we want to be able to install
@@ -53,6 +134,7 @@ Navigate to the board configuration for this tutorial and build the kernel:
 cd tock/boards/tutorials/qemu_rv32_virt-tutorial
 make init
 make
+make flash
 ```
 
 This should build the kernel.
@@ -62,13 +144,25 @@ This should build the kernel.
 
 Now we can run QEMU with that kernel.
 
+On macOS or Linux:
+
 ```
 make run
 ```
 
-You should see a window popup which is our virtual screen. The serial output
-from the kernel will be displayed in the terminal. You should see something
-like:
+On Windows, open a PowerShell and run:
+
+```
+& $qemu -machine virt -semihosting -global driver=riscv-cpu,property=smepmp,value=true -global virtio-mmio.force-legacy=false -device virtio-rng-device -device virtio-keyboard-device -device virtio-gpu-device  -serial stdio -bios $bin
+```
+
+You should see a window popup which is our virtual screen. It should look
+roughly like this, but will vary depending on your system.
+
+<img src="../imgs/qemu_rv32_virt.png" style="width:200px;" />
+
+The serial output from the kernel will be displayed in the terminal. You should
+see something like:
 
 ```
 Running QEMU emulator version 10.0.3 (tested: 8.2.7, 9.1.3, 9.2.3, 10.0.2; known broken: <= 8.1.5) with
@@ -82,7 +176,7 @@ QEMU RISC-V 32-bit "virt" machine, initialization complete.
 - Found VirtIO EntropySource device, enabling RngDriver
 - VirtIO NetworkCard device not found, disabling EthernetTapDriver
 - Found VirtIO Input device, enabling Input
-Entering main loop.
+Starting main kernel loop.
 ```
 
 ### What is on the screen?
@@ -102,6 +196,13 @@ cd libtock-rs
 make tab EXAMPLE=blink
 ```
 
+Then install it using `tockloader`. You may need to select it from a list.
+Scroll to the blink.tab app and press spacebar to select it. Then hit enter.
+
+```
+tockloader install
+```
+
 Because we are using a local binary file to store apps, installing the app only
 writes it to a local file. We can use tockloader to view that blink was
 installed.
@@ -116,7 +217,7 @@ Example output:
 [INFO   ] No device name specified. Using default name "tock".
 [INFO   ] Using flash-file to communicate with the board.
 [INFO   ] Using settings from KNOWN_BOARDS["qemu_rv32_virt"]
-[INFO   ] Operating on flash file "/Users/bradjc/Library/Application Support/tockloader/qemu_rv32_virt.bin".
+[INFO   ] Operating on flash file "/Users/bradjc/git/tock/boards/tutorials/qemu_rv32_virt-tutorial/qemu_rv32_virt_tutorial.bin".
 [INFO   ] Limiting flash size to 0x200000 bytes.
 ┌──────────────────────────────────────────────────┐
 │ App 0                                            |
@@ -135,11 +236,17 @@ Example output:
 To actually run the installed app we must run the board which starts qemu.
 
 ```
+# macOS and Linux:
 cd tock/boards/tutorials/qemu_rv32_virt-tutorial
 make run
+
+# Windows, from PowerShell:
+& $qemu -machine virt -semihosting -global driver=riscv-cpu,property=smepmp,value=true -global virtio-mmio.force-legacy=false -device virtio-rng-device -device virtio-keyboard-device -device virtio-gpu-device  -serial stdio -bios $bin
 ```
 
 In the QEMU screen you should now see the virtual LEDs blinking.
+
+<img src="../imgs/qemu_rv32_virt_blink.png" style="width:200px;" />
 
 ## Install a second libtock-rs app
 
@@ -249,16 +356,26 @@ this with both of our apps:
 To run the apps, go back to the board folder in the kernel and enter `make run`:
 
 ```
+# macOS and Linux:
 cd tock/boards/tutorials/qemu_rv32_virt-tutorial
 make run
+
+# Windows, from PowerShell:
+& $qemu -machine virt -semihosting -global driver=riscv-cpu,property=smepmp,value=true -global virtio-mmio.force-legacy=false -device virtio-rng-device -device virtio-keyboard-device -device virtio-gpu-device  -serial stdio -bios $bin
 ```
 
 You should see the QEMU window appear and the virtual LEDs are blinking.
 
+<img src="../imgs/qemu_rv32_virt_blink_buttons.png" style="width:200px;" />
+
 You can use the keyboard with the window selected to simulate button presses.
-Once you have selected the QEMU window, you can retrieve your mouse by pressing
-`ctrl+option+g`. With the window selected, you can press the buttons with the
-up, down, enter, and backspace buttons:
+Once you have selected the QEMU window, you can retrieve your mouse by pressing:
+
+- macOS: `control + option + g`
+- Windows: `Ctrl + Alt + g`
+
+With the window selected, you can press the buttons with the up, down, enter,
+and backspace buttons:
 
 | Keyboard Key | Button Index |
 | ------------ | ------------ |
