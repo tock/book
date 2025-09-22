@@ -16,7 +16,7 @@ not programming hardware.
 
 The basic steps for each platform are included here.
 
-### macOS
+{{#tabs }} {{#tab name="macOS" }}
 
 1. Install [rustup](https://rustup.rs/#).
    ```
@@ -34,42 +34,38 @@ The basic steps for each platform are included here.
    pipx ensurepath
    ```
 4. Install [QEMU](https://www.qemu.org/download/).
+
    ```
    brew install qemu
    ```
 
-### Ubuntu
+   {{#endtab }} {{#tab name="Ubuntu" }} As of September 2025, running this
+   tutorial on Ubuntu can be difficult because it requires a relatively recent
+   version of QEMU (i.e., >9.0). If you are on Ubuntu 24.10 or newer it should
+   work. Otherwise, it can be hard to get a new enough version of QEMU.
 
-As of September 2025, running this tutorial on Ubuntu can be difficult because
-it requires a relatively recent version of QEMU (i.e., >9.0). If you are on
-Ubuntu 24.10 or newer it should work. Otherwise, it can be hard to get a new
-enough version of QEMU.
-
-1. Install [rustup](https://rustup.rs/#).
+5. Install [rustup](https://rustup.rs/#).
    ```
    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
    ```
-2. Clone the Tock repository and libtock-rs.
+6. Clone the Tock repository and libtock-rs.
    ```
    git clone https://github.com/tock/tock
    git clone https://github.com/tock/libtock-rs
    ```
-3. Install [tockloader](https://github.com/tock/tockloader/).
+7. Install [tockloader](https://github.com/tock/tockloader/).
    ```
    sudo apt install pipx
    pipx install tockloader
    pipx ensurepath
    ```
-4. Install [QEMU](https://www.qemu.org/download/).
+8. Install [QEMU](https://www.qemu.org/download/).
    ```
    sudo apt install qemu-system
    ```
-
-### Windows
-
-The best way to install Tock from Windows is to setup the Windows Subsystem for
-Linux (WSL), compile Tock and applications in WSL, and then run QEMU from normal
-Windows.
+   {{#endtab }} {{#tab name="Windows" }} The best way to install Tock from
+   Windows is to setup the Windows Subsystem for Linux (WSL), compile Tock and
+   applications in WSL, and then run QEMU from normal Windows.
 
 The reason it is easier to build Tock from WSL is that building the kernel and
 apps uses Makefiles, and those are not well supported in normal Windows. The
@@ -112,6 +108,8 @@ version.
    $qemu = "C:\Program Files\qemu\qemu-system-riscv32.exe"
    $bin  = "\\wsl.localhost\Ubuntu-22.04\home\<username>\tock\boards\tutorials\qemu_rv32_virt-tutorial\qemu_rv32_virt_tutorial.bin"
    ```
+
+   {{#endtab }} {{#endtabs }}
 
 ## How We Install Tock when using QEMU to Emulate Hardware
 
