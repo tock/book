@@ -4,10 +4,11 @@ multilingual = false
 src = "src"
 title = "The Tock Book"
 
-[preprocessor.pagetoc]
 [output.html]
-additional-css = ["theme/pagetoc.css", "theme/pagetoc-tock.css"]
-additional-js  = ["theme/pagetoc.js"]
+additional-css = ["theme/pagetoc.css", "theme/pagetoc-tock.css", "theme/tabs.css"]
+additional-js  = ["theme/pagetoc.js", "theme/tabs.js"]
+
+[preprocessor.pagetoc]
 
 [preprocessor.chapter-list]
 
@@ -16,3 +17,5 @@ optional = true
 exclude = [ '.*trd.*', 'TockBinaryFormat', '.*spdx.*', '.*CommandZeroSemantics.*' ]
 
 [preprocessor.webinclude]
+
+[preprocessor.tabs]
