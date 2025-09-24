@@ -134,7 +134,7 @@ Navigate to the board configuration for this tutorial and build the kernel:
 cd tock/boards/tutorials/qemu_rv32_virt-tutorial
 make init
 make
-make flash
+make install
 ```
 
 This should build the kernel.
