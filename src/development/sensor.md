@@ -150,7 +150,7 @@ The steps from the overview are elaborated on here.
        pub fn new(i2c: &'a dyn I2CDevice, buffer: &'static mut [u8]) -> Ls1234<'a> {
            Ls1234 {
                i2c: i2c,
-               alarm: alarm,
+               buffer: buffer,
                state: Cell::new(State::Disabled),
                client: OptionalCell::empty(),
            }
