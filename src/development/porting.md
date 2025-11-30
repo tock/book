@@ -285,6 +285,42 @@ let mux_alarm = components::alarm::AlarmMuxComponent::new(&peripherals.ast)
     .finalize(components::alarm_mux_component_static!(sam4l::ast::Ast));
 ```
 
+#### Board Type Aliases
+
+Rust types can be unwieldy, and many types needed to define a board must be
+copied in multiple places in a main.rs file. Also, many of these types are
+chip-specific. Combined, this makes these types difficult to maintain and copy
+between boards. To ease this, Tock boards define
+[type aliases](https://doc.rust-lang.org/reference/items/type-aliases.html) at
+the top of main.rs to use when instantiating the board.
+
+One challenge with type aliases is naming. To help with naming and consistency
+among Tock boards we have defined some conventions for Tock boards. These
+conventions are based on postfixes for the naming.
+
+- `Hw` (`[Type]Hw`): A type alias for any kind of hardware type. For example,
+  the hardware that supports an alarm might have a type alias like:
+
+  ```
+  type AlarmHw = chips::nrf52::timer::Rtc<'static>;
+  ```
+
+- `Driver` (`[Syscall driver]Driver`): A type alias for a system call driver.
+  For example, providing the ADC to userspace might have a type alias like:
+
+  ```
+  type AdcHw = chips::nrf52::adc::Sadc<'static>;
+  type AdcDriver = capsules_core::adc::AdcDriver<AdcHw>;
+  ```
+
+- `InUse` (`[Type]InUse`): A type alias for the type of a resource used by the
+  kernel. For example, the scheduler used by a kernel might have a type alias
+  like:
+
+  ```
+  type SchedulerInUse = capsules_system::schedulers::round_robin::RoundRobinScheduler;
+  ```
+
 #### Board Support
 
 In addition to kernel code, boards also require some support files. These
