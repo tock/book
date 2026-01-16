@@ -175,6 +175,11 @@ The following documents give a sampling of possible use cases for Tock. Each
 document describes how Tock can be configured to meet each user's needs and how
 that configuration interacts with the threat model.
 
+These use case guides are intended to be instructive, and not prescriptive.
+Users with these (or similar) use cases may choose to follow the design outlined
+in these documents. However, there likely exist other successful designs for
+these use cases as well.
+
 - [Manual local deployment](manual_deployment.md) describes a use case in
   which the Tock kernel and applications are manually deployed onto dev
   hardware. This is first use case for most new Tock users (who are just
