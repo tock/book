@@ -233,7 +233,7 @@ The steps from the overview are elaborated on here.
    `allow_readonly` calls.
 
    By Tock convention, every syscall interface must at least support the command
-   call with `which == 0`. This allows applications to check if the syscall
+   call with `command_num == 0`. This allows applications to check if the syscall
    interface is supported on the current platform. The command must return a
    `CommandReturn::success()`. If the command is not present, then the kernel
    automatically has it return a failure with an error code of
@@ -243,7 +243,7 @@ The steps from the overview are elaborated on here.
    impl SyscallDriver for WS00123 {
        fn command(
            &self,
-           which: usize,
+           command_num: usize,
            r2: usize,
    		r3: usize,
    		caller_id: AppId) -> CommandReturn {
@@ -290,7 +290,7 @@ The steps from the overview are elaborated on here.
    	///        height to set as the the threshold for detection.
        fn command(
            &self,
-           which: usize,
+           command_num: usize,
            r2: usize,
    		r3: usize,
    		caller_id: AppId) -> CommandReturn {
