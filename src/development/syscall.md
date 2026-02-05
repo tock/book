@@ -197,20 +197,20 @@ The steps from the overview are elaborated on here.
    	fn allow_readwrite(
    	    &self,
    	    appid: AppId,
-   	    which, usize,
+   	    command_num, usize,
    	    slice: ReadWriteAppSlice,
    	) -> Result<ReadWriteAppSlice, (ReadWriteAppSlice, ErrorCode)> { }
 
        fn allow_readonly(
            &self,
            app: AppId,
-           which: usize,
+           command_num: usize,
            slice: ReadOnlyAppSlice,
        ) -> Result<ReadOnlyAppSlice, (ReadOnlyAppSlice, ErrorCode)> { }
 
        fn command(
            &self,
-   	    which: usize,
+   	    command_num: usize,
    		r2: usize,
    		r3: usize,
    		caller_id: AppId) -> CommandReturn { }
