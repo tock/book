@@ -168,3 +168,28 @@ message to that process.
 In the context of storage, it often makes sense for a process to share data with
 its own application ID. That allows future processes belonging to the same
 application (e.g. after a system reboot) to access that data.
+
+## Appendix A: Example Use Cases
+
+The following documents give a sampling of possible use cases for Tock. Each
+document describes how Tock can be configured to meet each user's needs and how
+that configuration interacts with the threat model.
+
+These use case guides are intended to be instructive, and not prescriptive.
+Users with these (or similar) use cases may choose to follow the design outlined
+in these documents. However, there likely exist other successful designs for
+these use cases as well.
+
+- [Manual local deployment](manual_deployment.md) describes a use case in
+  which the Tock kernel and applications are manually deployed onto dev
+  hardware. This is first use case for most new Tock users (who are just
+  starting to experiment with the system on dev boards) and for many Tock
+  developers who are developing the kernel and applications.
+- [Signed monolithic image](signed_monolithic.md) describes a use case in which
+  a single organization produces a Tock image (containing a kernel and multiple
+  applications) that is signed as a whole and booted on hardware with a secure
+  boot system. This is a common use case for Tock in industry.
+- [Smartphone secure app offload](secure_app_offload.md) describes a use case in
+  which smartphone apps can deploy secure applets onto a Tock system. This use
+  case does not have a central trusted authority, and requires support for
+  cryptographically-verified app IDs.
