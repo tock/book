@@ -65,6 +65,7 @@
   - [Sample Sensors and Use Drivers](./tutorials/04_sensors_and_drivers.md)
   - [Inter-process Communication](./tutorials/05_ipc.md)
   - [QEMU + libtock-rs](./tutorials/06_qemu_libtockrs.md)
+  - [Screen + U8G2](./tutorials/07_screen_u8g2.md)
 
 - [Kernel Development Guides](./development/guides.md)
 
