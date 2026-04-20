@@ -39,13 +39,13 @@ compiled locally on the user's computer, or downloaded from e.g.
 
 The kernel is configured as follows:
 
-- **Application ID:** For userspace binaries with a [package
-  name](../tock_binary_format.md#3-package-name) TBF header, the package name is
-  used as the application ID. If no package name header is present, the kernel
-  instead uses the [short ID](../tock_binary_format.md#10-shortid) header as the
-  application ID. If a userspace binary lacks both a package name and a short ID
-  header, the kernel uses the SHA-256 hash of the userspace binary as its
-  application ID.
+- **Application ID:** For userspace binaries with a
+  [package name](../tock_binary_format.md#3-package-name) TBF header, the
+  package name is used as the application ID. If no package name header is
+  present, the kernel instead uses the
+  [short ID](../tock_binary_format.md#10-shortid) header as the application ID.
+  If a userspace binary lacks both a package name and a short ID header, the
+  kernel uses the SHA-256 hash of the userspace binary as its application ID.
 - **Short ID:** Userspace binaries with a ShortId header are given that short
   ID. Userspace binaries with no short ID header are given a locally unique
   short ID.
@@ -91,8 +91,8 @@ specifies:
 The storage layer retains that information, and uses that list to filter which
 apps may modify and/or read it.
 
-For more information, see the [storage permissions
-TRD](../../trd/trd-storage-permissions.md).
+For more information, see the
+[storage permissions TRD](../../trd/trd-storage-permissions.md).
 
 ### Syscall filtering
 

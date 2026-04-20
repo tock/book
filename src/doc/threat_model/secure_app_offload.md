@@ -75,9 +75,9 @@ with. To release a new version of the app, they:
 
 1. Compile the applet using their build system.
 1. Sign the compiled applet images using their PKI.
-1. Format the signature into a [credentials
-   footer](../../trd/trd-appid.md#52-credentials-footer). The format is
-   described below in [Application IDs](#application-ids)
+1. Format the signature into a
+   [credentials footer](../../trd/trd-appid.md#52-credentials-footer). The
+   format is described below in [Application IDs](#application-ids)
 1. Include the applet images (including the credentials footer) into their app
    package.
 
@@ -155,10 +155,10 @@ the KDF.
 
 ### IPC
 
-Multiple IPC registries may be provided (string name, package name,
-application ID). Applets that want to communicate with specific apps use the
-application ID registry to verify they are communicating with the specific apps
-they wish (this applies to both clients and servers).
+Multiple IPC registries may be provided (string name, package name, application
+ID). Applets that want to communicate with specific apps use the application ID
+registry to verify they are communicating with the specific apps they wish (this
+applies to both clients and servers).
 
 ### Storage
 
@@ -174,8 +174,8 @@ specifies:
 The storage layer retains that information, and uses that list to filter which
 apps may modify and/or read it.
 
-For more information, see the [storage permissions
-TRD](../../trd/trd-storage-permissions.md).
+For more information, see the
+[storage permissions TRD](../../trd/trd-storage-permissions.md).
 
 ### Syscall filtering
 

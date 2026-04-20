@@ -233,10 +233,10 @@ The steps from the overview are elaborated on here.
    `allow_readonly` calls.
 
    By Tock convention, every syscall interface must at least support the command
-   call with `command_num == 0`. This allows applications to check if the syscall
-   interface is supported on the current platform. The command must return a
-   `CommandReturn::success()`. If the command is not present, then the kernel
-   automatically has it return a failure with an error code of
+   call with `command_num == 0`. This allows applications to check if the
+   syscall interface is supported on the current platform. The command must
+   return a `CommandReturn::success()`. If the command is not present, then the
+   kernel automatically has it return a failure with an error code of
    `ErrorCode::NOSUPPORT`. For our example, we use the simple case:
 
    ```rust

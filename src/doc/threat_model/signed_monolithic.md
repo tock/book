@@ -61,8 +61,8 @@ specifies:
 The storage layer retains that information, and uses that list to filter which
 apps may modify and/or read it.
 
-For more information, see the [storage permissions
-TRD](../../trd/trd-storage-permissions.md).
+For more information, see the
+[storage permissions TRD](../../trd/trd-storage-permissions.md).
 
 ### Syscall filtering
 
