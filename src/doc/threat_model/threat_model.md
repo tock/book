@@ -180,11 +180,11 @@ Users with these (or similar) use cases may choose to follow the design outlined
 in these documents. However, there likely exist other successful designs for
 these use cases as well.
 
-- [Manual local deployment](manual_deployment.md) describes a use case in
-  which the Tock kernel and applications are manually deployed onto dev
-  hardware. This is first use case for most new Tock users (who are just
-  starting to experiment with the system on dev boards) and for many Tock
-  developers who are developing the kernel and applications.
+- [Manual local deployment](manual_deployment.md) describes a use case in which
+  the Tock kernel and applications are manually deployed onto dev hardware. This
+  is first use case for most new Tock users (who are just starting to experiment
+  with the system on dev boards) and for many Tock developers who are developing
+  the kernel and applications.
 - [Signed monolithic image](signed_monolithic.md) describes a use case in which
   a single organization produces a Tock image (containing a kernel and multiple
   applications) that is signed as a whole and booted on hardware with a secure
