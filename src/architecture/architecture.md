@@ -5,9 +5,11 @@ repositories to illustrate the concepts.
 
 # Current Videos
 
-- [Tock Overview, Setup Tock Tooling, and First Boot on QEMU (Blink) Part 1](https://www.youtube.com/watch?v=cd10qCP-ciU)
-- [Tock Overview, Setup Tock Tooling, and First Boot on QEMU (Blink) Part 2](https://www.youtube.com/watch?v=SNxUK6WFEe4)
-- [Demo for Tock Overview, Setup Tock Tooling, and First Boot on QEMU (Blink)](https://www.youtube.com/watch?v=IEgUObXtJko)
+- [Part 1: Tock Overview, Setup Tock Tooling, and First Boot on QEMU (Blink)](https://www.youtube.com/watch?v=cd10qCP-ciU)
+- [Part 2: Tock Overview, Setup Tock Tooling, and First Boot on QEMU (Blink)](https://www.youtube.com/watch?v=SNxUK6WFEe4)
+- [Part 3: Demo for Tock Overview, Setup Tock Tooling, and First Boot on QEMU (Blink)](https://www.youtube.com/watch?v=IEgUObXtJko)
+- [Part 4: Tock Processes](https://www.youtube.com/watch?v=e75_QZMRQBA)
+- [Part 5: Tock's Syscall Boundary](https://www.youtube.com/watch?v=ygcLlOORzzg)
 
 # Audience
 
