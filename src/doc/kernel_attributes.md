@@ -131,6 +131,30 @@ Specifies the current version of the Tock kernel.
   1 indicates a development release, where 2 means alpha, 3 means beta, etc.
   Little endian.
 
+### Public Key (0x0104)
+
+Encodes a public key the kernel can use for encrypting or signature
+verification. Having a TLV for public keys simplifies adding a key to an
+existing kernel binary.
+
+```text
+0          1          2          3          4 (bytes)
++----------+----------+----------+----------+
+| Metadata                                  |
++----------+----------+----------+----------+
+| Reserved            | Algorithm           |
++----------+----------+----------+----------+
+| Type = 0x0104       | Length = 8          |
++----------+----------+----------+----------+
+```
+
+- Algorithm: `u16`. The key algorithm. Little endian. List of known algorithms:
+  - `0x06`: ECDSAP256
+- Reserved: `u16`. Reserved field.
+- Metadata: `u32`. A metadata identifier for the key. This allows the kernel to
+  identify they key, and associate privileges or permissions associated with the
+  key. Little endian.
+
 ## Kernel Attributes Location
 
 Kernel attributes are stored at the end of the kernel's flash region and
