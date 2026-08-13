@@ -96,7 +96,6 @@ is included below.
 | `TakeCell`     | Small static buffers | `TakeCell<'static, [u8]>`, [`spi.rs`](https://github.com/tock/tock/blob/master/capsules/core/src/spi_peripheral.rs)                                                                                   | Holding static buffers that will receive or send data.                                 |
 | `MapCell`      | Large static buffers | `MapCell<App>`, [`spi.rs`](https://github.com/tock/tock/blob/master/capsules/core/src/spi_controller.rs)                                                                                              | Delegating reference to large buffers (e.g. application buffers).                      |
 | `OptionalCell` | Optional parameters  | `client: OptionalCell<&'static hil::nonvolatile_storage::NonvolatileStorageClient>`, [`nonvolatile_to_pages.rs`](https://github.com/tock/tock/blob/master/capsules/extra/src/nonvolatile_to_pages.rs) | Keeping state that can be uninitialized, like a Client before one is set.              |
-| `VolatileCell` | Registers            | `VolatileCell<u32>`                                                                                                                                                                                   | Accessing MMIO registers, used by `tock_registers` crate.                              |
 
 ## The `TakeCell` abstraction
 
@@ -319,13 +318,6 @@ the Rust borrow mechanisms (commonly when a buffer is passed into, borrowed,
 "by" a hardware peripheral, and returned when hardware event has filled the
 buffer). [#2360](https://github.com/tock/tock/pull/2360) has some examples where
 trying to convert a `TakeCell` into an `OptionalCell` does not work.
-
-## `VolatileCell`
-
-A `VolatileCell` is just a helper type for doing volatile reads and writes to a
-value. This is mostly used for accessing memory-mapped I/O registers. The
-`get()` and `set()` functions are wrappers around `core::ptr::read_volatile()`
-and `core::ptr::write_volatile()`.
 
 ## Cell Extensions
 
