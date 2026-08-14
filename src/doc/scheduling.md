@@ -20,15 +20,15 @@ pub trait Scheduler {
     /// Tell the scheduler to execute kernel work such as interrupt bottom
     /// halves and dynamic deferred calls. Most schedulers will use the default
     /// implementation.
-    unsafe fn execute_kernel_work(&self, chip: &C) {...}
+    fn execute_kernel_work(&self, chip: &C) {...}
 
     /// Ask the scheduler whether to take a break from executing userspace
     /// processes to handle kernel tasks.
-    unsafe fn do_kernel_work_now(&self, chip: &C) -> bool {...}
+    fn do_kernel_work_now(&self, chip: &C) -> bool {...}
 
     /// Ask the scheduler whether to continue trying to execute a process.
     /// Most schedulers will use this default implementation.
-    unsafe fn continue_process(&self, _id: ProcessId, chip: &C) -> bool {...}
+    fn continue_process(&self, _id: ProcessId, chip: &C) -> bool {...}
 }
 ```
 
