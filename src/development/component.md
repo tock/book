@@ -23,6 +23,14 @@ This guide assumes you already have the capsule created, and ideally that you
 have set it up with a board to test. Making a component then just makes it
 easier to include on a new board and share among boards.
 
+## Requirements
+
+All components in the components crate are `#![forbid(unsafe_code)]`. This
+ensures that unsafe code is not hidden in components. All necessary unsafe
+operations must be handled in the board's main file, and passed into
+components as necessary. For example, any necessary capabilities must be
+provided by the board when the component is used.
+
 ## Overview
 
 The high-level steps required are:
@@ -79,11 +87,12 @@ The steps from the overview are elaborated on here.
    and any configuration needed to successfully setup this capsule.
 
    ```rust
-   pub struct NotifierDriverComponent<A: 'static + time::Alarm<'static>> {
+   pub struct NotifierDriverComponent<A: 'static + time::Alarm<'static>, CAP: MemoryAllocationCapability + 'static> {
        board_kernel: &'static kernel::Kernel,
        driver_num: usize,
        alarm: &'static A,
        delay_ms: usize,
+       mem_cap: CAP,
    }
    ```
 
@@ -95,18 +104,20 @@ The steps from the overview are elaborated on here.
    Next we can create a constructor for this component object:
 
    ```rust
-   impl<A: 'static + time::Alarm<'static>> NotifierDriverComponent<A> {
+   impl<A: 'static + time::Alarm<'static>, CAP: MemoryAllocationCapability + 'static> NotifierDriverComponent<A, CAP> {
        pub fn new(
            board_kernel: &'static kernel::Kernel,
            driver_num: usize,
            alarm: &'static A,
            delay_ms: usize,
-       ) -> AlarmDriverComponent<A> {
-           AlarmDriverComponent {
+           mem_cap: CAP,
+       ) -> NotifierDriverComponent<A, CAP> {
+           NotifierDriverComponent {
                board_kernel,
                driver_num,
                alarm,
                delay_ms,
+               mem_cap
            }
        }
    }
@@ -123,7 +134,7 @@ The steps from the overview are elaborated on here.
    The general format looks like:
 
    ```rust
-   impl<A: 'static + time::Alarm<'static>> Component for NotifierDriverComponent<A> {
+   impl<A: 'static + time::Alarm<'static>, CAP: MemoryAllocationCapability + 'static> Component for NotifierDriverComponent<A, CAP> {
        type StaticInput = (...);
        type Output = ...;
 
@@ -135,7 +146,7 @@ The steps from the overview are elaborated on here.
    method will produce:
 
    ```rust
-   impl<A: 'static + time::Alarm<'static>> Component for AlarmDriverComponent<A> {
+   impl<A: 'static + time::Alarm<'static>> Component for NotifierDriverComponent<A> {
        type StaticInput = (
            &'static mut MaybeUninit<[u8; 16]>,
            &'static mut MaybeUninit<NotifierDriver<'static, $A>>,
@@ -153,7 +164,7 @@ The steps from the overview are elaborated on here.
    configure/setup the capsules:
 
    ```rust
-   impl<A: 'static + time::Alarm<'static>> Component for AlarmDriverComponent<A> {
+   impl<A: 'static + time::Alarm<'static>, CAP: MemoryAllocationCapability + 'static> Component for NotifierDriverComponent<A, CAP> {
        type StaticInput = (
            &'static mut MaybeUninit<[u8; 16]>,
            &'static mut MaybeUninit<NotifierDriver<'static, $A>>,
@@ -161,13 +172,11 @@ The steps from the overview are elaborated on here.
        type Output = &'static NotifierDriver<'static, A>;
 
        fn finalize(self, static_buffer: Self::StaticInput) -> Self::Output {
-       	 let grant_cap = create_capability!(capabilities::MemoryAllocationCapability);
-
        	 let buf = static_buffer.0.write([0; 16]);
 
        	 let notifier = static_buffer.1.write(NotifierDriver::new(
        	     self.alarm,
-       	     self.board_kernel.create_grant(self.driver_num, &grant_cap),
+       	     self.board_kernel.create_grant(self.driver_num, &self.mem_cap),
        	     buf,
        	     self.delay_ms,
        	 ));
@@ -209,7 +218,6 @@ use core::mem::MaybeUninit;
 use capsules_extra::notifier::NotifierDriver;
 use kernel::capabilities;
 use kernel::component::Component;
-use kernel::create_capability;
 use kernel::hil::time::{self, Alarm};
 
 #[macro_export]
@@ -226,30 +234,33 @@ macro_rules! notifier_driver_component_static {
 
 pub struct NotifierDriverType<A> = capsules_extra::notifier::NotifierDriver<'static, A>;
 
-pub struct NotifierDriverComponent<A: 'static + time::Alarm<'static>> {
+pub struct NotifierDriverComponent<A: 'static + time::Alarm<'static>, CAP: MemoryAllocationCapability + 'static> {
     board_kernel: &'static kernel::Kernel,
     driver_num: usize,
     alarm: &'static A,
     delay_ms: usize,
+    mem_cap: CAP,
 }
 
-impl<A: 'static + time::Alarm<'static>> NotifierDriverComponent<A> {
+impl<A: 'static + time::Alarm<'static>, CAP: MemoryAllocationCapability + 'static> NotifierDriverComponent<A, CAP> {
     pub fn new(
         board_kernel: &'static kernel::Kernel,
         driver_num: usize,
         alarm: &'static A,
         delay_ms: usize,
-    ) -> AlarmDriverComponent<A> {
-        AlarmDriverComponent {
+        mem_cap: CAP,
+    ) -> NotifierDriverComponent<A, CAP> {
+        NotifierDriverComponent {
             board_kernel,
             driver_num,
             alarm,
             delay_ms,
+            mem_cap
         }
     }
 }
 
-impl<A: 'static + time::Alarm<'static>> Component for AlarmDriverComponent<A> {
+impl<A: 'static + time::Alarm<'static>, CAP: MemoryAllocationCapability + 'static> Component for NotifierDriverComponent<A, CAP> {
     type StaticInput = (
         &'static mut MaybeUninit<[u8; 16]>,
         &'static mut MaybeUninit<NotifierDriver<'static, $A>>,
@@ -257,13 +268,11 @@ impl<A: 'static + time::Alarm<'static>> Component for AlarmDriverComponent<A> {
     type Output = &'static NotifierDriver<'static, A>;
 
     fn finalize(self, static_buffer: Self::StaticInput) -> Self::Output {
-		let grant_cap = create_capability!(capabilities::MemoryAllocationCapability);
-
 		let buf = static_buffer.0.write([0; 16]);
 
 		let notifier = static_buffer.1.write(NotifierDriver::new(
 			self.alarm,
-			self.board_kernel.create_grant(self.driver_num, &grant_cap),
+			self.board_kernel.create_grant(self.driver_num, &self.mem_cap),
 			buf,
 			self.delay_ms,
 		));
@@ -288,6 +297,7 @@ let notifier = components::notifier::NotifierDriverComponent::new(
     capsules_core::notifier::DRIVER_NUM,
     alarm,
     100,
+    create_capability!(capabilities::MemoryAllocationCapability),
 )
 .finalize(components::notifier_driver_component_static!(nrf52840::rtc::Rtc));
 ```
