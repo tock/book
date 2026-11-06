@@ -85,12 +85,13 @@ The steps from the overview are elaborated on here.
    make defining the register map straightforward and using the registers
    intuitive.
 
-   The full register library is
-   [here](https://github.com/tock/tock/tree/master/libraries/tock-register-interface),
-   but to get started, you will first create a structure like this:
+   The full register library documentation is
+   [here](https://docs.rs/tock-registers/0.11.0/tock_registers/), but to get
+   started, you will first create a structure like this:
 
    ```rust
-   use tock_registers::registers::{ReadOnly, ReadWrite, WriteOnly};
+   use tock_registers_v0::registers::{ReadOnly, ReadWrite, WriteOnly};
+   use tock_registers_v0::{register_bitfields, register_structs};
 
    register_structs! {
        XyzPeripheralRegisters {
@@ -311,7 +312,7 @@ The steps from the overview are elaborated on here.
 
    Note the `get_counter()` function also illustrates how to use the register
    reference and the Tock register library. The
-   [register library](https://github.com/tock/tock/tree/master/libraries/tock-register-interface)
+   [register library](https://docs.rs/tock-registers/0.11.0/tock_registers/)
    includes much more detail on the various register operations enabled by the
    library.
 
