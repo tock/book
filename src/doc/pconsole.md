@@ -12,12 +12,16 @@ taken from the microbit's implementation of the Process console):
 let process_printer = components::process_printer::ProcessPrinterTextComponent::new()
       .finalize(components::process_printer_text_component_static!());
 
+let process_console_cap = unsafe { kernel::mint_defined_capability!(ProcessConsoleCap) };
+
 let _process_console = components::process_console::ProcessConsoleComponent::new(
       board_kernel,
       uart_mux,
       mux_alarm,
       process_printer,
       Some(reset_function),
+      Some(hardfault_function),
+      process_console_cap,
   )
   .finalize(components::process_console_component_static!(
       nrf52833::rtc::Rtc
@@ -66,6 +70,7 @@ processes are running. The console has several commands:
 - [`fault n`](#fault) - forces the process with name n into a fault state
 - [`panic`](#panic) - causes the kernel to run the panic handler
 - [`reset`](#reset) - causes the board to reset
+- [`hardfault`](#hardfault) - causes the board to hardfault
 - [`kernel`](#kernel) - prints the kernel memory map
 - [`process n`](#process) - prints the memory map of process with name n
 - [`console-start`](#console-start) - activate the process console
@@ -544,6 +549,32 @@ You can also reset the board with the `reset` command:
 
 ```text
 tock$ reset
+```
+
+### `hardfault`
+
+You can cause the board to enter the hardfault handler with the `hardfault`
+command:
+
+```text
+tock$ hardfault
+```
+
+You will see panic output. However, because the panic comes from an interrupt
+context, it will not have access to the panic resources which are bound from
+the main execution context.
+
+```
+tock$ hardfault
+
+---| Global debug writer not registered.
+     Call `set_debug_writer_wrapper` in board initialization.
+
+panicked at chips/qemu_rv32_virt_chip/src/chip.rs:210:13:
+fatal exception
+  Kernel version 2.4.0-dev1
+
+Panic Resources are not available.
 ```
 
 ### `kernel`
